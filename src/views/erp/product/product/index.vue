@@ -104,8 +104,9 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="110">
+      <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
+          <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
           <el-button
             link
             type="primary"
@@ -148,11 +149,13 @@ import { DICT_TYPE } from '@/utils/dict'
 import { defaultProps, handleTree } from '@/utils/tree'
 import { erpPriceTableColumnFormatter } from '@/utils'
 
+
 /** ERP 产品列表 */
 defineOptions({ name: 'ErpProduct' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
+const { push } = useRouter() // 路由跳转
 
 const loading = ref(true) // 列表的加载中
 const list = ref<ProductVO[]>([]) // 列表的数据
@@ -192,9 +195,26 @@ const resetQuery = () => {
 }
 
 /** 添加/修改操作 */
+// const openForm = (type: string, id?: number) => {
+//   formRef.value.open(type, id)
+// }
+
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+  if (type === 'create') {
+    // 跳转到添加页面
+    push({ name: 'ErpProductAdd' });
+  } else if (type === 'update' && typeof id === 'number') {
+    // 跳转到编辑页面，并传递 id
+    push({ name: 'ErpProductEdit', params: { id } });
+  } else {
+    console.error('Invalid type or missing id for edit operation');
+  }
+};
+
+/** 查看商品详情 */
+const openDetail = (id: number) => {
+  push({ name: 'ErpProductDetail', params: { id } })
 }
 
 /** 删除按钮操作 */
@@ -226,10 +246,18 @@ const handleExport = async () => {
 }
 
 /** 初始化 **/
+const route = useRoute(); // 获取当前路由信息
+
 onMounted(async () => {
-  await getList()
-  // 产品分类
-  const categoryData = await ProductCategoryApi.getProductCategorySimpleList()
-  categoryList.value = handleTree(categoryData, 'id', 'parentId')
-})
+  // 解析路由的 categoryId
+  if (route.query.categoryId) {
+    queryParams.categoryId = Number(route.query.categoryId); // 将 categoryId 赋值给查询参数
+  }
+
+  await getList(); // 获取列表数据
+
+  // 获取产品分类数据
+  const categoryData = await ProductCategoryApi.getProductCategorySimpleList();
+  categoryList.value = handleTree(categoryData, 'id', 'parentId'); // 处理成树形结构
+});
 </script>

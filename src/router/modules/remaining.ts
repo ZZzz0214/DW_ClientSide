@@ -371,6 +371,55 @@ const remainingRouter: AppRouteRecordRaw[] = [
     ]
   },
   {
+    path: '/erp/product', // ERP
+    component: Layout, // 布局组件
+    name: 'ProductManagement',
+    meta: {
+      hidden: true // 在菜单中隐藏父路由
+    },
+    children: [
+      {
+        path: 'product/add', // 添加商品
+        component: () => import('@/views/erp/product/product/form/index.vue'),
+        name: 'ErpProductAdd',
+        meta: {
+          noCache: false, // 需要缓存
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '产品添加',
+          activeMenu: '/erp/product/product/index'
+        }
+      },
+      {
+        path: 'product/edit/:id(\\d+)', // 编辑商品
+        component: () => import('@/views/erp/product/product/form/index.vue'),
+        name: 'ErpProductEdit',
+        meta: {
+          noCache: true, // 不缓存
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '产品编辑',
+          activeMenu: '/erp/product/product/index'
+        }
+      },
+      {
+        path: 'product/detail/:id(\\d+)', // 商品详情
+        component: () => import('@/views/erp/product/product/form/index.vue'),
+        name: 'ErpProductDetail',
+        meta: {
+          noCache: true, // 不缓存
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '产品详情',
+          activeMenu: '/erp/product/product/index'
+        }
+      }
+    ]
+  },
+  {
     path: '/mall/product', // 商品中心
     component: Layout,
     name: 'ProductCenter',
