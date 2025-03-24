@@ -49,6 +49,14 @@
           :propFormData="formData"
         />
       </el-tab-pane>
+      <el-tab-pane label="运费信息" name="shippingcost">
+        <CostForm
+          ref="shippingcostRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+        />
+      </el-tab-pane>
     </el-tabs>
     <el-form>
       <el-form-item style="float: right">
@@ -69,8 +77,8 @@ import DescriptionForm from './DescriptionForm.vue'
 import OtherForm from './OtherForm.vue'
 import SkuForm from './SkuForm.vue'
 import DeliveryForm from './DeliveryForm.vue'
+import CostForm from './Shippingcost.vue'
 import PriceForm from "@/views/erp/product/product/form/PriceForm.vue";
-
 
 defineOptions({ name: 'ErpProductAdd' })
 
@@ -89,6 +97,7 @@ const deliveryRef = ref() // 快递售后信息 Ref
 const descriptionRef = ref() // 库存箱规信息 Ref
 const otherRef = ref() // 机制信息 Ref
 const priceRef = ref() // 价格信息 Ref
+const shippingcostRef = ref() // 价格信息 Ref
 //  SPU 表单数据
 
 const formData = ref<ErpProductApi.ProductVO>({
@@ -251,6 +260,7 @@ const submitForm = async () => {
     await unref(descriptionRef)?.validate();
     await unref(otherRef)?.validate();
     await unref(priceRef)?.validate();
+    await unref(shippingcostRef)?.validate();
     // 深拷贝一份, 这样最终 server 端不满足，不需要影响原始数据
     const deepCopyFormData = cloneDeep(unref(formData.value)) as ErpProductApi.ProductVO;
     // 校验都通过后提交表单
