@@ -257,7 +257,9 @@ onMounted(async () => {
   await getList(); // 获取列表数据
 
   // 获取产品分类数据
-  const categoryData = await ProductCategoryApi.getProductCategorySimpleList();
+
+ const categoryData = await ProductCategoryApi.getProductCategorySimpleList();
   categoryList.value = handleTree(categoryData, 'id', 'parentId'); // 处理成树形结构
+
 });
 </script>

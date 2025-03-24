@@ -9,14 +9,14 @@
     label-width="120px"
   >
     <!-- 产品编号 -->
-    <el-form-item label="产品编号" prop="id">
-      <el-input
-        v-model="formData.id"
-        placeholder="请输入产品编号"
-        class="w-80"
-        :disabled="isDetail"
-      />
-    </el-form-item>
+<!--    <el-form-item label="产品编号" prop="id">-->
+<!--      <el-input-->
+<!--        v-model="formData.id"-->
+<!--        placeholder="请输入产品编号"-->
+<!--        class="w-80"-->
+<!--        :disabled="isDetail"-->
+<!--      />-->
+<!--    </el-form-item>-->
 
     <!-- 产品图片 -->
     <el-form-item label="产品图片" prop="image">
@@ -164,7 +164,7 @@ const message = useMessage() // 消息弹窗
 
 const formRef = ref() // 表单 Ref
 const formData = reactive<ProductVO>({
-  id: null, // 产品编号
+  id: undefined, // 产品编号
   name: '', // 产品名称
   image: '', // 产品图片
   productShortName: '', // 产品简称

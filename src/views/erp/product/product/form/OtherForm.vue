@@ -81,18 +81,18 @@ const formRef = ref() // 表单Ref
 // 表单数据
 const formData = reactive<ProductVO>({
   publicDomainEventMinimumPrice: 0, // 公域活动最低价
-  liveStreamingEventMinimumPrice: 0, // 直播活动最低价
+  liveStreamingEventMinimunPrice: 0, // 直播活动最低价
   pinduoduoEventMinimumPrice: 0, // 多多活动最低价
-  alibabaEventMinimumPrice: 0, // 阿里活动最低价
-  groupBuyEventMinimumPrice: 0 // 团购活动最低价
+  alibabaEventMinimunPrice: 0, // 阿里活动最低价
+  groupBuyEventMinimunPrice: 0 // 团购活动最低价
 });
 
 const rules = reactive({
   publicDomainEventMinimumPrice: [{ required: true, message: '公域活动最低价不能为空', trigger: 'blur' }],
-  liveStreamingEventMinimumPrice: [{ required: true, message: '直播活动最低价不能为空', trigger: 'blur' }],
+  liveStreamingEventMinimunPrice: [{ required: true, message: '直播活动最低价不能为空', trigger: 'blur' }],
   pinduoduoEventMinimumPrice: [{ required: true, message: '多多活动最低价不能为空', trigger: 'blur' }],
-  alibabaEventMinimumPrice: [{ required: true, message: '阿里活动最低价不能为空', trigger: 'blur' }],
-  groupBuyEventMinimumPrice: [{ required: true, message: '团购活动最低价不能为空', trigger: 'blur' }]
+  alibabaEventMinimunPrice: [{ required: true, message: '阿里活动最低价不能为空', trigger: 'blur' }],
+  groupBuyEventMinimunPrice: [{ required: true, message: '团购活动最低价不能为空', trigger: 'blur' }]
 });
 
 /** 将传进来的值赋值给 formData */

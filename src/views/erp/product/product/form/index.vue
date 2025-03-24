@@ -69,7 +69,6 @@ import DescriptionForm from './DescriptionForm.vue'
 import OtherForm from './OtherForm.vue'
 import SkuForm from './SkuForm.vue'
 import DeliveryForm from './DeliveryForm.vue'
-import { convertToInteger, floatToFixed2, formatToFraction } from '@/utils'
 import PriceForm from "@/views/erp/product/product/form/PriceForm.vue";
 
 
@@ -91,62 +90,30 @@ const descriptionRef = ref() // 库存箱规信息 Ref
 const otherRef = ref() // 机制信息 Ref
 const priceRef = ref() // 价格信息 Ref
 //  SPU 表单数据
-// const formData = ref<ErpProductApi.Spu>({
-//   name: '', // 商品名称
-//   categoryId: undefined, // 商品分类
-//   keyword: '', // 关键字
-//   picUrl: '', // 商品封面图
-//   sliderPicUrls: [], // 商品轮播图
-//   introduction: '', // 商品简介
-//   deliveryTypes: [], // 配送方式数组
-//   deliveryTemplateId: undefined, // 运费模版
-//   brandId: undefined, // 商品品牌
-//   specType: false, // 商品规格
-//   subCommissionType: false, // 分销类型
-//   skus: [
-//     {
-//       price: 0, // 商品价格
-//       marketPrice: 0, // 市场价
-//       costPrice: 0, // 成本价
-//       barCode: '', // 商品条码
-//       picUrl: '', // 图片地址
-//       stock: 0, // 库存
-//       weight: 0, // 商品重量
-//       volume: 0, // 商品体积
-//       firstBrokeragePrice: 0, // 一级分销的佣金
-//       secondBrokeragePrice: 0 // 二级分销的佣金
-//     }
-//   ],
-//   description: '', // 商品详情
-//   sort: 0, // 商品排序
-//   giveIntegral: 0, // 赠送积分
-//   virtualSalesCount: 0 // 虚拟销量
-// })
 
-// Product 表单数据
 const formData = ref<ErpProductApi.ProductVO>({
-  id: 0, // 产品编号，假设初始值为0或undefined
+  id: undefined, // 产品编号（主键，后端生成，前端不需要赋值）
   name: '', // 产品名称
   barCode: '', // 产品条码
-  categoryId: 0, // 产品分类编号，假设初始值为0或undefined
+  categoryId: undefined, // 产品分类编号
   image: '', // 产品图片
   productShortName: '', // 产品简称
   shippingCode: '', // 发货编码
-  productRecord: '', // 商品备案
+  productRecord: '', // 备案编号
   executionCode: '', // 执行编号
   trademarkCode: '', // 商标编号
   brand: '', // 品牌
-  status: 0, // 产品状态，假设初始值为0或undefined
+  status: undefined, // 产品状态
   remark: '', // 产品备注
   productSellingPoints: '', // 产品卖点
   standard: '', // 产品规格
-  weight: 0, // 产品重量（单位：kg）
+  weight: undefined, // 产品重量（单位：kg）
   productDimensions: '', // 产品长宽高
   cartonSpecifications: '', // 箱规
   cartonDimensions: '', // 箱规长宽高
-  cartonWeight: 0, // 箱规重量
-  availableStockQuantity: 0, // 现货数量
-  packagingMaterialQuantity: 0, // 包材数量
+  cartonWeight: undefined, // 箱规重量
+  availableStockQuantity: undefined, // 现货数量
+  packagingMaterialQuantity: undefined, // 包材数量
   orderReplenishmentLeadTime: '', // 返单时效
   shippingAddress: '', // 发货地址
   returnAddress: '', // 退货地址
@@ -155,29 +122,29 @@ const formData = ref<ErpProductApi.ProductVO>({
   addonShippingArea: '', // 加邮区域
   afterSalesStandard: '', // 售后标准
   afterSalesScript: '', // 售后话术
-  publicDomainEventMinimumPrice: 0, // 公域活动最低价
-  liveStreamingEventMinimumPrice: 0, // 直播活动最低价
-  pinduoduoEventMinimumPrice: 0, // 拼多多活动最低价
-  alibabaEventMinimumPrice: 0, // 阿里巴巴活动最低价
-  groupBuyEventMinimumPrice: 0, // 团购活动最低价
+  publicDomainEventMinimumPrice: undefined, // 公域活动最低价
+  liveStreamingEventMinimumPrice: undefined, // 直播活动最低价
+  pinduoduoEventMinimumPrice: undefined, // 拼多多活动最低价
+  alibabaEventMinimumPrice: undefined, // 阿里巴巴活动最低价
+  groupBuyEventMinimumPrice: undefined, // 团购活动最低价
   purchaser: '', // 采购人员
   supplier: '', // 供应商
-  purchasePrice: 0, // 采购价格，单位：元
-  wholesalePrice: 0, // 批发单价，单位：元
-  minPurchasePrice: 0, // 对外最低采购单价，单位：元
-  minWholesalePrice: 0, // 对外最低批发单价，单位：元
-  shippingFeeType: 0, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
-  fixedShippingFee: 0, // 固定运费，单位：元
-  firstItemQuantity: 0, // 首件数量
-  firstItemPrice: 0, // 首件价格，单位：元
-  additionalItemQuantity: 0, // 续件数量
-  additionalItemPrice: 0, // 续件价格，单位：元
-  firstWeight: 0, // 首重重量，单位：kg
-  firstWeightPrice: 0, // 首重价格，单位：元
-  additionalWeight: 0, // 续重重量，单位：kg
-  additionalWeightPrice: 0, // 续重价格，单位：元
+  purchasePrice: undefined, // 采购价格，单位：元
+  wholesalePrice: undefined, // 批发单价，单位：元
+  minPurchasePrice: undefined, // 对外最低采购单价，单位：元
+  minWholesalePrice: undefined, // 对外最低批发单价，单位：元
+  shippingFeeType: undefined, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
+  fixedShippingFee: undefined, // 固定运费，单位：元
+  firstItemQuantity: undefined, // 首件数量
+  firstItemPrice: undefined, // 首件价格，单位：元
+  additionalItemQuantity: undefined, // 续件数量
+  additionalItemPrice: undefined, // 续件价格，单位：元
+  firstWeight: undefined, // 首重重量，单位：kg
+  firstWeightPrice: undefined, // 首重价格，单位：元
+  additionalWeight: undefined, // 续重重量，单位：kg
+  additionalWeightPrice: undefined, // 续重价格，单位：元
   productionDate: '', // 首批生产日期
-  expiryDay: 0, // 保质期天数
+  expiryDay: undefined, // 保质期天数
 });
 // /** 获得详情 */
 // const getDetail = async () => {
@@ -283,11 +250,13 @@ const submitForm = async () => {
     await unref(deliveryRef)?.validate();
     await unref(descriptionRef)?.validate();
     await unref(otherRef)?.validate();
+    await unref(priceRef)?.validate();
     // 深拷贝一份, 这样最终 server 端不满足，不需要影响原始数据
     const deepCopyFormData = cloneDeep(unref(formData.value)) as ErpProductApi.ProductVO;
     // 校验都通过后提交表单
     const data = deepCopyFormData as ErpProductApi.ProductVO;
     const id = params.id as unknown as number;
+    console.log(data)
     if (!id) {
       await ErpProductApi.ProductApi.createProduct(data);
       message.success(t('common.createSuccess'));

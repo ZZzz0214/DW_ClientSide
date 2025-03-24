@@ -147,8 +147,8 @@ import {
   RuleConfig,
   SkuList
 } from '@/views/mall/product/spu/components/index'
-import ProductAttributes from './ProductAttributes.vue'
-import ProductPropertyAddForm from './ProductPropertyAddForm.vue'
+// import ProductAttributes from './ProductAttributes.vue'
+// import ProductPropertyAddForm from './ProductPropertyAddForm.vue'
 import type { ProductVO } from '@/api/erp/product/product/index';
 
 defineOptions({ name: 'ProductSpuSkuForm' })
@@ -186,10 +186,10 @@ const props = defineProps({
   },
   isDetail: propTypes.bool.def(false) // 是否作为详情组件
 })
-const attributesAddFormRef = ref() // 添加商品属性表单
+// const attributesAddFormRef = ref() // 添加商品属性表单
 const formRef = ref() // 表单 Ref
-const propertyList = ref<PropertyAndValues[]>([]) // 商品属性列表
-const skuListRef = ref() // 商品属性列表 Ref
+// const propertyList = ref<PropertyAndValues[]>([]) // 商品属性列表
+// const skuListRef = ref() // 商品属性列表 Ref
 const formData = reactive<ProductVO>({
   purchaser: '', // 采购人员
   supplier: '', // 供应商名
@@ -218,7 +218,7 @@ watch(
     }
     copyValueToTarget(formData, data)
     // 将 SKU 的属性，整理成 PropertyAndValues 数组
-    propertyList.value = getPropertyList(data)
+    // propertyList.value = getPropertyList(data)
   },
   {
     immediate: true
@@ -230,7 +230,7 @@ const emit = defineEmits(['update:activeName']);
 const validate = async () => {
   if (!formRef.value) return;
   try {
-    await formRef.value.validate();
+    await unref(formRef)?.validate()
     Object.assign(props.propFormData, formData);
   } catch (e) {
     message.error('【库存价格】不完善，请填写相关信息');
@@ -240,38 +240,38 @@ const validate = async () => {
 };
 defineExpose({ validate })
 
-/** 分销类型 */
-const changeSubCommissionType = () => {
-  // 默认为零，类型切换后也要重置为零
-  for (const item of formData.skus!) {
-    item.firstBrokeragePrice = 0
-    item.secondBrokeragePrice = 0
-  }
-}
+// /** 分销类型 */
+// const changeSubCommissionType = () => {
+//   // 默认为零，类型切换后也要重置为零
+//   for (const item of formData.skus!) {
+//     item.firstBrokeragePrice = 0
+//     item.secondBrokeragePrice = 0
+//   }
+// }
+//
+// /** 选择规格 */
+// const onChangeSpec = () => {
+//   // 重置商品属性列表
+//   propertyList.value = []
+//   // 重置sku列表
+//   formData.skus = [
+//     {
+//       price: 0,
+//       marketPrice: 0,
+//       costPrice: 0,
+//       barCode: '',
+//       picUrl: '',
+//       stock: 0,
+//       weight: 0,
+//       volume: 0,
+//       firstBrokeragePrice: 0,
+//       secondBrokeragePrice: 0
+//     }
+//   ]
+// }
 
-/** 选择规格 */
-const onChangeSpec = () => {
-  // 重置商品属性列表
-  propertyList.value = []
-  // 重置sku列表
-  formData.skus = [
-    {
-      price: 0,
-      marketPrice: 0,
-      costPrice: 0,
-      barCode: '',
-      picUrl: '',
-      stock: 0,
-      weight: 0,
-      volume: 0,
-      firstBrokeragePrice: 0,
-      secondBrokeragePrice: 0
-    }
-  ]
-}
-
-/** 调用 SkuList generateTableData 方法*/
-const generateSkus = (propertyList: any[]) => {
-  skuListRef.value.generateTableData(propertyList)
-};
+// /** 调用 SkuList generateTableData 方法*/
+// const generateSkus = (propertyList: any[]) => {
+//   skuListRef.value.generateTableData(propertyList)
+// };
 </script>
