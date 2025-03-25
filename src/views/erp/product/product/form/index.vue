@@ -197,7 +197,9 @@ const getDetail = async () => {
     formLoading.value = true;
     try {
       const res = (await ErpProductApi.ProductApi.getProduct(id)) as ErpProductApi.ProductVO;
+      console.log(res);
       formData.value = res;
+
     } finally {
       formLoading.value = false;
     }

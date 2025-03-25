@@ -26,7 +26,7 @@ export interface ProductVO {
   unitId: number; // 单位编号
   standard?: string; // 产品规格
   weight?: number; // 产品重量（单位：kg）
-  productionDate?: string; // 产品日期
+  productionDate?: Date; // 产品日期
   expiryDay?: number; // 保质期天数
   brand?: string; // 品牌名称
   categoryId: number; // 产品品类编号

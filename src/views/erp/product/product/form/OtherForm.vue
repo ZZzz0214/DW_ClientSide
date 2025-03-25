@@ -20,7 +20,7 @@
     <!-- 直播活动最低价 -->
     <el-form-item label="直播活动最低价" prop="liveStreamingEventMinimumPrice">
       <el-input-number
-        v-model="formData.liveStreamingEventMinimumPrice"
+        v-model="formData.liveStreamingEventMinimunPrice"
         :min="0"
         placeholder="请输入直播活动最低价"
         class="w-80!"
@@ -40,7 +40,7 @@
     <!-- 阿里活动最低价 -->
     <el-form-item label="阿里活动最低价" prop="alibabaEventMinimumPrice">
       <el-input-number
-        v-model="formData.alibabaEventMinimumPrice"
+        v-model="formData.alibabaEventMinimunPrice"
         :min="0"
         placeholder="请输入阿里活动最低价"
         class="w-80!"
@@ -50,7 +50,7 @@
     <!-- 团购活动最低价 -->
     <el-form-item label="团购活动最低价" prop="groupBuyEventMinimumPrice">
       <el-input-number
-        v-model="formData.groupBuyEventMinimumPrice"
+        v-model="formData.groupBuyEventMinimunPrice"
         :min="0"
         placeholder="请输入团购活动最低价"
         class="w-80!"

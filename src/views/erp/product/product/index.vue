@@ -67,29 +67,131 @@
   </ContentWrap>
 
   <!-- 列表 -->
+<!--  <ContentWrap>-->
+<!--    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">-->
+<!--      <el-table-column label="条码" align="center" prop="barCode" />-->
+<!--      <el-table-column label="名称" align="center" prop="name" />-->
+<!--      <el-table-column label="规格" align="center" prop="standard" />-->
+<!--      <el-table-column label="分类" align="center" prop="categoryName" />-->
+<!--&lt;!&ndash;      <el-table-column label="单位" align="center" prop="unitName" />&ndash;&gt;-->
+<!--      <el-table-column-->
+<!--        label="采购价格"-->
+<!--        align="center"-->
+<!--        prop="purchasePrice"-->
+<!--        :formatter="erpPriceTableColumnFormatter"-->
+<!--      />-->
+<!--      <el-table-column-->
+<!--        label="销售价格"-->
+<!--        align="center"-->
+<!--        prop="salePrice"-->
+<!--        :formatter="erpPriceTableColumnFormatter"-->
+<!--      />-->
+<!--      <el-table-column-->
+<!--        label="最低价格"-->
+<!--        align="center"-->
+<!--        prop="minPrice"-->
+<!--        :formatter="erpPriceTableColumnFormatter"-->
+<!--      />-->
+<!--      <el-table-column label="状态" align="center" prop="status">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column-->
+<!--        label="创建时间"-->
+<!--        align="center"-->
+<!--        prop="createTime"-->
+<!--        :formatter="dateFormatter"-->
+<!--        width="180px"-->
+<!--      />-->
+<!--      <el-table-column label="操作" align="center" width="200">-->
+<!--        <template #default="scope">-->
+<!--          <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="primary"-->
+<!--            @click="openForm('update', scope.row.id)"-->
+<!--            v-hasPermi="['erp:product:update']"-->
+<!--          >-->
+<!--            编辑-->
+<!--          </el-button>-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleDelete(scope.row.id)"-->
+<!--            v-hasPermi="['erp:product:delete']"-->
+<!--          >-->
+<!--            删除-->
+<!--          </el-button>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--    </el-table>-->
+<!--    &lt;!&ndash; 分页 &ndash;&gt;-->
+<!--    <Pagination-->
+<!--      :total="total"-->
+<!--      v-model:page="queryParams.pageNo"-->
+<!--      v-model:limit="queryParams.pageSize"-->
+<!--      @pagination="getList"-->
+<!--    />-->
+<!--  </ContentWrap>-->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="条码" align="center" prop="barCode" />
-      <el-table-column label="名称" align="center" prop="name" />
-      <el-table-column label="规格" align="center" prop="standard" />
-      <el-table-column label="分类" align="center" prop="categoryName" />
-      <el-table-column label="单位" align="center" prop="unitName" />
+      <el-table-column label="产品名称" align="center" prop="name" />
+      <el-table-column label="产品分类" align="center" prop="categoryName" />
+      <el-table-column label="现货数量" align="center" prop="availableStockQuantity" />
       <el-table-column
-        label="采购价格"
+        label="公域活动最低价"
+        align="center"
+        prop="publicDomainEventMinimumPrice"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="直播活动最低价"
+        align="center"
+        prop="liveStreamingEventMinimunPrice"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="拼多多活动最低价"
+        align="center"
+        prop="pinduoduoEventMinimumPrice"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="阿里巴巴活动最低价"
+        align="center"
+        prop="alibabaEventMinimunPrice"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="团购活动最低价"
+        align="center"
+        prop="groupBuyEventMinimunPrice"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column label="采购人员" align="center" prop="purchaser" />
+      <el-table-column
+        label="采购单价"
         align="center"
         prop="purchasePrice"
         :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
-        label="销售价格"
+        label="批发单价"
         align="center"
-        prop="salePrice"
+        prop="wholesalePrice"
         :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
-        label="最低价格"
+        label="对外最低采购单价"
         align="center"
-        prop="minPrice"
+        prop="minPurchasePrice"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="对外最低批发单价"
+        align="center"
+        prop="minWholesalePrice"
         :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column label="状态" align="center" prop="status">

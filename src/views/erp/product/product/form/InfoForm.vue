@@ -78,6 +78,7 @@
       <el-date-picker
         v-model="formData.productionDate"
         type="date"
+        value-format="x"
         placeholder="请选择产品日期"
         class="w-80"
       />
@@ -175,7 +176,7 @@ const formData = reactive<ProductVO>({
   productSellingPoints: '', // 产品卖点
   standard: '', // 产品规格
   weight: 0, // 产品重量
-  productionDate: '', // 产品日期
+  productionDate:undefined, // 产品日期
   expiryDay: 0, // 保质日期
 })
 
