@@ -420,6 +420,55 @@ const remainingRouter: AppRouteRecordRaw[] = [
     ]
   },
   {
+    path: '/erp/combo', // ERP 组合产品
+    component: Layout, // 布局组件
+    name: 'ComboProductManagement',
+    meta: {
+      hidden: true // 在菜单中隐藏父路由
+    },
+    children: [
+      {
+        path: 'combo/add', // 添加组合产品
+        component: () => import('@/views/erp/product/combo/form/index.vue'),
+        name: 'ErpComboAdd',
+        meta: {
+          noCache: false, // 需要缓存
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '组合产品添加',
+          activeMenu: '/erp/combo/combo/index'
+        }
+      },
+      {
+        path: 'combo/edit/:id(\\d+)', // 编辑组合产品
+        component: () => import('@/views/erp/product/combo/form/index.vue'),
+        name: 'ErpComboEdit',
+        meta: {
+          noCache: true, // 不缓存
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '组合产品编辑',
+          activeMenu: '/erp/combo/combo/index'
+        }
+      },
+      {
+        path: 'combo/detail/:id(\\d+)', // 组合产品详情
+        component: () => import('@/views/erp/product/combo/form/index.vue'),
+        name: 'ErpComboDetail',
+        meta: {
+          noCache: true, // 不缓存
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '组合产品详情',
+          activeMenu: '/erp/combo/combo/index'
+        }
+      }
+    ]
+  },
+  {
     path: '/mall/product', // 商品中心
     component: Layout,
     name: 'ProductCenter',

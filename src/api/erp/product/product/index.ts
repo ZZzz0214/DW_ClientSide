@@ -109,5 +109,10 @@ export const ProductApi = {
   // 导出产品 Excel
   exportProduct: async (params) => {
     return await request.download({ url: `/erp/product/export-excel`, params })
+  },
+
+  // 搜索产品
+  searchProducts: async (params: any) => {
+    return await request.get({ url: `/erp/product/search`, params });
   }
 }
