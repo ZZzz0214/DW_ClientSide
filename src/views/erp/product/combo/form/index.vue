@@ -35,7 +35,7 @@ import { useTagsViewStore } from '@/store/modules/tagsView'
 import * as ErpComboApi from '@/api/erp/product/combo/index'
 import InfoForm from './InfoForm.vue'
 import CostForm from './Shippingcost.vue'
-
+import * as ProductComboApi from '@/api/erp/product/combo'
 
 defineOptions({ name: 'ErpProductAdd' })
 
@@ -52,10 +52,17 @@ const infoRef = ref() // 产品基础信息 Ref
 const shippingcostRef = ref() // 价格信息 Ref
 
 // 组合产品表单数据
-const formData = ref<ErpComboApi.ComboVO>({
-  id: undefined, // 组品编号
-  name: '', // 组合产品名称
-  items: [] // 订单产品清单
+const formData = ref<ProductComboApi.ComboVO>({
+  id: 0, // 组品编号（可选）
+  name: '', // 组合产品名称（必填）
+  totalQuantity: 0, // 产品数量（必填）
+  status: 0, // 产品状态（必填）
+  items: [], // 关联的单品列表（必填）
+  // 可选字段可初始化为默认值或 undefined
+  shortName: '',
+  weight: 0,
+  shippingFeeType: 0,
+  // ...其他可选字段
 });
 
 /** 获得详情 */

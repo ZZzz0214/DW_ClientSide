@@ -2,35 +2,43 @@ import request from '@/config/axios'
 
 // 组合产品VO
 export interface ComboVO {
-  id: number; // 组品编号
+  id?: number; // 组品编号
   name: string; // 组合产品名称
-  short_name?: string; // 产品简称
+  shortName?: string; // 产品简称（修改：改为驼峰命名）
   image?: string; // 产品图片
-  shipping_code?: string; // 发货编码
+  shippingCode?: string; // 发货编码（修改：改为驼峰命名）
   weight?: number; // 产品重量（单位：kg）
   purchaser?: string; // 采购人员
   supplier?: string; // 供应商名
-  purchase_price?: number; // 采购单价（单位：元）
-  wholesale_price?: number; // 批发单价（单位：元）
+  purchasePrice?: number; // 采购单价（单位：元）（修改：改为驼峰命名）
+  wholesalePrice?: number; // 批发单价（单位：元）（修改：改为驼峰命名）
   remark?: string; // 备注信息
-  shipping_fee_type?: number; // 运费类型（0：固定运费，1：按件计费，2：按重计费）
-  fixed_shipping_fee?: number; // 固定运费（单位：元）
-  first_item_quantity?: number; // 首件数量
-  first_item_price?: number; // 首件价格（单位：元）
-  additional_item_quantity?: number; // 续件数量
-  additional_item_price?: number; // 续件价格（单位：元）
-  first_weight?: number; // 首重重量（单位：kg）
-  first_weight_price?: number; // 首重价格（单位：元）
-  additional_weight?: number; // 续重重量（单位：kg）
-  additional_weight_price?: number; // 续重价格（单位：元）
-  total_quantity?: number; // 产品数量（组合产品中包含的单品总数）
+  shippingFeeType?: number; // 运费类型（0：固定运费，1：按件计费，2：按重计费）（修改：改为驼峰命名）
+  fixedShippingFee?: number; // 固定运费（单位：元）（修改：改为驼峰命名）
+  firstItemQuantity?: number; // 首件数量（修改：改为驼峰命名）
+  firstItemPrice?: number; // 首件价格（单位：元）（修改：改为驼峰命名）
+  additionalItemQuantity?: number; // 续件数量（修改：改为驼峰命名）
+  additionalItemPrice?: number; // 续件价格（单位：元）（修改：改为驼峰命名）
+  firstWeight?: number; // 首重重量（单位：kg）（修改：改为驼峰命名）
+  firstWeightPrice?: number; // 首重价格（单位：元）（修改：改为驼峰命名）
+  additionalWeight?: number; // 续重重量（单位：kg）（修改：改为驼峰命名）
+  additionalWeightPrice?: number; // 续重价格（单位：元）（修改：改为驼峰命名）
+  totalQuantity: number; // 产品数量（组合产品中包含的单品总数）（修改：必填）
   creator?: string; // 创建者
-  create_time?: Date; // 创建时间
+  createTime?: Date; // 创建时间（修改：改为驼峰命名）
   updater?: string; // 更新者
-  update_time?: Date; // 更新时间
+  updateTime?: Date; // 更新时间（修改：改为驼峰命名）
   deleted?: boolean; // 是否删除
-  tenant_id?: number; // 租户编号
-  status: number; // 产品状态
+  tenantId?: number; // 租户编号（修改：改为驼峰命名）
+  status: number; // 产品状态（修改：改为必填）
+  items: ComboItem[]; // 关联的单品列表（新增：必填）
+}
+
+// 组合产品中的单品VO
+export interface ComboItem {
+  productId: number; // 单品编号（新增：必填）
+  quantity: number; // 单品数量（新增：必填）
+  itemQuantity?: number; // 单品数量（可选，如果后端需要）
 }
 
 // 组合产品 API

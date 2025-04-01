@@ -12,21 +12,21 @@
         <el-input v-model="formData.name" placeholder="请输入组品名称" :disabled="isDetail" />
       </el-form-item>
 
-      <el-form-item label="组品编号" prop="comboId">
-        <el-input v-model="formData.comboId" placeholder="请输入组品编号" :disabled="isDetail" />
+      <el-form-item label="组品编号" prop="id">
+        <el-input v-model="formData.id" placeholder="请输入组品编号" :disabled="isDetail" />
       </el-form-item>
 
       <el-form-item label="产品图片">
         <el-image
-          v-if="formData.productImage"
+          v-if="formData.image"
           style="width: 100px; height: 100px"
-          :src="formData.productImage"
-          :preview-src-list="[formData.productImage]"
+          :src="formData.image"
+          :preview-src-list="[formData.image]"
         />
       </el-form-item>
 
-      <el-form-item label="产品重量" prop="totalWeight">
-        <el-input v-model="formData.totalWeight" placeholder="产品重量" :disabled="isDetail" />
+      <el-form-item label="产品重量" prop="weight">
+        <el-input v-model="formData.weight" placeholder="产品重量" :disabled="isDetail" />
       </el-form-item>
 
       <el-form-item label="产品数量" prop="totalQuantity">
@@ -102,12 +102,13 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch } from 'vue';
-import SelectProduct from './SelectProduct.vue'; // 引入查询组件
-
+import {ref, reactive, watch, PropType} from 'vue';
+import SelectProduct from './SelectProduct.vue';
+import {copyValueToTarget} from "@/utils";
+import * as ProductComboApi from '@/api/erp/product/combo'
 const props = defineProps({
   propFormData: {
-    type: Object,
+    type: Object as PropType<ProductComboApi.ComboVO>,
     default: () => ({}),
   },
   isDetail: {
@@ -122,15 +123,15 @@ const formRef = ref();
 const formLoading = ref(false);
 const subTabsName = ref('item');
 
-const formData = reactive({
+const formData = ref<ProductComboApi.ComboVO>({
   id: undefined,
   name: '', // 组品名称
-  comboId: '', // 组品编号
-  productImage: '', // 产品图片
+  image: '', // 产品图片
   totalWeight: null, // 产品重量
-  totalQuantity: null, // 产品数量
+  totalQuantity: 0, // 产品数量
   status: 1, // 产品状态，默认为启用
   items: [],
+
 });
 
 const formRules = reactive({
@@ -150,7 +151,7 @@ const handleAdd = () => {
 // 处理选中的产品
 const handleProductSelected = (selectedProducts: any[]) => {
   selectedProducts.forEach(product => {
-    formData.items.push({
+    formData.value.items.push({
       productName: product.name, // 产品名称
       productPrice: product.purchasePrice, // 采购单价
       weight: product.weight, // 产品重量
@@ -172,13 +173,14 @@ const handleDelete = (index: number) => {
 // 更新组品信息
 const updateComboInfo = () => {
   // 更新组品名称
+  console.log('当前 items 数据：', formData.items); // 检查是否填充
   const productNames = formData.items.map(item => `${item.productName}*${item.count}`);
-  formData.name = productNames.join(' + '); // 更新 name 字段
-
+  console.log('拼接后的 name：', productNames.join(' + ')); // 检查计算结果
+  formData.name = productNames.join(' + '); // 更新 namecount 字段
   // 更新产品重量
   const totalWeight = formData.items.reduce((sum, item) => sum + (item.weight * item.count), 0);
-  formData.totalWeight = totalWeight;
-
+  //formData.totalWeight = totalWeight;
+  formData.totalWeight = '123';
   // 更新产品图片（取第一个产品的图片）
   if (formData.items.length > 0) {
     formData.productImage = formData.items[0].productImage;
@@ -187,7 +189,7 @@ const updateComboInfo = () => {
   }
 
   // 更新产品数量
-  const totalQuantity = formData.items.reduce((sum, item) => sum + item.count, 0);
+  const totalQuantity = formData.items.reduce((sum, item) => sum + item., 0);
   formData.totalQuantity = totalQuantity;
 
   // 确保每个 item 的 itemQuantity 与 count 一致
@@ -220,15 +222,17 @@ const validate = async () => {
 };
 defineExpose({ validate });
 
-// 监听 propFormData 的变化
 watch(
   () => props.propFormData,
   (data) => {
-    if (!data) {
-      return;
-    }
-    Object.assign(formData, data);
+    if (!data) return
+    // fix：三个表单组件监听赋值必须使用 copyValueToTarget 使用 formData.value = data 会监听非常多次
+    copyValueToTarget(formData.value, data)
   },
-  { immediate: true, deep: true }
-);
+  {
+    // fix: 去掉深度监听只有对象引用发生改变的时候才执行,解决改一动多的问题
+    immediate: true
+  }
+)
+
 </script>

@@ -126,14 +126,9 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ComboApi , ComboVO } from '@/api/erp/product/combo'
-// import { ComboCategoryApi, ComboCategoryVO } from '@/api/erp/product/category/ComboCategoryApi'
 import ComboForm  from './ComboForm.vue'
-import { DICT_TYPE } from '@/utils/dict'
-import { defaultProps, handleTree } from '@/utils/tree'
-import { erpPriceTableColumnFormatter } from '@/utils'
 
 
 /** ERP 产品列表 */
