@@ -42,17 +42,17 @@
             <el-table-column label="序号" type="index" align="center" width="60" />
             <el-table-column label="产品编号" min-width="120">
               <template #default="{ row }">
-                <span>{{ row.productId }}</span>
+                <span>{{ row.id }}</span>
               </template>
             </el-table-column>
             <el-table-column label="产品名称" min-width="180">
               <template #default="{ row }">
-                <span>{{ row.productName }}</span>
+                <span>{{ row.name }}</span>
               </template>
             </el-table-column>
             <el-table-column label="采购单价" min-width="120">
               <template #default="{ row }">
-                <span>{{ row.productPrice }}</span>
+                <span>{{ row.purchasePrice }}</span>
               </template>
             </el-table-column>
             <el-table-column label="产品重量" min-width="120">
@@ -126,7 +126,6 @@ const formData = ref<ProductComboApi.ComboVO>({
   totalQuantity: 0, // 产品数量
   status: 1, // 产品状态，默认为启用
   items: [],
-
 });
 
 const formRules = reactive({
@@ -147,17 +146,10 @@ const handleAdd = () => {
 const handleProductSelected = (selectedProducts: any[]) => {
   selectedProducts.forEach(product => {
     formData.value.items.push({
-      // productName: product.name, // 产品名称
-      // productPrice: product.purchasePrice, // 采购单价
-      // weight: product.weight, // 产品重量
-      // productId: product.id, // 产品编号
-      // count: 1, // 默认数量为1
-      // remark: '', // 默认备注为空
-      // itemQuantity: 1, // 添加 itemQuantity 字段，默认值为1
-      productName: product.name || '', // 确保 productName 有默认值
-      productPrice: product.purchasePrice || 0, // 确保 productPrice 有默认值
+      name: product.name || '', // 确保 productName 有默认值
+      purchasePrice: product.purchasePrice || 0, // 确保 productPrice 有默认值
       weight: product.weight || 0, // 确保 weight 有默认值
-      productId: product.id || '', // 确保 productId 有默认值
+      id: product.id || '', // 确保 productId 有默认值
       count: 1, // 默认数量为1
       remark: '', // 默认备注为空
       itemQuantity: 1, // 添加 itemQuantity 字段，默认值为1
@@ -173,55 +165,13 @@ const handleDelete = (index: number) => {
 };
 
 // 更新组品信息
-// const updateComboInfo = () => {
-//   // 更新组品名称
-//   console.log('当前 items 数据：', formData.value.items); // 检查是否填充
-//   const productNames = formData.items.map(item => `${item.productName}*${item.count}`);
-//   console.log('拼接后的 name：', productNames.join(' + ')); // 检查计算结果
-//   formData.name = productNames.join(' + '); // 更新 namecount 字段
-//   // 更新产品重量
-//   const totalWeight = formData.items.reduce((sum, item) => sum + (item.weight * item.count), 0);
-//   //formData.totalWeight = totalWeight;
-//   formData.totalWeight = '123';
-//   // 更新产品图片（取第一个产品的图片）
-//   if (formData.items.length > 0) {
-//     formData.productImage = formData.items[0].productImage;
-//   } else {
-//     formData.productImage = '';
-//   }
-//
-//   // 更新产品数量
-//   const totalQuantity = formData.items.reduce((sum, item) => sum + item., 0);
-//   formData.totalQuantity = totalQuantity;
-//
-//   // 确保每个 item 的 itemQuantity 与 count 一致
-//   formData.items.forEach(item => {
-//     item.itemQuantity = item.count;
-//   });
-// };
-// 更新组品信息
 const updateComboInfo = () => {
   // 更新组品名称
-  const productNames = formData.value.items.map(item => `${item.productName || ''}*${item.count || 0}`);
+  const productNames = formData.value.items.map(item => `${item.name || ''}*${item.count || 0}`);
   formData.value.name = productNames.join(' + '); // 更新 namecount 字段
   // 更新产品重量
   const totalWeight = formData.value.items.reduce((sum, item) => sum + (item.weight || 0) * (item.count || 0), 0);
   formData.value.weight = totalWeight;
-  // 更新产品图片（取第一个产品的图片）
-  // if (formData.value.items.length > 0) {
-  //   formData.value.image = formData.value.items[0].productImage;
-  // } else {
-  //   formData.value.image = '';
-  // }
-
-  // 更新产品数量
-  // const totalQuantity = formData.value.items.reduce((sum, item) => sum + item.count, 0);
-  // formData.value.totalQuantity = totalQuantity;
-
-  // 确保每个 item 的 itemQuantity 与 count 一致
-  // formData.value.items.forEach(item => {
-  //   item.itemQuantity = item.count;
-  // });
 };
 
 // 表格合计行
