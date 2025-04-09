@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible">
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080">
     <el-form
       ref="formRef"
       :model="formData"
@@ -8,83 +8,54 @@
       v-loading="formLoading"
     >
       <el-row :gutter="20">
+        <!-- 组品编号 -->
         <el-col :span="12">
-          <el-form-item label="组合产品名称" prop="name">
-            <el-input v-model="formData.name" placeholder="请输入组合产品名称" />
+          <el-form-item label="组品编号" prop="groupProductId">
+            <el-input disabled v-model="formData.groupProductId" placeholder="自动获取" />
           </el-form-item>
         </el-col>
+
+        <!-- 客户名称 -->
         <el-col :span="12">
-          <el-form-item label="短名称" prop="shortName">
-            <el-input v-model="formData.shortName" placeholder="请输入短名称" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="物流编码" prop="shippingCode">
-            <el-input v-model="formData.shippingCode" placeholder="请输入物流编码" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="分类" prop="categoryId">
-            <el-tree-select
-              v-model="formData.categoryId"
-              :data="categoryList"
-              :props="defaultProps"
-              check-strictly
-              default-expand-all
-              placeholder="请选择分类"
-              class="w-1/1"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="单位" prop="unitId">
-            <el-select v-model="formData.unitId" clearable placeholder="请选择单位" class="w-1/1">
-              <el-option
-                v-for="unit in unitList"
-                :key="unit.id"
-                :label="unit.name"
-                :value="unit.id"
-              />
-            </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="状态" prop="status">
-            <el-radio-group v-model="formData.status">
-              <el-radio
-                v-for="dict in getIntDictOptions(DICT_TYPE.COMMON_STATUS)"
-                :key="dict.value"
-                :value="dict.value"
-              >
-                {{ dict.label }}
-              </el-radio>
-            </el-radio-group>
-          </el-form-item>
-        </el-col>
-        <el-col :span="24">
-          <el-form-item label="备注" prop="remark">
-            <el-input type="textarea" v-model="formData.remark" placeholder="请输入备注" />
+          <el-form-item label="客户名称" prop="customerName">
+            <el-input v-model="formData.customerName" placeholder="请输入客户名称" />
           </el-form-item>
         </el-col>
       </el-row>
+
+      <!-- 子表的表单 -->
+      <ContentWrap>
+        <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
+          <el-tab-pane label="销售价格清单" name="item">
+            <SalePriceItemForm
+              ref="itemFormRef"
+              :items="formData.items"
+              :disabled="disabled"
+              @product-selected="handleProductSelected"
+            />
+          </el-tab-pane>
+        </el-tabs>
+      </ContentWrap>
+
     </el-form>
     <template #footer>
-      <el-button @click="submitForm" type="primary" :disabled="formLoading">确 定</el-button>
+      <el-button @click="submitForm" type="primary" :disabled="formLoading" v-if="!disabled">
+        确 定
+      </el-button>
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
 </template>
 
 <script setup lang="ts">
-import { ComboApi, ComboVO } from '@/api/erp/product/combo'
-import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category'
-import { ProductUnitApi, ProductUnitVO } from '@/api/erp/product/unit'
-import { CommonStatusEnum } from '@/utils/constants'
-import { defaultProps, handleTree } from '@/utils/tree'
-import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
+import { ref, watch } from 'vue';
+import { SalePriceApi, SalePriceVO, SalePriceFormData } from '@/api/erp/sale/saleprice';
+import SalePriceItemForm from './components/SalePriceItemForm.vue';
+import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils';
+import { ElMessage } from 'element-plus';
 
-/** ERP 组合产品 表单 */
-defineOptions({ name: 'ComboForm' })
+/** ERP 销售价格表单 */
+defineOptions({ name: 'SalePriceForm' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -92,28 +63,30 @@ const message = useMessage() // 消息弹窗
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
-const formType = ref('') // 表单的类型：create - 新增；update - 修改
-const formData = ref({
+const formType = ref('') // 表单的类型：create - 新增；update - 修改；detail - 详情
+
+
+const formData = ref<SalePriceFormData>({
   id: undefined,
-  name: undefined,
-  shortName: undefined,
-  shippingCode: undefined,
-  categoryId: undefined,
-  unitId: undefined,
-  status: undefined,
-  remark: undefined
-})
+  groupProductId: undefined, // 组品编号
+  customerName: undefined, // 客户名称
+  distributionPrice: 0, // 代发单价，初始化为 0
+  wholesalePrice: 0, // 批发单价，初始化为 0
+  items: [] // 子表项
+});
+
 const formRules = reactive({
-  name: [{ required: true, message: '组合产品名称不能为空', trigger: 'blur' }],
-  shortName: [{ required: true, message: '短名称不能为空', trigger: 'blur' }],
-  shippingCode: [{ required: true, message: '物流编码不能为空', trigger: 'blur' }],
-  categoryId: [{ required: true, message: '产品分类编号不能为空', trigger: 'blur' }],
-  unitId: [{ required: true, message: '单位编号不能为空', trigger: 'blur' }],
-  status: [{ required: true, message: '产品状态不能为空', trigger: 'blur' }]
+  groupProductId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
+  customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+  distributionPrice: [{ required: true, message: '代发单价不能为空', trigger: 'blur' }],
+  wholesalePrice: [{ required: true, message: '批发单价不能为空', trigger: 'blur' }]
 })
+const disabled = computed(() => formType.value === 'detail')
 const formRef = ref() // 表单 Ref
-const categoryList = ref<ProductCategoryVO[]>([]) // 产品分类列表
-const unitList = ref<ProductUnitVO[]>([]) // 产品单位列表
+
+/** 子表的表单 */
+const subTabsName = ref('item')
+const itemFormRef = ref()
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -125,33 +98,42 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await ComboApi.getCombo(id)
+      const data = await SalePriceApi.getSalePrice(id);
+      formData.value = data;
+      // 确保 items 是一个数组
+      if (!Array.isArray(formData.value.items)) {
+        formData.value.items = [];
+      }
     } finally {
       formLoading.value = false
     }
   }
-  // 产品分类
-  const categoryData = await ProductCategoryApi.getProductCategorySimpleList()
-  categoryList.value = handleTree(categoryData, 'id', 'parentId')
-  // 产品单位
-  unitList.value = await ProductUnitApi.getProductUnitSimpleList()
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+
+/** 处理子组件传回的组品编号、代发单价和批发单价 */
+const handleProductSelected = (data: { groupId: number; distributionPrice: number; wholesalePrice: number }) => {
+  formData.value.groupProductId = data.groupId; // 更新组品编号
+  formData.value.distributionPrice = data.distributionPrice; // 更新代发单价
+  formData.value.wholesalePrice = data.wholesalePrice; // 更新批发单价
+  console.log('Received product data:', data); // 添加日志以验证事件是否被监听到
+};
 
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
+  await itemFormRef.value.validate()
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value as unknown as ComboVO
+    const data = formData.value as unknown as SalePriceVO
     if (formType.value === 'create') {
-      await ComboApi.createCombo(data)
+      await SalePriceApi.createSalePrice(data)
       message.success(t('common.createSuccess'))
     } else {
-      await ComboApi.updateCombo(data)
+      await SalePriceApi.updateSalePrice(data)
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
@@ -166,13 +148,11 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    name: undefined,
-    shortName: undefined,
-    shippingCode: undefined,
-    categoryId: undefined,
-    unitId: undefined,
-    status: CommonStatusEnum.ENABLE,
-    remark: undefined
+    groupProductId: undefined, // 组品编号
+    customerName: undefined, // 客户名称
+    distributionPrice: undefined, // 代发单价
+    wholesalePrice: undefined, // 批发单价
+    items: [] // 子表项
   }
   formRef.value?.resetFields()
 }

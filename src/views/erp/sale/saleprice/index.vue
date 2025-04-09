@@ -9,7 +9,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="名称" prop="name">
+      <el-form-item label="组品简称" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入名称"
@@ -70,6 +70,9 @@
 
       <!-- 组品编号 -->
       <el-table-column label="组品编号" align="center" prop="groupProductId" />
+
+      <!-- 组品简称 -->
+      <el-table-column label="组品简称" align="center" prop="productShortName" />
 
       <!-- 代发单价 -->
       <el-table-column label="代发单价" align="center" prop="distributionPrice" />

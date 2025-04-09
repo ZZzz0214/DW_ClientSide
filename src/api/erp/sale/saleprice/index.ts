@@ -57,6 +57,15 @@ export interface SalePriceVO {
 //   updateTime: string; // 更新时间
 // }
 
+
+  export interface SalePriceFormData {
+    id?: number;
+    groupProductId?: number; // 组品编号
+    customerName?: string; // 客户名称
+    distributionPrice: number; // 代发单价
+    wholesalePrice: number; // 批发单价
+    items: any[]; // 子表项
+  }
 // 销售价格表 API
 export const SalePriceApi = {
   // // 查询销售价格表分页
