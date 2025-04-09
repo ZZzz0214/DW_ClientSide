@@ -321,6 +321,7 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
+
     list.value = data.list
     total.value = data.total
   } finally {

@@ -132,7 +132,7 @@ const formRules = reactive({
   name: [{ required: true, message: '组品名称不能为空', trigger: 'blur' }],
   comboId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
   totalQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
-  count: [{ required: true, message: '数量不能为空', trigger: 'blur' }],
+  count: [{ required: true, message: '组_单数量关系不能为空', trigger: 'blur' }],
 });
 
 const selectProductRef = ref(); // 初始化 selectProductRef

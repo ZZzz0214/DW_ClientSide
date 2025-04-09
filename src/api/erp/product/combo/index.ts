@@ -37,8 +37,7 @@ export interface ComboVO {
 // 组合产品中的单品VO
 export interface ComboItem {
   productId: number; // 单品编号（新增：必填）
-  quantity: number; // 单品数量（新增：必填）
-  itemQuantity?: number; // 单品数量（可选，如果后端需要）
+  count: number; // 组_单数量关系（新增：必填）
 }
 
 // 组合产品 API
@@ -76,5 +75,10 @@ export const ComboApi = {
   // 导出组合产品 Excel
   exportCombo: async (params: any) => {
     return await request.download({ url: `/erp/combo/export-excel`, params });
+  },
+
+  // 搜索结果
+  searchCombos: async (params: any) => {
+    return await request.get({ url: `/erp/combo/search`, params });
   }
 };

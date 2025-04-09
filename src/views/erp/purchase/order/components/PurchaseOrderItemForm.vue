@@ -10,47 +10,69 @@
   >
     <el-table :data="formData" show-summary :summary-method="getSummaries" class="-mt-10px">
       <el-table-column label="序号" type="index" align="center" width="60" />
-      <el-table-column label="产品名称" min-width="180">
+
+      <el-table-column label="产品名称"  min-width="120">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.originalProductName" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <!-- 使用 formatProductType 方法格式化 -->
+      <el-table-column label="产品类型"  min-width="110">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              disabled
+              :value="formatProductType(row.type)"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="产品单价"  min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.productPrice" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="原表数量"  min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.originalQuantity" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="采购运费"  min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.shippingFee" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="原表规格"  min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.originalStandard" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="发货编码"  min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.shippingCode" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="备注" min-width="150">
         <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.productId`" :rules="formRules.productId" class="mb-0px!">
-            <el-select
-              v-model="row.productId"
-              clearable
-              filterable
-              @change="onChangeProduct($event, row)"
-              placeholder="请选择产品"
-            >
-              <el-option
-                v-for="item in productList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
+          <el-form-item :prop="`${$index}.remark`" class="mb-0px!">
+            <el-input v-model="row.remark" placeholder="请输入备注" />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="库存" min-width="100">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.stockCount" :formatter="erpCountInputFormatter" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="条码" min-width="150">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.productBarCode" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="单位" min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.productUnitName" />
-          </el-form-item>
-        </template>
-      </el-table-column>
+
       <el-table-column label="数量" prop="count" fixed="right" min-width="140">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.count`" :rules="formRules.count" class="mb-0px!">
@@ -64,24 +86,22 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="产品单价" fixed="right" min-width="120">
+
+      <el-table-column label="其他费用" prop="otherFees" fixed="right" min-width="140">
         <template #default="{ row, $index }">
-          <el-form-item
-            :prop="`${$index}.productPrice`"
-            :rules="formRules.productPrice"
-            class="mb-0px!"
-          >
+          <el-form-item :prop="`${$index}.otherFees`" class="mb-0px!">
             <el-input-number
-              v-model="row.productPrice"
+              v-model="row.otherFees"
               controls-position="right"
-              :min="0.01"
-              :precision="2"
+              :min="0.001"
+              :precision="3"
               class="!w-100%"
             />
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="金额" prop="totalProductPrice" fixed="right" min-width="100">
+
+      <el-table-column label="金额" fixed="right" prop="totalProductPrice"  min-width="100">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.totalProductPrice`" class="mb-0px!">
             <el-input
@@ -92,42 +112,7 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="税率（%）" fixed="right" min-width="115">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.taxPercent`" class="mb-0px!">
-            <el-input-number
-              v-model="row.taxPercent"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-              class="!w-100%"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="税额" prop="taxPrice" fixed="right" min-width="120">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.taxPrice`" class="mb-0px!">
-            <el-form-item :prop="`${$index}.taxPrice`" class="mb-0px!">
-              <el-input disabled v-model="row.taxPrice" :formatter="erpPriceInputFormatter" />
-            </el-form-item>
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="税额合计" prop="totalPrice" fixed="right" min-width="100">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.totalPrice`" class="mb-0px!">
-            <el-input disabled v-model="row.totalPrice" :formatter="erpPriceInputFormatter" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="备注" min-width="150">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.remark`" class="mb-0px!">
-            <el-input v-model="row.remark" placeholder="请输入备注" />
-          </el-form-item>
-        </template>
-      </el-table-column>
+
       <el-table-column align="center" fixed="right" label="操作" width="60">
         <template #default="{ $index }">
           <el-button @click="handleDelete($index)" link>—</el-button>
@@ -138,10 +123,16 @@
   <el-row justify="center" class="mt-3" v-if="!disabled">
     <el-button @click="handleAdd" round>+ 添加采购产品</el-button>
   </el-row>
+
+  <!-- 引入子组件 -->
+  <SelectProduct ref="selectProductRef" @selected="handleProductSelected" />
 </template>
 <script setup lang="ts">
-import { ProductApi, ProductVO } from '@/api/erp/product/product'
-import { StockApi } from '@/api/erp/stock/stock'
+import { ref, onMounted, watch } from 'vue';
+import SelectProduct from './SelectProduct.vue';
+import { ProductApi, ProductVO } from '@/api/erp/product/product';
+import { ComboApi, ComboVO } from '@/api/erp/product/combo';
+import { StockApi } from '@/api/erp/stock/stock';
 import {
   erpCountInputFormatter,
   erpPriceInputFormatter,
@@ -156,12 +147,12 @@ const props = defineProps<{
 const formLoading = ref(false) // 表单的加载中
 const formData = ref([])
 const formRules = reactive({
-  productId: [{ required: true, message: '产品不能为空', trigger: 'blur' }],
-  productPrice: [{ required: true, message: '产品单价不能为空', trigger: 'blur' }],
   count: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }]
 })
 const formRef = ref([]) // 表单 Ref
 const productList = ref<ProductVO[]>([]) // 产品列表
+const comboProductList = ref<ComboVO[]>([]); // 组合产品列表
+const selectProductRef = ref(); // 定义 ref 引用
 
 /** 初始化设置入库项 */
 watch(
@@ -181,10 +172,9 @@ watch(
     }
     // 循环处理
     val.forEach((item) => {
-      item.totalProductPrice = erpPriceMultiply(item.productPrice, item.count)
-      item.taxPrice = erpPriceMultiply(item.totalProductPrice, item.taxPercent / 100.0)
+      item.totalProductPrice = erpPriceMultiply(item.productPrice, item.count) + erpPriceMultiply(item.otherFees, 1)
       if (item.totalProductPrice != null) {
-        item.totalPrice = item.totalProductPrice + (item.taxPrice || 0)
+        item.totalPrice = item.totalProductPrice
       } else {
         item.totalPrice = undefined
       }
@@ -194,61 +184,66 @@ watch(
 )
 
 /** 合计 */
-const getSummaries = (param: SummaryMethodProps) => {
-  const { columns, data } = param
-  const sums: string[] = []
+const getSummaries = (param: any) => {
+  const { columns, data } = param;
+  const sums: string[] = [];
   columns.forEach((column, index: number) => {
     if (index === 0) {
-      sums[index] = '合计'
-      return
+      sums[index] = '合计';
+      return;
     }
-    if (['count', 'totalProductPrice', 'taxPrice', 'totalPrice'].includes(column.property)) {
-      const sum = getSumValue(data.map((item) => Number(item[column.property])))
+    if (['count', 'totalProductPrice', 'otherFees', 'totalPrice'].includes(column.property)) {
+      const sum = getSumValue(data.map((item) => Number(item[column.property])));
       sums[index] =
-        column.property === 'count' ? erpCountInputFormatter(sum) : erpPriceInputFormatter(sum)
+        column.property === 'count' ? erpCountInputFormatter(sum) : erpPriceInputFormatter(sum);
     } else {
-      sums[index] = ''
+      sums[index] = '';
     }
-  })
-
+  });
   return sums
 }
 
-/** 新增按钮操作 */
 const handleAdd = () => {
-  const row = {
-    id: undefined,
-    productId: undefined,
-    productUnitName: undefined, // 产品单位
-    productBarCode: undefined, // 产品条码
-    productPrice: undefined,
-    stockCount: undefined,
-    count: 1,
-    totalProductPrice: undefined,
-    taxPercent: undefined,
-    taxPrice: undefined,
-    totalPrice: undefined,
-    remark: undefined
-  }
-  formData.value.push(row)
-}
+  selectProductRef.value.open(); // 调用子组件的 open 方法
+};
 
-/** 删除按钮操作 */
 const handleDelete = (index: number) => {
-  formData.value.splice(index, 1)
-}
+  formData.value.splice(index, 1);
+};
+
+const handleProductSelected = (selectedProducts: any[]) => {
+  selectedProducts.forEach(product => {
+    formData.value.push({
+      productId: product.type === 0 ? product.id : undefined, // 如果是单品，设置productId
+      comboProductId: product.type === 1 ? product.id : undefined, // 如果是组合产品，设置comboProductId
+      originalProductName: product.name, // 产品名称
+      productPrice: product.purchasePrice, //采购单价
+      originalQuantity: product.type === 0 ? product.availableStockQuantity : product.totalQuantity, //原表数量
+      shippingFee:  product.fixedShippingFee, //采购运费:只有固定运费
+      originalStandard: product.type === 0 ? product.productDimensions : undefined, //原表规格,只有单品有
+      shippingCode: product.shippingCode, //发货编码
+      remark: product.remark, //备注
+      count: 1, //数量
+      otherFees: 1, //其他费用
+      totalProductPrice: product.purchasePrice, //合计产品价格
+      totalPrice: product.purchasePrice, //总价
+      type: product.type, // 添加产品类型
+    });
+  });
+};
 
 /** 处理产品变更 */
 const onChangeProduct = (productId, row) => {
-  const product = productList.value.find((item) => item.id === productId)
+  const product = productList.value.find((item) => item.id === productId);
   if (product) {
-    row.productUnitName = product.unitName
-    row.productBarCode = product.barCode
-    row.productPrice = product.purchasePrice
+    // row.productUnitName = product.unitName;
+    row.productBarCode = product.barCode;
+    row.productPrice = product.purchasePrice;
+    row.type = product.type; // 设置产品类型
   }
   // 加载库存
-  setStockCount(row)
-}
+  setStockCount(row);
+};
 
 /** 加载库存 */
 const setStockCount = async (row: any) => {
@@ -259,6 +254,10 @@ const setStockCount = async (row: any) => {
   row.stockCount = count || 0
 }
 
+const formatProductType = (type: number) => {
+  return type === 0 ? '单品' : '组合产品';
+};
+
 /** 表单校验 */
 const validate = () => {
   return formRef.value.validate()
@@ -267,10 +266,7 @@ defineExpose({ validate })
 
 /** 初始化 */
 onMounted(async () => {
-  productList.value = await ProductApi.getProductSimpleList()
-  // 默认添加一个
-  if (formData.value.length === 0) {
-    handleAdd()
-  }
-})
+  productList.value = await ProductApi.getProductSimpleList();
+  comboProductList.value = await ComboApi.getComboSimpleList();
+});
 </script>
