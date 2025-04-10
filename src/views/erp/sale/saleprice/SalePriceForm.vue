@@ -31,7 +31,7 @@
               ref="itemFormRef"
               :items="formData.items"
               :disabled="disabled"
-              @product-selected="handleProductSelected"
+              @items-updated="handleItemsUpdated"
             />
           </el-tab-pane>
         </el-tabs>
@@ -111,26 +111,27 @@ const open = async (type: string, id?: number) => {
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
-// /** 处理子组件传回的组品编号、代发单价和批发单价 */
-// const handleProductSelected = (data: { groupId: number; distributionPrice: number; wholesalePrice: number }) => {
-//   formData.value.groupProductId = data.groupId; // 更新组品编号
-//   formData.value.distributionPrice = data.distributionPrice; // 更新代发单价
-//   formData.value.wholesalePrice = data.wholesalePrice; // 更新批发单价
-// };
+/** 处理子组件传回的 items 数据 */
+
 
 /** 处理子组件传回的 items 数据 */
-const handleProductSelected = (items: any[]) => {
-  console.log(items)
+const handleItemsUpdated = (items: any[]) => {
   formData.value.items = items; // 更新 items 数据
 
-  // 提取 distributionPrice 字段的值
   if (items.length > 0) {
-    formData.value.groupProductId = items[0].groupProductId; // 更新 distributionPrice
-    formData.value.distributionPrice = items[0].distributionPrice; // 更新 distributionPrice
-    formData.value.wholesalePrice = items[0].wholesalePrice; // 更新 distributionPrice
+    formData.value.groupProductId = items[0].groupProductId; // 更新组品编号
+
+    // 检查 items[0].wholesalePrice 是否正确
+    console.log('items[0].wholesalePrice:', items[0].wholesalePrice);
+
+    // 赋值
+    formData.value.distributionPrice = items[0].distributionPrice;
+    formData.value.wholesalePrice = items[0].wholesalePrice;
+
+    // 检查 formData 是否正确
+    console.log('Updated formData:', formData.value);
   }
 };
-
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
 const submitForm = async () => {
@@ -141,6 +142,7 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as SalePriceVO
+     // console.log(data)
     if (formType.value === 'create') {
       await SalePriceApi.createSalePrice(data)
       message.success(t('common.createSuccess'))

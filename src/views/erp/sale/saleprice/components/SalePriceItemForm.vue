@@ -97,11 +97,18 @@ const props = defineProps<{
   items: any[]
   disabled: boolean
 }>();
+
 const formLoading = ref(false); // 表单的加载中
 const formData = ref([]);
 const formRules = reactive({
-  distributionPrice: [{ required: true, message: '代发单价不能为空', trigger: 'blur' }],
-  wholesalePrice: [{ required: true, message: '批发单价不能为空', trigger: 'blur' }]
+  distributionPrice: [
+    { required: true, message: '代发单价不能为空', trigger: 'blur' },
+    { validator: (rule, value) => value >= 0, message: '代发单价必须大于等于 0', trigger: 'blur' }
+  ],
+  wholesalePrice: [
+    { required: true, message: '批发单价不能为空', trigger: 'blur' },
+    { validator: (rule, value) => value >= 0, message: '批发单价必须大于等于 0', trigger: 'blur' }
+  ]
 });
 const formRef = ref();
 const selectProductRef = ref();
@@ -138,22 +145,14 @@ const handleProductSelected = (selectedProducts: any[]) => {
       groupProductId:product.id,
       productName: product.name, // 组品名称
       shortName: product.shortName, // 组品简称
-      distributionPrice: product.distributionPrice, // 代发单价
-      wholesalePrice: product.wholesalePrice, // 批发单价
+      distributionPrice: 0, // 代发单价
+      wholesalePrice: 0, // 批发单价
       remark: product.remark, // 备注信息
       shippingFeeType: 0, // 运费类型，默认为固定运费
       fixedShippingFee: product.fixedShippingFee, // 固定运费
     });
   });
-  // // 将组品编号、代发单价和批发单价传递给父组件
-  // const selectedProduct = selectedProducts[0];
-  // emit('product-selected', {
-  //   groupId: selectedProduct.id, // 组品编号
-  //   distributionPrice: selectedProduct.distributionPrice, // 代发单价
-  //   wholesalePrice: selectedProduct.wholesalePrice, // 批发单价
-  // });
-  // 将 items 数据传递给父组件
-  emit('product-selected', formData.value);
+  emit('items-updated', formData.value);
 };
 
 /** 表单校验 */
