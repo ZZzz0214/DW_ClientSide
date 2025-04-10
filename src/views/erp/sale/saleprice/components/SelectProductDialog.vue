@@ -35,7 +35,6 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="组品编号" prop="id" />
       <el-table-column label="组品名称" prop="name" />
-      <el-table-column label="采购单价" prop="purchasePrice" />
       <el-table-column label="原表数量" prop="availableStockQuantity" />
       <el-table-column label="产品重量" prop="weight" />
     </el-table>
@@ -67,7 +66,6 @@ const selectedProducts = ref<any[]>([]);
 const handleSearch = async () => {
   try {
     productList.value = await ProductComboApi.ComboApi.searchCombos(searchForm);
-    console.log(productList.value);
   } catch (error) {
     ElMessage.error('查询失败');
   }

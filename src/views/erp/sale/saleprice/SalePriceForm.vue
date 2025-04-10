@@ -111,12 +111,24 @@ const open = async (type: string, id?: number) => {
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
-/** 处理子组件传回的组品编号、代发单价和批发单价 */
-const handleProductSelected = (data: { groupId: number; distributionPrice: number; wholesalePrice: number }) => {
-  formData.value.groupProductId = data.groupId; // 更新组品编号
-  formData.value.distributionPrice = data.distributionPrice; // 更新代发单价
-  formData.value.wholesalePrice = data.wholesalePrice; // 更新批发单价
-  console.log('Received product data:', data); // 添加日志以验证事件是否被监听到
+// /** 处理子组件传回的组品编号、代发单价和批发单价 */
+// const handleProductSelected = (data: { groupId: number; distributionPrice: number; wholesalePrice: number }) => {
+//   formData.value.groupProductId = data.groupId; // 更新组品编号
+//   formData.value.distributionPrice = data.distributionPrice; // 更新代发单价
+//   formData.value.wholesalePrice = data.wholesalePrice; // 更新批发单价
+// };
+
+/** 处理子组件传回的 items 数据 */
+const handleProductSelected = (items: any[]) => {
+  console.log(items)
+  formData.value.items = items; // 更新 items 数据
+
+  // 提取 distributionPrice 字段的值
+  if (items.length > 0) {
+    formData.value.groupProductId = items[0].groupProductId; // 更新 distributionPrice
+    formData.value.distributionPrice = items[0].distributionPrice; // 更新 distributionPrice
+    formData.value.wholesalePrice = items[0].wholesalePrice; // 更新 distributionPrice
+  }
 };
 
 /** 提交表单 */
@@ -150,8 +162,8 @@ const resetForm = () => {
     id: undefined,
     groupProductId: undefined, // 组品编号
     customerName: undefined, // 客户名称
-    distributionPrice: undefined, // 代发单价
-    wholesalePrice: undefined, // 批发单价
+    distributionPrice: 0, // 代发单价，初始化为 0
+    wholesalePrice: 0, // 批发单价，初始化为 0
     items: [] // 子表项
   }
   formRef.value?.resetFields()

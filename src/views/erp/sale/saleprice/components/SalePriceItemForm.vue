@@ -135,22 +135,25 @@ const handleProductSelected = (selectedProducts: any[]) => {
   }
   selectedProducts.forEach(product => {
     formData.value.push({
+      groupProductId:product.id,
       productName: product.name, // 组品名称
       shortName: product.shortName, // 组品简称
-      distributionPrice: product.purchasePrice, // 代发单价
+      distributionPrice: product.distributionPrice, // 代发单价
       wholesalePrice: product.wholesalePrice, // 批发单价
       remark: product.remark, // 备注信息
       shippingFeeType: 0, // 运费类型，默认为固定运费
       fixedShippingFee: product.fixedShippingFee, // 固定运费
     });
   });
-  // 将组品编号、代发单价和批发单价传递给父组件
-  const selectedProduct = selectedProducts[0];
-  emit('product-selected', {
-    groupId: selectedProduct.id, // 组品编号
-    distributionPrice: selectedProduct.purchasePrice, // 代发单价
-    wholesalePrice: selectedProduct.wholesalePrice, // 批发单价
-  });
+  // // 将组品编号、代发单价和批发单价传递给父组件
+  // const selectedProduct = selectedProducts[0];
+  // emit('product-selected', {
+  //   groupId: selectedProduct.id, // 组品编号
+  //   distributionPrice: selectedProduct.distributionPrice, // 代发单价
+  //   wholesalePrice: selectedProduct.wholesalePrice, // 批发单价
+  // });
+  // 将 items 数据传递给父组件
+  emit('product-selected', formData.value);
 };
 
 /** 表单校验 */
