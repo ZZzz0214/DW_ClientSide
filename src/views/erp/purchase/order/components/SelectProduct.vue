@@ -96,8 +96,6 @@ const handleSearch = async () => {
     productList.value.forEach(item => {
       item.type = searchForm.productType === '0' ? 0 : 1; // 根据 productType 设置 type
     });
-
-    console.log(productList.value)
   } catch (error) {
     ElMessage.error('查询失败');
   }

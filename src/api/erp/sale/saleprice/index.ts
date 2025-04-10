@@ -110,5 +110,10 @@ export const SalePriceApi = {
   // 导出销售价格表 Excel
   exportSalePrice: async (params: any) => {
     return await request.download({ url: `/erp/sale-price/export-excel`, params });
+  },
+
+  // 搜索结果
+  searchSalePrice: async (params: any) => {
+    return await request.get({ url: `/erp/sale-price/search`, params });
   }
 };

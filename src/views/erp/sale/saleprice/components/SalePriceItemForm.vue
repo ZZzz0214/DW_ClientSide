@@ -161,7 +161,6 @@ const updateItems = () => {
   emit('items-updated', formData.value);
 };
 
-
 /** 表单校验 */
 const validate = () => {
   return formRef.value.validate();

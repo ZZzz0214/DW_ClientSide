@@ -33,7 +33,7 @@
       <el-table-column label="产品单价"  min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.productPrice" />
+            <el-input disabled v-model="row.purchasePrice" />
           </el-form-item>
         </template>
       </el-table-column>
@@ -172,7 +172,7 @@ watch(
     }
     // 循环处理
     val.forEach((item) => {
-      item.totalProductPrice = erpPriceMultiply(item.productPrice, item.count) + erpPriceMultiply(item.otherFees, 1)
+      item.totalProductPrice = erpPriceMultiply(item.purchasePrice, item.count) + erpPriceMultiply(item.otherFees, 1)
       if (item.totalProductPrice != null) {
         item.totalPrice = item.totalProductPrice
       } else {
@@ -217,7 +217,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       productId: product.type === 0 ? product.id : undefined, // 如果是单品，设置productId
       comboProductId: product.type === 1 ? product.id : undefined, // 如果是组合产品，设置comboProductId
       originalProductName: product.name, // 产品名称
-      productPrice: product.purchasePrice, //采购单价
+      purchasePrice: product.purchasePrice, //采购单价
       originalQuantity: product.type === 0 ? product.availableStockQuantity : product.totalQuantity, //原表数量
       shippingFee:  product.fixedShippingFee, //采购运费:只有固定运费
       originalStandard: product.type === 0 ? product.productDimensions : undefined, //原表规格,只有单品有
@@ -239,7 +239,7 @@ const onChangeProduct = (productId, row) => {
   if (product) {
     // row.productUnitName = product.unitName;
     row.productBarCode = product.barCode;
-    row.productPrice = product.purchasePrice;
+    row.purchasePrice = product.purchasePrice;
     row.type = product.type; // 设置产品类型
   }
   // 加载库存

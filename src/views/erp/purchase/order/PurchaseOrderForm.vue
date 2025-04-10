@@ -90,7 +90,7 @@
 <!--          </el-form-item>-->
 <!--        </el-col>-->
         <el-col :span="8">
-          <el-form-item label="优惠后金额">
+          <el-form-item label="总金额">
             <el-input disabled v-model="formData.totalPrice" :formatter="erpPriceInputFormatter" />
           </el-form-item>
         </el-col>
@@ -159,8 +159,8 @@ const formData = ref({
   orderTime: undefined,  //订单时间
   remark: undefined,  //备注
   fileUrl: '',  //附件
-  // discountPercent: 0,
-  // discountPrice: 0,
+  // discountPercent: 0,  //优惠率
+  // discountPrice: 0,  //付款优惠
   totalPrice: 0, //总金额
   depositPrice: 0,  //支付订金
   items: [],  //列表
@@ -234,7 +234,6 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as PurchaseOrderVO
-    console.log(data)
     if (formType.value === 'create') {
       await PurchaseOrderApi.createPurchaseOrder(data)
       message.success(t('common.createSuccess'))

@@ -87,28 +87,7 @@
       </ContentWrap>
       <el-row :gutter="20">
         <el-col :span="8">
-          <el-form-item label="优惠率（%）" prop="discountPercent">
-            <el-input-number
-              v-model="formData.discountPercent"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-              placeholder="请输入优惠率"
-              class="!w-1/1"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="收款优惠" prop="discountPrice">
-            <el-input
-              disabled
-              v-model="formData.discountPrice"
-              :formatter="erpPriceInputFormatter"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="优惠后金额">
+          <el-form-item label="总金额">
             <el-input disabled v-model="formData.totalPrice" :formatter="erpPriceInputFormatter" />
           </el-form-item>
         </el-col>
@@ -172,17 +151,17 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改；detail - 详情
 const formData = ref({
   id: undefined,
-  customerId: undefined,
-  accountId: undefined,
-  saleUserId: undefined,
-  orderTime: undefined,
-  remark: undefined,
-  fileUrl: '',
-  discountPercent: 0,
-  discountPrice: 0,
-  totalPrice: 0,
-  depositPrice: 0,
-  items: [],
+  customerId: undefined,  //客户
+  accountId: undefined,  //结算账户
+  saleUserId: undefined,  //销售人员
+  orderTime: undefined,  //订单时间
+  remark: undefined,  //备注
+  fileUrl: '',  //附件
+  // discountPercent: 0,  //优惠率
+  // discountPrice: 0,  //付款优惠
+  totalPrice: 0,  //总金额
+  depositPrice: 0,  //收取订金
+  items: [],  //列表
   no: undefined // 订单单号，后端返回
 })
 const formRules = reactive({
@@ -207,10 +186,10 @@ watch(
       return
     }
     const totalPrice = val.items.reduce((prev, curr) => prev + curr.totalPrice, 0)
-    const discountPrice =
-      val.discountPercent != null ? erpPriceMultiply(totalPrice, val.discountPercent / 100.0) : 0
-    formData.value.discountPrice = discountPrice
-    formData.value.totalPrice = totalPrice - discountPrice
+    // const discountPrice =
+    //   val.discountPercent != null ? erpPriceMultiply(totalPrice, val.discountPercent / 100.0) : 0
+    // formData.value.discountPrice = discountPrice
+    formData.value.totalPrice = totalPrice   //  - discountPrice
   },
   { deep: true }
 )
@@ -272,17 +251,17 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    customerId: undefined,
-    accountId: undefined,
-    saleUserId: undefined,
-    orderTime: undefined,
-    remark: undefined,
-    fileUrl: undefined,
-    discountPercent: 0,
-    discountPrice: 0,
-    totalPrice: 0,
-    depositPrice: 0,
-    items: []
+    customerId: undefined,  //供应商
+    accountId: undefined,  //结算账户
+    saleUserId: undefined,  //销售人员
+    orderTime: undefined,  //订单时间
+    remark: undefined,  //备注
+    fileUrl: undefined,  //附件
+    // discountPercent: 0,
+    // discountPrice: 0,
+    totalPrice: 0,  //总金额
+    depositPrice: 0,  //支付定金
+    items: []  //列表
   }
   formRef.value?.resetFields()
 }
