@@ -8,8 +8,13 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="组品名称">
+            <el-input v-model="searchForm.productName" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-form-item label="组品简称">
-            <el-input v-model="searchForm.name" />
+            <el-input v-model="searchForm.productShortName" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -30,7 +35,8 @@
     <el-table :data="salePriceList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" />
       <el-table-column label="组品编号" prop="groupProductId" />
-      <el-table-column label="组品简称" prop="name" />
+      <el-table-column label="组品名称" prop="productName" />
+      <el-table-column label="组品简称" prop="productShortName" />
       <el-table-column label="出货单价" prop="distributionPrice" />
       <el-table-column label="备注信息" prop="remark" />
       <el-table-column label="运费信息" prop="fixedShippingFee" />
@@ -53,7 +59,8 @@ const dialogTitle = ref('选择销售价格');
 
 const searchForm = reactive({
   groupProductId: '',
-  name: '',
+  productName: '',
+  productShortName: '',
   createTime: '',
 });
 
