@@ -120,16 +120,11 @@ const handleItemsUpdated = (items: any[]) => {
 
   if (items.length > 0) {
     formData.value.groupProductId = items[0].groupProductId; // 更新组品编号
-
-    // 检查 items[0].wholesalePrice 是否正确
-    console.log('items[0].wholesalePrice:', items[0].wholesalePrice);
-
     // 赋值
     formData.value.distributionPrice = items[0].distributionPrice;
     formData.value.wholesalePrice = items[0].wholesalePrice;
 
-    // 检查 formData 是否正确
-    console.log('Updated formData:', formData.value);
+
   }
 };
 /** 提交表单 */
@@ -142,7 +137,6 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as SalePriceVO
-     // console.log(data)
     if (formType.value === 'create') {
       await SalePriceApi.createSalePrice(data)
       message.success(t('common.createSuccess'))

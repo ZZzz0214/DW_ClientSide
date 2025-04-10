@@ -33,6 +33,7 @@
               :min="0"
               :precision="2"
               placeholder="请输入代发单价"
+              @change="updateItems"
             />
           </el-form-item>
         </template>
@@ -47,6 +48,7 @@
               :min="0"
               :precision="2"
               placeholder="请输入批发单价"
+              @change="updateItems"
             />
           </el-form-item>
         </template>
@@ -155,10 +157,15 @@ const handleProductSelected = (selectedProducts: any[]) => {
   emit('items-updated', formData.value);
 };
 
+const updateItems = () => {
+  emit('items-updated', formData.value);
+};
+
+
 /** 表单校验 */
 const validate = () => {
   return formRef.value.validate();
 };
 defineExpose({ validate });
-const emit = defineEmits(['product-selected']);
+const emit = defineEmits(['items-updated']);
 </script>

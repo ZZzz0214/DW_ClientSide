@@ -230,6 +230,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       type: product.type, // 添加产品类型
     });
   });
+
 };
 
 /** 处理产品变更 */
