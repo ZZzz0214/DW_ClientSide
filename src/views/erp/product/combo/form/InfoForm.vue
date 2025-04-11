@@ -21,18 +21,52 @@
         />
       </el-form-item>
 
+      <el-form-item label="组品简称" prop="shortName">
+        <el-input v-model="formData.shortName" placeholder="请输入组品简称" />
+      </el-form-item>
+
+      <el-form-item label="发货编码" prop="shippingCode">
+        <el-input v-model="formData.shippingCode" placeholder="请输入发货编码" />
+      </el-form-item>
+
       <el-form-item label="产品重量" prop="weight">
         <el-input v-model="formData.weight" placeholder="产品重量" :disabled="isDetail" />
       </el-form-item>
 
+      <!-- 采购人员 -->
+      <el-form-item label="采购人员" prop="purchaser">
+        <el-input
+          v-model="formData.purchaser"
+          placeholder="请输入采购人员信息"
+          class="w-80"
+        />
+      </el-form-item>
+
+      <!-- 供应商名 -->
+      <el-form-item label="供应商名" prop="supplier">
+        <el-input
+          v-model="formData.supplier"
+          placeholder="请输入供应商名"
+          class="w-80"
+        />
+      </el-form-item>
+
+      <el-form-item label="采购单价" prop="purchasePrice">
+        <el-input v-model="formData.purchasePrice" placeholder="采购单价" :disabled="isDetail" />
+      </el-form-item>
+
+      <el-form-item label="批发单价" prop="wholesalePrice">
+        <el-input v-model="formData.wholesalePrice" placeholder="批发单价" :disabled="isDetail" />
+      </el-form-item>
+
       <el-form-item label="产品数量" prop="totalQuantity">
-        <el-input v-model="formData.totalQuantity" placeholder="产品数量" :disabled="isDetail" />
+        <el-input v-model="formData.totalQuantity" placeholder="产品数量" />
       </el-form-item>
 
       <el-form-item label="产品状态" prop="status">
         <el-radio-group v-model="formData.status">
-          <el-radio :label="0">禁用</el-radio>
-          <el-radio :label="1">启用</el-radio>
+          <el-radio :label="0">启用</el-radio>
+          <el-radio :label="1">禁用</el-radio>
         </el-radio-group>
       </el-form-item>
 
@@ -53,6 +87,11 @@
             <el-table-column label="采购单价" min-width="120">
               <template #default="{ row }">
                 <span>{{ row.purchasePrice }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="批发单价" min-width="120">
+              <template #default="{ row }">
+                <span>{{ row.wholesalePrice }}</span>
               </template>
             </el-table-column>
             <el-table-column label="产品重量" min-width="120">
@@ -122,14 +161,21 @@ const subTabsName = ref('item');
 const formData = ref<ProductComboApi.ComboVO>({
   name: '', // 组品名称
   image: '', // 产品图片
+  shortName:'', //组品简称
+  shippingCode:'', //发货编码
   weight: 0, // 产品重量
-  totalQuantity: 0, // 产品数量
-  status: 1, // 产品状态，默认为启用
+  purchaser:'', //采购人员
+  supplier:'', //供应商名
+  purchasePrice:0, //采购单价
+  wholesalePrice:0, //批发单价
+  totalQuantity:'', // 产品数量
+  status: 0, // 产品状态，默认为启用
   items: [],
 });
 
 const formRules = reactive({
   name: [{ required: true, message: '组品名称不能为空', trigger: 'blur' }],
+  shortName: [{ required: true, message: '组品简称不能为空', trigger: 'blur' }],
   comboId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
   totalQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
   count: [{ required: true, message: '组_单数量关系不能为空', trigger: 'blur' }],
@@ -148,6 +194,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
     formData.value.items.push({
       name: product.name || '', // 确保 productName 有默认值
       purchasePrice: product.purchasePrice || 0, // 确保 productPrice 有默认值
+      wholesalePrice:product.wholesalePrice || 0, //确保 wholesalePrice 有默认值
       weight: product.weight || 0, // 确保 weight 有默认值
       id: product.id || '', // 确保 productId 有默认值
       count: 1, // 默认数量为1
@@ -172,6 +219,14 @@ const updateComboInfo = () => {
   // 更新产品重量
   const totalWeight = formData.value.items.reduce((sum, item) => sum + (item.weight || 0) * (item.count || 0), 0);
   formData.value.weight = totalWeight;
+  // 更新采购人员
+  // 更新供应商名
+  // 更新采购单价
+  const purchasePrices = formData.value.items.reduce((sum, item) => sum + (item.purchasePrice || 0) * (item.count || 0), 0);
+  formData.value.purchasePrice = purchasePrices;
+  // 更新批发单价
+  const wholesalePrices = formData.value.items.reduce((sum, item) => sum + (item.wholesalePrice || 0) * (item.count || 0), 0);
+  formData.value.wholesalePrice = wholesalePrices;
 };
 
 // 表格合计行

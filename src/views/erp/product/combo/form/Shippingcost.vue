@@ -155,7 +155,7 @@ const props = defineProps({
 })
 const formRef = ref() // 表单 Ref
 const formData = reactive<ProductVO>({
-  shippingFeeType: 0, // 运费类型
+  shippingFeeType: '', // 运费类型
   fixedShippingFee: null, // 固定运费
   firstItemQuantity: null, // 首件数量
   firstItemPrice: null, // 首件价格

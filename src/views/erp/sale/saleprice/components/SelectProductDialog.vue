@@ -35,6 +35,7 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="组品编号" prop="id" />
       <el-table-column label="组品名称" prop="name" />
+      <el-table-column label="组品简称" prop="shortName" />
       <el-table-column label="原表数量" prop="availableStockQuantity" />
       <el-table-column label="产品重量" prop="weight" />
     </el-table>

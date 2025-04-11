@@ -91,7 +91,7 @@
 <!--      </el-table-column>-->
 
       <!-- 运费信息 -->
-      <el-table-column label="运费信息" align="center" prop="fixedShippingFee" />
+      <el-table-column label="运费类型" align="center" prop="shippingFeeType" />
 
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
@@ -166,6 +166,7 @@ const getList = async () => {
     const data = await SalePriceApi.getSalePricePage(queryParams)
     list.value = data.list
     total.value = data.total
+    console.log(data)
   } finally {
     loading.value = false
   }

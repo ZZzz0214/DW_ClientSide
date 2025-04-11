@@ -123,8 +123,8 @@
         placeholder="请选择产品状态"
         class="w-80"
       >
-        <el-option label="启用" :value="1" />
-        <el-option label="禁用" :value="0" />
+        <el-option label="启用" :value="0" />
+        <el-option label="禁用" :value="1" />
       </el-select>
     </el-form-item>
 
@@ -172,7 +172,7 @@ const formData = reactive<ProductVO>({
   shippingCode: '', // 发货编码
   brand: '', // 品牌名称
   categoryId: null, // 产品品类
-  status: null, // 产品状态
+  status: 0, // 产品状态
   productSellingPoints: '', // 产品卖点
   standard: '', // 产品规格
   weight: 0, // 产品重量

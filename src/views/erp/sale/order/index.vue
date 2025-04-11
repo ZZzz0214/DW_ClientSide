@@ -1,5 +1,4 @@
 <template>
-  <doc-alert title="【销售】销售订单、出库、退货" url="https://doc.iocoder.cn/erp/sale/" />
 
   <ContentWrap>
     <!-- 搜索工作栏 -->
@@ -211,11 +210,11 @@
         prop="depositPrice"
         :formatter="erpPriceTableColumnFormatter"
       />
-      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="操作" align="center" fixed="right" width="220">
         <template #default="scope">
           <el-button
@@ -234,24 +233,24 @@
           >
             编辑
           </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="handleUpdateStatus(scope.row.id, 20)"
-            v-hasPermi="['erp:sale-order:update-status']"
-            v-if="scope.row.status === 10"
-          >
-            审批
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleUpdateStatus(scope.row.id, 10)"
-            v-hasPermi="['erp:sale-order:update-status']"
-            v-else
-          >
-            反审批
-          </el-button>
+<!--          <el-button-->
+<!--            link-->
+<!--            type="primary"-->
+<!--            @click="handleUpdateStatus(scope.row.id, 20)"-->
+<!--            v-hasPermi="['erp:sale-order:update-status']"-->
+<!--            v-if="scope.row.status === 10"-->
+<!--          >-->
+<!--            审批-->
+<!--          </el-button>-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleUpdateStatus(scope.row.id, 10)"-->
+<!--            v-hasPermi="['erp:sale-order:update-status']"-->
+<!--            v-else-->
+<!--          >-->
+<!--            反审批-->
+<!--          </el-button>-->
           <el-button
             link
             type="danger"

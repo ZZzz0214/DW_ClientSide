@@ -11,7 +11,7 @@
       <el-table-column label="组品名称" min-width="120">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input v-model="row.productName" placeholder="请输入组品名称" />
+            <el-input v-model="row.name" placeholder="请输入组品名称" />
           </el-form-item>
         </template>
       </el-table-column>
@@ -20,36 +20,6 @@
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input v-model="row.shortName" placeholder="请输入组品简称" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="代发单价" fixed="right" min-width="120">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input-number
-              v-model="row.distributionPrice"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-              placeholder="请输入代发单价"
-              @change="updateItems"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="批发单价" fixed="right" min-width="120">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input-number
-              v-model="row.wholesalePrice"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-              placeholder="请输入批发单价"
-              @change="updateItems"
-            />
           </el-form-item>
         </template>
       </el-table-column>
@@ -103,14 +73,7 @@ const props = defineProps<{
 const formLoading = ref(false); // 表单的加载中
 const formData = ref([]);
 const formRules = reactive({
-  distributionPrice: [
-    { required: true, message: '代发单价不能为空', trigger: 'blur' },
-    { validator: (rule, value) => value >= 0, message: '代发单价必须大于等于 0', trigger: 'blur' }
-  ],
-  wholesalePrice: [
-    { required: true, message: '批发单价不能为空', trigger: 'blur' },
-    { validator: (rule, value) => value >= 0, message: '批发单价必须大于等于 0', trigger: 'blur' }
-  ]
+    name: [{ required: true, message: '组品名称不能为空', trigger: 'blur' }],
 });
 const formRef = ref();
 const selectProductRef = ref();
@@ -145,12 +108,10 @@ const handleProductSelected = (selectedProducts: any[]) => {
   selectedProducts.forEach(product => {
     formData.value.push({
       groupProductId:product.id,
-      productName: product.name, // 组品名称
+      name: product.name, // 组品名称
       shortName: product.shortName, // 组品简称
-      distributionPrice: 0, // 代发单价
-      wholesalePrice: 0, // 批发单价
       remark: product.remark, // 备注信息
-      shippingFeeType: 0, // 运费类型，默认为固定运费
+      shippingFeeType: product.shippingFeeType, // 运费类型，默认为固定运费
       fixedShippingFee: product.fixedShippingFee, // 固定运费
     });
   });

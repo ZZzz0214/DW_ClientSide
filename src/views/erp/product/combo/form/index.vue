@@ -55,14 +55,17 @@ const shippingcostRef = ref() // 价格信息 Ref
 const formData = ref<ProductComboApi.ComboVO>({
   id: 0, // 组品编号（可选）
   name: '', // 组合产品名称（必填）
-  totalQuantity: 0, // 产品数量（必填）
+  image: '', // 产品图片
+  shortName:'', //组品简称
+  shippingCode:'', //发货编码
+  weight: 0, // 产品重量
+  purchaser:'', //采购人员
+  supplier:'', //供应商名
+  purchasePrice:0, //采购单价
+  wholesalePrice:0, //批发单价
+  totalQuantity: '', // 产品数量（必填）
   status: 0, // 产品状态（必填）
   items: [], // 关联的单品列表（必填）
-  // 可选字段可初始化为默认值或 undefined
-  shortName: '',
-  weight: 0,
-  shippingFeeType: 0,
-  // ...其他可选字段
 });
 
 /** 获得详情 */

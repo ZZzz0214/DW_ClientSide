@@ -1,6 +1,5 @@
 <!-- ERP 组品列表 -->
 <template>
-  <doc-alert title="【组品】组品信息、分类、单位" url="https://doc.iocoder.cn/erp/combo/" />
 
   <ContentWrap>
     <!-- 搜索工作栏 -->
@@ -66,15 +65,13 @@
     </el-form>
   </ContentWrap>
 
-<!--————————  上面的改完了————————-->
-
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- 产品名称 -->
       <el-table-column label="产品名称" align="center" prop="name" />
 
       <!-- 产品简称 -->
-      <el-table-column label="产品简称" align="center" prop="short_name" />
+      <el-table-column label="产品简称" align="center" prop="shortName" />
 
       <!-- 产品图片 -->
       <el-table-column label="产品图片" align="center" prop="image">
@@ -88,8 +85,18 @@
         </template>
       </el-table-column>
 
+      <!-- 采购单价 -->
+      <el-table-column label="采购单价" align="center" prop="purchasePrice" />
+
+      <!-- 批发单价 -->
+      <el-table-column label="批发单价" align="center" prop="wholesalePrice" />
+
       <!-- 发货编码 -->
-      <el-table-column label="发货编码" align="center" prop="shipping_code" />
+      <el-table-column label="发货编码" align="center" prop="shippingCode" />
+
+      <!-- 产品数量 -->
+      <el-table-column label="产品数量" align="center" prop="totalQuantity" />
+
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">
           <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>

@@ -29,13 +29,41 @@
           <el-tab-pane label="销售价格清单" name="item">
             <SalePriceItemForm
               ref="itemFormRef"
-              :items="formData.items"
+              :items="formData.comboList"
               :disabled="disabled"
               @items-updated="handleItemsUpdated"
             />
           </el-tab-pane>
         </el-tabs>
       </ContentWrap>
+
+      <!-- 代发单价 -->
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="代发单价" prop="distributionPrice">
+            <el-input-number
+              v-model="formData.distributionPrice"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+              placeholder="请输入代发单价"
+            />
+          </el-form-item>
+        </el-col>
+
+        <!-- 批发单价 -->
+        <el-col :span="12">
+          <el-form-item label="批发单价" prop="wholesalePrice">
+            <el-input-number
+              v-model="formData.wholesalePrice"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+              placeholder="请输入批发单价"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
 
     </el-form>
     <template #footer>
@@ -72,7 +100,8 @@ const formData = ref<SalePriceFormData>({
   customerName: undefined, // 客户名称
   distributionPrice: 0, // 代发单价，初始化为 0
   wholesalePrice: 0, // 批发单价，初始化为 0
-  items: [] // 子表项
+  shippingFeeType:undefined, //运费类型
+  comboList: [] // 子表项
 });
 
 const formRules = reactive({
@@ -100,10 +129,8 @@ const open = async (type: string, id?: number) => {
     try {
       const data = await SalePriceApi.getSalePrice(id);
       formData.value = data;
-      // 确保 items 是一个数组
-      if (!Array.isArray(formData.value.items)) {
-        formData.value.items = [];
-      }
+      formData.value.groupProductId = data.groupProductId;
+      console.log(data)
     } finally {
       formLoading.value = false
     }
@@ -111,20 +138,15 @@ const open = async (type: string, id?: number) => {
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
-/** 处理子组件传回的 items 数据 */
 
 
 /** 处理子组件传回的 items 数据 */
-const handleItemsUpdated = (items: any[]) => {
-  formData.value.items = items; // 更新 items 数据
+const handleItemsUpdated = (comboList: any[]) => {
+  formData.value.comboList = comboList; // 更新 items 数据
 
-  if (items.length > 0) {
-    formData.value.groupProductId = items[0].groupProductId; // 更新组品编号
-    // 赋值
-    formData.value.distributionPrice = items[0].distributionPrice;
-    formData.value.wholesalePrice = items[0].wholesalePrice;
-
-
+  if (comboList.length > 0) {
+    formData.value.groupProductId = comboList[0].groupProductId; // 更新组品编号
+    formData.value.shippingFeeType = comboList[0].shippingFeeType; // 更新组品编号
   }
 };
 /** 提交表单 */
@@ -160,7 +182,8 @@ const resetForm = () => {
     customerName: undefined, // 客户名称
     distributionPrice: 0, // 代发单价，初始化为 0
     wholesalePrice: 0, // 批发单价，初始化为 0
-    items: [] // 子表项
+    shippingFeeType:undefined, //运费类型
+    comboList: [] // 子表项
   }
   formRef.value?.resetFields()
 }
