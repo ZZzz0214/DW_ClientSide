@@ -127,7 +127,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['erp:sale-order:create']"
+          v-hasPermi="['erp:wholesale-sale-out:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -136,7 +136,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:sale-order:export']"
+          v-hasPermi="['erp:wholesale-sale-out:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -144,7 +144,7 @@
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
-          v-hasPermi="['erp:sale-order:delete']"
+          v-hasPermi="['erp:wholesale-sale-out:delete']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:delete" class="mr-5px" /> 删除
@@ -214,7 +214,7 @@
           <el-button
             link
             @click="openForm('detail', scope.row.id)"
-            v-hasPermi="['erp:sale-order:query']"
+            v-hasPermi="['erp:wholesale-sale-out:query']"
           >
             详情
           </el-button>
@@ -222,7 +222,7 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['erp:sale-order:update']"
+            v-hasPermi="['erp:wholesale-sale-out:update']"
             :disabled="scope.row.status === 20"
           >
             编辑
@@ -231,7 +231,7 @@
 <!--            link-->
 <!--            type="primary"-->
 <!--            @click="handleUpdateStatus(scope.row.id, 20)"-->
-<!--            v-hasPermi="['erp:sale-order:update-status']"-->
+<!--            v-hasPermi="['erp:wholesale-sale-out:update-status']"-->
 <!--            v-if="scope.row.status === 10"-->
 <!--          >-->
 <!--            审批-->
@@ -240,7 +240,7 @@
 <!--            link-->
 <!--            type="danger"-->
 <!--            @click="handleUpdateStatus(scope.row.id, 10)"-->
-<!--            v-hasPermi="['erp:sale-order:update-status']"-->
+<!--            v-hasPermi="['erp:wholesale-sale-out:update-status']"-->
 <!--            v-else-->
 <!--          >-->
 <!--            反审批-->
@@ -249,7 +249,7 @@
             link
             type="danger"
             @click="handleDelete([scope.row.id])"
-            v-hasPermi="['erp:sale-order:delete']"
+            v-hasPermi="['erp:wholesale-sale-out:delete']"
           >
             删除
           </el-button>
@@ -273,7 +273,7 @@
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/order'
+import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/orders'
 import SaleOrderForm from './SaleOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
@@ -282,7 +282,7 @@ import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/ut
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
 
 /** ERP 销售订单列表 */
-defineOptions({ name: 'ErpSaleOrder' })
+defineOptions({ name: 'ErpSaleOrders' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -316,7 +316,6 @@ const getList = async () => {
     const data = await SaleOrderApi.getSaleOrderPage(queryParams)
     list.value = data.list
     total.value = data.total
-    console.log(data)
   } finally {
     loading.value = false
   }

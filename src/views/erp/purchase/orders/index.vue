@@ -45,16 +45,16 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="客户" prop="customerId">
+      <el-form-item label="供应商" prop="supplierId">
         <el-select
-          v-model="queryParams.customerId"
+          v-model="queryParams.supplierId"
           clearable
           filterable
-          placeholder="请选择供客户"
+          placeholder="请选择供供应商"
           class="!w-240px"
         >
           <el-option
-            v-for="item in customerList"
+            v-for="item in supplierList"
             :key="item.id"
             :label="item.name"
             :value="item.id"
@@ -96,16 +96,16 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="出库数量" prop="outStatus">
+      <el-form-item label="入库数量" prop="inStatus">
         <el-select
-          v-model="queryParams.outStatus"
-          placeholder="请选择出库数量"
+          v-model="queryParams.inStatus"
+          placeholder="请选择入库数量"
           clearable
           class="!w-240px"
         >
-          <el-option label="未出库" value="0" />
-          <el-option label="部分出库" value="1" />
-          <el-option label="全部出库" value="2" />
+          <el-option label="未入库" value="0" />
+          <el-option label="部分入库" value="1" />
+          <el-option label="全部入库" value="2" />
         </el-select>
       </el-form-item>
       <el-form-item label="退货数量" prop="returnStatus">
@@ -127,7 +127,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['erp:sale-order:create']"
+          v-hasPermi="['erp:wholesale-purchase-order:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -136,7 +136,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:sale-order:export']"
+          v-hasPermi="['erp:wholesale-purchase-order:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -144,7 +144,7 @@
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
-          v-hasPermi="['erp:sale-order:delete']"
+          v-hasPermi="['erp:wholesale-purchase-order:delete']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:delete" class="mr-5px" /> 删除
@@ -165,7 +165,7 @@
       <el-table-column width="30" label="选择" type="selection" />
       <el-table-column min-width="180" label="订单单号" align="center" prop="no" />
       <el-table-column label="产品信息" align="center" prop="productNames" min-width="200" />
-      <el-table-column label="客户" align="center" prop="customerName" />
+      <el-table-column label="供应商" align="center" prop="supplierName" />
       <el-table-column
         label="订单时间"
         align="center"
@@ -181,9 +181,9 @@
         :formatter="erpCountTableColumnFormatter"
       />
       <el-table-column
-        label="出库数量"
+        label="入库数量"
         align="center"
-        prop="outCount"
+        prop="inCount"
         :formatter="erpCountTableColumnFormatter"
       />
       <el-table-column
@@ -195,11 +195,17 @@
       <el-table-column
         label="金额合计"
         align="center"
+        prop="totalProductPrice"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="含税金额"
+        align="center"
         prop="totalPrice"
         :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
-        label="收取订金"
+        label="支付订金"
         align="center"
         prop="depositPrice"
         :formatter="erpPriceTableColumnFormatter"
@@ -214,7 +220,7 @@
           <el-button
             link
             @click="openForm('detail', scope.row.id)"
-            v-hasPermi="['erp:sale-order:query']"
+            v-hasPermi="['erp:wholesale-purchase-order:query']"
           >
             详情
           </el-button>
@@ -222,7 +228,7 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['erp:sale-order:update']"
+            v-hasPermi="['erp:wholesale-purchase-order:update']"
             :disabled="scope.row.status === 20"
           >
             编辑
@@ -231,7 +237,7 @@
 <!--            link-->
 <!--            type="primary"-->
 <!--            @click="handleUpdateStatus(scope.row.id, 20)"-->
-<!--            v-hasPermi="['erp:sale-order:update-status']"-->
+<!--            v-hasPermi="['erp:wholesale-purchase-order:update-status']"-->
 <!--            v-if="scope.row.status === 10"-->
 <!--          >-->
 <!--            审批-->
@@ -240,7 +246,7 @@
 <!--            link-->
 <!--            type="danger"-->
 <!--            @click="handleUpdateStatus(scope.row.id, 10)"-->
-<!--            v-hasPermi="['erp:sale-order:update-status']"-->
+<!--            v-hasPermi="['erp:wholesale-purchase-order:update-status']"-->
 <!--            v-else-->
 <!--          >-->
 <!--            反审批-->
@@ -249,7 +255,7 @@
             link
             type="danger"
             @click="handleDelete([scope.row.id])"
-            v-hasPermi="['erp:sale-order:delete']"
+            v-hasPermi="['erp:wholesale-purchase-order:delete']"
           >
             删除
           </el-button>
@@ -266,57 +272,58 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <SaleOrderForm ref="formRef" @success="getList" />
+  <PurchaseOrderForm ref="formRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/order'
-import SaleOrderForm from './SaleOrderForm.vue'
+import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/orders'
+import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/utils'
-import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
+import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 
 /** ERP 销售订单列表 */
-defineOptions({ name: 'ErpSaleOrder' })
+defineOptions({ name: 'ErpPurchaseOrders' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<SaleOrderVO[]>([]) // 列表的数据
+const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   no: undefined,
-  customerId: undefined,
+  supplierId: undefined,
   productId: undefined,
   orderTime: [],
   status: undefined,
   remark: undefined,
   creator: undefined,
-  outStatus: undefined,
+  inStatus: undefined,
   returnStatus: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
-const customerList = ref<CustomerVO[]>([]) // 客户列表
+const supplierList = ref<SupplierVO[]>([]) // 供应商列表
 const userList = ref<UserVO[]>([]) // 用户列表
 
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
-    const data = await SaleOrderApi.getSaleOrderPage(queryParams)
+    const data = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
+
     list.value = data.list
     total.value = data.total
-    console.log(data)
+
   } finally {
     loading.value = false
   }
@@ -346,7 +353,7 @@ const handleDelete = async (ids: number[]) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await SaleOrderApi.deleteSaleOrder(ids)
+    await PurchaseOrderApi.deletePurchaseOrder(ids)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -360,7 +367,7 @@ const handleUpdateStatus = async (id: number, status: number) => {
     // 审批的二次确认
     await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
     // 发起审批
-    await SaleOrderApi.updateSaleOrderStatus(id, status)
+    await PurchaseOrderApi.updatePurchaseOrderStatus(id, status)
     message.success(`${status === 20 ? '审批' : '反审批'}成功`)
     // 刷新列表
     await getList()
@@ -374,7 +381,7 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await SaleOrderApi.exportSaleOrder(queryParams)
+    const data = await PurchaseOrderApi.exportPurchaseOrder(queryParams)
     download.excel(data, '销售订单.xls')
   } catch {
   } finally {
@@ -383,19 +390,17 @@ const handleExport = async () => {
 }
 
 /** 选中操作 */
-const selectionList = ref<SaleOrderVO[]>([])
-const handleSelectionChange = (rows: SaleOrderVO[]) => {
+const selectionList = ref<PurchaseOrderVO[]>([])
+const handleSelectionChange = (rows: PurchaseOrderVO[]) => {
   selectionList.value = rows
 }
 
 /** 初始化 **/
 onMounted(async () => {
   await getList()
-  // 加载产品、仓库列表、客户
+  // 加载产品、仓库列表、供应商
   productList.value = await ProductApi.getProductSimpleList()
-  customerList.value = await CustomerApi.getCustomerSimpleList()
+  supplierList.value = await SupplierApi.getSupplierSimpleList()
   userList.value = await UserApi.getSimpleUserList()
 })
-// TODO 芋艿：可优化功能：列表界面，支持导入
-// TODO 芋艿：可优化功能：详情界面，支持打印
 </script>

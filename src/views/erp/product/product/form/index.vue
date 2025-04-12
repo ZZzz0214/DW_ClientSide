@@ -121,7 +121,7 @@ const formData = ref<ErpProductApi.ProductVO>({
   cartonSpecifications: '', // 箱规
   cartonDimensions: '', // 箱规长宽高
   cartonWeight: undefined, // 箱规重量
-  availableStockQuantity: undefined, // 现货数量
+  totalQuantity: undefined, // 现货数量
   packagingMaterialQuantity: undefined, // 包材数量
   orderReplenishmentLeadTime: '', // 返单时效
   shippingAddress: '', // 发货地址

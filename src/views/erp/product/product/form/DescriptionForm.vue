@@ -10,9 +10,9 @@
 <template>
   <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" :disabled="isDetail">
     <!-- 现货数量 -->
-    <el-form-item label="现货数量" prop="availableStockQuantity">
+    <el-form-item label="现货数量" prop="totalQuantity">
       <el-input-number
-        v-model="formData.availableStockQuantity"
+        v-model="formData.totalQuantity"
         :min="0"
         placeholder="请输入现货数量"
         class="w-80!"
@@ -98,7 +98,7 @@ const props = defineProps({
 })
 const formRef = ref() // 表单Ref
 const formData = reactive<ProductVO>({
-  availableStockQuantity: 0, // 现货数量
+  totalQuantity: 0, // 现货数量
   packagingMaterialQuantity: 0, // 包材数量
   orderReplenishmentLeadTime: '', // 返单时效
   productDimensions: '', // 品长宽高
@@ -108,7 +108,7 @@ const formData = reactive<ProductVO>({
 });
 
 const rules = reactive({
-  availableStockQuantity: [{ required: true, message: '现货数量不能为空', trigger: 'blur' }],
+  totalQuantity: [{ required: true, message: '现货数量不能为空', trigger: 'blur' }],
   packagingMaterialQuantity: [{ required: true, message: '包材数量不能为空', trigger: 'blur' }],
   orderReplenishmentLeadTime: [{ required: true, message: '返单时效不能为空', trigger: 'blur' }],
   productDimensions: [{ required: true, message: '品长宽高不能为空', trigger: 'blur' }],

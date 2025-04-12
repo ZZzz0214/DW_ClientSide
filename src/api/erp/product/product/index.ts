@@ -36,7 +36,7 @@ export interface ProductVO {
   productRecord?: string; // 备案编号
   executionCode?: string; // 执行编号
   trademarkCode?: string; // 商标编号
-  availableStockQuantity?: number; // 现货数量
+  totalQuantity?: number; // 现货数量
   packagingMaterialQuantity?: number; // 包材数量
   orderReplenishmentLeadTime?: string; // 返单时效
   productDimensions?: string; // 产品长宽高

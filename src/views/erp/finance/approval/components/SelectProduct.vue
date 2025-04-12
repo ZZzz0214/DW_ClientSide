@@ -42,7 +42,7 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="产品编号" prop="id" />
       <el-table-column label="产品名称" prop="name" />
-      <el-table-column label="采购代发单价" prop="purchasePrice" />
+      <el-table-column label="采购单价" prop="purchasePrice" />
       <el-table-column label="原表数量" prop="totalQuantity" />
       <el-table-column label="产品重量" prop="weight" />
     </el-table>
@@ -85,7 +85,6 @@ const handleSearch = async () => {
   try {
     if (searchForm.productType === '0') {
       productList.value = await ProductApi.ProductApi.searchProducts(searchForm);
-
     } else if (searchForm.productType === '1') {
       productList.value = await ProductComboApi.ComboApi.searchCombos(searchForm);
     }

@@ -138,7 +138,7 @@
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <el-table-column label="产品名称" align="center" prop="name" />
       <el-table-column label="产品分类" align="center" prop="categoryName" />
-      <el-table-column label="现货数量" align="center" prop="availableStockQuantity" />
+      <el-table-column label="现货数量" align="center" prop="totalQuantity" />
       <el-table-column
         label="公域活动最低价"
         align="center"

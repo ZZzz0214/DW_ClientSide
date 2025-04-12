@@ -87,7 +87,21 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="其他费用" prop="otherFees" fixed="right" min-width="140">
+      <el-table-column label="货拉拉费用" prop="hulalaFee" fixed="right" min-width="110">
+        <template #default="{ row, $index }">
+          <el-form-item :prop="`${$index}.hulalaFee`" class="mb-0px!">
+            <el-input-number
+              v-model="row.hulalaFee"
+              controls-position="right"
+              :min="0.01"
+              :precision="2"
+              class="!w-100%"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="其他费用" prop="otherFees" fixed="right" min-width="110">
         <template #default="{ row, $index }">
           <el-form-item :prop="`${$index}.otherFees`" class="mb-0px!">
             <el-input-number
@@ -172,7 +186,7 @@ watch(
     }
     // 循环处理
     val.forEach((item) => {
-      item.totalProductPrice = erpPriceMultiply(item.purchasePrice, item.count) + erpPriceMultiply(item.otherFees, 1)
+      item.totalProductPrice = erpPriceMultiply(item.purchasePrice, item.count) + erpPriceMultiply(item.otherFees, 1) + erpPriceMultiply(item.hulalaFee, 1)
       if (item.totalProductPrice != null) {
         item.totalPrice = item.totalProductPrice
       } else {
@@ -192,7 +206,7 @@ const getSummaries = (param: any) => {
       sums[index] = '合计';
       return;
     }
-    if (['count', 'totalProductPrice', 'otherFees', 'totalPrice'].includes(column.property)) {
+    if (['count', 'totalProductPrice', 'hulalaFee','otherFees', 'totalPrice'].includes(column.property)) {
       const sum = getSumValue(data.map((item) => Number(item[column.property])));
       sums[index] =
         column.property === 'count' ? erpCountInputFormatter(sum) : erpPriceInputFormatter(sum);
@@ -217,16 +231,17 @@ const handleProductSelected = (selectedProducts: any[]) => {
       productId: product.type === 0 ? product.id : undefined, // 如果是单品，设置productId
       comboProductId: product.type === 1 ? product.id : undefined, // 如果是组合产品，设置comboProductId
       originalProductName: product.name, // 产品名称
-      purchasePrice: product.purchasePrice, //采购单价
+      purchasePrice: product.wholesalePrice, //采购批发单价
       originalQuantity: product.totalQuantity, //原表数量
       shippingFee:  product.fixedShippingFee, //采购运费:只有固定运费
       originalStandard: product.type === 0 ? product.productDimensions : undefined, //原表规格,只有单品有
       shippingCode: product.shippingCode, //发货编码
       remark: product.remark, //备注
       count: 1, //数量
+      hulalaFee: 0, //货拉拉费用
       otherFees: 1, //其他费用
-      totalProductPrice: product.purchasePrice, //合计产品价格
-      totalPrice: product.purchasePrice, //总价
+      totalProductPrice: product.wholesalePrice, //合计产品价格
+      totalPrice: product.wholesalePrice, //总价
       type: product.type, // 添加产品类型
     });
   });
@@ -239,7 +254,7 @@ const onChangeProduct = (productId, row) => {
   if (product) {
     // row.productUnitName = product.unitName;
     row.productBarCode = product.barCode;
-    row.purchasePrice = product.purchasePrice;
+    row.purchasePrice = product.wholesalePrice;
     row.type = product.type; // 设置产品类型
   }
   // 加载库存

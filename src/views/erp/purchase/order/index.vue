@@ -288,7 +288,7 @@ import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/ut
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 
 /** ERP 销售订单列表 */
-defineOptions({ name: 'UpdataStatus' })
+defineOptions({ name: 'ErpPurchaseOrder' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -323,6 +323,7 @@ const getList = async () => {
 
     list.value = data.list
     total.value = data.total
+    console.log(data)
   } finally {
     loading.value = false
   }

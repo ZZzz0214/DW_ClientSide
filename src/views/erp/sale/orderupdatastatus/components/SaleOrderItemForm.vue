@@ -219,7 +219,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       groupProductId: product.groupProductId, //组品id
       productName: product.productName, // 产品名称
       productPrice: product.purchasePrice, //出货单价
-      originalQuantity:  product.availableStockQuantity , //原表数量
+      originalQuantity:  product.totalQuantity , //原表数量
       shippingFee:  product.fixedShippingFee, //出货运费:只有固定运费
       shippingCode: product.shippingCode, //出货编码
       remark: '',//备注
