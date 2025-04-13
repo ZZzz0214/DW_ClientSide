@@ -131,7 +131,7 @@
 
 <script lang="ts" setup>
 import { ElTable } from 'element-plus'
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
+import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/finance/purchaseapprovalorders'
 import { dateFormatter2 } from '@/utils/formatTime'
 import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/utils'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'

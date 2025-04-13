@@ -135,7 +135,7 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
+import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/finance/purchaseapprovalorder'
 import PurchaseOrderItemForm from './components/PurchaseOrderItemForm.vue'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils'

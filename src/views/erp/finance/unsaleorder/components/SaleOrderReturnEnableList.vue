@@ -1,7 +1,7 @@
-<!-- 可入库的订单列表 -->
+<!-- 可退货的订单列表 -->
 <template>
   <Dialog
-    title="选择采购订单（仅展示可入库）"
+    title="选择销售订单（仅展示可退货）"
     v-model="dialogVisible"
     :appendToBody="true"
     :scroll="true"
@@ -73,7 +73,7 @@
           </template>
         </el-table-column>
         <el-table-column min-width="180" label="订单单号" align="center" prop="no" />
-        <el-table-column label="供应商" align="center" prop="supplierName" />
+        <el-table-column label="客户" align="center" prop="customerName" />
         <el-table-column label="产品信息" align="center" prop="productNames" min-width="200" />
         <el-table-column
           label="订单时间"
@@ -90,9 +90,15 @@
           :formatter="erpCountTableColumnFormatter"
         />
         <el-table-column
-          label="入库数量"
+          label="出库数量"
           align="center"
-          prop="inCount"
+          prop="outCount"
+          :formatter="erpCountTableColumnFormatter"
+        />
+        <el-table-column
+          label="退货数量"
+          align="center"
+          prop="returnCount"
           :formatter="erpCountTableColumnFormatter"
         />
         <el-table-column
@@ -122,16 +128,17 @@
     </template>
   </Dialog>
 </template>
+
 <script lang="ts" setup>
 import { ElTable } from 'element-plus'
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
+import { SaleOrderApi, SaleOrderVO } from '@/api/erp/finance/saleapprovalorder'
 import { dateFormatter2 } from '@/utils/formatTime'
 import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/utils'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 
-defineOptions({ name: 'ErpPurchaseOrderOutEnableList' })
+defineOptions({ name: 'SaleOrderReturnEnableList' })
 
-const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
+const list = ref<SaleOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const loading = ref(false) // 列表的加载中
 const dialogVisible = ref(false) // 弹窗的是否展示
@@ -141,7 +148,7 @@ const queryParams = reactive({
   no: undefined,
   productId: undefined,
   orderTime: [],
-  inEnable: true
+  returnEnable: true
 })
 const queryFormRef = ref() // 搜索的表单
 const productList = ref<ProductVO[]>([]) // 产品列表
@@ -157,7 +164,7 @@ const handleCurrentChange = (row) => {
 const open = async () => {
   dialogVisible.value = true
   await nextTick() // 等待，避免 queryFormRef 为空
-  // 加载可入库的订单列表
+  // 加载可退货的订单列表
   await resetQuery()
   // 加载产品列表
   productList.value = await ProductApi.getProductSimpleList()
@@ -166,7 +173,7 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
 /** 提交选择 */
 const emits = defineEmits<{
-  (e: 'success', value: PurchaseOrderVO): void
+  (e: 'success', value: SaleOrderVO): void
 }>()
 const submitForm = () => {
   try {
@@ -181,7 +188,7 @@ const submitForm = () => {
 const getList = async () => {
   loading.value = true
   try {
-    const data = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
+    const data = await SaleOrderApi.getSaleOrderPage(queryParams)
     list.value = data.list
     total.value = data.total
   } finally {

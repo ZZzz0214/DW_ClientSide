@@ -1,15 +1,28 @@
 import request from '@/config/axios'
 
+// ERP 采购订单 VO
+// export interface PurchaseOrderVO {
+//   id: number // 订单工单编号
+//   no: string // 采购订单号
+//   customerId: number // 客户编号
+//   orderTime: Date // 订单时间
+//   totalCount: number // 合计数量
+//   totalPrice: number // 合计金额，单位：元
+//   status: number // 状态
+//   remark: string // 备注
+//   outCount: number // 采购出库数量
+//   returnCount: number // 采购退货数量
+// }
 export interface PurchaseOrderVO {
   id: number; // 订单工单编号
   no: string; // 采购订单号
-  customerId: number; // 客户编号（后端对应 supplierId）
+  customerId: number; // 客户编号
   orderTime: Date; // 订单时间
   totalCount: number; // 合计数量
   totalPrice: number; // 合计金额，单位：元
   status: number; // 状态
   remark: string; // 备注
-  outCount: number; // 采购出库数量（后端对应 inCount）
+  outCount: number; // 采购出库数量
   returnCount: number; // 采购退货数量
   logisticsCompany: string; // 物流公司
   trackingNumber: string; // 物流单号
@@ -24,9 +37,6 @@ export interface PurchaseOrderVO {
   otherFees: number; // 其他费用
   totalPurchaseAmount: number; // 采购总额
   items: PurchaseOrderItemVO[]; // 订单清单列表
-  fileUrl: string; // 附件地址（新增字段）
-  purchaser: string; // 采购人员（新增字段）
-  depositPrice: number; // 定金金额（新增字段）
 }
 
 export interface PurchaseOrderItemVO {
@@ -42,8 +52,7 @@ export interface PurchaseOrderItemVO {
   shippingCode: string; // 发货编码
   productQuantity: number; // 产品数量
   purchasePrice: number; // 采购单价
-  logisticsFee: number; // 物流费用（新增字段）
-  hulalaFee: number; // 货拉拉费用（新增字段）
+  shippingFee: number; // 采购运费
   otherFees: number; // 其他费用
   totalPurchaseAmount: number; // 采购总额
   totalPrice: number; // 总价
@@ -52,37 +61,37 @@ export interface PurchaseOrderItemVO {
   taxPercent: number; // 税率，百分比
   taxPrice: number; // 税额，单位：元
   remark: string; // 备注
-  inCount: number; // 采购入库数量（新增字段）
-  returnCount: number; // 采购退货数量（新增字段）
-  purchaser: string; // 采购人员（新增字段）
+  inCount: number; // 采购入库数量
+  returnCount: number; // 采购退货数量
+  deleted: boolean; // 是否删除
+  tenantId: number; // 租户编号
 }
-
 // ERP 采购订单 API
 export const PurchaseOrderApi = {
   // 查询采购订单分页
   getPurchaseOrderPage: async (params: any) => {
-    return await request.get({ url: `/erp/wholesale-purchase-order/page2`, params })
+    return await request.get({ url: `/erp/purchase-order/page3`, params })
   },
 
   // 查询采购订单详情
   getPurchaseOrder: async (id: number) => {
-    return await request.get({ url: `/erp/wholesale-purchase-order/get?id=` + id })
+    return await request.get({ url: `/erp/purchase-order/get?id=` + id })
   },
 
   // 新增采购订单
   createPurchaseOrder: async (data: PurchaseOrderVO) => {
-    return await request.post({ url: `/erp/wholesale-purchase-order/create`, data })
+    return await request.post({ url: `/erp/purchase-order/create`, data })
   },
 
   // 修改采购订单
   updatePurchaseOrder: async (data: PurchaseOrderVO) => {
-    return await request.put({ url: `/erp/wholesale-purchase-order/update`, data })
+    return await request.put({ url: `/erp/purchase-order/update`, data })
   },
 
   // 更新采购订单的状态
   updatePurchaseOrderStatus: async (id: number, status: number) => {
     return await request.put({
-      url: `/erp/wholesale-purchase-order/update-status`,
+      url: `/erp/purchase-order/update-status`,
       params: {
         id,
         status
@@ -93,7 +102,7 @@ export const PurchaseOrderApi = {
   // 删除采购订单
   deletePurchaseOrder: async (ids: number[]) => {
     return await request.delete({
-      url: `/erp/wholesale-purchase-order/delete`,
+      url: `/erp/purchase-order/delete`,
       params: {
         ids: ids.join(',')
       }
@@ -102,6 +111,6 @@ export const PurchaseOrderApi = {
 
   // 导出采购订单 Excel
   exportPurchaseOrder: async (params: any) => {
-    return await request.download({ url: `/erp/wholesale-purchase-order/export-excel`, params })
+    return await request.download({ url: `/erp/purchase-order/export-excel`, params })
   }
 }

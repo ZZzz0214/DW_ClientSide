@@ -210,11 +210,11 @@
         prop="depositPrice"
         :formatter="erpPriceTableColumnFormatter"
       />
-<!--      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">-->
-<!--        <template #default="scope">-->
-<!--          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="220">
         <template #default="scope">
           <el-button

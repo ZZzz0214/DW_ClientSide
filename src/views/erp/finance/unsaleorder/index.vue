@@ -127,7 +127,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['erp:wholesale-sale-out:create']"
+          v-hasPermi="['erp:sale-order:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -136,7 +136,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:wholesale-sale-out:export']"
+          v-hasPermi="['erp:sale-order:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -144,7 +144,7 @@
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
-          v-hasPermi="['erp:wholesale-sale-out:delete']"
+          v-hasPermi="['erp:sale-order:delete']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:delete" class="mr-5px" /> 删除
@@ -195,6 +195,12 @@
       <el-table-column
         label="金额合计"
         align="center"
+        prop="totalProductPrice"
+        :formatter="erpPriceTableColumnFormatter"
+      />
+      <el-table-column
+        label="含税金额"
+        align="center"
         prop="totalPrice"
         :formatter="erpPriceTableColumnFormatter"
       />
@@ -214,45 +220,45 @@
           <el-button
             link
             @click="openForm('detail', scope.row.id)"
-            v-hasPermi="['erp:wholesale-sale-out:query']"
+            v-hasPermi="['erp:sale-order:query']"
           >
             详情
-          </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="openForm('update', scope.row.id)"
-            v-hasPermi="['erp:wholesale-sale-out:update']"
-            :disabled="scope.row.status === 20"
-          >
-            编辑
           </el-button>
 <!--          <el-button-->
 <!--            link-->
 <!--            type="primary"-->
+<!--            @click="openForm('update', scope.row.id)"-->
+<!--            v-hasPermi="['erp:sale-order:update']"-->
+<!--            :disabled="scope.row.status === 20"-->
+<!--          >-->
+<!--            编辑-->
+<!--          </el-button>-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="primary"-->
 <!--            @click="handleUpdateStatus(scope.row.id, 20)"-->
-<!--            v-hasPermi="['erp:wholesale-sale-out:update-status']"-->
+<!--            v-hasPermi="['erp:sale-order:update-status']"-->
 <!--            v-if="scope.row.status === 10"-->
 <!--          >-->
 <!--            审批-->
 <!--          </el-button>-->
-<!--          <el-button-->
-<!--            link-->
-<!--            type="danger"-->
-<!--            @click="handleUpdateStatus(scope.row.id, 10)"-->
-<!--            v-hasPermi="['erp:wholesale-sale-out:update-status']"-->
-<!--            v-else-->
-<!--          >-->
-<!--            反审批-->
-<!--          </el-button>-->
           <el-button
             link
             type="danger"
-            @click="handleDelete([scope.row.id])"
-            v-hasPermi="['erp:wholesale-sale-out:delete']"
+            @click="handleUpdateStatus(scope.row.id, 10)"
+            v-hasPermi="['erp:sale-order:update-status']"
+
           >
-            删除
+            反审批
           </el-button>
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleDelete([scope.row.id])"-->
+<!--            v-hasPermi="['erp:sale-order:delete']"-->
+<!--          >-->
+<!--            删除-->
+<!--          </el-button>-->
         </template>
       </el-table-column>
     </el-table>
@@ -274,7 +280,7 @@
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/orders'
+import { SaleOrderApi, SaleOrderVO } from '@/api/erp/finance/saleapprovalorder'
 import SaleOrderForm from './SaleOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
@@ -283,7 +289,7 @@ import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/ut
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
 
 /** ERP 销售订单列表 */
-defineOptions({ name: 'ErpSaleOrders' })
+defineOptions({ name: 'ErpSaleUnApproval' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

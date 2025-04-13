@@ -70,7 +70,7 @@ export interface PurchaseOrderItemVO {
 export const PurchaseOrderApi = {
   // 查询采购订单分页
   getPurchaseOrderPage: async (params: any) => {
-    return await request.get({ url: `/erp/purchase-order/page`, params })
+    return await request.get({ url: `/erp/purchase-order/page2`, params })
   },
 
   // 查询采购订单详情
