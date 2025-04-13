@@ -128,8 +128,6 @@
     />
   </ContentWrap>
 
-<!--  &lt;!&ndash; 表单弹窗：添加/修改 &ndash;&gt;-->
-<!--  <ComboForm ref="formRef" @success="getList" />-->
 </template>
 
 <script setup lang="ts">
@@ -233,17 +231,15 @@ const handleExport = async () => {
 const route = useRoute(); // 获取当前路由信息
 
 onMounted(async () => {
-  // 解析路由的 categoryId
-  // if (route.query.categoryId) {
-  //   queryParams.categoryId = Number(route.query.categoryId); // 将 categoryId 赋值给查询参数
-  // }
-
   await getList(); // 获取列表数据
+});
 
- //  // 获取产品分类数据
- //
- // const categoryData = await ComboCategoryApi.getComboCategorySimpleList();
- //  categoryList.value = handleTree(categoryData, 'id', 'parentId'); // 处理成树形结构
-
+onUpdated(async () => {
+  // 检测是否需要刷新列表
+  const shouldRefresh = localStorage.getItem('refreshList');
+  if (shouldRefresh) {
+    localStorage.removeItem('refreshList'); // 清除标志
+    await getList(); // 刷新数据
+  }
 });
 </script>

@@ -197,7 +197,6 @@ const getDetail = async () => {
     formLoading.value = true;
     try {
       const res = (await ErpProductApi.ProductApi.getProduct(id)) as ErpProductApi.ProductVO;
-      console.log(res);
       formData.value = res;
 
     } finally {
@@ -205,51 +204,7 @@ const getDetail = async () => {
     }
   }
 };
-// /** 提交按钮 */
-// const submitForm = async () => {
-//   // 提交请求
-//   formLoading.value = true
-//   try {
-//     // 校验各表单
-//     await unref(infoRef)?.validate()
-//     await unref(skuRef)?.validate()
-//     await unref(deliveryRef)?.validate()
-//     await unref(descriptionRef)?.validate()
-//     await unref(otherRef)?.validate()
-//     // 深拷贝一份, 这样最终 server 端不满足，不需要影响原始数据
-//     const deepCopyFormData = cloneDeep(unref(formData.value)) as ErpProductApi.Spu
-//     deepCopyFormData.skus!.forEach((item) => {
-//       // 给sku name赋值
-//       item.name = deepCopyFormData.name
-//       // sku相关价格元转分
-//       item.price = convertToInteger(item.price)
-//       item.marketPrice = convertToInteger(item.marketPrice)
-//       item.costPrice = convertToInteger(item.costPrice)
-//       item.firstBrokeragePrice = convertToInteger(item.firstBrokeragePrice)
-//       item.secondBrokeragePrice = convertToInteger(item.secondBrokeragePrice)
-//     })
-//     // 处理轮播图列表
-//     const newSliderPicUrls: any[] = []
-//     deepCopyFormData.sliderPicUrls!.forEach((item: any) => {
-//       // 如果是前端选的图
-//       typeof item === 'object' ? newSliderPicUrls.push(item.url) : newSliderPicUrls.push(item)
-//     })
-//     deepCopyFormData.sliderPicUrls = newSliderPicUrls
-//     // 校验都通过后提交表单
-//     const data = deepCopyFormData as ErpProductApi.Spu
-//     const id = params.id as unknown as number
-//     if (!id) {
-//       await ErpProductApi.createSpu(data)
-//       message.success(t('common.createSuccess'))
-//     } else {
-//       await ErpProductApi.updateSpu(data)
-//       message.success(t('common.updateSuccess'))
-//     }
-//     close()
-//   } finally {
-//     formLoading.value = false
-//   }
-// }
+
 /** 提交按钮 */
 const submitForm = async () => {
   // 提交请求
@@ -276,6 +231,9 @@ const submitForm = async () => {
       await ErpProductApi.ProductApi.updateProduct(data);
       message.success(t('common.updateSuccess'));
     }
+    // 设置一个标志，表示数据已更新
+    localStorage.setItem('refreshList', 'true');
+
     close();
   } finally {
     formLoading.value = false;
@@ -284,7 +242,7 @@ const submitForm = async () => {
 /** 关闭按钮 */
 const close = () => {
   delView(unref(currentRoute))
-  push({ name: 'ErpProduct' })
+  push({ name: 'ErpProduct'})
 }
 
 /** 初始化 */

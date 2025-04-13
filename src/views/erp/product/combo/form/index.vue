@@ -109,6 +109,9 @@ const submitForm = async () => {
       await ErpComboApi.ComboApi.updateCombo(data);
       message.success(t('common.updateSuccess'));
     }
+    // 设置一个标志，表示数据已更新
+    localStorage.setItem('refreshList', 'true');
+
     close();
   } catch (error) {
     console.error('提交失败:', error);
