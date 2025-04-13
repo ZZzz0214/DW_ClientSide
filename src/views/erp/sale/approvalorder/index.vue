@@ -267,6 +267,7 @@
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
+      :page-sizes="[10, 20, 30, 50, 100, 200, 500, 1000]"
       @pagination="getList"
     />
   </ContentWrap>
@@ -279,7 +280,7 @@
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/order'
+import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/approvalorder'
 import SaleOrderForm from './SaleOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
@@ -288,7 +289,7 @@ import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/ut
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
 
 /** ERP 销售订单列表 */
-defineOptions({ name: 'orderUpdataStatus' })
+defineOptions({ name: 'OrderUpdataStatus' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

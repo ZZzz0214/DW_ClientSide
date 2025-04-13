@@ -127,7 +127,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['erp:purchase-order:create']"
+          v-hasPermi="['erp:wholesale-purchase-order:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -136,7 +136,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:purchase-order:export']"
+          v-hasPermi="['erp:wholesale-purchase-order:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -144,7 +144,7 @@
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
-          v-hasPermi="['erp:purchase-order:delete']"
+          v-hasPermi="['erp:wholesale-purchase-order:delete']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:delete" class="mr-5px" /> 删除
@@ -210,17 +210,17 @@
         prop="depositPrice"
         :formatter="erpPriceTableColumnFormatter"
       />
-      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
       <el-table-column label="操作" align="center" fixed="right" width="220">
         <template #default="scope">
           <el-button
             link
             @click="openForm('detail', scope.row.id)"
-            v-hasPermi="['erp:purchase-order:query']"
+            v-hasPermi="['erp:wholesale-purchase-order:query']"
           >
             详情
           </el-button>
@@ -228,34 +228,34 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['erp:purchase-order:update']"
+            v-hasPermi="['erp:wholesale-purchase-order:update']"
             :disabled="scope.row.status === 20"
           >
             编辑
           </el-button>
-          <el-button
-            link
-            type="primary"
-            @click="handleUpdateStatus(scope.row.id, 20)"
-            v-hasPermi="['erp:purchase-order:update-status']"
-            v-if="scope.row.status === 10"
-          >
-            审批
-          </el-button>
-          <el-button
-            link
-            type="danger"
-            @click="handleUpdateStatus(scope.row.id, 10)"
-            v-hasPermi="['erp:purchase-order:update-status']"
-            v-else
-          >
-            反审批
-          </el-button>
+<!--          <el-button-->
+<!--            link-->
+<!--            type="primary"-->
+<!--            @click="handleUpdateStatus(scope.row.id, 20)"-->
+<!--            v-hasPermi="['erp:wholesale-purchase-order:update-status']"-->
+<!--            v-if="scope.row.status === 10"-->
+<!--          >-->
+<!--            审批-->
+<!--          </el-button>-->
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleUpdateStatus(scope.row.id, 10)"-->
+<!--            v-hasPermi="['erp:wholesale-purchase-order:update-status']"-->
+<!--            v-else-->
+<!--          >-->
+<!--            反审批-->
+<!--          </el-button>-->
           <el-button
             link
             type="danger"
             @click="handleDelete([scope.row.id])"
-            v-hasPermi="['erp:purchase-order:delete']"
+            v-hasPermi="['erp:wholesale-purchase-order:delete']"
           >
             删除
           </el-button>
@@ -267,6 +267,7 @@
       :total="total"
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
+      :page-sizes="[10, 20, 30, 50, 100, 200, 500, 1000]"
       @pagination="getList"
     />
   </ContentWrap>
@@ -279,7 +280,7 @@
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
+import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalorders'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
@@ -288,7 +289,7 @@ import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/ut
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 
 /** ERP 销售订单列表 */
-defineOptions({ name: 'UpdataStatus' })
+defineOptions({ name: 'OrdersUpdataStatus' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
@@ -323,6 +324,7 @@ const getList = async () => {
 
     list.value = data.list
     total.value = data.total
+
   } finally {
     loading.value = false
   }

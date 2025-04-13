@@ -204,11 +204,11 @@
         prop="depositPrice"
         :formatter="erpPriceTableColumnFormatter"
       />
-<!--      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">-->
-<!--        <template #default="scope">-->
-<!--          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />-->
-<!--        </template>-->
-<!--      </el-table-column>-->
+      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="220">
         <template #default="scope">
           <el-button
@@ -227,24 +227,24 @@
           >
             编辑
           </el-button>
-<!--          <el-button-->
-<!--            link-->
-<!--            type="primary"-->
-<!--            @click="handleUpdateStatus(scope.row.id, 20)"-->
-<!--            v-hasPermi="['erp:wholesale-sale-out:update-status']"-->
-<!--            v-if="scope.row.status === 10"-->
-<!--          >-->
-<!--            审批-->
-<!--          </el-button>-->
-<!--          <el-button-->
-<!--            link-->
-<!--            type="danger"-->
-<!--            @click="handleUpdateStatus(scope.row.id, 10)"-->
-<!--            v-hasPermi="['erp:wholesale-sale-out:update-status']"-->
-<!--            v-else-->
-<!--          >-->
-<!--            反审批-->
-<!--          </el-button>-->
+          <el-button
+            link
+            type="primary"
+            @click="handleUpdateStatus(scope.row.id, 20)"
+            v-hasPermi="['erp:wholesale-sale-out:update-status']"
+            v-if="scope.row.status === 10"
+          >
+            审批
+          </el-button>
+          <el-button
+            link
+            type="danger"
+            @click="handleUpdateStatus(scope.row.id, 10)"
+            v-hasPermi="['erp:wholesale-sale-out:update-status']"
+            v-else
+          >
+            反审批
+          </el-button>
           <el-button
             link
             type="danger"
@@ -274,7 +274,7 @@
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/orders'
+import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/approvalorders'
 import SaleOrderForm from './SaleOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
@@ -283,7 +283,7 @@ import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/ut
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
 
 /** ERP 销售订单列表 */
-defineOptions({ name: 'ErpSaleOrders' })
+defineOptions({ name: 'OrdersUpdataStatus' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化

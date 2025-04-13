@@ -132,7 +132,7 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/order'
+import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/approvalorder'
 import SaleOrderItemForm from './components/SaleOrderItemForm.vue'
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
