@@ -78,7 +78,6 @@ const getDetail = async () => {
     formLoading.value = true;
     try {
       const res = await ErpComboApi.ComboApi.getCombo(id)
-      console.log(res);
       formData.value = res;
 
     } finally {

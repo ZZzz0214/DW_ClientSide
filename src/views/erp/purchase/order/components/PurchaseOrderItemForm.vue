@@ -233,28 +233,6 @@ const handleProductSelected = (selectedProducts: any[]) => {
 
 };
 
-/** 处理产品变更 */
-const onChangeProduct = (productId, row) => {
-  const product = productList.value.find((item) => item.id === productId);
-  if (product) {
-    // row.productUnitName = product.unitName;
-    row.productBarCode = product.barCode;
-    row.purchasePrice = product.purchasePrice;
-    row.type = product.type; // 设置产品类型
-  }
-  // 加载库存
-  setStockCount(row);
-};
-
-/** 加载库存 */
-const setStockCount = async (row: any) => {
-  if (!row.productId) {
-    return
-  }
-  const count = await StockApi.getStockCount(row.productId)
-  row.stockCount = count || 0
-}
-
 const formatProductType = (type: number) => {
   return type === 0 ? '单品' : '组合产品';
 };

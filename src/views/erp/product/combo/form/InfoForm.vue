@@ -9,7 +9,7 @@
     <ContentWrap>
       <!-- 组品基本信息 -->
       <el-form-item label="组品名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入组品名称" :disabled="isDetail" />
+        <el-input v-model="formData.name" placeholder="请输入组品名称" disabled />
       </el-form-item>
 
       <el-form-item label="产品图片">
@@ -22,20 +22,21 @@
       </el-form-item>
 
       <el-form-item label="组品简称" prop="shortName">
-        <el-input v-model="formData.shortName" placeholder="请输入组品简称" />
+        <el-input v-model="formData.shortName" placeholder="请输入组品简称" :disabled="isDetail" />
       </el-form-item>
 
       <el-form-item label="发货编码" prop="shippingCode">
-        <el-input v-model="formData.shippingCode" placeholder="请输入发货编码" />
+        <el-input v-model="formData.shippingCode" placeholder="请输入发货编码" :disabled="isDetail" />
       </el-form-item>
 
       <el-form-item label="产品重量" prop="weight">
-        <el-input v-model="formData.weight" placeholder="产品重量" :disabled="isDetail" />
+        <el-input v-model="formData.weight" placeholder="产品重量" disabled />
       </el-form-item>
 
       <!-- 采购人员 -->
       <el-form-item label="采购人员" prop="purchaser">
         <el-input
+          :disabled="isDetail"
           v-model="formData.purchaser"
           placeholder="请输入采购人员信息"
           class="w-80"
@@ -45,6 +46,7 @@
       <!-- 供应商名 -->
       <el-form-item label="供应商名" prop="supplier">
         <el-input
+          :disabled="isDetail"
           v-model="formData.supplier"
           placeholder="请输入供应商名"
           class="w-80"
@@ -52,19 +54,19 @@
       </el-form-item>
 
       <el-form-item label="采购单价" prop="purchasePrice">
-        <el-input v-model="formData.purchasePrice" placeholder="采购单价" :disabled="isDetail" />
+        <el-input v-model="formData.purchasePrice" placeholder="采购单价" disabled />
       </el-form-item>
 
       <el-form-item label="批发单价" prop="wholesalePrice">
-        <el-input v-model="formData.wholesalePrice" placeholder="批发单价" :disabled="isDetail" />
+        <el-input v-model="formData.wholesalePrice" placeholder="批发单价" disabled />
       </el-form-item>
 
       <el-form-item label="产品数量" prop="totalQuantity">
-        <el-input v-model="formData.totalQuantity" placeholder="产品数量" />
+        <el-input v-model="formData.totalQuantity" placeholder="产品数量" :disabled="isDetail" />
       </el-form-item>
 
       <el-form-item label="产品状态" prop="status">
-        <el-radio-group v-model="formData.status">
+        <el-radio-group v-model="formData.status" :disabled="isDetail">
           <el-radio :label="0">启用</el-radio>
           <el-radio :label="1">禁用</el-radio>
         </el-radio-group>
@@ -72,7 +74,7 @@
 
       <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
         <el-tab-pane label="订单产品清单" name="item">
-          <el-table :data="formData.items" show-summary :summary-method="getSummaries" class="-mt-10px">
+          <el-table :data="formData.items" show-summary :summary-method="getSummaries" class="-mt-10px" >
             <el-table-column label="序号" type="index" align="center" width="60" />
             <el-table-column label="产品编号" min-width="120">
               <template #default="{ row }">
@@ -103,6 +105,7 @@
               <template #default="{ row, $index }">
                 <el-form-item :prop="`items.${$index}.count`" :rules="formRules.count">
                   <el-input-number
+                    :disabled="isDetail"
                     v-model="row.count"
                     controls-position="right"
                     :min="1"
@@ -116,17 +119,17 @@
             <el-table-column label="备注" min-width="150">
               <template #default="{ row, $index }">
                 <el-form-item :prop="`items.${$index}.remark`">
-                  <el-input v-model="row.remark" placeholder="请输入备注" />
+                  <el-input v-model="row.remark" placeholder="请输入备注"  :disabled="isDetail"/>
                 </el-form-item>
               </template>
             </el-table-column>
             <el-table-column align="center" fixed="right" label="操作" width="60">
               <template #default="{ $index }">
-                <el-button @click="handleDelete($index)" link>删除</el-button>
+                <el-button @click="handleDelete($index)" link :disabled="isDetail">删除</el-button>
               </template>
             </el-table-column>
           </el-table>
-          <el-button @click="handleAdd" class="mt-3">+ 添加产品</el-button>
+          <el-button @click="handleAdd" class="mt-3" :disabled="isDetail">+ 添加产品</el-button>
         </el-tab-pane>
       </el-tabs>
     </ContentWrap>
