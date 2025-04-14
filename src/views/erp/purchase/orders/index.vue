@@ -195,15 +195,15 @@
       <el-table-column
         label="金额合计"
         align="center"
-        prop="totalProductPrice"
-        :formatter="erpPriceTableColumnFormatter"
-      />
-      <el-table-column
-        label="含税金额"
-        align="center"
         prop="totalPrice"
         :formatter="erpPriceTableColumnFormatter"
       />
+<!--      <el-table-column-->
+<!--        label="含税金额"-->
+<!--        align="center"-->
+<!--        prop="totalPrice"-->
+<!--        :formatter="erpPriceTableColumnFormatter"-->
+<!--      />-->
       <el-table-column
         label="支付订金"
         align="center"

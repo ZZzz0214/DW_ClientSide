@@ -68,27 +68,27 @@
         </el-tabs>
       </ContentWrap>
       <el-row :gutter="20">
-<!--        <el-col :span="8">-->
-<!--          <el-form-item label="优惠率（%）" prop="discountPercent">-->
-<!--            <el-input-number-->
-<!--              v-model="formData.discountPercent"-->
-<!--              controls-position="right"-->
-<!--              :min="0"-->
-<!--              :precision="2"-->
-<!--              placeholder="请输入优惠率"-->
-<!--              class="!w-1/1"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-<!--        <el-col :span="8">-->
-<!--          <el-form-item label="付款优惠" prop="discountPrice">-->
-<!--            <el-input-->
-<!--              disabled-->
-<!--              v-model="formData.discountPrice"-->
-<!--              :formatter="erpPriceInputFormatter"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
+        <!--        <el-col :span="8">-->
+        <!--          <el-form-item label="优惠率（%）" prop="discountPercent">-->
+        <!--            <el-input-number-->
+        <!--              v-model="formData.discountPercent"-->
+        <!--              controls-position="right"-->
+        <!--              :min="0"-->
+        <!--              :precision="2"-->
+        <!--              placeholder="请输入优惠率"-->
+        <!--              class="!w-1/1"-->
+        <!--            />-->
+        <!--          </el-form-item>-->
+        <!--        </el-col>-->
+        <!--        <el-col :span="8">-->
+        <!--          <el-form-item label="付款优惠" prop="discountPrice">-->
+        <!--            <el-input-->
+        <!--              disabled-->
+        <!--              v-model="formData.discountPrice"-->
+        <!--              :formatter="erpPriceInputFormatter"-->
+        <!--            />-->
+        <!--          </el-form-item>-->
+        <!--        </el-col>-->
         <el-col :span="8">
           <el-form-item label="总金额">
             <el-input disabled v-model="formData.totalPrice" :formatter="erpPriceInputFormatter" />
@@ -135,7 +135,7 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/finance/purchaseapprovalorders'
+import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalorders'
 import PurchaseOrderItemForm from './components/PurchaseOrderItemForm.vue'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils'
@@ -143,7 +143,7 @@ import * as UserApi from '@/api/system/user'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
 
 /** ERP 销售订单表单 */
-defineOptions({ name: 'PurchaseOrderForm' })
+defineOptions({ name: 'ErpPurchaseApprovals' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
@@ -163,6 +163,7 @@ const formData = ref({
   // discountPrice: 0,  //付款优惠
   totalPrice: 0, //总金额
   depositPrice: 0,  //支付订金
+  shippingFee:0, //运费
   items: [],  //列表
   no: undefined // 订单单号，后端返回
 })
@@ -196,6 +197,18 @@ watch(
   { deep: true }
 )
 
+watch(
+  () => formData.value.items,
+  (val) => {
+    if (!val || val.length === 0) {
+      return;
+    }
+    const totalShippingFee = val.reduce((sum, item) => sum + (item.shippingFee || 0), 0);
+    formData.value.shippingFee = totalShippingFee; // 更新父表单的运费
+  },
+  { deep: true }
+);
+
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
@@ -206,7 +219,13 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await PurchaseOrderApi.getPurchaseOrder(id)
+      const data = await PurchaseOrderApi.getPurchaseOrder(id);
+      formData.value = data;
+      // 确保子表单的运费和合计运费正确显示
+      formData.value.items.forEach(item => {
+        item.totalProductPrice = item.purchasePrice + (item.shippingFee || 0);
+        item.totalPrice = item.totalProductPrice;
+      });
     } finally {
       formLoading.value = false
     }
@@ -241,8 +260,6 @@ const submitForm = async () => {
       await PurchaseOrderApi.updatePurchaseOrder(data)
       message.success(t('common.updateSuccess'))
     }
-    console.log("--------------------------11111111111")
-    console.log(data)
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')
@@ -259,12 +276,14 @@ const resetForm = () => {
     accountId: undefined,  //结算账户
     orderTime: undefined,  //订单时间
     remark: undefined,  //备注
-    fileUrl: undefined,  //附件
-    // discountPercent: 0,
-    // discountPrice: 0,
-    totalPrice: 0,  //总金额
-    depositPrice: 0,  //支付定金
-    items: []  //列表
+    fileUrl: '',  //附件
+    // discountPercent: 0,  //优惠率
+    // discountPrice: 0,  //付款优惠
+    totalPrice: 0, //总金额
+    depositPrice: 0,  //支付订金
+    shippingFee:0, //运费
+    items: [],  //列表
+    no: undefined // 订单单号，后端返回
   }
   formRef.value?.resetFields()
 }

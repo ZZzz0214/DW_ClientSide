@@ -98,11 +98,16 @@ export const SalePriceApi = {
     return await request.put({ url: `/erp/sale-price/update`, data });
   },
 
-  // 删除销售价格
-  deleteSalePrice: async (id: number) => {
-    return await request.delete({ url: `/erp/sale-price/delete?id=${id}` });
-  },
 
+  // 删除销售价格
+  deleteSalePrice: async (ids: number[]) => {
+    return await request.delete({
+      url: `/erp/sale-price/delete`,
+      params: {
+        ids: ids.join(',')
+      }
+    })
+  },
   // // 导出销售价格表 Excel
   // exportSalePrice: async (params: SalePricePageReqVO) => {
   //   return await request.download({ url: `/erp/sale-price/export-excel`, params });

@@ -132,12 +132,13 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/approvalorders'
+import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/orders'
 import SaleOrderItemForm from './components/SaleOrderItemForm.vue'
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
 import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils'
 import * as UserApi from '@/api/system/user'
+import {PurchaseOrderApi} from "@/api/erp/purchase/order";
 
 /** ERP 销售订单表单 */
 defineOptions({ name: 'SaleOrderForm' })
@@ -161,6 +162,7 @@ const formData = ref({
   // discountPrice: 0,  //付款优惠
   totalPrice: 0,  //总金额
   depositPrice: 0,  //收取订金
+  shippingFee:0, //运费
   items: [],  //列表
   no: undefined // 订单单号，后端返回
 })
@@ -193,7 +195,17 @@ watch(
   },
   { deep: true }
 )
-
+watch(
+  () => formData.value.items,
+  (val) => {
+    if (!val || val.length === 0) {
+      return;
+    }
+    const totalShippingFee = val.reduce((sum, item) => sum + (item.shippingFee || 0), 0);
+    formData.value.shippingFee = totalShippingFee; // 更新父表单的运费
+  },
+  { deep: true }
+);
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
@@ -204,7 +216,13 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      formData.value = await SaleOrderApi.getSaleOrder(id)
+      const data = await PurchaseOrderApi.getPurchaseOrder(id);
+      formData.value = data;
+      // 确保子表单的运费和合计运费正确显示
+      formData.value.items.forEach(item => {
+        item.totalProductPrice = item.purchasePrice + (item.shippingFee || 0);
+        item.totalPrice = item.totalProductPrice;
+      });
     } finally {
       formLoading.value = false
     }
@@ -239,8 +257,6 @@ const submitForm = async () => {
       await SaleOrderApi.updateSaleOrder(data)
       message.success(t('common.updateSuccess'))
     }
-    console.log("--------------------------11111111111")
-    console.log(data)
     dialogVisible.value = false
     // 发送操作成功的事件
     emit('success')
@@ -253,17 +269,19 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    customerId: undefined,  //供应商
+    customerId: undefined,  //客户
     accountId: undefined,  //结算账户
     saleUserId: undefined,  //销售人员
     orderTime: undefined,  //订单时间
     remark: undefined,  //备注
-    fileUrl: undefined,  //附件
-    // discountPercent: 0,
-    // discountPrice: 0,
+    fileUrl: '',  //附件
+    // discountPercent: 0,  //优惠率
+    // discountPrice: 0,  //付款优惠
     totalPrice: 0,  //总金额
-    depositPrice: 0,  //支付定金
-    items: []  //列表
+    depositPrice: 0,  //收取订金
+    shippingFee:0, //运费
+    items: [],  //列表
+    no: undefined // 订单单号，后端返回
   }
   formRef.value?.resetFields()
 }

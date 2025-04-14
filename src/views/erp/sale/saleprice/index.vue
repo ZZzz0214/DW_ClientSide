@@ -59,12 +59,28 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
+        <el-button
+          type="danger"
+          plain
+          @click="handleDelete(selectionList.map((item) => item.id))"
+          v-hasPermi="['erp:sale-price:delete']"
+          :disabled="selectionList.length === 0"
+        >
+          <Icon icon="ep:delete" class="mr-5px" /> 删除
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table
+      v-loading="loading"
+      :data="list"
+      :stripe="true"
+      :show-overflow-tooltip="true"
+      @selection-change="handleSelectionChange"
+    >
+      <el-table-column width="30" label="选择" type="selection" />
       <!-- 编号 -->
       <el-table-column label="编号" align="center" prop="id" />
 
@@ -138,6 +154,7 @@
 import download from '@/utils/download'
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice'
 import SalePriceForm from './SalePriceForm.vue'
+import {SaleOrderApi} from "@/api/erp/sale/orders";
 
 
 /** ERP 销售价格表 */
@@ -192,15 +209,15 @@ const openForm = (type: string, id?: number) => {
 
 
 /** 删除按钮操作 */
-const handleDelete = async (id: number) => {
+const handleDelete = async (ids: number[]) => {
   try {
     await message.delConfirm()
-    await SalePriceApi.deleteSalePrice(id)
+    await SalePriceApi.deleteSalePrice(ids)
     message.success(t('common.delSuccess'))
     await getList()
+    selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
   } catch {}
 }
-
 
 /** 导出按钮操作 */
 const handleExport = async () => {
@@ -215,6 +232,11 @@ const handleExport = async () => {
   }
 }
 
+/** 选中操作 */
+const selectionList = ref<SalePriceVO[]>([])
+const handleSelectionChange = (rows: SalePriceVO[]) => {
+  selectionList.value = rows
+}
 
 onMounted(async () => {
   await getList(); // 获取列表数据

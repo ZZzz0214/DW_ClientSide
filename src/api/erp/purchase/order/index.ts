@@ -53,6 +53,7 @@ export interface PurchaseOrderItemVO {
   productQuantity: number; // 产品数量
   purchasePrice: number; // 采购单价
   shippingFee: number; // 采购运费
+  shippingFeeType:number; //运费类型
   otherFees: number; // 其他费用
   totalPurchaseAmount: number; // 采购总额
   totalPrice: number; // 总价

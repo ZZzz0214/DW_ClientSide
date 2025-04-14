@@ -44,9 +44,9 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="采购运费"  min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
+      <el-table-column label="采购运费" prop="shippingFee" min-width="80">
+        <template #default="{ row ,$index}">
+          <el-form-item  :prop="`${$index}.shippingFee`" class="mb-0px!">
             <el-input disabled v-model="row.shippingFee" />
           </el-form-item>
         </template>
@@ -186,7 +186,28 @@ watch(
     }
     // 循环处理
     val.forEach((item) => {
-      item.totalProductPrice = erpPriceMultiply(item.purchasePrice, item.count) + erpPriceMultiply(item.otherFees, 1) + erpPriceMultiply(item.hulalaFee, 1)
+      // 计算运费
+      if (item.shippingFeeType === 0) {
+        // 固定运费
+        item.shippingFee = item.fixedShippingFee;
+      } else if (item.shippingFeeType === 1) {
+        // 按件运费
+        if (item.count <= item.firstItemQuantity) {
+          item.shippingFee = item.firstItemPrice;
+        } else {
+          item.shippingFee = item.firstItemPrice + Math.ceil((item.count - item.firstItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+        }
+      } else if (item.shippingFeeType === 2) {
+        // 按重量
+        const totalWeight = item.count * item.weight;
+        if (totalWeight <= item.firstWeight) {
+          item.shippingFee = item.firstWeightPrice;
+        } else {
+          item.shippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+        }
+      }
+
+      item.totalProductPrice = erpPriceMultiply(item.purchasePrice, item.count) + erpPriceMultiply(item.otherFees, 1) + erpPriceMultiply(item.hulalaFee, 1) + erpPriceMultiply(item.shippingFee, 1)
       if (item.totalProductPrice != null) {
         item.totalPrice = item.totalProductPrice
       } else {
@@ -206,7 +227,7 @@ const getSummaries = (param: any) => {
       sums[index] = '合计';
       return;
     }
-    if (['count', 'totalProductPrice', 'hulalaFee','otherFees', 'totalPrice'].includes(column.property)) {
+    if (['count', 'shippingFee', 'totalProductPrice', 'hulalaFee','otherFees', 'totalPrice'].includes(column.property)) {
       const sum = getSumValue(data.map((item) => Number(item[column.property])));
       sums[index] =
         column.property === 'count' ? erpCountInputFormatter(sum) : erpPriceInputFormatter(sum);
@@ -233,7 +254,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       originalProductName: product.name, // 产品名称
       purchasePrice: product.wholesalePrice, //采购批发单价
       originalQuantity: product.totalQuantity, //原表数量
-      shippingFee:  product.fixedShippingFee, //采购运费:只有固定运费
+      shippingFee:  1, //采购运费
       originalStandard: product.type === 0 ? product.productDimensions : undefined, //原表规格,只有单品有
       shippingCode: product.shippingCode, //发货编码
       remark: product.remark, //备注
@@ -243,6 +264,18 @@ const handleProductSelected = (selectedProducts: any[]) => {
       totalProductPrice: product.wholesalePrice, //合计产品价格
       totalPrice: product.wholesalePrice, //总价
       type: product.type, // 添加产品类型
+      // 假设这些运费相关的字段已经存在于 product 对象中
+      shippingFeeType: product.shippingFeeType,
+      fixedShippingFee: product.fixedShippingFee,
+      firstItemQuantity: product.firstItemQuantity,
+      firstItemPrice: product.firstItemPrice,
+      additionalItemQuantity: product.additionalItemQuantity,
+      additionalItemPrice: product.additionalItemPrice,
+      weight: product.weight,
+      firstWeight: product.firstWeight,
+      firstWeightPrice: product.firstWeightPrice,
+      additionalWeight: product.additionalWeight,
+      additionalWeightPrice: product.additionalWeightPrice
     });
   });
 
