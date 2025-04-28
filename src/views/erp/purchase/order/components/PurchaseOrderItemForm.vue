@@ -4,122 +4,70 @@
     :model="formData"
     :rules="formRules"
     v-loading="formLoading"
-    label-width="0px"
+    label-width="120px"
     :inline-message="true"
     :disabled="disabled"
   >
-    <el-table :data="formData" show-summary :summary-method="getSummaries" class="-mt-10px">
-      <el-table-column label="序号" type="index" align="center" width="60" />
-
-      <el-table-column label="产品名称"  min-width="120">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.originalProductName" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <!-- 使用 formatProductType 方法格式化 -->
-      <el-table-column label="产品类型"  min-width="110">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input
-              disabled
-              :value="formatProductType(row.type)"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="采购代发单价"  min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.purchasePrice" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="原表数量"  min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.originalQuantity" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="采购运费" prop="shippingFee" min-width="80">
-        <template #default="{ row ,$index}">
-          <el-form-item  :prop="`${$index}.shippingFee`" class="mb-0px!">
-            <el-input disabled v-model="row.shippingFee" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="原表规格"  min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.originalStandard" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="发货编码"  min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.shippingCode" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-      <el-table-column label="备注" min-width="150">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.remark`" class="mb-0px!">
-            <el-input v-model="row.remark" placeholder="请输入备注" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="数量" prop="count" fixed="right" min-width="110">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.count`" :rules="formRules.count" class="mb-0px!">
-            <el-input-number
-              v-model="row.count"
-              controls-position="right"
-              :min="0.01"
-              :precision="2"
-              class="!w-100%"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="其他费用" prop="otherFees" fixed="right" min-width="140">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.otherFees`" class="mb-0px!">
-            <el-input-number
-              v-model="row.otherFees"
-              controls-position="right"
-              :min="0.01"
-              :precision="2"
-              class="!w-100%"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="金额" fixed="right" prop="totalProductPrice"  min-width="100">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.totalProductPrice`" class="mb-0px!">
-            <el-input
-              disabled
-              v-model="row.totalProductPrice"
-              :formatter="erpPriceInputFormatter"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" fixed="right" label="操作" width="60">
-        <template #default="{ $index }">
-          <el-button @click="handleDelete($index)" link>—</el-button>
-        </template>
-      </el-table-column>
-    </el-table>
+    <div
+      v-for="(item, index) in formData"
+      :key="index"
+      class="form-row"
+    >
+      <el-form-item label="产品名称">
+        <el-input disabled v-model="item.originalProductName" />
+      </el-form-item>
+      <el-form-item label="产品类型">
+        <el-input disabled :value="formatProductType(item.type)" />
+      </el-form-item>
+      <el-form-item label="采购代发单价">
+        <el-input disabled v-model="item.purchasePrice" />
+      </el-form-item>
+      <el-form-item label="原表数量">
+        <el-input disabled v-model="item.originalQuantity" />
+      </el-form-item>
+      <el-form-item label="采购运费">
+        <el-input disabled v-model="item.shippingFee" />
+      </el-form-item>
+      <el-form-item label="原表规格">
+        <el-input disabled v-model="item.originalStandard" />
+      </el-form-item>
+      <el-form-item label="发货编码">
+        <el-input disabled v-model="item.shippingCode" />
+      </el-form-item>
+      <el-form-item label="备注">
+        <el-input v-model="item.remark" placeholder="请输入备注" />
+      </el-form-item>
+      <el-form-item label="数量">
+        <el-input-number
+          v-model="item.count"
+          controls-position="right"
+          :min="0.01"
+          :precision="2"
+          class="!w-100%"
+        />
+      </el-form-item>
+      <el-form-item label="其他费用">
+        <el-input-number
+          v-model="item.otherFees"
+          controls-position="right"
+          :min="0.01"
+          :precision="2"
+          class="!w-100%"
+        />
+      </el-form-item>
+      <el-form-item label="金额">
+        <el-input
+          disabled
+          v-model="item.totalProductPrice"
+          :formatter="erpPriceInputFormatter"
+        />
+      </el-form-item>
+      <el-form-item>
+        <el-button @click="handleDelete(index)" link>删除</el-button>
+      </el-form-item>
+    </div>
   </el-form>
+
   <el-row justify="center" class="mt-3" v-if="!disabled">
     <el-button @click="handleAdd" round>+ 添加采购产品</el-button>
   </el-row>
