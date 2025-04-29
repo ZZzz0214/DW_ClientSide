@@ -210,48 +210,48 @@ const getCount = async () => {
 let projects = reactive<Project[]>([])
 const getProject = async () => {
   const data = [
-    {
-      name: 'ruoyi-vue-pro',
-      icon: 'akar-icons:github-fill',
-      message: 'https://github.com/YunaiV/ruoyi-vue-pro',
-      personal: 'Spring Boot 单体架构',
-      time: new Date()
-    },
-    {
-      name: 'yudao-ui-admin-vue3',
-      icon: 'logos:vue',
-      message: 'https://github.com/yudaocode/yudao-ui-admin-vue3',
-      personal: 'Vue3 + element-plus',
-      time: new Date()
-    },
-    {
-      name: 'yudao-ui-admin-vben',
-      icon: 'logos:vue',
-      message: 'https://github.com/yudaocode/yudao-ui-admin-vben',
-      personal: 'Vue3 + vben(antd)',
-      time: new Date()
-    },
-    {
-      name: 'yudao-cloud',
-      icon: 'akar-icons:github',
-      message: 'https://github.com/YunaiV/yudao-cloud',
-      personal: 'Spring Cloud 微服务架构',
-      time: new Date()
-    },
-    {
-      name: 'yudao-ui-mall-uniapp',
-      icon: 'logos:vue',
-      message: 'https://github.com/yudaocode/yudao-ui-admin-uniapp',
-      personal: 'Vue3 + uniapp',
-      time: new Date()
-    },
-    {
-      name: 'yudao-ui-admin-vue2',
-      icon: 'logos:vue',
-      message: 'https://github.com/yudaocode/yudao-ui-admin-vue2',
-      personal: 'Vue2 + element-ui',
-      time: new Date()
-    }
+    // {
+    //   name: 'ruoyi-vue-pro',
+    //   icon: 'akar-icons:github-fill',
+    //   message: 'https://github.com/YunaiV/ruoyi-vue-pro',
+    //   personal: 'Spring Boot 单体架构',
+    //   time: new Date()
+    // },
+    // {
+    //   name: 'yudao-ui-admin-vue3',
+    //   icon: 'logos:vue',
+    //   message: 'https://github.com/yudaocode/yudao-ui-admin-vue3',
+    //   personal: 'Vue3 + element-plus',
+    //   time: new Date()
+    // },
+    // {
+    //   name: 'yudao-ui-admin-vben',
+    //   icon: 'logos:vue',
+    //   message: 'https://github.com/yudaocode/yudao-ui-admin-vben',
+    //   personal: 'Vue3 + vben(antd)',
+    //   time: new Date()
+    // },
+    // {
+    //   name: 'yudao-cloud',
+    //   icon: 'akar-icons:github',
+    //   message: 'https://github.com/YunaiV/yudao-cloud',
+    //   personal: 'Spring Cloud 微服务架构',
+    //   time: new Date()
+    // },
+    // {
+    //   name: 'yudao-ui-mall-uniapp',
+    //   icon: 'logos:vue',
+    //   message: 'https://github.com/yudaocode/yudao-ui-admin-uniapp',
+    //   personal: 'Vue3 + uniapp',
+    //   time: new Date()
+    // },
+    // {
+    //   name: 'yudao-ui-admin-vue2',
+    //   icon: 'logos:vue',
+    //   message: 'https://github.com/yudaocode/yudao-ui-admin-vue2',
+    //   personal: 'Vue2 + element-ui',
+    //   time: new Date()
+    // }
   ]
   projects = Object.assign(projects, data)
 }
@@ -260,30 +260,30 @@ const getProject = async () => {
 let notice = reactive<Notice[]>([])
 const getNotice = async () => {
   const data = [
-    {
-      title: '系统支持 JDK 8/17/21，Vue 2/3',
-      type: '通知',
-      keys: ['通知', '8', '17', '21', '2', '3'],
-      date: new Date()
-    },
-    {
-      title: '后端提供 Spring Boot 2.7/3.2 + Cloud 双架构',
-      type: '公告',
-      keys: ['公告', 'Boot', 'Cloud'],
-      date: new Date()
-    },
-    {
-      title: '全部开源，个人与企业可 100% 直接使用，无需授权',
-      type: '通知',
-      keys: ['通知', '无需授权'],
-      date: new Date()
-    },
-    {
-      title: '国内使用最广泛的快速开发平台，超 300+ 人贡献',
-      type: '公告',
-      keys: ['公告', '最广泛'],
-      date: new Date()
-    }
+    // {
+    //   title: '系统支持 JDK 8/17/21，Vue 2/3',
+    //   type: '通知',
+    //   keys: ['通知', '8', '17', '21', '2', '3'],
+    //   date: new Date()
+    // },
+    // {
+    //   title: '后端提供 Spring Boot 2.7/3.2 + Cloud 双架构',
+    //   type: '公告',
+    //   keys: ['公告', 'Boot', 'Cloud'],
+    //   date: new Date()
+    // },
+    // {
+    //   title: '全部开源，个人与企业可 100% 直接使用，无需授权',
+    //   type: '通知',
+    //   keys: ['通知', '无需授权'],
+    //   date: new Date()
+    // },
+    // {
+    //   title: '国内使用最广泛的快速开发平台，超 300+ 人贡献',
+    //   type: '公告',
+    //   keys: ['公告', '最广泛'],
+    //   date: new Date()
+    // }
   ]
   notice = Object.assign(notice, data)
 }
@@ -293,36 +293,36 @@ let shortcut = reactive<Shortcut[]>([])
 
 const getShortcut = async () => {
   const data = [
-    {
-      name: 'Github',
-      icon: 'akar-icons:github-fill',
-      url: 'github.io'
-    },
-    {
-      name: 'Vue',
-      icon: 'logos:vue',
-      url: 'vuejs.org'
-    },
-    {
-      name: 'Vite',
-      icon: 'vscode-icons:file-type-vite',
-      url: 'https://vitejs.dev/'
-    },
-    {
-      name: 'Angular',
-      icon: 'logos:angular-icon',
-      url: 'github.io'
-    },
-    {
-      name: 'React',
-      icon: 'logos:react',
-      url: 'github.io'
-    },
-    {
-      name: 'Webpack',
-      icon: 'logos:webpack',
-      url: 'github.io'
-    }
+    // {
+    //   name: 'Github',
+    //   icon: 'akar-icons:github-fill',
+    //   url: 'github.io'
+    // },
+    // {
+    //   name: 'Vue',
+    //   icon: 'logos:vue',
+    //   url: 'vuejs.org'
+    // },
+    // {
+    //   name: 'Vite',
+    //   icon: 'vscode-icons:file-type-vite',
+    //   url: 'https://vitejs.dev/'
+    // },
+    // {
+    //   name: 'Angular',
+    //   icon: 'logos:angular-icon',
+    //   url: 'github.io'
+    // },
+    // {
+    //   name: 'React',
+    //   icon: 'logos:react',
+    //   url: 'github.io'
+    // },
+    // {
+    //   name: 'Webpack',
+    //   icon: 'logos:webpack',
+    //   url: 'github.io'
+    // }
   ]
   shortcut = Object.assign(shortcut, data)
 }

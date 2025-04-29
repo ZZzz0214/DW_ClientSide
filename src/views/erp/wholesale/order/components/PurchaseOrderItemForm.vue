@@ -4,89 +4,68 @@
     :model="formData"
     :rules="formRules"
     v-loading="formLoading"
-    label-width="0px"
+    label-width="120px"
     :inline-message="true"
     :disabled="disabled"
   >
-<el-table :data="formData" show-summary :summary-method="getSummaries" class="-mt-10px">
-      <el-table-column label="采购人员" min-width="120">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.purchaser" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="供应商名" min-width="110">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.supplier" />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="采购单价" min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input-number
-              disabled
-              v-model="row.purchasePrice"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="采购运费" min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input-number
-              disabled
-              v-model="row.shippingFee"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="采购其他费用" min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input-number
-              disabled
-              v-model="row.otherFees"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="采购总额" min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input-number
-              disabled
-              v-model="row.totalPurchaseAmount"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column align="center" fixed="right" label="操作" width="60">
+    <div
+      v-for="(item, index) in formData"
+      :key="index"
+      class="form-row"
+    >
+      <el-form-item label="采购人员" prop="purchaser">
+        <el-input  disabled v-model="item.purchaser" placeholder="请输入采购人员" />
+      </el-form-item>
+      <el-form-item label="供应商名" prop="supplier">
+        <el-input v-model="item.supplier" placeholder="请输入供应商名" />
+      </el-form-item>
+      <el-form-item label="采购单价" prop="purchasePrice">
+        <el-input-number
+          v-model="item.purchasePrice"
+          controls-position="right"
+          :min="0"
+          :precision="2"
+          placeholder="请输入采购单价"
+          class="!w-100%"
+        />
+      </el-form-item>
+      <el-form-item label="采购运费" prop="shippingFee">
+        <el-input-number
+          v-model="item.shippingFee"
+          controls-position="right"
+          :min="0"
+          :precision="2"
+          placeholder="请输入采购运费"
+          class="!w-100%"
+        />
+      </el-form-item>
+      <el-form-item label="采购其他费用" prop="otherFees">
+        <el-input-number
+          v-model="item.otherFees"
+          controls-position="right"
+          :min="0"
+          :precision="2"
+          placeholder="请输入采购其他费用"
+          class="!w-100%"
+        />
+      </el-form-item>
+      <el-form-item label="采购总额" prop="totalPurchaseAmount">
+        <el-input-number
+          v-model="item.totalPurchaseAmount"
+          controls-position="right"
+          :min="0"
+          :precision="2"
+          placeholder="请输入采购总额"
+          class="!w-100%"
+        />
+      </el-form-item>
+      <el-form-item align="center" fixed="right" label="操作" width="60">
         <template #default="{ $index }">
           <el-button @click="handleDelete($index)" link>—</el-button>
         </template>
-      </el-table-column>
-    </el-table>
+      </el-form-item>
+    </div>
+
   </el-form>
 
 
