@@ -30,54 +30,28 @@
       />
     </el-form-item>
 
-    <!-- 按件 - 首件数量 -->
+    <!-- 按件 - 按件数量 -->
     <el-form-item
       v-if="formData.shippingFeeType === 1"
-      label="首件数量"
-      prop="firstItemQuantity"
-    >
-      <el-input
-        v-model="formData.firstItemQuantity"
-        placeholder="请输入首件数量"
-        :disabled="isDetail"
-      />
-    </el-form-item>
-
-    <!-- 按件 - 首件价格 -->
-    <el-form-item
-      v-if="formData.shippingFeeType === 1"
-      label="首件价格"
-      prop="firstItemPrice"
-    >
-      <el-input
-        v-model="formData.firstItemPrice"
-        placeholder="请输入首件价格"
-        :disabled="isDetail"
-      />
-    </el-form-item>
-
-    <!-- 按件 - 续件数量 -->
-    <el-form-item
-      v-if="formData.shippingFeeType === 1"
-      label="续件数量"
+      label="按件数量"
       prop="additionalItemQuantity"
     >
       <el-input
         v-model="formData.additionalItemQuantity"
-        placeholder="请输入续件数量"
+        placeholder="请输入按件数量"
         :disabled="isDetail"
       />
     </el-form-item>
 
-    <!-- 按件 - 续件价格 -->
+    <!-- 按件 - 按件价格 -->
     <el-form-item
       v-if="formData.shippingFeeType === 1"
-      label="续件价格"
+      label="按件价格"
       prop="additionalItemPrice"
     >
       <el-input
         v-model="formData.additionalItemPrice"
-        placeholder="请输入续件价格"
+        placeholder="请输入按件价格"
         :disabled="isDetail"
       />
     </el-form-item>

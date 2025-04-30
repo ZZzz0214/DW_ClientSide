@@ -111,8 +111,17 @@ const handleProductSelected = (selectedProducts: any[]) => {
       name: product.name, // 组品名称
       shortName: product.shortName, // 组品简称
       remark: product.remark, // 备注信息
-      shippingFeeType: product.shippingFeeType, // 运费类型，默认为固定运费
-      fixedShippingFee: product.fixedShippingFee, // 固定运费
+
+      // 假设这些运费相关的字段已经存在于 product 对象中
+      shippingFeeType: product.shippingFeeType,
+      fixedShippingFee: product.fixedShippingFee,
+      additionalItemQuantity: product.additionalItemQuantity, //按件数量
+      additionalItemPrice: product.additionalItemPrice, //按件费用
+      weight: product.weight,
+      firstWeight: product.firstWeight,
+      firstWeightPrice: product.firstWeightPrice,
+      additionalWeight: product.additionalWeight,
+      additionalWeightPrice: product.additionalWeightPrice
     });
   });
   emit('items-updated', formData.value);

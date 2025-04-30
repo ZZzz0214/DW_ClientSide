@@ -10,10 +10,8 @@ export interface SalePriceVO {
   remark?: string; // 备注信息
   shippingFeeType?: number; // 运费类型（0：固定运费，1：按件计费，2：按重计费）
   fixedShippingFee?: number; // 固定运费（单位：元）
-  firstItemQuantity?: number; // 首件数量
-  firstItemPrice?: number; // 首件价格（单位：元）
-  additionalItemQuantity?: number; // 续件数量
-  additionalItemPrice?: number; // 续件价格（单位：元）
+  additionalItemQuantity?: number; // 按件数量
+  additionalItemPrice?: number; // 按件价格（单位：元）
   firstWeight?: number; // 首重重量（单位：kg）
   firstWeightPrice?: number; // 首重价格（单位：元）
   additionalWeight?: number; // 续重重量（单位：kg）

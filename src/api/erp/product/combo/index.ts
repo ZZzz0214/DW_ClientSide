@@ -15,10 +15,8 @@ export interface ComboVO {
   remark?: string; // 备注信息
   shippingFeeType?: number; // 运费类型（0：固定运费，1：按件计费，2：按重计费）（修改：改为驼峰命名）
   fixedShippingFee?: number; // 固定运费（单位：元）（修改：改为驼峰命名）
-  firstItemQuantity?: number; // 首件数量（修改：改为驼峰命名）
-  firstItemPrice?: number; // 首件价格（单位：元）（修改：改为驼峰命名）
-  additionalItemQuantity?: number; // 续件数量（修改：改为驼峰命名）
-  additionalItemPrice?: number; // 续件价格（单位：元）（修改：改为驼峰命名）
+  additionalItemQuantity?: number; // 按件数量（修改：改为驼峰命名）
+  additionalItemPrice?: number; // 按件价格（单位：元）（修改：改为驼峰命名）
   firstWeight?: number; // 首重重量（单位：kg）（修改：改为驼峰命名）
   firstWeightPrice?: number; // 首重价格（单位：元）（修改：改为驼峰命名）
   additionalWeight?: number; // 续重重量（单位：kg）（修改：改为驼峰命名）

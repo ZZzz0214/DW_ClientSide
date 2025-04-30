@@ -28,7 +28,7 @@ export interface ErpDistributionVO {
   comboProductId: number; // 关联组品表(也是组品编号)
   salesperson: string; // 销售人员
   customerName: string; // 客户名称
-  salePrice: number; // 销售单价
+  salePrice: number; // 出货单价
   saleShippingFee: number; // 出货运费
   saleOtherFees: number; // 销售其他费用
   totalSaleAmount: number; // 销售总额
