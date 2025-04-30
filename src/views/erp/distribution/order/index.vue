@@ -281,6 +281,7 @@ import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
+import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
@@ -295,7 +296,7 @@ const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
 const loading = ref(true) // 列表的加载中
-const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
+const list = ref<ErpDistributionVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
@@ -320,7 +321,7 @@ const userList = ref<UserVO[]>([]) // 用户列表
 const getList = async () => {
   loading.value = true
   try {
-    const data = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
+    const data = await ErpDistributionApi.getErpDistributionPage(queryParams)
 
     list.value = data.list
     total.value = data.total
@@ -354,7 +355,7 @@ const handleDelete = async (ids: number[]) => {
     // 删除的二次确认
     await message.delConfirm()
     // 发起删除
-    await PurchaseOrderApi.deletePurchaseOrder(ids)
+    await ErpDistributionApi.deleteErpDistribution(ids)
     message.success(t('common.delSuccess'))
     // 刷新列表
     await getList()
@@ -362,18 +363,18 @@ const handleDelete = async (ids: number[]) => {
   } catch {}
 }
 
-/** 审批/反审批操作 */
-const handleUpdateStatus = async (id: number, status: number) => {
-  try {
-    // 审批的二次确认
-    await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
-    // 发起审批
-    await PurchaseOrderApi.updatePurchaseOrderStatus(id, status)
-    message.success(`${status === 20 ? '审批' : '反审批'}成功`)
-    // 刷新列表
-    await getList()
-  } catch {}
-}
+// /** 审批/反审批操作 */
+// const handleUpdateStatus = async (id: number, status: number) => {
+//   try {
+//     // 审批的二次确认
+//     await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
+//     // 发起审批
+//     await ErpDistributionApi.updatePurchaseOrderStatus(id, status)
+//     message.success(`${status === 20 ? '审批' : '反审批'}成功`)
+//     // 刷新列表
+//     await getList()
+//   } catch {}
+// }
 
 /** 导出按钮操作 */
 const handleExport = async () => {
@@ -382,8 +383,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await PurchaseOrderApi.exportPurchaseOrder(queryParams)
-    download.excel(data, '销售订单.xls')
+    // const data = await ErpDistributionApi.exportErpDistribution(queryParams)
+    // download.excel(data, '销售订单.xls')
   } catch {
   } finally {
     exportLoading.value = false
@@ -391,8 +392,8 @@ const handleExport = async () => {
 }
 
 /** 选中操作 */
-const selectionList = ref<PurchaseOrderVO[]>([])
-const handleSelectionChange = (rows: PurchaseOrderVO[]) => {
+const selectionList = ref<ErpDistributionVO[]>([])
+const handleSelectionChange = (rows: ErpDistributionVO[]) => {
   selectionList.value = rows
 }
 
