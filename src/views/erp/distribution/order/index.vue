@@ -163,7 +163,7 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column min-width="180" label="订单单号" align="center" prop="no" />
+      <el-table-column min-width="180" label="订单单号" align="center" prop="id" />
       <el-table-column label="收件姓名" align="center" prop="receiverName" min-width="200" />
       <el-table-column label="联系电话" align="center" prop="receiverPhone" />
       <el-table-column label="物流公司" align="center" prop="logisticsCompany" />

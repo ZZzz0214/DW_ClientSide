@@ -34,6 +34,8 @@ export interface ErpDistributionVO {
   totalSaleAmount: number; // 出货总额
   salePriceId: number; // 关联销售价格表
   tenantId: number; // 租户编号
+  items:[];
+  saleItems:[];
 }
 
 // ERP 代发订单 API

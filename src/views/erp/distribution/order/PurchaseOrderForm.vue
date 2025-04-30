@@ -241,6 +241,31 @@ const open = async (type: string, id?: number) => {
     try {
       const data = await ErpDistributionApi.getErpDistribution(id);
       formData.value = data;
+
+
+      console.log("000000000000000000000000000000")
+      console.log(data)
+
+      // 如果是详情模式，将数据重新组装到 items 和 saleItems
+      if (type === 'detail') {
+        formData.value.items = [
+          {
+            purchasePrice: data.purchasePrice,
+            shippingFee: data.shippingFee,
+            otherFees: data.otherFees,
+            totalPurchaseAmount: data.totalPurchaseAmount,
+          },
+        ]
+        formData.value.saleItems = [
+          {
+            salePrice: data.salePrice,
+            saleShippingFee: data.saleShippingFee,
+            saleOtherFees: data.saleOtherFees,
+            totalSaleAmount: data.totalSaleAmount,
+          },
+        ]
+      }
+
     } finally {
       formLoading.value = false
     }
@@ -269,6 +294,28 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as ErpDistributionVO
+
+    // 从 items 和 saleItems 提取数据并赋值
+    if (data.items && data.items.length > 0) {
+      // 假设采购信息只有一条，取第一条数据
+      const purchaseItem = data.items[0]
+      data.purchasePrice = purchaseItem.purchasePrice || 0
+      data.shippingFee = purchaseItem.shippingFee || 0
+      data.otherFees = purchaseItem.otherFees || 0
+      data.totalPurchaseAmount = purchaseItem.totalPurchaseAmount || 0
+    }
+
+    if (data.saleItems && data.saleItems.length > 0) {
+      // 假设出货信息只有一条，取第一条数据
+      const saleItem = data.saleItems[0]
+      data.salePrice = saleItem.salePrice || 0
+      data.saleShippingFee = saleItem.saleShippingFee || 0
+      data.saleOtherFees = saleItem.saleOtherFees || 0
+      data.totalSaleAmount = saleItem.totalSaleAmount || 0
+    }
+
+    console.log("12312312313123132")
+    console.log(data)
     if (formType.value === 'create') {
       await ErpDistributionApi.createErpDistribution(data)
       message.success(t('common.createSuccess'))
