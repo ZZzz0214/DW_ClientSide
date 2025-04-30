@@ -163,9 +163,9 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column min-width="180" label="订单单号" align="center" prop="id" />
-      <el-table-column label="收件姓名" align="center" prop="receiverName" min-width="200" />
-      <el-table-column label="联系电话" align="center" prop="receiverPhone" />
+      <el-table-column label="订单单号" align="center" prop="no"  min-width="140" />
+      <el-table-column label="产品名称" align="center" prop="productName" min-width="140" />
+      <el-table-column label="收件姓名" align="center" prop="receiverName" />
       <el-table-column label="物流公司" align="center" prop="logisticsCompany" />
       <el-table-column label="物流单号" align="center" prop="trackingNumber" />
       <el-table-column label="产品数量" align="center" prop="productQuantity" />
@@ -174,7 +174,7 @@
       <el-table-column label="出货单价" align="center" prop="salePrice" />
       <el-table-column label="出货总额" align="center" prop="totalSaleAmount" />
 
-      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
+      <el-table-column label="状态" align="center" fixed="right" width="70" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
         </template>
@@ -290,6 +290,8 @@ const getList = async () => {
 
     list.value = data.list
     total.value = data.total
+
+    console.log("222222222222222")
     console.log(data)
   } finally {
     loading.value = false
