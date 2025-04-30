@@ -125,16 +125,6 @@
         class="w-80"
       />
     </el-form-item>
-
-    <!-- 对外最低批发单价 -->
-    <el-form-item label="对外最低批发单价" prop="minWholesalePrice">
-      <el-input-number
-        v-model="formData.minWholesalePrice"
-        :min="0"
-        placeholder="请输入对外最低批发单价"
-        class="w-80"
-      />
-    </el-form-item>
   </el-form>
 </template>
 <script lang="ts" setup>
@@ -197,7 +187,6 @@ const formData = reactive<ProductVO>({
   wholesalePrice: 0, // 批发单价
   remark: '', // 备注信息
   minPurchasePrice: 0, // 对外最低采购单价
-  minWholesalePrice: 0 // 对外最低批发单价
 })
 const rules = reactive({
   purchaser: [{ required: true, message: '采购人员不能为空', trigger: 'blur' }],
@@ -205,8 +194,7 @@ const rules = reactive({
   purchasePrice: [{ required: true, message: '采购单价不能为空', trigger: 'blur' }],
   wholesalePrice: [{ required: true, message: '批发单价不能为空', trigger: 'blur' }],
   remark: [{ required: true, message: '备注信息不能为空', trigger: 'blur' }],
-  minPurchasePrice: [{ required: true, message: '对外最低采购单价不能为空', trigger: 'blur' }],
-  minWholesalePrice: [{ required: true, message: '对外最低批发单价不能为空', trigger: 'blur' }]
+  minPurchasePrice: [{ required: true, message: '对外最低采购单价不能为空', trigger: 'blur' }]
 });
 
 /** 将传进来的值赋值给 formData */

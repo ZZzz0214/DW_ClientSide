@@ -50,18 +50,17 @@ export interface ProductVO {
   addonShippingArea?: string; // 加邮地区
   afterSalesStandard?: string; // 售后标准
   afterSalesScript?: string; // 售后话术
-  publicDomainEventMinimumPrice?: number; // 公域活动最低价
-  liveStreamingEventMinimunPrice?: number; // 直播活动最低价
-  pinduoduoEventMinimumPrice?: number; // 拼多多活动最低价
-  alibabaEventMinimunPrice?: number; // 阿里巴巴活动最低价
-  groupBuyEventMinimunPrice?: number; // 团购活动最低价
+  publicDomainEventMinimumPrice?: string; // 公域活动最低价
+  liveStreamingEventMinimunPrice?: string; // 直播活动最低价
+  pinduoduoEventMinimumPrice?: string; // 拼多多活动最低价
+  alibabaEventMinimunPrice?: string; // 阿里巴巴活动最低价
+  groupBuyEventMinimunPrice?: string; // 团购活动最低价
   purchaser?: string; // 采购人员
   supplier?: string; // 供应商名
   purchasePrice?: number; // 采购单价（单位：元）
   wholesalePrice?: number; // 批发单价（单位：元）
   remark?: string; // 备注信息
   minPurchasePrice?: number; // 对外最低采购单价（单位：元）
-  minWholesalePrice?: number; // 对外最低批发单价（单位：元）
   shippingFeeType?: number; // 运费类型（0：固定运费，1：按件计费，2：按重计费）
   fixedShippingFee?: number; // 固定运费（单位：元）
   additionalItemQuantity?: number; // 按件数量
@@ -70,6 +69,8 @@ export interface ProductVO {
   firstWeightPrice?: number; // 首重价格（单位：元）
   additionalWeight?: number; // 续重重量（单位：kg）
   additionalWeightPrice?: number; // 续重价格（单位：元）
+  expiryUnit?: string; // 保质日期单位，默认值为“天”
+  weightUnit?: string; // 产品重量单位，默认值为“g”
 }
 
 // ERP 产品 API

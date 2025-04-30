@@ -8,15 +8,6 @@
     :rules="rules"
     label-width="120px"
   >
-    <!-- 产品编号 -->
-<!--    <el-form-item label="产品编号" prop="id">-->
-<!--      <el-input-->
-<!--        v-model="formData.id"-->
-<!--        placeholder="请输入产品编号"-->
-<!--        class="w-80"-->
-<!--        :disabled="isDetail"-->
-<!--      />-->
-<!--    </el-form-item>-->
 
     <!-- 产品图片 -->
     <el-form-item label="产品图片" prop="image">
@@ -65,12 +56,24 @@
 
     <!-- 产品重量 -->
     <el-form-item label="产品重量" prop="weight">
-      <el-input-number
-        v-model="formData.weight"
-        :min="0"
-        placeholder="请输入产品重量"
-        class="w-80"
-      />
+      <el-col :span="4">
+        <el-input-number
+          v-model="formData.weight"
+          :min="0"
+          placeholder="请输入产品重量数值"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="2">
+        <el-select
+          v-model="formData.weightUnit"
+          placeholder="请选择单位"
+          class="w-80"
+        >
+          <el-option label="g" value="g" />
+          <el-option label="kg" value="kg" />
+        </el-select>
+      </el-col>
     </el-form-item>
 
     <!-- 产品日期 -->
@@ -86,12 +89,25 @@
 
     <!-- 保质日期 -->
     <el-form-item label="保质日期" prop="expiryDay">
-      <el-input-number
-        v-model="formData.expiryDay"
-        :min="0"
-        placeholder="请输入保质日期（天）"
-        class="w-80"
-      />
+      <el-col :span="4">
+        <el-input-number
+          v-model="formData.expiryDay"
+          :min="0"
+          placeholder="请输入保质日期数值"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="2">
+        <el-select
+          v-model="formData.expiryUnit"
+          placeholder="请选择单位"
+          class="w-80"
+        >
+          <el-option label="天" value="天" />
+          <el-option label="月" value="月" />
+          <el-option label="年" value="年" />
+        </el-select>
+      </el-col>
     </el-form-item>
 
     <!-- 品牌名称 -->
@@ -178,6 +194,8 @@ const formData = reactive<ProductVO>({
   weight: 0, // 产品重量
   productionDate:undefined, // 产品日期
   expiryDay: 0, // 保质日期
+  expiryUnit: '', // 保质日期单位，默认值为“天”
+  weightUnit: '', // 产品重量单位，默认值为“g”
 })
 
 const rules = reactive({

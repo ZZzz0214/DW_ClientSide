@@ -9,19 +9,17 @@
   >
     <!-- 公域活动最低价 -->
     <el-form-item label="公域活动最低价" prop="publicDomainEventMinimumPrice">
-      <el-input-number
+      <el-input
         v-model="formData.publicDomainEventMinimumPrice"
-        :min="0"
         placeholder="请输入公域活动最低价"
         class="w-80!"
       />
     </el-form-item>
 
     <!-- 直播活动最低价 -->
-    <el-form-item label="直播活动最低价" prop="liveStreamingEventMinimumPrice">
-      <el-input-number
+    <el-form-item label="直播活动最低价" prop="liveStreamingEventMinimunPrice">
+      <el-input
         v-model="formData.liveStreamingEventMinimunPrice"
-        :min="0"
         placeholder="请输入直播活动最低价"
         class="w-80!"
       />
@@ -29,29 +27,26 @@
 
     <!-- 多多活动最低价 -->
     <el-form-item label="多多活动最低价" prop="pinduoduoEventMinimumPrice">
-      <el-input-number
+      <el-input
         v-model="formData.pinduoduoEventMinimumPrice"
-        :min="0"
         placeholder="请输入多多活动最低价"
         class="w-80!"
       />
     </el-form-item>
 
     <!-- 阿里活动最低价 -->
-    <el-form-item label="阿里活动最低价" prop="alibabaEventMinimumPrice">
-      <el-input-number
+    <el-form-item label="阿里活动最低价" prop="alibabaEventMinimunPrice">
+      <el-input
         v-model="formData.alibabaEventMinimunPrice"
-        :min="0"
         placeholder="请输入阿里活动最低价"
         class="w-80!"
       />
     </el-form-item>
 
     <!-- 团购活动最低价 -->
-    <el-form-item label="团购活动最低价" prop="groupBuyEventMinimumPrice">
-      <el-input-number
+    <el-form-item label="团购活动最低价" prop="groupBuyEventMinimunPrice">
+      <el-input
         v-model="formData.groupBuyEventMinimunPrice"
-        :min="0"
         placeholder="请输入团购活动最低价"
         class="w-80!"
       />
@@ -80,11 +75,11 @@ const props = defineProps({
 const formRef = ref() // 表单Ref
 // 表单数据
 const formData = reactive<ProductVO>({
-  publicDomainEventMinimumPrice: 0, // 公域活动最低价
-  liveStreamingEventMinimunPrice: 0, // 直播活动最低价
-  pinduoduoEventMinimumPrice: 0, // 多多活动最低价
-  alibabaEventMinimunPrice: 0, // 阿里活动最低价
-  groupBuyEventMinimunPrice: 0 // 团购活动最低价
+  publicDomainEventMinimumPrice: '', // 公域活动最低价
+  liveStreamingEventMinimunPrice: '', // 直播活动最低价
+  pinduoduoEventMinimumPrice: '', // 多多活动最低价
+  alibabaEventMinimunPrice: '', // 阿里活动最低价
+  groupBuyEventMinimunPrice: '' // 团购活动最低价
 });
 
 const rules = reactive({

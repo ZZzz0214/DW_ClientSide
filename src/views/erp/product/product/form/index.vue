@@ -117,6 +117,7 @@ const formData = ref<ErpProductApi.ProductVO>({
   productSellingPoints: '', // 产品卖点
   standard: '', // 产品规格
   weight: undefined, // 产品重量（单位：kg）
+  weightUnit: '', // 产品重量单位，由下拉框选择
   productDimensions: '', // 产品长宽高
   cartonSpecifications: '', // 箱规
   cartonDimensions: '', // 箱规长宽高
@@ -131,17 +132,16 @@ const formData = ref<ErpProductApi.ProductVO>({
   addonShippingArea: '', // 加邮区域
   afterSalesStandard: '', // 售后标准
   afterSalesScript: '', // 售后话术
-  publicDomainEventMinimumPrice: undefined, // 公域活动最低价
-  liveStreamingEventMinimumPrice: undefined, // 直播活动最低价
-  pinduoduoEventMinimumPrice: undefined, // 拼多多活动最低价
-  alibabaEventMinimumPrice: undefined, // 阿里巴巴活动最低价
-  groupBuyEventMinimumPrice: undefined, // 团购活动最低价
+  publicDomainEventMinimumPrice: '', // 公域活动最低价
+  liveStreamingEventMinimunPrice: '', // 直播活动最低价
+  pinduoduoEventMinimumPrice: '', // 拼多多活动最低价
+  alibabaEventMinimunPrice: '', // 阿里巴巴活动最低价
+  groupBuyEventMinimunPrice: '', // 团购活动最低价
   purchaser: '', // 采购人员
   supplier: '', // 供应商
   purchasePrice: undefined, // 采购价格，单位：元
   wholesalePrice: undefined, // 批发单价，单位：元
   minPurchasePrice: undefined, // 对外最低采购单价，单位：元
-  minWholesalePrice: undefined, // 对外最低批发单价，单位：元
   shippingFeeType: undefined, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
   fixedShippingFee: undefined, // 固定运费，单位：元
   firstItemQuantity: undefined, // 首件数量
@@ -154,6 +154,7 @@ const formData = ref<ErpProductApi.ProductVO>({
   additionalWeightPrice: undefined, // 续重价格，单位：元
   productionDate: '', // 首批生产日期
   expiryDay: undefined, // 保质期天数
+  expiryUnit: '', // 保质日期单位，由下拉框选择
 });
 // /** 获得详情 */
 // const getDetail = async () => {
