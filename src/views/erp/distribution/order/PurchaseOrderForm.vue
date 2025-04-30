@@ -241,8 +241,6 @@ const open = async (type: string, id?: number) => {
     try {
       const data = await ErpDistributionApi.getErpDistribution(id);
       formData.value = data;
-
-
       console.log("000000000000000000000000000000")
       console.log(data)
 
@@ -250,6 +248,8 @@ const open = async (type: string, id?: number) => {
       if (type === 'detail') {
         formData.value.items = [
           {
+            purchaser : data.purchaser,
+            supplier : data.supplier,
             purchasePrice: data.purchasePrice,
             shippingFee: data.shippingFee,
             otherFees: data.otherFees,
@@ -258,6 +258,8 @@ const open = async (type: string, id?: number) => {
         ]
         formData.value.saleItems = [
           {
+            salesperson: data.salesperson,
+            customerName: data.customerName,
             salePrice: data.salePrice,
             saleShippingFee: data.saleShippingFee,
             saleOtherFees: data.saleOtherFees,
@@ -299,15 +301,22 @@ const submitForm = async () => {
     if (data.items && data.items.length > 0) {
       // 假设采购信息只有一条，取第一条数据
       const purchaseItem = data.items[0]
+      data.purchaser = purchaseItem.purchaser || 0
+      data.supplier = purchaseItem.supplier || 0
       data.purchasePrice = purchaseItem.purchasePrice || 0
       data.shippingFee = purchaseItem.shippingFee || 0
       data.otherFees = purchaseItem.otherFees || 0
       data.totalPurchaseAmount = purchaseItem.totalPurchaseAmount || 0
+
+      data.productName = purchaseItem.productName || 0
+      data.shippingCode = purchaseItem.shippingCode || 0
     }
 
     if (data.saleItems && data.saleItems.length > 0) {
       // 假设出货信息只有一条，取第一条数据
       const saleItem = data.saleItems[0]
+      data.salesperson = saleItem.salesperson || 0
+      data.customerName = saleItem.customerName || 0
       data.salePrice = saleItem.salePrice || 0
       data.saleShippingFee = saleItem.saleShippingFee || 0
       data.saleOtherFees = saleItem.saleOtherFees || 0
