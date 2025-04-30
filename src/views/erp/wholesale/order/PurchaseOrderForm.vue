@@ -195,21 +195,6 @@ const subTabsName = ref('purchase') // 默认激活“采购信息”标签
 const purchaseFormRef = ref() // 采购信息表单引用
 const saleFormRef = ref() // 出货信息表单引用
 
-/** 计算总金额和运费 */
-watch(
-  () => formData.value.items,
-  (val) => {
-    if (!val || val.length === 0) {
-      return;
-    }
-    const totalPrice = val.reduce((prev, curr) => prev + curr.totalPrice, 0);
-    const totalShippingFee = val.reduce((sum, item) => sum + (item.shippingFee || 0), 0);
-    formData.value.totalPrice = totalPrice;
-    formData.value.shippingFee = totalShippingFee; // 更新父表单的运费
-  },
-  { deep: true }
-);
-
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
@@ -222,6 +207,36 @@ const open = async (type: string, id?: number) => {
     try {
       const data = await ErpWholesaleApi.getErpWholesale(id);
       formData.value = data;
+
+      console.log("000000000000000000000000000000")
+      console.log(data)
+
+      // 如果是详情模式，将数据重新组装到 items 和 saleItems
+      if (type === 'detail') {
+        formData.value.items = [
+          {
+            purchaser : data.purchaser,
+            supplier : data.supplier,
+            purchasePrice: data.purchasePrice,
+            logisticsFee : data.logisticsFee,
+            truckFee : data.truckFee,
+            otherFees: data.otherFees,
+            totalPurchaseAmount: data.totalPurchaseAmount,
+          },
+        ]
+        formData.value.saleItems = [
+          {
+            salesperson: data.salesperson,
+            customerName: data.customerName,
+            salePrice: data.salePrice,
+            saleLogisticsFee: data.saleLogisticsFee,
+            saleTruckFee: data.saleTruckFee,
+            saleOtherFees: data.saleOtherFees,
+            totalSaleAmount: data.totalSaleAmount,
+          },
+        ]
+      }
+
     } finally {
       formLoading.value = false
     }
@@ -250,6 +265,34 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as ErpWholesaleVO
+
+    // 从 items 和 saleItems 提取数据并赋值
+    if (data.items && data.items.length > 0) {
+      // 假设采购信息只有一条，取第一条数据
+      const purchaseItem = data.items[0]
+      data.purchaser = purchaseItem.purchaser || 0
+      data.supplier = purchaseItem.supplier || 0
+      data.purchasePrice = purchaseItem.purchasePrice || 0
+      data.logisticsFee = purchaseItem.logisticsFee || 0
+      data.truckFee = purchaseItem.truckFee || 0
+      data.otherFees = purchaseItem.otherFees || 0
+      data.totalPurchaseAmount = purchaseItem.totalPurchaseAmount || 0
+
+      data.productName = purchaseItem.productName || 0
+    }
+
+    if (data.saleItems && data.saleItems.length > 0) {
+      // 假设出货信息只有一条，取第一条数据
+      const saleItem = data.saleItems[0]
+      data.salesperson = saleItem.salesperson || 0
+      data.customerName = saleItem.customerName || 0
+      data.salePrice = saleItem.salePrice || 0
+      data.saleLogisticsFee = saleItem.saleLogisticsFee || 0
+      data.saleTruckFee = saleItem.saleTruckFee || 0
+      data.saleOtherFees = saleItem.saleOtherFees || 0
+      data.totalSaleAmount = saleItem.totalSaleAmount || 0
+    }
+
     if (formType.value === 'create') {
       await ErpWholesaleApi.createErpWholesale(data)
       message.success(t('common.createSuccess'))

@@ -27,6 +27,8 @@ export interface ErpWholesaleVO {
   saleOtherFees: number; // 销售其他费用
   totalSaleAmount: number; // 出货总额
   tenantId: number; // 租户编号
+  items:[];
+  saleItems:[];
 }
 
 // ERP 批发订单 API
