@@ -5,7 +5,7 @@ export interface ErpWholesaleVO {
   receiverName: string; // 收件人姓名
   receiverPhone: string; // 收件人电话
   receiverAddress: string; // 收件地址
-  afterSalesStatus: number; // 售后状况
+  afterSalesStatus: string; // 售后状况
   remark: string; // 备注信息
   productName: string; // 产品名称
   shippingCode: string; // 发货编码

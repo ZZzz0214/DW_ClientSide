@@ -4,68 +4,94 @@
     :model="formData"
     :rules="formRules"
     v-loading="formLoading"
-    label-width="120px"
+    label-width="0px"
     :inline-message="true"
     :disabled="disabled"
   >
-    <div
-      v-for="(item, index) in formData"
-      :key="index"
-      class="form-row"
-    >
-      <el-form-item label="采购人员" prop="purchaser">
-        <el-input  disabled v-model="item.purchaser" placeholder="请输入采购人员" />
-      </el-form-item>
-      <el-form-item label="供应商名" prop="supplier">
-        <el-input v-model="item.supplier" placeholder="请输入供应商名" />
-      </el-form-item>
-      <el-form-item label="采购单价" prop="purchasePrice">
-        <el-input-number
-          v-model="item.purchasePrice"
-          controls-position="right"
-          :min="0"
-          :precision="2"
-          placeholder="请输入采购单价"
-          class="!w-100%"
-        />
-      </el-form-item>
-      <el-form-item label="采购运费" prop="shippingFee">
-        <el-input-number
-          v-model="item.shippingFee"
-          controls-position="right"
-          :min="0"
-          :precision="2"
-          placeholder="请输入采购运费"
-          class="!w-100%"
-        />
-      </el-form-item>
-      <el-form-item label="采购其他费用" prop="otherFees">
-        <el-input-number
-          v-model="item.otherFees"
-          controls-position="right"
-          :min="0"
-          :precision="2"
-          placeholder="请输入采购其他费用"
-          class="!w-100%"
-        />
-      </el-form-item>
-      <el-form-item label="采购总额" prop="totalPurchaseAmount">
-        <el-input-number
-          v-model="item.totalPurchaseAmount"
-          controls-position="right"
-          :min="0"
-          :precision="2"
-          placeholder="请输入采购总额"
-          class="!w-100%"
-        />
-      </el-form-item>
-      <el-form-item align="center" fixed="right" label="操作" width="60">
+<el-table :data="formData" class="-mt-10px">
+      <el-table-column label="采购人员" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.purchaser" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="供应商名" min-width="120">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.supplier" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="采购批发单价" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              disabled
+              v-model="row.purchasePrice"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="物流费用" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input-number
+              v-model="row.logisticsFee"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="货拉拉费用" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input-number
+              v-model="row.truckFee"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="采购其他费用" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input-number
+              v-model="row.otherFees"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="采购总额" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              disabled
+              v-model="row.totalPurchaseAmount"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column align="center" fixed="right" label="操作" width="60">
         <template #default="{ $index }">
           <el-button @click="handleDelete($index)" link>—</el-button>
         </template>
-      </el-form-item>
-    </div>
-
+      </el-table-column>
+    </el-table>
   </el-form>
 
 
@@ -92,7 +118,9 @@ import {
 const props = defineProps<{
   items: undefined
   disabled: false
+  ssb: number
 }>()
+
 const formLoading = ref(false) // 表单的加载中
 const formData = ref([])
 const formRules = reactive({
@@ -112,67 +140,32 @@ watch(
   { immediate: true }
 )
 
-/** 监听合同产品变化，计算合同产品总价 */
-watch(
-  () => formData.value,
-  (val) => {
-    if (!val || val.length === 0) {
-      return
-    }
-    // 循环处理
-    val.forEach((item) => {
-      console.log('------------[]][][][][][][][]')
-      console.log(item)
-      // 计算运费
-      if (item.shippingFeeType === 0) {
-        // 固定运费
-        item.shippingFee = item.fixedShippingFee;
-      } else if (item.shippingFeeType === 1) {
-        // 按件运费
-        if (item.count <= item.firstItemQuantity) {
-          item.shippingFee = item.firstItemPrice;
-        } else {
-          item.shippingFee = item.firstItemPrice + Math.ceil((item.count - item.firstItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
-        }
-      } else if (item.shippingFeeType === 2) {
-        // 按重量
-        const totalWeight = item.count * item.weight;
-        if (totalWeight <= item.firstWeight) {
-          item.shippingFee = item.firstWeightPrice;
-        } else {
-          item.shippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
-        }
-      }
-      item.totalProductPrice = erpPriceMultiply(item.purchasePrice, item.count) + erpPriceMultiply(item.otherFees, 1) + erpPriceMultiply(item.shippingFee, 1);
-      if (item.totalProductPrice != null) {
-        item.totalPrice = item.totalProductPrice
-      } else {
-        item.totalPrice = undefined
-      }
-    })
-  },
-  { deep: true }
-)
-
-/** 合计 */
-const getSummaries = (param: any) => {
-  const { columns, data } = param;
-  const sums: string[] = [];
-  columns.forEach((column, index: number) => {
-    if (index === 0) {
-      sums[index] = '合计';
-      return;
-    }
-    if (['count', 'shippingFee', 'totalProductPrice', 'otherFees', 'totalPrice'].includes(column.property)) {
-      const sum = getSumValue(data.map((item) => Number(item[column.property])));
-      sums[index] =
-        column.property === 'count' ? erpCountInputFormatter(sum) : erpPriceInputFormatter(sum);
-    } else {
-      sums[index] = '';
-    }
+// 监听父组件传递的产品数量变化
+watch(() => props.ssb, (newVal) => {
+  formData.value.forEach((item) => {
+    item.count = newVal; // 更新子组件中的产品数量
+    updateTotalPrice(item); // 重新计算合计
   });
-  return sums
-}
+}, { immediate: true });
+
+// 监听子组件中采购其他费用的变化
+watch(() => formData.value, (newVal) => {
+  newVal.forEach((item) => {
+    updateTotalPrice(item); // 重新计算合计
+  });
+}, { deep: true });
+
+// 计算运费的方法
+
+
+// 更新合计的方法
+const updateTotalPrice = (item) => {
+  item.totalProductPrice =
+    item.purchasePrice * item.count + item.logisticsFee + item.otherFees + item.truckFee;
+  item.totalPurchaseAmount = item.totalProductPrice;
+};
+
+
 
 const handleAdd = () => {
   selectProductRef.value.open(); // 调用子组件的 open 方法
@@ -187,8 +180,9 @@ const handleProductSelected = (selectedProducts: any[]) => {
     formData.value.push({
       purchaser: product.purchaser, //采购人员
       supplier: product.supplier, //供应商名
-      purchasePrice: product.purchasePrice, //采购代发单价
-      shippingFee: 1, //采购运费
+      purchasePrice: product.wholesalePrice, //采购批发单价
+      logisticsFee: 1, //物流费用
+      truckFee: 1, //货拉拉费
       otherFees: 1, //采购其他费用
       totalPurchaseAmount: 1, //采购总额
 
@@ -196,10 +190,8 @@ const handleProductSelected = (selectedProducts: any[]) => {
       // 假设这些运费相关的字段已经存在于 product 对象中
       shippingFeeType: product.shippingFeeType,
       fixedShippingFee: product.fixedShippingFee,
-      firstItemQuantity: product.firstItemQuantity,
-      firstItemPrice: product.firstItemPrice,
-      additionalItemQuantity: product.additionalItemQuantity,
-      additionalItemPrice: product.additionalItemPrice,
+      additionalItemQuantity: product.additionalItemQuantity, //按件数量
+      additionalItemPrice: product.additionalItemPrice, //按件费用
       weight: product.weight,
       firstWeight: product.firstWeight,
       firstWeightPrice: product.firstWeightPrice,
@@ -210,9 +202,6 @@ const handleProductSelected = (selectedProducts: any[]) => {
 
 };
 
-const formatProductType = (type: number) => {
-  return type === 0 ? '单品' : '组合产品';
-};
 
 /** 表单校验 */
 const validate = () => {

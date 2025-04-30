@@ -14,27 +14,11 @@
             <el-input disabled v-model="formData.no" placeholder="保存时自动生成" />
           </el-form-item>
         </el-col>
-        <el-col :span="7">
-          <el-form-item label="物流公司" prop="logisticsCompany">
-            <el-input disabled v-model="formData.logisticsCompany" placeholder="添加物流信息后自动生成" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="物流单号" prop="trackingNumber">
-            <el-input disabled v-model="formData.trackingNumber" placeholder="获取后自动生成" />
-          </el-form-item>
-        </el-col>
-        <el-row justify="center" class="mt-0" v-if="!disabled">
-          <el-button @click="handleAddComboProduct" round>+ 添加物流信息</el-button>
-        </el-row>
+
+
         <el-col :span="8">
           <el-form-item label="产品名称" prop="productName">
             <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="产品数量" prop="productQuantity">
-            <el-input disabled v-model="formData.productQuantity" placeholder="获取后自动生成" />
           </el-form-item>
         </el-col>
         <el-col :span="7">
@@ -42,19 +26,16 @@
             <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="原表商品" prop="originalProductName">
-            <el-input disabled v-model="formData.originalProductName" placeholder="获取后自动生成" />
-          </el-form-item>
-        </el-col>
         <el-col :span="6">
-          <el-form-item label="原表规格" prop="originalStandard">
-            <el-input disabled v-model="formData.originalStandard" placeholder="获取后自动生成" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="7">
-          <el-form-item label="原表数量" prop="originalQuantity">
-            <el-input disabled v-model="formData.originalQuantity" placeholder="获取后自动生成" />
+          <el-form-item label="产品数量" prop="productQuantity">
+            <el-input-number
+              v-model="formData.productQuantity"
+              controls-position="right"
+              :min="1"
+              :precision="2"
+              class="!w-100%"
+              placeholder="请输入产品数量"
+            />
           </el-form-item>
         </el-col>
 
@@ -68,8 +49,11 @@
       <!-- 子表的表单 -->
       <ContentWrap>
         <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
-          <el-tab-pane label="采购信息" name="item">
-            <PurchaseOrderItemForm ref="itemFormRef" :items="formData.items" :disabled="disabled" />
+          <el-tab-pane label="采购信息" name="purchase">
+            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" />
+          </el-tab-pane>
+          <el-tab-pane label="出货信息" name="sale">
+            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" />
           </el-tab-pane>
         </el-tabs>
       </ContentWrap>
@@ -141,7 +125,10 @@
 
 <script setup lang="ts">
 import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
+import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
+import { ErpWholesaleApi, ErpWholesaleVO } from '@/api/erp/wholesale'
 import PurchaseOrderItemForm from './components/PurchaseOrderItemForm.vue'
+import SalePriceItemForm from './components/SalePriceItemForm.vue'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils'
 import * as UserApi from '@/api/system/user'
@@ -159,35 +146,39 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改；detail - 详情
 const formData = ref({
   id: undefined,
-  supplierId: undefined,//供应商
-  accountId: undefined,//结算账户
-  orderTime: undefined,//订单时间
-  remark: undefined,//备注
-  fileUrl: '',//附件
-  totalPrice: 0,//总金额
-  depositPrice: 0,//支付订金
-  shippingFee: 0,//运费
-  items: [],//列表
-  item: [],//列表
-  no: undefined,// 订单单号，后端返回
-  purchaser: '',// 采购人员
-  supplier: '',// 供应商名
-  purchasePrice: 0,// 采购单价
-  otherFees: 0,// 采购其他费用
-  totalPurchaseAmount: 0,// 采购总额
-  comboProductId: 0,// 组合产品ID
-  logisticsCompany: '', // 物流公司
-  trackingNumber: '', // 物流单号
+  supplierId: undefined, // 供应商
+  accountId: undefined, // 结算账户
+  orderTime: undefined, // 订单时间
+  remark: undefined, // 备注
+  fileUrl: '', // 附件
+
+  items: [], // 采购列表
+  saleItems: [], // 出货列表
+
+  comboProductId: 0, // 组合产品ID
   productName: '', // 产品名称
   productQuantity: 0, // 产品数量
   shippingCode: '', // 发货编码
-  originalProductName: '', // 原表商品
-  originalStandard: '', // 原表规格
-  originalQuantity: 0, // 原表数量
   receiverName: '', // 收件姓名
   receiverPhone: '', // 收件电话
   receiverAddress: '', // 收件地址
-  afterSalesStatus: '' // 售后状况
+  afterSalesStatus: '', // 售后状况
+
+  no: undefined, // 订单单号，后端返回
+  purchaser: '', // 采购人员
+  supplier: '', // 供应商名
+  purchasePrice: 0, // 采购单价
+  truckFee: 0, // 货拉拉费
+  logisticsFee: 0, // 物流费用
+  otherFees: 0, // 采购其他费用
+  totalPurchaseAmount: 0, // 采购总额
+  salesperson: '', // 销售人员
+  customerName: '', // 客户名称
+  salePrice: 0, // 出货单价
+  saleTruckFee: 0, // 销售货拉拉费
+  saleLogisticsFee: 0, // 销售物流费用
+  saleOtherFees: 0, // 销售其他费用
+  totalSaleAmount: 0, // 出货总额
 })
 const formRules = reactive({
   supplierId: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
@@ -200,32 +191,20 @@ const accountList = ref<AccountVO[]>([]) // 账户列表
 const userList = ref<UserApi.UserVO[]>([]) // 用户列表
 
 /** 子表的表单 */
-const subTabsName = ref('item')
-const itemFormRef = ref()
+const subTabsName = ref('purchase') // 默认激活“采购信息”标签
+const purchaseFormRef = ref() // 采购信息表单引用
+const saleFormRef = ref() // 出货信息表单引用
 
-/** 计算 discountPrice、totalPrice 价格 */
-watch(
-  () => formData.value,
-  (val) => {
-    if (!val) {
-      return
-    }
-    const totalPrice = val.items.reduce((prev, curr) => prev + curr.totalPrice, 0)
-    // const discountPrice =
-    //   val.discountPercent != null ? erpPriceMultiply(totalPrice, val.discountPercent / 100.0) : 0
-    // formData.value.discountPrice = discountPrice
-    formData.value.totalPrice = totalPrice //   - discountPrice
-  },
-  { deep: true }
-)
-
+/** 计算总金额和运费 */
 watch(
   () => formData.value.items,
   (val) => {
     if (!val || val.length === 0) {
       return;
     }
+    const totalPrice = val.reduce((prev, curr) => prev + curr.totalPrice, 0);
     const totalShippingFee = val.reduce((sum, item) => sum + (item.shippingFee || 0), 0);
+    formData.value.totalPrice = totalPrice;
     formData.value.shippingFee = totalShippingFee; // 更新父表单的运费
   },
   { deep: true }
@@ -241,9 +220,8 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      const data = await PurchaseOrderApi.getPurchaseOrder(id);
+      const data = await ErpWholesaleApi.getErpWholesale(id);
       formData.value = data;
-      // 确保子表单的运费和合计运费正确显示
       formData.value.items.forEach(item => {
         item.totalProductPrice = item.purchasePrice + (item.shippingFee || 0);
         item.totalPrice = item.totalProductPrice;
@@ -270,16 +248,17 @@ const emit = defineEmits(['success']) // 定义 success 事件，用于操作成
 const submitForm = async () => {
   // 校验表单
   await formRef.value.validate()
-  await itemFormRef.value.validate()
+  await purchaseFormRef.value.validate()
+  await saleFormRef.value.validate()
   // 提交请求
   formLoading.value = true
   try {
-    const data = formData.value as unknown as PurchaseOrderVO
+    const data = formData.value as unknown as ErpWholesaleVO
     if (formType.value === 'create') {
-      await PurchaseOrderApi.createPurchaseOrder(data)
+      await ErpWholesaleApi.createErpWholesale(data)
       message.success(t('common.createSuccess'))
     } else {
-      await PurchaseOrderApi.updatePurchaseOrder(data)
+      await ErpWholesaleApi.updateErpWholesale(data)
       message.success(t('common.updateSuccess'))
     }
     dialogVisible.value = false
@@ -294,18 +273,39 @@ const submitForm = async () => {
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    supplierId: undefined,  //供应商
-    accountId: undefined,  //结算账户
-    orderTime: undefined,  //订单时间
-    remark: undefined,  //备注
-    fileUrl: '',  //附件
-    // discountPercent: 0,  //优惠率
-    // discountPrice: 0,  //付款优惠
-    totalPrice: 0, //总金额
-    depositPrice: 0,  //支付订金
-    shippingFee:0, //运费
-    items: [],  //列表
-    no: undefined // 订单单号，后端返回
+    supplierId: undefined, // 供应商
+    accountId: undefined, // 结算账户
+    orderTime: undefined, // 订单时间
+    remark: undefined, // 备注
+    fileUrl: '', // 附件
+
+    items: [], // 采购列表
+    saleItems: [], // 出货列表
+
+    comboProductId: 0, // 组合产品ID
+    productName: '', // 产品名称
+    productQuantity: 0, // 产品数量
+    shippingCode: '', // 发货编码
+    receiverName: '', // 收件姓名
+    receiverPhone: '', // 收件电话
+    receiverAddress: '', // 收件地址
+    afterSalesStatus: '', // 售后状况
+
+    no: undefined, // 订单单号，后端返回
+    purchaser: '', // 采购人员
+    supplier: '', // 供应商名
+    purchasePrice: 0, // 采购单价
+    truckFee: 0, // 货拉拉费
+    logisticsFee: 0, // 物流费用
+    otherFees: 0, // 采购其他费用
+    totalPurchaseAmount: 0, // 采购总额
+    salesperson: '', // 销售人员
+    customerName: '', // 客户名称
+    salePrice: 0, // 出货单价
+    saleTruckFee: 0, // 销售货拉拉费
+    saleLogisticsFee: 0, // 销售物流费用
+    saleOtherFees: 0, // 销售其他费用
+    totalSaleAmount: 0, // 出货总额
   }
   formRef.value?.resetFields()
 }

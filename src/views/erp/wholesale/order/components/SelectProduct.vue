@@ -32,11 +32,9 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="产品编号" prop="id" />
       <el-table-column label="产品名称" prop="name" />
-      <el-table-column label="采购代发单价" prop="purchasePrice" />
-      <el-table-column label="采购运费" prop="purchasePrice" />
+      <el-table-column label="采购批发单价" prop="wholesalePrice" />
       <el-table-column label="采购人员" prop="purchaser" />
       <el-table-column label="供应商名" prop="supplier" />
-      <el-table-column label="原表数量" prop="totalQuantity" />
     </el-table>
 
     <template #footer>

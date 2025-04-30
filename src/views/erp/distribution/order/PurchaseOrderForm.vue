@@ -181,17 +181,10 @@ const formData = ref({
   orderTime: undefined, // 订单时间
   remark: undefined, // 备注
   fileUrl: '', // 附件
-  totalPrice: 0, // 总金额
-  depositPrice: 0, // 支付订金
-  shippingFee: 0, // 运费
+
   items: [], // 采购列表
   saleItems: [], // 出货列表
-  no: undefined, // 订单单号，后端返回
-  purchaser: '', // 采购人员
-  supplier: '', // 供应商名
-  purchasePrice: 0, // 采购单价
-  otherFees: 0, // 采购其他费用
-  totalPurchaseAmount: 0, // 采购总额
+
   comboProductId: 0, // 组合产品ID
   logisticsCompany: '', // 物流公司
   trackingNumber: '', // 物流单号
@@ -204,7 +197,21 @@ const formData = ref({
   receiverName: '', // 收件姓名
   receiverPhone: '', // 收件电话
   receiverAddress: '', // 收件地址
-  afterSalesStatus: '' // 售后状况
+  afterSalesStatus: '', // 售后状况
+
+  no: undefined, // 订单单号，后端返回
+  purchaser: '', // 采购人员
+  supplier: '', // 供应商名
+  purchasePrice: 0, // 采购单价
+  shippingFee: 0, // 采购运费
+  otherFees: 0, // 采购其他费用
+  totalPurchaseAmount: 0, // 采购总额
+  salesperson: '', // 销售人员
+  customerName: '', // 客户名称
+  salePrice: 0, // 出货单价
+  saleShippingFee: 0, // 出货运费
+  saleOtherFees: 0, // 销售其他费用
+  totalSaleAmount: 0, // 出货总额
 })
 const formRules = reactive({
   supplierId: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
@@ -221,20 +228,6 @@ const subTabsName = ref('purchase') // 默认激活“采购信息”标签
 const purchaseFormRef = ref() // 采购信息表单引用
 const saleFormRef = ref() // 出货信息表单引用
 
-/** 计算总金额和运费 */
-watch(
-  () => formData.value.items,
-  (val) => {
-    if (!val || val.length === 0) {
-      return;
-    }
-    const totalPrice = val.reduce((prev, curr) => prev + curr.totalPrice, 0);
-    const totalShippingFee = val.reduce((sum, item) => sum + (item.shippingFee || 0), 0);
-    formData.value.totalPrice = totalPrice;
-    formData.value.shippingFee = totalShippingFee; // 更新父表单的运费
-  },
-  { deep: true }
-);
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -242,20 +235,6 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
-  // 修改时，设置数据
-  if (id) {
-    formLoading.value = true
-    try {
-      const data = await ErpDistributionApi.getErpDistribution(id);
-      formData.value = data;
-      formData.value.items.forEach(item => {
-        item.totalProductPrice = item.purchasePrice + (item.shippingFee || 0);
-        item.totalPrice = item.totalProductPrice;
-      });
-    } finally {
-      formLoading.value = false
-    }
-  }
   // 加载供应商列表
   supplierList.value = await SupplierApi.getSupplierSimpleList()
   // 加载用户列表
@@ -304,17 +283,10 @@ const resetForm = () => {
     orderTime: undefined, // 订单时间
     remark: undefined, // 备注
     fileUrl: '', // 附件
-    totalPrice: 0, // 总金额
-    depositPrice: 0, // 支付订金
-    shippingFee: 0, // 运费
+
     items: [], // 采购列表
     saleItems: [], // 出货列表
-    no: undefined, // 订单单号，后端返回
-    purchaser: '', // 采购人员
-    supplier: '', // 供应商名
-    purchasePrice: 0, // 采购单价
-    otherFees: 0, // 采购其他费用
-    totalPurchaseAmount: 0, // 采购总额
+
     comboProductId: 0, // 组合产品ID
     logisticsCompany: '', // 物流公司
     trackingNumber: '', // 物流单号
@@ -327,7 +299,21 @@ const resetForm = () => {
     receiverName: '', // 收件姓名
     receiverPhone: '', // 收件电话
     receiverAddress: '', // 收件地址
-    afterSalesStatus: '' // 售后状况
+    afterSalesStatus: '', // 售后状况
+
+    no: undefined, // 订单单号，后端返回
+    purchaser: '', // 采购人员
+    supplier: '', // 供应商名
+    purchasePrice: 0, // 采购单价
+    shippingFee: 0, // 采购运费
+    otherFees: 0, // 采购其他费用
+    totalPurchaseAmount: 0, // 采购总额
+    salesperson: '', // 销售人员
+    customerName: '', // 客户名称
+    salePrice: 0, // 出货单价
+    saleShippingFee: 0, // 出货运费
+    saleOtherFees: 0, // 销售其他费用
+    totalSaleAmount: 0, // 出货总额
   }
   formRef.value?.resetFields()
 }
