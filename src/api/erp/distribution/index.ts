@@ -31,7 +31,7 @@ export interface ErpDistributionVO {
   salePrice: number; // 出货单价
   saleShippingFee: number; // 出货运费
   saleOtherFees: number; // 销售其他费用
-  totalSaleAmount: number; // 销售总额
+  totalSaleAmount: number; // 出货总额
   salePriceId: number; // 关联销售价格表
   tenantId: number; // 租户编号
 }

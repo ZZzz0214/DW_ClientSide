@@ -127,7 +127,7 @@
           type="primary"
           plain
           @click="openForm('create')"
-          v-hasPermi="['erp:purchase-order:create']"
+          v-hasPermi="['erp:distribution:create']"
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
@@ -136,7 +136,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:purchase-order:export']"
+          v-hasPermi="['erp:distribution:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -144,7 +144,7 @@
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
-          v-hasPermi="['erp:purchase-order:delete']"
+          v-hasPermi="['erp:distribution:delete']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:delete" class="mr-5px" /> 删除
@@ -164,52 +164,16 @@
     >
       <el-table-column width="30" label="选择" type="selection" />
       <el-table-column min-width="180" label="订单单号" align="center" prop="no" />
-      <el-table-column label="产品信息" align="center" prop="productNames" min-width="200" />
-      <el-table-column label="供应商" align="center" prop="supplierName" />
-      <el-table-column
-        label="订单时间"
-        align="center"
-        prop="orderTime"
-        :formatter="dateFormatter2"
-        width="120px"
-      />
-      <el-table-column label="创建人" align="center" prop="creatorName" />
-      <el-table-column
-        label="总数量"
-        align="center"
-        prop="totalCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="入库数量"
-        align="center"
-        prop="inCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="退货数量"
-        align="center"
-        prop="returnCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="金额合计"
-        align="center"
-        prop="totalPrice"
-        :formatter="erpPriceTableColumnFormatter"
-      />
-<!--      <el-table-column-->
-<!--        label="含税金额"-->
-<!--        align="center"-->
-<!--        prop="totalPrice"-->
-<!--        :formatter="erpPriceTableColumnFormatter"-->
-<!--      />-->
-      <el-table-column
-        label="支付订金"
-        align="center"
-        prop="depositPrice"
-        :formatter="erpPriceTableColumnFormatter"
-      />
+      <el-table-column label="收件姓名" align="center" prop="receiverName" min-width="200" />
+      <el-table-column label="联系电话" align="center" prop="receiverPhone" />
+      <el-table-column label="物流公司" align="center" prop="logisticsCompany" />
+      <el-table-column label="物流单号" align="center" prop="trackingNumber" />
+      <el-table-column label="产品数量" align="center" prop="productQuantity" />
+      <el-table-column label="采购单价" align="center" prop="purchasePrice" />
+      <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" />
+      <el-table-column label="出货单价" align="center" prop="salePrice" />
+      <el-table-column label="出货总额" align="center" prop="totalSaleAmount" />
+
       <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
@@ -220,7 +184,7 @@
           <el-button
             link
             @click="openForm('detail', scope.row.id)"
-            v-hasPermi="['erp:purchase-order:query']"
+            v-hasPermi="['erp:distribution:query']"
           >
             详情
           </el-button>
@@ -228,7 +192,7 @@
             link
             type="primary"
             @click="openForm('update', scope.row.id)"
-            v-hasPermi="['erp:purchase-order:update']"
+            v-hasPermi="['erp:distribution:update']"
             :disabled="scope.row.status === 20"
           >
             编辑
@@ -255,7 +219,7 @@
             link
             type="danger"
             @click="handleDelete([scope.row.id])"
-            v-hasPermi="['erp:purchase-order:delete']"
+            v-hasPermi="['erp:distribution:delete']"
           >
             删除
           </el-button>
@@ -302,14 +266,15 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   no: undefined,
-  supplierId: undefined,
-  productId: undefined,
-  orderTime: [],
-  status: undefined,
-  remark: undefined,
-  creator: undefined,
-  inStatus: undefined,
-  returnStatus: undefined
+  receiverName: undefined,
+  receiverPhone: undefined,
+  logisticsCompany: undefined,
+  trackingNumber: undefined,
+  productQuantity: undefined,
+  purchasePrice: undefined,
+  totalPurchaseAmount: undefined,
+  salePrice: undefined,
+  totalSaleAmount: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
