@@ -235,6 +235,16 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  // 修改时，设置数据
+  if (id) {
+    formLoading.value = true
+    try {
+      const data = await ErpDistributionApi.getErpDistribution(id);
+      formData.value = data;
+    } finally {
+      formLoading.value = false
+    }
+  }
   // 加载供应商列表
   supplierList.value = await SupplierApi.getSupplierSimpleList()
   // 加载用户列表

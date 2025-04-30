@@ -222,10 +222,6 @@ const open = async (type: string, id?: number) => {
     try {
       const data = await ErpWholesaleApi.getErpWholesale(id);
       formData.value = data;
-      formData.value.items.forEach(item => {
-        item.totalProductPrice = item.purchasePrice + (item.shippingFee || 0);
-        item.totalPrice = item.totalProductPrice;
-      });
     } finally {
       formLoading.value = false
     }
