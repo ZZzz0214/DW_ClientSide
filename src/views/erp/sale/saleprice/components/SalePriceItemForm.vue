@@ -32,18 +32,6 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="运费类型" min-width="100">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.shippingFeeType`"  class="mb-0px!">
-            <el-select disabled v-model="row.shippingFeeType" >
-              <el-option label="固定运费" :value="0" />
-              <el-option label="按件计费" :value="1" />
-              <el-option label="按重计费" :value="2" />
-            </el-select>
-          </el-form-item>
-        </template>
-      </el-table-column>
-
       <el-table-column align="center" fixed="right" label="操作" width="60">
         <template #default="{ $index }">
           <el-button @click="handleDelete($index)" link>—</el-button>
@@ -66,7 +54,7 @@ import { erpPriceInputFormatter, erpPriceMultiply, getSumValue } from '@/utils';
 import { ElMessage } from 'element-plus';
 
 const props = defineProps<{
-  items: any[]
+  item: any[]
   disabled: boolean
 }>();
 
@@ -80,7 +68,7 @@ const selectProductRef = ref();
 
 /** 初始化设置子表项 */
 watch(
-  () => props.items,
+  () => props.item,
   async (val) => {
     formData.value = val;
   },
@@ -111,17 +99,6 @@ const handleProductSelected = (selectedProducts: any[]) => {
       name: product.name, // 组品名称
       shortName: product.shortName, // 组品简称
       remark: product.remark, // 备注信息
-
-      // 假设这些运费相关的字段已经存在于 product 对象中
-      shippingFeeType: product.shippingFeeType,
-      fixedShippingFee: product.fixedShippingFee,
-      additionalItemQuantity: product.additionalItemQuantity, //按件数量
-      additionalItemPrice: product.additionalItemPrice, //按件费用
-      weight: product.weight,
-      firstWeight: product.firstWeight,
-      firstWeightPrice: product.firstWeightPrice,
-      additionalWeight: product.additionalWeight,
-      additionalWeightPrice: product.additionalWeightPrice
     });
   });
   emit('items-updated', formData.value);

@@ -29,7 +29,16 @@
           <el-tab-pane label="销售价格清单" name="item">
             <SalePriceItemForm
               ref="itemFormRef"
-              :items="formData.comboList"
+              :item="formData.comboList"
+              :disabled="disabled"
+              @items-updated="handleItemUpdated"
+            />
+          </el-tab-pane>
+          <el-tab-pane label="销售价格运费信息" name="items">
+            <ShippingCostForm
+              ref="itemFormRef"
+              v-model:activeName="activeName"
+              :items="formData.cost"
               :disabled="disabled"
               @items-updated="handleItemsUpdated"
             />
@@ -79,6 +88,7 @@
 import { ref, watch } from 'vue';
 import { SalePriceApi, SalePriceVO, SalePriceFormData } from '@/api/erp/sale/saleprice';
 import SalePriceItemForm from './components/SalePriceItemForm.vue';
+import ShippingCostForm from './components/ShippingCostForm.vue';
 import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils';
 import { ElMessage } from 'element-plus';
 
@@ -102,6 +112,7 @@ const formData = ref({
   wholesalePrice: 0, // 批发单价，初始化为 0
   shippingFeeType:undefined, //运费类型
   comboList: [], // 子表项
+  cost: [], // 子表项
   fixedShippingFee: 0, // 固定运费（单位：元）
   additionalItemQuantity: 0, // 按件数量
   additionalItemPrice: 0, // 按件价格（单位：元）
@@ -148,19 +159,25 @@ defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
 
 /** 处理子组件传回的 items 数据 */
-const handleItemsUpdated = (comboList: any[]) => {
+const handleItemUpdated = (comboList: any[]) => {
   formData.value.comboList = comboList; // 更新 items 数据
   if (comboList.length > 0) {
     formData.value.groupProductId = comboList[0].groupProductId; // 更新组品编号
-    formData.value.shippingFeeType = comboList[0].shippingFeeType; // 更新运费类型
-    formData.value.fixedShippingFee = comboList[0].fixedShippingFee;
-    formData.value.additionalItemQuantity = comboList[0].additionalItemQuantity;
-    formData.value.additionalItemPrice = comboList[0].additionalItemPrice;
-    formData.value.firstWeight = comboList[0].firstWeight;
-    formData.value.firstWeightPrice = comboList[0].firstWeightPrice;
-    formData.value.additionalWeight = comboList[0].additionalWeight;
-    formData.value.additionalWeightPrice = comboList[0].additionalWeightPrice;
   }
+};
+
+const handleItemsUpdated = (cost: any[]) => {
+  formData.value.cost = cost; // 更新 items 数据
+
+    formData.value.shippingFeeType = cost[0].shippingFeeType; // 更新运费类型
+    formData.value.fixedShippingFee = cost[0].fixedShippingFee;
+    formData.value.additionalItemQuantity = cost[0].additionalItemQuantity;
+    formData.value.additionalItemPrice = cost[0].additionalItemPrice;
+    formData.value.firstWeight = cost[0].firstWeight;
+    formData.value.firstWeightPrice = cost[0].firstWeightPrice;
+    formData.value.additionalWeight = cost[0].additionalWeight;
+    formData.value.additionalWeightPrice = cost[0].additionalWeightPrice;
+
 };
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
@@ -172,6 +189,9 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     const data = formData.value as unknown as SalePriceVO
+
+    console.log("-------------------------------")
+    console.log(data)
     if (formType.value === 'create') {
       await SalePriceApi.createSalePrice(data)
       message.success(t('common.createSuccess'))
@@ -197,6 +217,7 @@ const resetForm = () => {
     wholesalePrice: 0, // 批发单价，初始化为 0
     shippingFeeType:undefined, //运费类型
     comboList: [], // 子表项
+    cost: [], // 运费子表项
     fixedShippingFee: 0, // 固定运费（单位：元）
     additionalItemQuantity: 0, // 按件数量
     additionalItemPrice: 0, // 按件价格（单位：元）

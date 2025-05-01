@@ -1,4 +1,3 @@
-<!-- 商品发布 - 运费信息 -->
 <template>
   <el-form
     ref="formRef"
@@ -114,25 +113,25 @@
 import { PropType } from 'vue'
 import { copyValueToTarget } from '@/utils'
 import { propTypes } from '@/utils/propTypes'
-import type { ProductVO } from '@/api/erp/product/product/index'
+import type { ShippingCostVO } from '@/api/erp/product/product/index'
 
-defineOptions({ name: 'ProductshippingcostForm' })
+defineOptions({ name: 'ShippingCostForm' })
 
 const message = useMessage() // 消息弹窗
 const formLoading = ref(false)
 const props = defineProps({
   propFormData: {
-    type: Object as PropType<ProductVO>,
+    type: Object as PropType<ShippingCostVO>,
     default: () => {}
   },
   isDetail: propTypes.bool.def(false) // 是否作为详情组件
 })
 const formRef = ref() // 表单 Ref
-const formData = reactive<ProductVO>({
+const formData = reactive<ShippingCostVO>({
   shippingFeeType: 0, // 运费类型
   fixedShippingFee: null, // 固定运费
-  additionalItemQuantity: null, // 续件数量
-  additionalItemPrice: null, // 续件价格
+  additionalItemQuantity: null, // 按件数量
+  additionalItemPrice: null, // 按件价格
   firstWeight: null, // 首重重量
   firstWeightPrice: null, // 首重价格
   additionalWeight: null, // 续重重量
@@ -203,8 +202,8 @@ const updateRules = () => {
   if (formData.shippingFeeType === 0) {
     newRules.fixedShippingFee = [{ required: true, message: '固定运费不能为空', trigger: 'blur' }]
   } else if (formData.shippingFeeType === 1) {
-    newRules.additionalItemQuantity = [{ required: true, message: '续件数量不能为空', trigger: 'blur' }]
-    newRules.additionalItemPrice = [{ required: true, message: '续件价格不能为空', trigger: 'blur' }]
+    newRules.additionalItemQuantity = [{ required: true, message: '按件数量不能为空', trigger: 'blur' }]
+    newRules.additionalItemPrice = [{ required: true, message: '按件价格不能为空', trigger: 'blur' }]
   } else if (formData.shippingFeeType === 2) {
     newRules.firstWeight = [{ required: true, message: '首重重量不能为空', trigger: 'blur' }]
     newRules.firstWeightPrice = [{ required: true, message: '首重价格不能为空', trigger: 'blur' }]
