@@ -1,12 +1,3 @@
-<!-- 商品发布 - 库存箱规信息 -->
-<!--<template>-->
-<!--  <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" :disabled="isDetail">-->
-<!--    &lt;!&ndash;富文本编辑器组件&ndash;&gt;-->
-<!--    <el-form-item label="商品详情" prop="description">-->
-<!--      <Editor v-model:modelValue="formData.description" />-->
-<!--    </el-form-item>-->
-<!--  </el-form>-->
-<!--</template>-->
 <template>
   <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" :disabled="isDetail">
     <!-- 现货数量 -->
@@ -31,133 +22,196 @@
 
     <!-- 返单时效 -->
     <el-form-item label="返单时效" prop="orderReplenishmentLeadTime">
-      <el-input
-        v-model="formData.orderReplenishmentLeadTime"
-        placeholder="请输入返单时效"
-        class="w-80!"
-      />
+      <el-col :span="3">
+        <el-input
+          v-model="formData.orderReplenishmentLeadTime"
+          placeholder="请输入返单时效数值"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="2">
+        <el-select
+          v-model="formData.orderReplenishmentLeadTimeUnit"
+          placeholder="请选择单位"
+          class="w-80"
+        >
+          <el-option label="天" value="天" />
+        </el-select>
+      </el-col>
     </el-form-item>
 
     <!-- 品长宽高 -->
     <el-form-item label="品长宽高" prop="productDimensions">
-      <el-input
-        v-model="formData.productDimensions"
-        placeholder="请输入品长宽高"
-        class="w-80!"
-      />
-    </el-form-item>
-
-    <!-- 产品箱规 -->
-    <el-form-item label="产品箱规" prop="cartonSpecifications">
-      <el-input
-        v-model="formData.cartonSpecifications"
-        placeholder="请输入产品箱规"
-        class="w-80!"
-      />
+      <el-col :span="3">
+        <el-input
+          v-model="formData.productLength"
+          placeholder="长"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="3">
+        <el-input
+          v-model="formData.productWidth"
+          placeholder="宽"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="3">
+        <el-input
+          v-model="formData.productHeight"
+          placeholder="高"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="2">
+        <el-select
+          v-model="formData.productDimensionsUnit"
+          placeholder="请选择单位"
+          class="w-80"
+        >
+          <el-option label="mm" value="mm" />
+          <el-option label="cm" value="cm" />
+          <el-option label="m" value="m" />
+        </el-select>
+      </el-col>
     </el-form-item>
 
     <!-- 箱长宽高 -->
     <el-form-item label="箱长宽高" prop="cartonDimensions">
-      <el-input
-        v-model="formData.cartonDimensions"
-        placeholder="请输入箱长宽高"
-        class="w-80!"
-      />
+      <el-col :span="3">
+        <el-input
+          v-model="formData.cartonLength"
+          placeholder="长"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="3">
+        <el-input
+          v-model="formData.cartonWidth"
+          placeholder="宽"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="3">
+        <el-input
+          v-model="formData.cartonHeight"
+          placeholder="高"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="2">
+        <el-select
+          v-model="formData.cartonDimensionsUnit"
+          placeholder="请选择单位"
+          class="w-80"
+        >
+          <el-option label="mm" value="mm" />
+          <el-option label="cm" value="cm" />
+          <el-option label="m" value="m" />
+        </el-select>
+      </el-col>
     </el-form-item>
 
     <!-- 箱规重量 -->
     <el-form-item label="箱规重量" prop="cartonWeight">
-      <el-input-number
-        v-model="formData.cartonWeight"
-        :min="0"
-        placeholder="请输入箱规重量"
-        class="w-80!"
-      />
+      <el-col :span="3">
+        <el-input-number
+          v-model="formData.cartonWeight"
+          :min="0"
+          placeholder="请输入箱规重量数值"
+          class="w-80"
+        />
+      </el-col>
+      <el-col :span="2">
+        <el-select
+          v-model="formData.cartonWeightUnit"
+          placeholder="请选择单位"
+          class="w-80"
+        >
+          <el-option label="g" value="g" />
+          <el-option label="kg" value="kg" />
+        </el-select>
+      </el-col>
     </el-form-item>
   </el-form>
 </template>
+
 <script lang="ts" setup>
-// import type { Spu } from '@/api/mall/product/spu'
 import type { ProductVO } from '@/api/erp/product/product/index';
-import { Editor } from '@/components/Editor'
-import { PropType } from 'vue'
-import { propTypes } from '@/utils/propTypes'
-import { copyValueToTarget } from '@/utils'
+import { Editor } from '@/components/Editor';
+import { PropType } from 'vue';
+import { propTypes } from '@/utils/propTypes';
+import { copyValueToTarget } from '@/utils';
 
-defineOptions({ name: 'ProductDescriptionForm' })
+defineOptions({ name: 'ProductDescriptionForm' });
 
-const message = useMessage() // 消息弹窗
+const message = useMessage(); // 消息弹窗
 
 const props = defineProps({
   propFormData: {
     type: Object as PropType<ProductVO>,
-    default: () => {}
+    default: () => {},
   },
   activeName: propTypes.string.def(''),
-  isDetail: propTypes.bool.def(false) // 是否作为详情组件
-})
-const formRef = ref() // 表单Ref
+  isDetail: propTypes.bool.def(false), // 是否作为详情组件
+});
+const formRef = ref(); // 表单Ref
 const formData = reactive<ProductVO>({
   totalQuantity: 0, // 现货数量
   packagingMaterialQuantity: 0, // 包材数量
   orderReplenishmentLeadTime: '', // 返单时效
-  productDimensions: '', // 品长宽高
-  cartonSpecifications: '', // 产品箱规
-  cartonDimensions: '', // 箱长宽高
-  cartonWeight: 0 // 箱规重量
+  orderReplenishmentLeadTimeUnit: '天', // 返单时效单位
+  productLength: '', // 品长
+  productWidth: '', // 品宽
+  productHeight: '', // 品高
+  productDimensionsUnit: 'mm', // 品长宽高单位
+  cartonLength: '', // 箱长
+  cartonWidth: '', // 箱宽
+  cartonHeight: '', // 箱高
+  cartonDimensionsUnit: 'mm', // 箱长宽高单位
+  cartonWeight: 0, // 箱规重量
+  cartonWeightUnit: 'g', // 箱规重量单位
 });
 
 const rules = reactive({
   totalQuantity: [{ required: true, message: '现货数量不能为空', trigger: 'blur' }],
-  packagingMaterialQuantity: [{ required: true, message: '包材数量不能为空', trigger: 'blur' }],
-  orderReplenishmentLeadTime: [{ required: true, message: '返单时效不能为空', trigger: 'blur' }],
-  productDimensions: [{ required: true, message: '品长宽高不能为空', trigger: 'blur' }],
-  cartonSpecifications: [{ required: true, message: '产品箱规不能为空', trigger: 'blur' }],
-  cartonDimensions: [{ required: true, message: '箱长宽高不能为空', trigger: 'blur' }],
-  cartonWeight: [{ required: true, message: '箱规重量不能为空', trigger: 'blur' }]
+  packagingMaterialQuantity: [
+    { required: true, message: '包材数量不能为空', trigger: 'blur' },
+  ],
+  orderReplenishmentLeadTime: [
+    { required: true, message: '返单时效不能为空', trigger: 'blur' },
+  ],
+  productLength: [{ required: true, message: '品长不能为空', trigger: 'blur' }],
+  productWidth: [{ required: true, message: '品宽不能为空', trigger: 'blur' }],
+  productHeight: [{ required: true, message: '品高不能为空', trigger: 'blur' }],
+  cartonLength: [{ required: true, message: '箱长不能为空', trigger: 'blur' }],
+  cartonWidth: [{ required: true, message: '箱宽不能为空', trigger: 'blur' }],
+  cartonHeight: [{ required: true, message: '箱高不能为空', trigger: 'blur' }],
+  cartonWeight: [{ required: true, message: '箱规重量不能为空', trigger: 'blur' }],
 });
 
-// /** 富文本编辑器如果输入过再清空会有残留，需再重置一次 */
-// watch(
-//   () => formData.value.description,
-//   (newValue) => {
-//     if ('<p><br></p>' === newValue) {
-//       formData.value.description = ''
-//     }
-//   },
-//   {
-//     deep: true,
-//     immediate: true
-//   }
-// )
-
-/** 将传进来的值赋值给 formData */
 watch(
   () => props.propFormData,
   (data) => {
-    if (!data) return
-    // fix：三个表单组件监听赋值必须使用 copyValueToTarget 使用 formData.value = data 会监听非常多次
-    copyValueToTarget(formData, data)
+    if (!data) return;
+    copyValueToTarget(formData, data);
   },
   {
-    // fix: 去掉深度监听只有对象引用发生改变的时候才执行,解决改一动多的问题
-    immediate: true
+    immediate: true,
   }
-)
+);
 
-/** 表单校验 */
-const emit = defineEmits(['update:activeName'])
+const emit = defineEmits(['update:activeName']);
 const validate = async () => {
-  if (!formRef) return
+  if (!formRef) return;
   try {
-    await unref(formRef)?.validate()
-    // 校验通过更新数据
-    Object.assign(props.propFormData, formData)
+    await unref(formRef)?.validate();
+    Object.assign(props.propFormData, formData);
   } catch (e) {
-    message.error('【库存箱规信息】不完善，请填写相关信息')
-    emit('update:activeName', 'description')
-    throw e // 目的截断之后的校验
+    message.error('【库存箱规信息】不完善，请填写相关信息');
+    emit('update:activeName', 'description');
+    throw e;
   }
-}
-defineExpose({ validate })
+};
+defineExpose({ validate });
 </script>

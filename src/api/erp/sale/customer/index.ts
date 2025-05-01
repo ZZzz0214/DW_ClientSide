@@ -54,5 +54,10 @@ export const CustomerApi = {
   // 导出客户 Excel
   exportCustomer: async (params) => {
     return await request.download({ url: `/erp/customer/export-excel`, params })
+  },
+
+  // 搜索结果
+  searchCustomer: async (params: any) => {
+    return await request.get({ url: `/erp/customer/search`, params });
   }
 }

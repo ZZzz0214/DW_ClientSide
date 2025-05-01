@@ -107,7 +107,7 @@
 <!--      </el-table-column>-->
 
       <!-- 运费信息 -->
-      <el-table-column label="运费类型" align="center" prop="shippingFeeType" />
+<!--      <el-table-column label="运费类型" align="center" prop="shippingFeeType" />-->
 
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">

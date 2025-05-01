@@ -67,6 +67,9 @@ const selectedProducts = ref<any[]>([]);
 const handleSearch = async () => {
   try {
     productList.value = await ProductComboApi.ComboApi.searchCombos(searchForm);
+
+    console.log("99999999999999999999");
+    console.log(productList.value);
   } catch (error) {
     ElMessage.error('查询失败');
   }

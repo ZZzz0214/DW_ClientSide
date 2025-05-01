@@ -39,10 +39,17 @@ export interface ProductVO {
   totalQuantity?: number; // 现货数量
   packagingMaterialQuantity?: number; // 包材数量
   orderReplenishmentLeadTime?: string; // 返单时效
-  productDimensions?: string; // 产品长宽高
-  cartonSpecifications?: string; // 产品箱规
-  cartonDimensions?: string; // 箱长宽高
+  orderReplenishmentLeadTimeUnit?: string; // 返单时效单位
+  productLength?: string; // 品长
+  productWidth?: string; // 品宽
+  productHeight?: string; // 品高
+  productDimensionsUnit?: string; // 品长宽高单位
+  cartonLength?: string; // 箱长
+  cartonWidth?: string; // 箱宽
+  cartonHeight?: string; // 箱高
+  cartonDimensionsUnit?: string; // 箱长宽高单位
   cartonWeight?: number; // 箱规重量
+  cartonWeightUnit?: string; // 箱规重量单位
   shippingAddress?: string; // 发货地址
   returnAddress?: string; // 退货地址
   logisticsCompany?: string; // 快递公司

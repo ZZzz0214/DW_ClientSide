@@ -11,7 +11,7 @@
       <el-table-column label="组品名称" min-width="120">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input v-model="row.name" placeholder="请输入组品名称" />
+            <el-input disabled v-model="row.name" placeholder="请输入组品名称" />
           </el-form-item>
         </template>
       </el-table-column>
@@ -19,7 +19,7 @@
       <el-table-column label="组品简称" min-width="110">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input v-model="row.shortName" placeholder="请输入组品简称" />
+            <el-input disabled v-model="row.shortName" placeholder="请输入组品简称" />
           </el-form-item>
         </template>
       </el-table-column>

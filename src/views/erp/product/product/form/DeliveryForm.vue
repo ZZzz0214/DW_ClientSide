@@ -37,7 +37,7 @@
     :disabled="isDetail"
   >
     <!-- 发货地址 -->
-    <el-form-item label="发货地址" prop="shippingAddress">
+    <el-form-item label="发货地址" prop="shippingAddress" >
       <el-input
         v-model="formData.shippingAddress"
         placeholder="请输入发货地址"
@@ -89,6 +89,7 @@
     <!-- 售后标准 -->
     <el-form-item label="售后标准" prop="afterSalesStandard">
       <el-input
+        type="textarea"
         v-model="formData.afterSalesStandard"
         placeholder="请输入售后标准"
         class="w-80"
@@ -99,6 +100,7 @@
     <!-- 售后话术 -->
     <el-form-item label="售后话术" prop="afterSalesScript">
       <el-input
+        type="textarea"
         v-model="formData.afterSalesScript"
         placeholder="请输入售后话术"
         class="w-80"
