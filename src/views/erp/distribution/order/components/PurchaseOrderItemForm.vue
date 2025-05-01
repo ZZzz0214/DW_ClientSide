@@ -185,6 +185,7 @@ const handleDelete = (index: number) => {
 const handleProductSelected = (selectedProducts: any[]) => {
   selectedProducts.forEach(product => {
     formData.value.push({
+      productId: product.id, //产品id
       productName: product.name, //产品名称
       shippingCode: product.shippingCode, //发货编码
       purchaser: product.purchaser, //采购人员

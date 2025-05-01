@@ -105,6 +105,12 @@ const formRef = ref([]);
 const selectProductRef = ref();
 const salepriceList = ref<SalePriceVO[]>([]); // 销售价格表列表
 
+const comboProductId = ref(null);
+
+const setComboProductId = (id) => {
+  comboProductId.value = id;
+};
+
 // 初始化设置出库项
 watch(
   () => props.items,
@@ -200,7 +206,10 @@ const handleProductSelected = (selectedProducts: any[]) => {
 const validate = () => {
   return formRef.value.validate();
 };
-defineExpose({ validate });
+defineExpose({
+  setComboProductId,
+  validate
+});
 
 // 初始化
 onMounted(async () => {

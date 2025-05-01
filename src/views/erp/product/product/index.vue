@@ -73,31 +73,26 @@
         label="公域活动最低价"
         align="center"
         prop="publicDomainEventMinimumPrice"
-        :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
         label="直播活动最低价"
         align="center"
         prop="liveStreamingEventMinimunPrice"
-        :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
         label="拼多多活动最低价"
         align="center"
         prop="pinduoduoEventMinimumPrice"
-        :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
         label="阿里巴巴活动最低价"
         align="center"
         prop="alibabaEventMinimunPrice"
-        :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column
         label="团购活动最低价"
         align="center"
         prop="groupBuyEventMinimunPrice"
-        :formatter="erpPriceTableColumnFormatter"
       />
       <el-table-column label="采购人员" align="center" prop="purchaser" />
       <el-table-column
