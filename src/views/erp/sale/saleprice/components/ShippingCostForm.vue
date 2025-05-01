@@ -165,12 +165,21 @@ const validate = async () => {
   }
   try {
     await form.validate()
-    // 校验通过更新数据
-    Object.assign(props.propFormData, formData)
+    // 将表单数据包装成数组格式传递给父组件
+    emit('items-updated', [{
+      shippingFeeType: formData.shippingFeeType,
+      fixedShippingFee: formData.fixedShippingFee,
+      additionalItemQuantity: formData.additionalItemQuantity,
+      additionalItemPrice: formData.additionalItemPrice,
+      firstWeight: formData.firstWeight,
+      firstWeightPrice: formData.firstWeightPrice,
+      additionalWeight: formData.additionalWeight,
+      additionalWeightPrice: formData.additionalWeightPrice
+    }])
   } catch (e) {
     message.error('请完善运费信息')
     emit('update:activeName', 'shippingcost')
-    throw e // 目的截断之后的校验
+    throw e
   }
 }
 defineExpose({ validate })
@@ -191,7 +200,15 @@ const changeShippingFeeType = () => {
   }
   // 更新校验规则
   updateRules()
+  
+  // 触发数据更新
+  validate();
 }
+
+// 添加对表单数据的监听
+watch(() => formData, () => {
+  validate();
+}, { deep: true })
 
 /** 动态更新校验规则 */
 const updateRules = () => {

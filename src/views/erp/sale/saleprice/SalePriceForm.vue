@@ -167,17 +167,20 @@ const handleItemUpdated = (comboList: any[]) => {
 };
 
 const handleItemsUpdated = (cost: any[]) => {
-  formData.value.cost = cost; // 更新 items 数据
-
-    formData.value.shippingFeeType = cost[0].shippingFeeType; // 更新运费类型
-    formData.value.fixedShippingFee = cost[0].fixedShippingFee;
-    formData.value.additionalItemQuantity = cost[0].additionalItemQuantity;
-    formData.value.additionalItemPrice = cost[0].additionalItemPrice;
-    formData.value.firstWeight = cost[0].firstWeight;
-    formData.value.firstWeightPrice = cost[0].firstWeightPrice;
-    formData.value.additionalWeight = cost[0].additionalWeight;
-    formData.value.additionalWeightPrice = cost[0].additionalWeightPrice;
-
+  formData.value.cost = cost; // 更新 cost 数组
+  
+  // 如果 cost 数组有数据，则自动绑定到对应字段
+  if (cost.length > 0) {
+    const costItem = cost[0];
+    formData.value.shippingFeeType = costItem.shippingFeeType;
+    formData.value.fixedShippingFee = costItem.fixedShippingFee;
+    formData.value.additionalItemQuantity = costItem.additionalItemQuantity;
+    formData.value.additionalItemPrice = costItem.additionalItemPrice;
+    formData.value.firstWeight = costItem.firstWeight;
+    formData.value.firstWeightPrice = costItem.firstWeightPrice;
+    formData.value.additionalWeight = costItem.additionalWeight;
+    formData.value.additionalWeightPrice = costItem.additionalWeightPrice;
+  }
 };
 /** 提交表单 */
 const emit = defineEmits(['success']) // 定义 success 事件，用于操作成功后的回调
