@@ -8,22 +8,25 @@
       v-loading="formLoading"
       :disabled="disabled"
     >
+      <!-- 第一行：订单号 -->
       <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="订单号" prop="no">
+        <el-col :span="24">
+          <el-form-item label="订单编号" prop="no">
             <el-input disabled v-model="formData.no" placeholder="保存时自动生成" />
           </el-form-item>
         </el-col>
+      </el-row>
 
-
-        <el-col :span="8">
+      <!-- 第二行：产品名称、产品规格、产品数量、发货编码 -->
+      <el-row :gutter="20">
+        <el-col :span="6">
           <el-form-item label="产品名称" prop="productName">
             <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" />
           </el-form-item>
         </el-col>
-        <el-col :span="7">
-          <el-form-item label="发货编码" prop="shippingCode">
-            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
+        <el-col :span="6">
+          <el-form-item label="产品规格" prop="productSpecification">
+            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" />
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -38,8 +41,14 @@
             />
           </el-form-item>
         </el-col>
-
-        <el-col :span="8">
+        <el-col :span="6">
+          <el-form-item label="发货编码" prop="shippingCode">
+            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+      <el-row :gutter="20">
+      <el-col :span="8">
           <el-form-item label="附件" prop="fileUrl">
             <UploadFile :is-show-tip="false" v-model="formData.fileUrl" :limit="1" />
           </el-form-item>
@@ -58,6 +67,7 @@
         </el-tabs>
       </ContentWrap>
 
+      <!-- 第一行：收件信息 -->
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="收件姓名" prop="receiverName">
@@ -70,6 +80,39 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="收件地址" prop="receiverAddress">
+            <el-input type="textarea" :rows="1" v-model="formData.receiverAddress" placeholder="请输入详细地址" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 第二行：售后状况和备注信息 -->
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="售后状况" prop="afterSalesStatus">
+            <el-input
+              type="textarea"
+              v-model="formData.afterSalesStatus"
+              :rows="2"
+              placeholder="请输入售后状况"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="备注信息" prop="remark">
+            <el-input
+              type="textarea"
+              v-model="formData.remark"
+              :rows="2"
+              placeholder="请输入备注信息"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 第三行：结算账户 -->
+      <el-row :gutter="20">
+        <el-col :span="24">
           <el-form-item label="结算账户" prop="accountId">
             <el-select
               v-model="formData.accountId"
@@ -85,31 +128,6 @@
                 :value="item.id"
               />
             </el-select>
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="收件地址" prop="receiverAddress">
-            <el-input v-model="formData.receiverAddress" placeholder="请输入详细地址" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="12">
-          <el-form-item label="售后状况" prop="afterSalesStatus">
-            <el-input
-              type="textarea"
-              v-model="formData.afterSalesStatus"
-              :rows="1"
-              placeholder="请输入备注信息"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="16">
-          <el-form-item label="备注信息" prop="remark">
-            <el-input
-              type="textarea"
-              v-model="formData.remark"
-              :rows="1"
-              placeholder="请输入备注信息"
-            />
           </el-form-item>
         </el-col>
       </el-row>
