@@ -68,6 +68,7 @@ export interface ProductVO {
   wholesalePrice?: number; // 批发单价（单位：元）
   remark?: string; // 备注信息
   minPurchasePrice?: number; // 对外最低采购单价（单位：元）
+  minWholesalePrice?: number; // 对外最低批发单价（单位：元）
   shippingFeeType?: number; // 运费类型（0：固定运费，1：按件计费，2：按重计费）
   fixedShippingFee?: number; // 固定运费（单位：元）
   additionalItemQuantity?: number; // 按件数量
