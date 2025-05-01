@@ -17,6 +17,7 @@ export interface ErpDistributionVO {
   remark: string; //备注信息
   shippingCode: string; //发货编码
 
+  productSpecification:string; //产品规格
   productName: string; // 产品名称
   productQuantity: number; // 产品数量
   purchaser: string; // 采购人员

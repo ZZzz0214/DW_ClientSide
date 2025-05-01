@@ -222,6 +222,8 @@ const formData = ref({
   receiverAddress: '', // 收件地址
   afterSalesStatus: '', // 售后状况
 
+  productSpecification:'', //产品规格
+
   no: undefined, // 订单单号，后端返回
   purchaser: '', // 采购人员
   supplier: '', // 供应商名
