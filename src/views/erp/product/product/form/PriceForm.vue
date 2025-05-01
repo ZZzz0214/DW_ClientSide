@@ -205,7 +205,7 @@ const rules = reactive({
   purchasePrice: [{ required: true, message: '采购单价不能为空', trigger: 'blur' }],
   wholesalePrice: [{ required: true, message: '批发单价不能为空', trigger: 'blur' }],
   remark: [{ required: true, message: '备注信息不能为空', trigger: 'blur' }],
-  minPurchasePrice: [{ required: true, message: '对外最低采购单价不能为空', trigger: 'blur' }]
+  minPurchasePrice: [{ required: true, message: '对外最低采购单价不能为空', trigger: 'blur' }],
   minWholesalePrice: [{ required: true, message: '对外最低批发单价不能为空', trigger: 'blur' }]
 });
 
