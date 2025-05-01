@@ -84,10 +84,10 @@
       <ContentWrap>
         <el-tabs v-model="subTabsName"  @tab-change="switchTab" class="-mt-15px -mb-10px">
           <el-tab-pane label="采购信息" name="purchase">
-            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" />
+            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" @productIdChanged="handleProductIdChanged"/>
           </el-tab-pane>
           <el-tab-pane label="出货信息" name="sale">
-            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" />
+            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" :comboProductId="formData.comboProductId"/>
           </el-tab-pane>
         </el-tabs>
       </ContentWrap>
@@ -110,7 +110,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-      
+
       <!-- 第二行：售后状况和备注信息 -->
             <el-row :gutter="20">
               <el-col :span="12">
@@ -134,7 +134,7 @@
                 </el-form-item>
               </el-col>
             </el-row>
-      
+
       <!-- 第三行：结算账户 -->
             <el-row :gutter="20">
               <el-col :span="24">
@@ -182,13 +182,13 @@ defineOptions({ name: 'ErpPurchaseOrder' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
-
+const handleProductIdChanged = (productId: number) => {
+  formData.value.comboProductId = productId;
+};
 const switchTab = (newTabName) => {
   if (newTabName === 'sale') {
     // 假设 comboProductId 是从采购信息中获取的
     const comboProductId = formData.value.comboProductId;
-    console.log("3333333333333333333333")
-    console.log(comboProductId)
     saleFormRef.value.setComboProductId(comboProductId);
   }
 };

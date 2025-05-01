@@ -116,6 +116,7 @@ const productList = ref<ProductVO[]>([]) // 产品列表
 const comboProductList = ref<ComboVO[]>([]); // 组合产品列表
 const selectProductRef = ref(); // 定义 ref 引用
 
+const emit = defineEmits(['productIdChanged']);
 /** 初始化设置入库项 */
 watch(
   () => props.items,
@@ -207,6 +208,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       additionalWeight: product.additionalWeight,
       additionalWeightPrice: product.additionalWeightPrice
     });
+    emit('productIdChanged', product.id);
   });
 
 };

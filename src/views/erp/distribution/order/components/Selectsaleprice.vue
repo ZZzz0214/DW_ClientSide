@@ -8,16 +8,6 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="组品名称">
-            <el-input v-model="searchForm.productName" disabled />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="组品简称">
-            <el-input v-model="searchForm.productShortName" disabled />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
           <el-form-item label="客户名称">
             <el-input v-model="searchForm.customerName" placeholder="请输入客户名称" />
           </el-form-item>
@@ -87,7 +77,7 @@ const handleDefaultSearch = async () => {
       groupProductId: searchForm.groupProductId,
     };
     console.log("222222222222")
-    console.log(searchParams)
+    console.log(searchParams.groupProductId)
     salePriceList.value = await SalePriceApi.searchSalePrice(searchParams);
   } catch (error) {
     ElMessage.error('默认查询失败');

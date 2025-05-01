@@ -76,7 +76,7 @@
   </el-row>
 
   <!-- 引入子组件 -->
-  <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" />
+  <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" :comboProductId="comboProductId"/>
 </template>
 
 <script setup lang="ts">
@@ -168,7 +168,7 @@ const updateTotalSaleAmount = (item) => {
 
 // 添加按钮操作
 const handleAdd = () => {
-  selectProductRef.value.open();
+  selectProductRef.value.open(comboProductId.value);
 };
 
 // 删除按钮操作
