@@ -9,92 +9,135 @@
       :disabled="disabled"
     >
       <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="订单单号" prop="no">
+        <el-col :span="6">
+          <el-form-item label="订单编号" prop="no">
             <el-input disabled v-model="formData.no" placeholder="保存时自动生成" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="订单时间" prop="orderTime">
-            <el-date-picker
-              v-model="formData.orderTime"
-              type="date"
-              value-format="x"
-              placeholder="选择订单时间"
-              class="!w-1/1"
+        <el-col :span="6">
+          <el-form-item label="订单号" prop="orderNumber">
+            <el-input v-model="formData.orderNumber" placeholder="请输入订单号" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="物流公司" prop="logisticsCompany">
+            <el-input v-model="formData.logisticsCompany" placeholder="请输入物流公司" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="物流单号" prop="trackingNumber">
+            <el-input v-model="formData.trackingNumber" placeholder="请输入物流单号" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="产品名称" prop="productName">
+            <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="产品规格" prop="productSpecification">
+            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="产品数量" prop="productQuantity">
+            <el-input-number
+              v-model="formData.productQuantity"
+              controls-position="right"
+              :min="1"
+              :precision="2"
+              class="!w-100%"
+              placeholder="请输入产品数量"
             />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="供应商" prop="supplierId">
-            <el-select
-              v-model="formData.supplierId"
-              clearable
-              filterable
-              placeholder="请选择供应商"
-              class="!w-1/1"
-            >
-              <el-option
-                v-for="item in supplierList"
-                :key="item.id"
-                :label="item.name"
-                :value="item.id"
-              />
-            </el-select>
+        <el-col :span="6">
+          <el-form-item label="发货编码" prop="shippingCode">
+            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
           </el-form-item>
         </el-col>
-        <el-col :span="16">
-          <el-form-item label="备注" prop="remark">
-            <el-input
-              type="textarea"
-              v-model="formData.remark"
-              :rows="1"
-              placeholder="请输入备注"
+        <el-col :span="8">
+          <el-form-item label="原表商品" prop="originalProductName">
+            <el-input v-model="formData.originalProductName" placeholder="请输入原表商品" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="原表规格" prop="originalStandard">
+            <el-input v-model="formData.originalStandard" placeholder="请输入原表规格" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="原表数量" prop="originalQuantity">
+            <el-input-number
+              v-model="formData.originalQuantity"
+              controls-position="right"
+              :min="1"
+              :precision="2"
+              class="!w-100%"
+              placeholder="请输入原表数量"
             />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="附件" prop="fileUrl">
-            <UploadFile :is-show-tip="false" v-model="formData.fileUrl" :limit="1" />
           </el-form-item>
         </el-col>
       </el-row>
       <!-- 子表的表单 -->
       <ContentWrap>
         <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
-          <el-tab-pane label="订单产品清单" name="item">
-            <PurchaseOrderItemForm ref="itemFormRef" :items="formData.items" :disabled="disabled" />
+          <el-tab-pane label="采购信息" name="item">
+            <PurchaseOrderItemForm
+              ref="itemFormRef"
+              :orderData="formData"
+              :disabled="disabled"
+              @update="handleOrderUpdate"
+            />
           </el-tab-pane>
         </el-tabs>
       </ContentWrap>
+      <!-- 第一行：收件信息 -->
       <el-row :gutter="20">
-<!--        <el-col :span="8">-->
-<!--          <el-form-item label="优惠率（%）" prop="discountPercent">-->
-<!--            <el-input-number-->
-<!--              v-model="formData.discountPercent"-->
-<!--              controls-position="right"-->
-<!--              :min="0"-->
-<!--              :precision="2"-->
-<!--              placeholder="请输入优惠率"-->
-<!--              class="!w-1/1"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
-<!--        <el-col :span="8">-->
-<!--          <el-form-item label="付款优惠" prop="discountPrice">-->
-<!--            <el-input-->
-<!--              disabled-->
-<!--              v-model="formData.discountPrice"-->
-<!--              :formatter="erpPriceInputFormatter"-->
-<!--            />-->
-<!--          </el-form-item>-->
-<!--        </el-col>-->
         <el-col :span="8">
-          <el-form-item label="总金额">
-            <el-input disabled v-model="formData.totalPrice" :formatter="erpPriceInputFormatter" />
+          <el-form-item label="收件姓名" prop="receiverName">
+            <el-input v-model="formData.receiverName" placeholder="请输入收件姓名" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="联系电话" prop="receiverPhone">
+            <el-input v-model="formData.receiverPhone" placeholder="请输入联系电话" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="收件地址" prop="receiverAddress">
+            <el-input type="textarea" :rows="1" v-model="formData.receiverAddress" placeholder="请输入详细地址" />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 第二行：售后状况和备注信息 -->
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="售后状况" prop="afterSalesStatus">
+            <el-input
+              type="textarea"
+              v-model="formData.afterSalesStatus"
+              :rows="2"
+              placeholder="请输入售后状况"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="备注信息" prop="remark">
+            <el-input
+              type="textarea"
+              v-model="formData.remark"
+              :rows="2"
+              placeholder="请输入备注信息"
+            />
+          </el-form-item>
+        </el-col>
+      </el-row>
+
+      <!-- 第三行：结算账户 -->
+      <el-row :gutter="20">
+        <el-col :span="24">
           <el-form-item label="结算账户" prop="accountId">
             <el-select
               v-model="formData.accountId"
@@ -112,18 +155,6 @@
             </el-select>
           </el-form-item>
         </el-col>
-        <el-col :span="8">
-          <el-form-item label="支付订金" prop="depositPrice">
-            <el-input-number
-              v-model="formData.depositPrice"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-              placeholder="请输入支付订金"
-              class="!w-1/1"
-            />
-          </el-form-item>
-        </el-col>
       </el-row>
     </el-form>
     <template #footer>
@@ -138,7 +169,6 @@
 import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalorder'
 import PurchaseOrderItemForm from './components/PurchaseOrderItemForm.vue'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
-import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils'
 import * as UserApi from '@/api/system/user'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
 
@@ -154,18 +184,29 @@ const formLoading = ref(false) // 表单的加载中：1）修改时的数据加
 const formType = ref('') // 表单的类型：create - 新增；update - 修改；detail - 详情
 const formData = ref({
   id: undefined,
-  supplierId: undefined,  //供应商
-  accountId: undefined,  //结算账户
-  orderTime: undefined,  //订单时间
-  remark: undefined,  //备注
-  fileUrl: '',  //附件
-  // discountPercent: 0,  //优惠率
-  // discountPrice: 0,  //付款优惠
-  totalPrice: 0, //总金额
-  depositPrice: 0,  //支付订金
-  shippingFee:0, //运费
-  items: [],  //列表
-  no: undefined // 订单单号，后端返回
+  no: undefined,
+  orderNumber: undefined,
+  logisticsCompany: undefined,
+  trackingNumber: undefined,
+  receiverName: undefined,
+  receiverPhone: undefined,
+  receiverAddress: undefined,
+  originalProductName: undefined,
+  originalStandard: undefined,
+  originalQuantity: undefined,
+  remark: undefined,
+  comboProductId: undefined,
+  shippingCode: undefined,
+  productName: undefined,
+  productSpecification: undefined,
+  productQuantity: undefined,
+  purchaser: undefined,
+  supplier: undefined,
+  purchasePrice: undefined,
+  shippingFee: undefined,
+  otherFees: undefined,
+  totalPurchaseAmount: undefined,
+  status: undefined
 })
 const formRules = reactive({
   supplierId: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
@@ -182,31 +223,8 @@ const subTabsName = ref('item')
 const itemFormRef = ref()
 
 /** 计算 discountPrice、totalPrice 价格 */
-watch(
-  () => formData.value,
-  (val) => {
-    if (!val) {
-      return
-    }
-    const totalPrice = val.items.reduce((prev, curr) => prev + curr.totalPrice, 0)
-    // const discountPrice =
-    //   val.discountPercent != null ? erpPriceMultiply(totalPrice, val.discountPercent / 100.0) : 0
-    // formData.value.discountPrice = discountPrice
-    formData.value.totalPrice = totalPrice //   - discountPrice
-  },
-  { deep: true }
-)
-watch(
-  () => formData.value.items,
-  (val) => {
-    if (!val || val.length === 0) {
-      return;
-    }
-    const totalShippingFee = val.reduce((sum, item) => sum + (item.shippingFee || 0), 0);
-    formData.value.shippingFee = totalShippingFee; // 更新父表单的运费
-  },
-  { deep: true }
-);
+
+
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
   dialogVisible.value = true
@@ -220,10 +238,6 @@ const open = async (type: string, id?: number) => {
       const data = await PurchaseOrderApi.getPurchaseOrder(id);
       formData.value = data;
       // 确保子表单的运费和合计运费正确显示
-      formData.value.items.forEach(item => {
-        item.totalProductPrice = item.purchasePrice + (item.shippingFee || 0);
-        item.totalPrice = item.totalProductPrice;
-      });
     } finally {
       formLoading.value = false
     }
@@ -285,4 +299,9 @@ const resetForm = () => {
   }
   formRef.value?.resetFields()
 }
+
+// 添加更新处理方法
+const handleOrderUpdate = (updatedData) => {
+              formData.value = updatedData
+            }
 </script>

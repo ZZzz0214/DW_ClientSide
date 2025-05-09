@@ -163,53 +163,77 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column min-width="180" label="订单单号" align="center" prop="no" />
-      <el-table-column label="产品信息" align="center" prop="productNames" min-width="200" />
-      <el-table-column label="供应商" align="center" prop="supplierName" />
-      <el-table-column
-        label="订单时间"
-        align="center"
-        prop="orderTime"
-        :formatter="dateFormatter2"
-        width="120px"
-      />
-      <el-table-column label="创建人" align="center" prop="creatorName" />
-      <el-table-column
-        label="总数量"
-        align="center"
-        prop="totalCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="入库数量"
-        align="center"
-        prop="inCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="退货数量"
-        align="center"
-        prop="returnCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="金额合计"
-        align="center"
-        prop="totalPrice"
-        :formatter="erpPriceTableColumnFormatter"
-      />
+      <el-table-column label="ID" align="center" prop="id" width="80" />
+      <el-table-column min-width="180" label="订单编号" align="center" prop="no" />
+      <el-table-column min-width="180" label="订单号" align="center" prop="orderNumber" />
+      <el-table-column label="物流公司" align="center" prop="logisticsCompany" width="120" />
+      <el-table-column label="物流单号" align="center" prop="trackingNumber" width="160" />
+      <el-table-column label="收件人姓名" align="center" prop="receiverName" width="120" />
+      <el-table-column label="收件人电话" align="center" prop="receiverPhone" width="120" />
+      <el-table-column label="收件地址" align="center" prop="receiverAddress" min-width="200" />
+      <el-table-column label="原表商品名称" align="center" prop="originalProductName" width="120" />
+      <el-table-column label="原表规格" align="center" prop="originalStandard" width="120" />
+      <el-table-column label="原表数量" align="center" prop="originalQuantity" width="100" />
+      <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" />
+      <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" />
+      <el-table-column label="产品名称" align="center" prop="productName" width="120" />
+      <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" />
+      <el-table-column label="产品数量" align="center" prop="productQuantity" width="100" />
+      <el-table-column label="采购人员" align="center" prop="purchaser" width="120" />
+      <el-table-column label="供应商名" align="center" prop="supplier" width="120" />
+      <el-table-column label="采购单价" align="center" prop="purchasePrice" width="100" />
+      <el-table-column label="采购运费" align="center" prop="shippingFee" width="100" />
+      <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" />
+      <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" />
+      <el-table-column label="备注" align="center" prop="remark" width="120" />
+<!--      <el-table-column width="30" label="选择" type="selection" />-->
+<!--      <el-table-column min-width="180" label="订单单号" align="center" prop="no" />-->
+<!--      <el-table-column label="产品信息" align="center" prop="productNames" min-width="200" />-->
+<!--      <el-table-column label="供应商" align="center" prop="supplierName" />-->
 <!--      <el-table-column-->
-<!--        label="含税金额"-->
+<!--        label="订单时间"-->
+<!--        align="center"-->
+<!--        prop="orderTime"-->
+<!--        :formatter="dateFormatter2"-->
+<!--        width="120px"-->
+<!--      />-->
+<!--      <el-table-column label="创建人" align="center" prop="creatorName" />-->
+<!--      <el-table-column-->
+<!--        label="总数量"-->
+<!--        align="center"-->
+<!--        prop="totalCount"-->
+<!--        :formatter="erpCountTableColumnFormatter"-->
+<!--      />-->
+<!--      <el-table-column-->
+<!--        label="入库数量"-->
+<!--        align="center"-->
+<!--        prop="inCount"-->
+<!--        :formatter="erpCountTableColumnFormatter"-->
+<!--      />-->
+<!--      <el-table-column-->
+<!--        label="退货数量"-->
+<!--        align="center"-->
+<!--        prop="returnCount"-->
+<!--        :formatter="erpCountTableColumnFormatter"-->
+<!--      />-->
+<!--      <el-table-column-->
+<!--        label="金额合计"-->
 <!--        align="center"-->
 <!--        prop="totalPrice"-->
 <!--        :formatter="erpPriceTableColumnFormatter"-->
 <!--      />-->
-      <el-table-column
-        label="支付订金"
-        align="center"
-        prop="depositPrice"
-        :formatter="erpPriceTableColumnFormatter"
-      />
+<!--&lt;!&ndash;      <el-table-column&ndash;&gt;-->
+<!--&lt;!&ndash;        label="含税金额"&ndash;&gt;-->
+<!--&lt;!&ndash;        align="center"&ndash;&gt;-->
+<!--&lt;!&ndash;        prop="totalPrice"&ndash;&gt;-->
+<!--&lt;!&ndash;        :formatter="erpPriceTableColumnFormatter"&ndash;&gt;-->
+<!--&lt;!&ndash;      />&ndash;&gt;-->
+<!--      <el-table-column-->
+<!--        label="支付订金"-->
+<!--        align="center"-->
+<!--        prop="depositPrice"-->
+<!--        :formatter="erpPriceTableColumnFormatter"-->
+<!--      />-->
       <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
