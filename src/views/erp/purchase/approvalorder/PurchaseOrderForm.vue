@@ -117,7 +117,7 @@
           <el-form-item label="售后状况" prop="afterSalesStatus">
             <el-input
               type="textarea"
-              v-model="formData.afterSalesStatus"
+              v-model="formData.purchaseAfterSalesSituation"
               :rows="2"
               placeholder="请输入售后状况"
             />

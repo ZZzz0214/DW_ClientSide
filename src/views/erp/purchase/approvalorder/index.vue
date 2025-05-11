@@ -150,6 +150,22 @@
           <Icon icon="ep:delete" class="mr-5px" /> 删除
         </el-button>
       </el-form-item>
+        <el-form-item>
+                <!-- 新增四个合计字段显示框 -->
+        <el-form-item label="采购单价合计" style="margin-left: 20px;" label-width="100px">
+          <el-input v-model="totalPurchasePrice" disabled class="!w-240px" placeholder="无数据" />
+        </el-form-item>
+        <el-form-item label="采购运费合计" style="margin-left: 20px;" label-width="100px">
+          <el-input v-model="totalShippingFee" disabled class="!w-240px" placeholder="无数据" />
+        </el-form-item>
+        <el-form-item label="采购杂费合计" style="margin-left: 20px;" label-width="100px">
+          <el-input v-model="totalOtherFees" disabled class="!w-240px" placeholder="无数据" />
+        </el-form-item>
+        <el-form-item label="采购总额合计" style="margin-left: 20px;" label-width="100px">
+          <el-input v-model="totalPurchaseAmount" disabled class="!w-240px" placeholder="无数据" />
+        </el-form-item>
+      </el-form-item>
+
     </el-form>
   </ContentWrap>
 
@@ -186,59 +202,19 @@
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" />
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" />
       <el-table-column label="备注" align="center" prop="remark" width="120" />
-<!--      <el-table-column width="30" label="选择" type="selection" />-->
-<!--      <el-table-column min-width="180" label="订单单号" align="center" prop="no" />-->
-<!--      <el-table-column label="产品信息" align="center" prop="productNames" min-width="200" />-->
-<!--      <el-table-column label="供应商" align="center" prop="supplierName" />-->
-<!--      <el-table-column-->
-<!--        label="订单时间"-->
-<!--        align="center"-->
-<!--        prop="orderTime"-->
-<!--        :formatter="dateFormatter2"-->
-<!--        width="120px"-->
-<!--      />-->
-<!--      <el-table-column label="创建人" align="center" prop="creatorName" />-->
-<!--      <el-table-column-->
-<!--        label="总数量"-->
-<!--        align="center"-->
-<!--        prop="totalCount"-->
-<!--        :formatter="erpCountTableColumnFormatter"-->
-<!--      />-->
-<!--      <el-table-column-->
-<!--        label="入库数量"-->
-<!--        align="center"-->
-<!--        prop="inCount"-->
-<!--        :formatter="erpCountTableColumnFormatter"-->
-<!--      />-->
-<!--      <el-table-column-->
-<!--        label="退货数量"-->
-<!--        align="center"-->
-<!--        prop="returnCount"-->
-<!--        :formatter="erpCountTableColumnFormatter"-->
-<!--      />-->
-<!--      <el-table-column-->
-<!--        label="金额合计"-->
-<!--        align="center"-->
-<!--        prop="totalPrice"-->
-<!--        :formatter="erpPriceTableColumnFormatter"-->
-<!--      />-->
-<!--&lt;!&ndash;      <el-table-column&ndash;&gt;-->
-<!--&lt;!&ndash;        label="含税金额"&ndash;&gt;-->
-<!--&lt;!&ndash;        align="center"&ndash;&gt;-->
-<!--&lt;!&ndash;        prop="totalPrice"&ndash;&gt;-->
-<!--&lt;!&ndash;        :formatter="erpPriceTableColumnFormatter"&ndash;&gt;-->
-<!--&lt;!&ndash;      />&ndash;&gt;-->
-<!--      <el-table-column-->
-<!--        label="支付订金"-->
-<!--        align="center"-->
-<!--        prop="depositPrice"-->
-<!--        :formatter="erpPriceTableColumnFormatter"-->
-<!--      />-->
-      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
+      <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
         </template>
       </el-table-column>
+      <el-table-column label="售后状态" align="center" width="120" fixed="right">
+      <template #default="scope">
+        <dict-tag
+          :type="DICT_TYPE.ERP_SHOUHOU_STATUS"
+          :value="scope.row.purchaseAfterSalesStatus"
+        />
+      </template>
+    </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="220">
         <template #default="scope">
           <el-button
@@ -265,6 +241,24 @@
             v-if="scope.row.status === 10"
           >
             审批
+          </el-button>
+          <el-button
+          link
+          type="warning"
+          @click="handleAfterSaleWithDetails(scope.row.id, 'afterSale')"
+          v-hasPermi="['erp:purchase-order:update-status']"
+          v-if="scope.row.purchaseAfterSalesStatus === 30"
+          >
+          售后
+         </el-button>
+         <el-button
+          link
+          type="warning"
+          @click="handleAfterSaleWithDetails(scope.row.id, 'antiAfterSale')"
+          v-hasPermi="['erp:purchase-order:update-status']"
+          v-if="scope.row.purchaseAfterSalesStatus === 40"
+          >
+          反售后
           </el-button>
 <!--          <el-button-->
 <!--            link-->
@@ -298,18 +292,18 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <PurchaseOrderForm ref="formRef" @success="getList" />
+  <AfterSaleForm ref="afterSaleFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalorder'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
+import AfterSaleForm from './components/AfterSaleForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
-import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/utils'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 
 /** ERP 销售订单列表 */
@@ -317,7 +311,11 @@ defineOptions({ name: 'ErpPurchaseApproval' })
 
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
-
+// 新增四个合计字段的响应式声明（关键修改）
+const totalPurchasePrice = ref<string>('')
+const totalShippingFee = ref<string>('')
+const totalOtherFees = ref<string>('')
+const totalPurchaseAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -346,8 +344,13 @@ const getList = async () => {
   try {
     const data = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
 
-    list.value = data.list
-    total.value = data.total
+    totalPurchasePrice.value = data.totalPurchasePrice?.toFixed(2) || ''
+    totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
+    totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
+    totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
+
+    list.value = data.pageResult.list
+    total.value = data.pageResult.total
   } finally {
     loading.value = false
   }
@@ -397,6 +400,16 @@ const handleUpdateStatus = async (id: number, status: number) => {
     await getList()
   } catch {}
 }
+
+// 在 handleUpdateStatus 方法后添加以下代码
+const afterSaleFormRef = ref()
+// const handleAfterSaleWithDetails = (id: number) => {
+//   afterSaleFormRef.value.open(id)
+// }
+const handleAfterSaleWithDetails = (id: number, operationType: 'afterSale' | 'antiAfterSale') => {
+  afterSaleFormRef.value.open(id, operationType)  // 传递操作类型给弹窗
+}
+
 
 /** 导出按钮操作 */
 const handleExport = async () => {

@@ -66,6 +66,15 @@ export interface PurchaseOrderItemVO {
   deleted: boolean; // 是否删除
   tenantId: number; // 租户编号
 }
+// 添加请求 VO 类型定义
+export interface ErpDistributionPurchaseAfterSalesUpdateReqVO {
+  id: number; // 编号（必填）
+  purchaseAfterSalesStatus?: number; // 采购售后状态
+  purchaseAfterSalesSituation?: string; // 采购售后情况
+  purchaseAfterSalesAmount?: number; // 采购售后金额（注意：前端用 number 类型对应后端 BigDecimal）
+  purchaseAfterSalesTime?: Date;
+}
+
 // ERP 采购订单 API
 export const PurchaseOrderApi = {
   // 查询采购订单分页
@@ -112,5 +121,13 @@ export const PurchaseOrderApi = {
   // 导出采购订单 Excel
   exportPurchaseOrder: async (params: any) => {
     return await request.download({ url: `/erp/purchase-order/export-excel`, params })
-  }
+  },
+
+  // 更新采购售后信息（新增方法）
+  updatePurchaseAfterSales: async (data: ErpDistributionPurchaseAfterSalesUpdateReqVO) => {
+    return await request.put({
+      url: `/erp/distribution/update-purchase-after-sales`,
+      data
+    })
+  },
 }
