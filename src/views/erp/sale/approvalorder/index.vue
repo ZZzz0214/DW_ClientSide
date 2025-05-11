@@ -163,56 +163,40 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column min-width="180" label="订单单号" align="center" prop="no" />
-      <el-table-column label="产品信息" align="center" prop="productNames" min-width="200" />
-      <el-table-column label="客户" align="center" prop="customerName" />
-      <el-table-column
-        label="订单时间"
-        align="center"
-        prop="orderTime"
-        :formatter="dateFormatter2"
-        width="120px"
-      />
-      <el-table-column label="创建人" align="center" prop="creatorName" />
-      <el-table-column
-        label="总数量"
-        align="center"
-        prop="totalCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="出库数量"
-        align="center"
-        prop="outCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="退货数量"
-        align="center"
-        prop="returnCount"
-        :formatter="erpCountTableColumnFormatter"
-      />
-      <el-table-column
-        label="金额合计"
-        align="center"
-        prop="totalPrice"
-        :formatter="erpPriceTableColumnFormatter"
-      />
-<!--      <el-table-column-->
-<!--        label="含税金额"-->
-<!--        align="center"-->
-<!--        prop="totalPrice"-->
-<!--        :formatter="erpPriceTableColumnFormatter"-->
-<!--      />-->
-      <el-table-column
-        label="收取订金"
-        align="center"
-        prop="depositPrice"
-        :formatter="erpPriceTableColumnFormatter"
-      />
-      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
+        <el-table-column label="订单编号" prop="no" />
+        <el-table-column label="订单号" prop="orderNumber" />
+        <el-table-column label="物流公司" prop="logisticsCompany" />
+        <el-table-column label="物流单号" prop="trackingNumber" />
+        <el-table-column label="收件人姓名" prop="receiverName" />
+        <el-table-column label="收件人电话" prop="receiverPhone" />
+        <el-table-column label="收件地址" prop="receiverAddress" />
+        <el-table-column label="原表商品名称" prop="originalProductName" />
+        <el-table-column label="原表规格" prop="originalStandard" />
+        <el-table-column label="原表数量" prop="originalQuantity" />
+        <el-table-column label="备注信息" prop="remark" />
+        <el-table-column label="组品编号" prop="comboProductId" />
+        <el-table-column label="发货编码" prop="shippingCode" />
+        <el-table-column label="产品名称" prop="productName" />
+        <el-table-column label="产品规格" prop="productSpecification" />
+        <el-table-column label="产品数量" prop="productQuantity" />
+        <el-table-column label="销售人员" prop="salesperson" />
+        <el-table-column label="客户名称" prop="customerName" />
+        <el-table-column label="出货单价" prop="salePrice" />
+        <el-table-column label="出货运费" prop="saleShippingFee" />
+        <el-table-column label="出货杂费" prop="saleOtherFees" />
+        <el-table-column label="出货总额" prop="totalSaleAmount" />
+
+      <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
+        </template>
+      </el-table-column>
+      <el-table-column label="售后状态" align="center" width="120" fixed="right">
+        <template #default="scope">
+          <dict-tag
+            :type="DICT_TYPE.ERP_SHOUHOU_STATUS"
+            :value="scope.row.purchaseAfterSalesStatus"
+          />
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="220">
@@ -224,41 +208,33 @@
           >
             详情
           </el-button>
-<!--          <el-button-->
-<!--            link-->
-<!--            type="primary"-->
-<!--            @click="openForm('update', scope.row.id)"-->
-<!--            v-hasPermi="['erp:sale-order:update']"-->
-<!--            :disabled="scope.row.status === 20"-->
-<!--          >-->
-<!--            编辑-->
-<!--          </el-button>-->
           <el-button
             link
             type="primary"
-            @click="handleUpdateStatus(scope.row.id, 20)"
+            @click="handleAudit(scope.row.id)"
             v-hasPermi="['erp:sale-order:update-status']"
             v-if="scope.row.status === 10"
           >
             审批
           </el-button>
-<!--          <el-button-->
-<!--            link-->
-<!--            type="danger"-->
-<!--            @click="handleUpdateStatus(scope.row.id, 10)"-->
-<!--            v-hasPermi="['erp:sale-order:update-status']"-->
-<!--            v-else-->
-<!--          >-->
-<!--            反审批-->
-<!--          </el-button>-->
-<!--          <el-button-->
-<!--            link-->
-<!--            type="danger"-->
-<!--            @click="handleDelete([scope.row.id])"-->
-<!--            v-hasPermi="['erp:sale-order:delete']"-->
-<!--          >-->
-<!--            删除-->
-<!--          </el-button>-->
+          <el-button
+            link
+            type="warning"
+            @click="handleAfterSaleWithDetails(scope.row.id, 'afterSale')"
+            v-hasPermi="['erp:purchase-order:update-status']"
+            v-if="scope.row.purchaseAfterSalesStatus === 30"
+          >
+            售后
+          </el-button>
+          <el-button
+            link
+            type="warning"
+            @click="handleAfterSaleWithDetails(scope.row.id, 'antiAfterSale')"
+            v-hasPermi="['erp:purchase-order:update-status']"
+            v-if="scope.row.purchaseAfterSalesStatus === 40"
+          >
+            反售后
+          </el-button>
         </template>
       </el-table-column>
     </el-table>
@@ -274,18 +250,20 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <SaleOrderForm ref="formRef" @success="getList" />
+  <AfterSaleForm ref="afterSaleFormRef" @success="getList" />
+  <AuditForm ref="auditFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/approvalorder'
 import SaleOrderForm from './SaleOrderForm.vue'
+import AfterSaleForm from './components/AfterSaleForm.vue'
+import AuditForm from './components/AuditForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
-import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/utils'
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
 
 /** ERP 销售订单列表 */
@@ -347,30 +325,42 @@ const openForm = (type: string, id?: number) => {
 }
 
 /** 删除按钮操作 */
-const handleDelete = async (ids: number[]) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm()
-    // 发起删除
-    await SaleOrderApi.deleteSaleOrder(ids)
-    message.success(t('common.delSuccess'))
-    // 刷新列表
-    await getList()
-    selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
-  } catch {}
-}
+// const handleDelete = async (ids: number[]) => {
+//   try {
+//     // 删除的二次确认
+//     await message.delConfirm()
+//     // 发起删除
+//     await SaleOrderApi.deleteSaleOrder(ids)
+//     message.success(t('common.delSuccess'))
+//     // 刷新列表
+//     await getList()
+//     selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
+//   } catch {}
+// }
 
 /** 审批/反审批操作 */
-const handleUpdateStatus = async (id: number, status: number) => {
-  try {
-    // 审批的二次确认
-    await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
-    // 发起审批
-    await SaleOrderApi.updateSaleOrderStatus(id, status)
-    message.success(`${status === 20 ? '审批' : '反审批'}成功`)
-    // 刷新列表
-    await getList()
-  } catch {}
+// const handleUpdateStatus = async (id: number, status: number) => {
+//   try {
+//     // 审批的二次确认
+//     await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
+//     // 发起审批
+//     await SaleOrderApi.updateSaleOrderStatus(id, status)
+//     message.success(`${status === 20 ? '审批' : '反审批'}成功`)
+//     // 刷新列表
+//     await getList()
+//   } catch {}
+// }
+const auditFormRef = ref()
+// 点击审核按钮触发
+const handleAudit = (id: number) => {
+  auditFormRef.value.open(id) // 调用 AuditForm 的 open 方法
+}
+
+// 在 handleUpdateStatus 方法后添加以下代码
+const afterSaleFormRef = ref()
+
+const handleAfterSaleWithDetails = (id: number, operationType: 'afterSale' | 'antiAfterSale') => {
+  afterSaleFormRef.value.open(id, operationType)  // 传递操作类型给弹窗
 }
 
 /** 导出按钮操作 */

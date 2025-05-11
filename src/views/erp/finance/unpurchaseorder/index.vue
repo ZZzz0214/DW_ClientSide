@@ -221,7 +221,7 @@
           <el-button
             link
             type="danger"
-            @click="handleUpdateStatus(scope.row.id, 10)"
+            @click="handleAudit(scope.row.id)"
             v-hasPermi="['erp:purchase-order:update-status']"
             v-if="scope.row.status === 20"
           >
@@ -250,6 +250,8 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <PurchaseOrderForm ref="formRef" @success="getList" />
+  <AfterSaleForm ref="afterSaleFormRef" @success="getList" />
+  <AuditForm ref="auditFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -257,6 +259,8 @@ import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import download from '@/utils/download'
 import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/finance/purchaseapprovalorder'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
+import AfterSaleForm from './components/AfterSaleForm.vue'
+import AuditForm from './components/AuditForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
@@ -335,16 +339,23 @@ const handleDelete = async (ids: number[]) => {
 }
 
 /** 审批/反审批操作 */
-const handleUpdateStatus = async (id: number, status: number) => {
-  try {
-    // 审批的二次确认
-    await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
-    // 发起审批
-    await PurchaseOrderApi.updatePurchaseOrderStatus(id, status)
-    message.success(`${status === 20 ? '审批' : '反审批'}成功`)
-    // 刷新列表
-    await getList()
-  } catch {}
+// const handleUpdateStatus = async (id: number, status: number) => {
+//   try {
+//     // 审批的二次确认
+//     await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
+//     // 发起审批
+//     await PurchaseOrderApi.updatePurchaseOrderStatus(id, status)
+//     message.success(`${status === 20 ? '审批' : '反审批'}成功`)
+//     // 刷新列表
+//     await getList()
+//   } catch {}
+// }
+
+const auditFormRef = ref() // 定义 AfterSaleForm 的 ref
+
+// 反审核操作
+const handleAudit = (id: number) => {
+  auditFormRef.value.open(id) // 调用 AuditForm 的 open 方法
 }
 
 /** 导出按钮操作 */

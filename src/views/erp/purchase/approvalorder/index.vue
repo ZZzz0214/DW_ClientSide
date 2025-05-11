@@ -236,7 +236,7 @@
           <el-button
             link
             type="primary"
-            @click="handleUpdateStatus(scope.row.id, 20)"
+            @click="handleAudit(scope.row.id)"
             v-hasPermi="['erp:purchase-order:update-status']"
             v-if="scope.row.status === 10"
           >
@@ -293,6 +293,7 @@
   <!-- 表单弹窗：添加/修改 -->
   <PurchaseOrderForm ref="formRef" @success="getList" />
   <AfterSaleForm ref="afterSaleFormRef" @success="getList" />
+  <AuditForm ref="auditFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -301,6 +302,7 @@ import download from '@/utils/download'
 import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalorder'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import AfterSaleForm from './components/AfterSaleForm.vue'
+import AuditForm from './components/AuditForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
@@ -375,30 +377,35 @@ const openForm = (type: string, id?: number) => {
 }
 
 /** 删除按钮操作 */
-const handleDelete = async (ids: number[]) => {
-  try {
-    // 删除的二次确认
-    await message.delConfirm()
-    // 发起删除
-    await PurchaseOrderApi.deletePurchaseOrder(ids)
-    message.success(t('common.delSuccess'))
-    // 刷新列表
-    await getList()
-    selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
-  } catch {}
-}
-
+// const handleDelete = async (ids: number[]) => {
+//   try {
+//     // 删除的二次确认
+//     await message.delConfirm()
+//     // 发起删除
+//     await PurchaseOrderApi.deletePurchaseOrder(ids)
+//     message.success(t('common.delSuccess'))
+//     // 刷新列表
+//     await getList()
+//     selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
+//   } catch {}
+// }
 /** 审批/反审批操作 */
-const handleUpdateStatus = async (id: number, status: number) => {
-  try {
-    // 审批的二次确认
-    await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
-    // 发起审批
-    await PurchaseOrderApi.updatePurchaseOrderStatus(id, status)
-    message.success(`${status === 20 ? '审批' : '反审批'}成功`)
-    // 刷新列表
-    await getList()
-  } catch {}
+// const handleUpdateStatus = async (id: number, status: number) => {
+//   try {
+//     // 审批的二次确认
+//     await message.confirm(`确定${status === 20 ? '审批' : '反审批'}该订单吗？`)
+//     // 发起审批
+//     await PurchaseOrderApi.updatePurchaseOrderStatus(id, status)
+//     message.success(`${status === 20 ? '审批' : '反审批'}成功`)
+//     // 刷新列表
+//     await getList()
+//   } catch {}
+// }
+const auditFormRef = ref()
+
+// 点击审核按钮触发
+const handleAudit = (id: number) => {
+  auditFormRef.value.open(id) // 调用 AuditForm 的 open 方法
 }
 
 // 在 handleUpdateStatus 方法后添加以下代码

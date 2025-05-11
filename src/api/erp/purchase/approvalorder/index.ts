@@ -98,13 +98,10 @@ export const PurchaseOrderApi = {
   // },
 
   // 更新采购订单的状态
-  updatePurchaseOrderStatus: async (id: number, status: number) => {
+  updatePurchaseOrderStatus: async (params: { id: number; status: number; otherFees: number }) => {
     return await request.put({
       url: `/erp/distribution/update-status`,
-      params: {
-        id,
-        status
-      }
+      params // 使用 params 传递参数
     })
   },
 
