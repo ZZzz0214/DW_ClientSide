@@ -39,11 +39,9 @@
       <el-table-column label="物流费用" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input-number
+            <el-input
+              disabled
               v-model="row.logisticsFee"
-              controls-position="right"
-              :min="0"
-              :precision="2"
             />
           </el-form-item>
         </template>
@@ -131,6 +129,7 @@ const productList = ref<ProductVO[]>([]) // 产品列表
 const comboProductList = ref<ComboVO[]>([]); // 组合产品列表
 const selectProductRef = ref(); // 定义 ref 引用
 
+const emit = defineEmits(['productIdChanged']);
 /** 初始化设置入库项 */
 watch(
   () => props.items,
@@ -144,6 +143,7 @@ watch(
 watch(() => props.ssb, (newVal) => {
   formData.value.forEach((item) => {
     item.count = newVal; // 更新子组件中的产品数量
+    calculateShippingFee(item); // 重新计算运费
     updateTotalPrice(item); // 重新计算合计
   });
 }, { immediate: true });
@@ -151,11 +151,36 @@ watch(() => props.ssb, (newVal) => {
 // 监听子组件中采购其他费用的变化
 watch(() => formData.value, (newVal) => {
   newVal.forEach((item) => {
+    calculateShippingFee(item); // 重新计算运费
     updateTotalPrice(item); // 重新计算合计
   });
 }, { deep: true });
 
 // 计算运费的方法
+const calculateShippingFee = (item) => {
+  console.log('7777777777777777777777777')
+  console.log(item.count)
+  if (item.shippingFeeType === 0) {
+    // 固定运费
+    item.logisticsFee = item.fixedShippingFee;
+  } else if (item.shippingFeeType === 1) {
+    // 按件运费
+    if (item.count <= item.additionalItemQuantity) {
+      item.logisticsFee = item.additionalItemPrice;
+    } else {
+      item.logisticsFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+    }
+  } else if (item.shippingFeeType === 2) {
+    // 按重量
+    const totalWeight = item.count * item.weight;
+    if (totalWeight <= item.firstWeight) {
+      item.logisticsFee = item.firstWeightPrice;
+    } else {
+      item.logisticsFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+    }
+  }
+};
+
 
 
 // 更新合计的方法
@@ -163,6 +188,8 @@ const updateTotalPrice = (item) => {
   item.totalProductPrice =
     item.purchasePrice * item.count + item.logisticsFee + item.otherFees + item.truckFee;
   item.totalPurchaseAmount = item.totalProductPrice;
+  console.log('656565656565656')
+  console.log(item.totalProductPrice)
 };
 
 
@@ -178,6 +205,7 @@ const handleDelete = (index: number) => {
 const handleProductSelected = (selectedProducts: any[]) => {
   selectedProducts.forEach(product => {
     formData.value.push({
+      productId: product.id, //产品id
       productName: product.name, //产品名称
       purchaser: product.purchaser, //采购人员
       supplier: product.supplier, //供应商名
@@ -199,6 +227,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       additionalWeight: product.additionalWeight,
       additionalWeightPrice: product.additionalWeightPrice
     });
+    emit('productIdChanged', product.id);
   });
 
 };

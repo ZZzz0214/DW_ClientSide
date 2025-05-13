@@ -36,11 +36,9 @@
       <el-table-column label="销售物流费用" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input-number
+            <el-input
+              disabled
               v-model="row.saleLogisticsFee"
-              controls-position="right"
-              :min="0"
-              :precision="2"
             />
           </el-form-item>
         </template>
@@ -94,7 +92,7 @@
   </el-row>
 
   <!-- 引入子组件 -->
-  <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" />
+  <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" :comboProductId="comboProductId"/>
 </template>
 
 <script setup lang="ts">
@@ -123,6 +121,12 @@ const formRef = ref([]);
 const selectProductRef = ref();
 const salepriceList = ref<SalePriceVO[]>([]); // 销售价格表列表
 
+const comboProductId = ref(null);
+
+const setComboProductId = (id) => {
+  comboProductId.value = id;
+};
+
 // 初始化设置出库项
 watch(
   () => props.items,
@@ -136,6 +140,7 @@ watch(
 watch(() => props.ssb, (newVal) => {
   formData.value.forEach((item) => {
     item.count = newVal; // 更新子组件中的产品数量
+    calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
 }, { immediate: true });
@@ -143,10 +148,33 @@ watch(() => props.ssb, (newVal) => {
 // 监听子组件中出货其他费用的变化
 watch(() => formData.value, (newVal) => {
   newVal.forEach((item) => {
+    calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
 }, { deep: true });
 
+// 计算出货运费的方法
+const calculateSaleShippingFee = (item) => {
+  if (item.shippingFeeType === 0) {
+    // 固定运费
+    item.saleLogisticsFee = item.fixedShippingFee;
+  } else if (item.shippingFeeType === 1) {
+    // 按件运费
+    if (item.count <= item.additionalItemQuantity) {
+      item.saleLogisticsFee = item.additionalItemPrice;
+    } else {
+      item.saleLogisticsFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+    }
+  } else if (item.shippingFeeType === 2) {
+    // 按重量
+    const totalWeight = item.count * item.weight;
+    if (totalWeight <= item.firstWeight) {
+      item.saleLogisticsFee = item.firstWeightPrice;
+    } else {
+      item.saleLogisticsFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+    }
+  }
+};
 
 // 更新出货总额的方法
 const updateTotalSaleAmount = (item) => {
@@ -156,7 +184,7 @@ const updateTotalSaleAmount = (item) => {
 
 // 添加按钮操作
 const handleAdd = () => {
-  selectProductRef.value.open();
+  selectProductRef.value.open(comboProductId.value);
 };
 
 // 删除按钮操作
@@ -195,7 +223,10 @@ const handleProductSelected = (selectedProducts: any[]) => {
 const validate = () => {
   return formRef.value.validate();
 };
-defineExpose({ validate });
+defineExpose({
+  setComboProductId,
+  validate
+});
 
 // 初始化
 onMounted(async () => {

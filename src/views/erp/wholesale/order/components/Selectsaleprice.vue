@@ -4,17 +4,12 @@
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="组品编号">
-            <el-input v-model="searchForm.groupProductId" />
+            <el-input v-model="searchForm.groupProductId" disabled/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="组品名称">
-            <el-input v-model="searchForm.productName" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="组品简称">
-            <el-input v-model="searchForm.productShortName" />
+          <el-form-item label="客户名称">
+            <el-input v-model="searchForm.customerName" placeholder="请输入客户名称"/>
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -36,7 +31,7 @@
       <el-table-column type="selection" width="55" />
       <el-table-column label="组品编号" prop="groupProductId" />
       <el-table-column label="组品名称" prop="productName" />
-      <el-table-column label="组品简称" prop="productShortName" />
+      <el-table-column label="客户名称" prop="customerName" />
       <el-table-column label="出货批发单价" prop="wholesalePrice" />
       <el-table-column label="备注信息" prop="remark" />
       <el-table-column label="运费信息" prop="fixedShippingFee" />
@@ -50,26 +45,51 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive } from 'vue';
+import { ref, reactive, onMounted} from 'vue';
 import { ElMessage } from 'element-plus';
 import { SalePriceApi } from '@/api/erp/sale/saleprice';
 
 const dialogVisible = ref(false);
 const dialogTitle = ref('选择销售价格');
 
+const props = defineProps({
+  comboProductId: {
+    type: String,
+    default: null,
+  },
+});
+
 const searchForm = reactive({
-  groupProductId: '',
+  groupProductId: props.comboProductId || '', // 默认值为传递的 comboProductId
   productName: '',
   productShortName: '',
   createTime: '',
+  customerName: '', // 用户可以输入的客户名称
 });
 
 const salePriceList = ref<any[]>([]);
 const selectedProducts = ref<any[]>([]);
 
+// 默认搜索逻辑
+const handleDefaultSearch = async () => {
+  try {
+    const searchParams = {
+      groupProductId: searchForm.groupProductId,
+    };
+    console.log("222222222222")
+    console.log(searchParams.groupProductId)
+    salePriceList.value = await SalePriceApi.searchSalePrice(searchParams);
+  } catch (error) {
+    ElMessage.error('默认查询失败');
+  }
+};
 const handleSearch = async () => {
   try {
-    salePriceList.value = await SalePriceApi.searchSalePrice(searchForm);
+    const searchParams = {
+      groupProductId: searchForm.groupProductId,
+      customerName: searchForm.customerName, // 包含用户输入的客户名称
+    };
+    salePriceList.value = await SalePriceApi.searchSalePrice(searchParams);
   } catch (error) {
     ElMessage.error('查询失败');
   }
@@ -85,10 +105,17 @@ const confirmSelection = () => {
 };
 
 defineExpose({
-  open: () => {
+  open: (comboProductId) => {
     dialogVisible.value = true;
+    // 设置 comboProductId
+    searchForm.groupProductId = comboProductId;
+    handleDefaultSearch(); // 打开对话框时执行默认搜索
   },
 });
 
 const emit = defineEmits(['selected']);
+
+onMounted(() => {
+  // 如果需要在组件加载时进行默认搜索，可以在这里调用 handleDefaultSearch
+});
 </script>

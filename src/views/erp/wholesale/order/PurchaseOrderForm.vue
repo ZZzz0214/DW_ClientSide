@@ -57,12 +57,12 @@
 
       <!-- 子表的表单 -->
       <ContentWrap>
-        <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
+        <el-tabs v-model="subTabsName" @tab-change="switchTab" class="-mt-15px -mb-10px">
           <el-tab-pane label="采购信息" name="purchase">
-            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" />
+            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" @productIdChanged="handleProductIdChanged"/>
           </el-tab-pane>
           <el-tab-pane label="出货信息" name="sale">
-            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" />
+            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" :comboProductId="formData.comboProductId"/>
           </el-tab-pane>
         </el-tabs>
       </ContentWrap>
@@ -143,7 +143,6 @@
 
 <script setup lang="ts">
 import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
-import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
 import { ErpWholesaleApi, ErpWholesaleVO } from '@/api/erp/wholesale'
 import PurchaseOrderItemForm from './components/PurchaseOrderItemForm.vue'
 import SalePriceItemForm from './components/SalePriceItemForm.vue'
@@ -157,6 +156,17 @@ defineOptions({ name: 'ErpPurchaseOrder' })
 
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
+
+const handleProductIdChanged = (productId: number) => {
+  formData.value.comboProductId = productId;
+};
+const switchTab = (newTabName) => {
+  if (newTabName === 'sale') {
+    // 假设 comboProductId 是从采购信息中获取的
+    const comboProductId = formData.value.comboProductId;
+    saleFormRef.value.setComboProductId(comboProductId);
+  }
+};
 
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
@@ -225,7 +235,6 @@ const open = async (type: string, id?: number) => {
     try {
       const data = await ErpWholesaleApi.getErpWholesale(id);
       formData.value = data;
-
       console.log("000000000000000000000000000000")
       console.log(data)
 
@@ -288,6 +297,7 @@ const submitForm = async () => {
     if (data.items && data.items.length > 0) {
       // 假设采购信息只有一条，取第一条数据
       const purchaseItem = data.items[0]
+      data.comboProductId = purchaseItem.productId || 0
       data.purchaser = purchaseItem.purchaser || 0
       data.supplier = purchaseItem.supplier || 0
       data.purchasePrice = purchaseItem.purchasePrice || 0
