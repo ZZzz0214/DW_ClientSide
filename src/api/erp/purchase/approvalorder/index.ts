@@ -74,6 +74,13 @@ export interface ErpDistributionPurchaseAfterSalesUpdateReqVO {
   purchaseAfterSalesAmount?: number; // 采购售后金额（注意：前端用 number 类型对应后端 BigDecimal）
   purchaseAfterSalesTime?: Date;
 }
+export interface ErpDistributionSaleAfterSalesUpdateReqVO {
+  id: number; // 编号（必填）
+  saleAfterSalesStatus?: number; // 销售售后状态
+  saleAfterSalesSituation?: string; // 销售售后情况
+  saleAfterSalesAmount?: number; // 销售售后金额（注意：前端用 number 类型对应后端 BigDecimal）
+  saleAfterSalesTime?: Date; // 销售售后时间
+}
 
 // ERP 采购订单 API
 export const PurchaseOrderApi = {
@@ -87,6 +94,10 @@ export const PurchaseOrderApi = {
     return await request.get({ url: `/erp/distribution/purchase/get?id=` + id })
   },
 
+  //查询详情订单详情
+  getSaleOrder: async (id: number) => {
+    return await request.get({ url: `/erp/distribution/sale/get?id=` + id })
+  },
   // 新增采购订单
   // createPurchaseOrder: async (data: PurchaseOrderVO) => {
   //   return await request.post({ url: `/erp/purchase-order/create`, data })
@@ -98,13 +109,19 @@ export const PurchaseOrderApi = {
   // },
 
   // 更新采购订单的状态
-  updatePurchaseOrderStatus: async (params: { id: number; status: number; otherFees: number }) => {
+  updatePurchaseOrderStatus: async (params: { id: number; purchaseAuditStatus: number; otherFees: number }) => {
     return await request.put({
-      url: `/erp/distribution/update-status`,
+      url: `/erp/distribution/update-purchase-audit-status`, // 更新接口路径
       params // 使用 params 传递参数
     })
   },
 
+  updateSaleOrderStatus: async (params: { id: number; saleAuditStatus: number; otherFees: number }) => {
+    return await request.put({
+      url: `/erp/distribution/update-sale-audit-status`, // 更新接口路径
+      params // 使用 params 传递参数
+    })
+  },
   // 删除采购订单
   // deletePurchaseOrder: async (ids: number[]) => {
   //   return await request.delete({
@@ -124,6 +141,13 @@ export const PurchaseOrderApi = {
   updatePurchaseAfterSales: async (data: ErpDistributionPurchaseAfterSalesUpdateReqVO) => {
     return await request.put({
       url: `/erp/distribution/update-purchase-after-sales`,
+      data
+    })
+  },
+  // 更新销售售后信息（新增方法）
+  updateSalesAfterSales: async (data: ErpDistributionSaleAfterSalesUpdateReqVO) => {
+    return await request.put({
+      url: `/erp/distribution/update-sale-after-sales`,
       data
     })
   },

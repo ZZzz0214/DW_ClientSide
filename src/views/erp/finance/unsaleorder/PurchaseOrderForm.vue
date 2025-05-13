@@ -82,7 +82,7 @@
       <!-- 子表的表单 -->
       <ContentWrap>
         <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
-          <el-tab-pane label="采购信息" name="item">
+          <el-tab-pane label="销售信息" name="item">
             <PurchaseOrderItemForm
               ref="itemFormRef"
               :orderData="formData"
@@ -235,7 +235,7 @@ const open = async (type: string, id?: number) => {
   if (id) {
     formLoading.value = true
     try {
-      const data = await PurchaseOrderApi.getPurchaseOrder(id);
+      const data = await PurchaseOrderApi.getSaleOrder(id);
       formData.value = data;
       // 确保子表单的运费和合计运费正确显示
     } finally {

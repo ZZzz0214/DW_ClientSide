@@ -204,7 +204,7 @@
       <el-table-column label="备注" align="center" prop="remark" width="120" />
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
+          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.purchaseAuditStatus" />
         </template>
       </el-table-column>
       <el-table-column label="售后状态" align="center" width="120" fixed="right">
@@ -238,7 +238,7 @@
             type="primary"
             @click="handleAudit(scope.row.id)"
             v-hasPermi="['erp:purchase-order:update-status']"
-            v-if="scope.row.status === 10"
+            v-if="scope.row.purchaseAuditStatus === 10"
           >
             审批
           </el-button>
@@ -350,6 +350,7 @@ const getList = async () => {
     totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
     totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
     totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
+    console.log(data.pageResult.list)
 
     list.value = data.pageResult.list
     total.value = data.pageResult.total

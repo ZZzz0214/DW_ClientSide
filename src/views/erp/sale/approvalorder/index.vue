@@ -150,6 +150,21 @@
           <Icon icon="ep:delete" class="mr-5px" /> 删除
         </el-button>
       </el-form-item>
+      <el-form-item>
+    <!-- 新增四个出货合计字段显示框 -->
+    <el-form-item label="出货单价合计" style="margin-left: 20px;" label-width="100px">
+      <el-input v-model="totalSalePrice" disabled class="!w-240px" placeholder="无数据" />
+    </el-form-item>
+    <el-form-item label="出货运费合计" style="margin-left: 20px;" label-width="100px">
+      <el-input v-model="totalSaleShippingFee" disabled class="!w-240px" placeholder="无数据" />
+    </el-form-item>
+    <el-form-item label="出货杂费合计" style="margin-left: 20px;" label-width="100px">
+      <el-input v-model="totalSaleOtherFees" disabled class="!w-240px" placeholder="无数据" />
+    </el-form-item>
+    <el-form-item label="出货总额合计" style="margin-left: 20px;" label-width="100px">
+      <el-input v-model="totalSaleAmount" disabled class="!w-240px" placeholder="无数据" />
+    </el-form-item>
+  </el-form-item>
     </el-form>
   </ContentWrap>
 
@@ -188,14 +203,14 @@
 
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
+          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.saleAuditStatus" />
         </template>
       </el-table-column>
       <el-table-column label="售后状态" align="center" width="120" fixed="right">
         <template #default="scope">
           <dict-tag
             :type="DICT_TYPE.ERP_SHOUHOU_STATUS"
-            :value="scope.row.purchaseAfterSalesStatus"
+            :value="scope.row.saleAfterSalesStatus"
           />
         </template>
       </el-table-column>
@@ -213,7 +228,7 @@
             type="primary"
             @click="handleAudit(scope.row.id)"
             v-hasPermi="['erp:sale-order:update-status']"
-            v-if="scope.row.status === 10"
+            v-if="scope.row.saleAuditStatus === 10"
           >
             审批
           </el-button>
@@ -222,7 +237,7 @@
             type="warning"
             @click="handleAfterSaleWithDetails(scope.row.id, 'afterSale')"
             v-hasPermi="['erp:purchase-order:update-status']"
-            v-if="scope.row.purchaseAfterSalesStatus === 30"
+            v-if="scope.row.saleAfterSalesStatus === 30"
           >
             售后
           </el-button>
@@ -231,7 +246,7 @@
             type="warning"
             @click="handleAfterSaleWithDetails(scope.row.id, 'antiAfterSale')"
             v-hasPermi="['erp:purchase-order:update-status']"
-            v-if="scope.row.purchaseAfterSalesStatus === 40"
+            v-if="scope.row.saleAfterSalesStatus === 40"
           >
             反售后
           </el-button>
@@ -249,7 +264,7 @@
   </ContentWrap>
 
   <!-- 表单弹窗：添加/修改 -->
-  <SaleOrderForm ref="formRef" @success="getList" />
+  <PurchaseOrderForm ref="formRef" @success="getList" />
   <AfterSaleForm ref="afterSaleFormRef" @success="getList" />
   <AuditForm ref="auditFormRef" @success="getList" />
 </template>
@@ -258,7 +273,7 @@
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import download from '@/utils/download'
 import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/approvalorder'
-import SaleOrderForm from './SaleOrderForm.vue'
+import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import AfterSaleForm from './components/AfterSaleForm.vue'
 import AuditForm from './components/AuditForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
@@ -288,6 +303,10 @@ const queryParams = reactive({
   outStatus: undefined,
   returnStatus: undefined
 })
+const totalSalePrice = ref<string>('')
+const totalSaleShippingFee = ref<string>('')
+const totalSaleOtherFees = ref<string>('')
+const totalSaleAmount = ref<string>('')
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
@@ -298,9 +317,14 @@ const userList = ref<UserVO[]>([]) // 用户列表
 const getList = async () => {
   loading.value = true
   try {
-    const data = await SaleOrderApi.getSaleOrderPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    const data = await SaleOrderApi.getSaleOrderUnreviewedPage(queryParams)
+    console.log(data.pageResult.list)
+    totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
+    totalSaleShippingFee.value = data.totalSaleShippingFee?.toFixed(2) || ''
+    totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
+    totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
+    list.value = data.pageResult.list
+    total.value = data.pageResult.total
   } finally {
     loading.value = false
   }

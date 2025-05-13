@@ -188,7 +188,7 @@
       <el-table-column label="备注" align="center" prop="remark" width="120" />
       <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
+          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.purchaseAuditStatus" />
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="220">
@@ -223,7 +223,7 @@
             type="danger"
             @click="handleAudit(scope.row.id)"
             v-hasPermi="['erp:purchase-order:update-status']"
-            v-if="scope.row.status === 20"
+            v-if="scope.row.purchaseAuditStatus === 20"
           >
             反审批
           </el-button>
@@ -288,6 +288,10 @@ const queryParams = reactive({
   inStatus: undefined,
   returnStatus: undefined
 })
+const totalPurchasePrice = ref<string>('')
+const totalShippingFee = ref<string>('')
+const totalOtherFees = ref<string>('')
+const totalPurchaseAmount = ref<string>('')
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
@@ -299,8 +303,14 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
-    list.value = data.list
-    total.value = data.total
+    totalPurchasePrice.value = data.totalPurchasePrice?.toFixed(2) || ''
+    totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
+    totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
+    totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
+    console.log(data.pageResult.list)
+
+    list.value = data.pageResult.list
+    total.value = data.pageResult.total
   } finally {
     loading.value = false
   }
