@@ -7,40 +7,45 @@
       label-width="120px"
       v-loading="formLoading"
     >
-
-
-    <el-form-item label="产品名称">
+   <!-- 产品名称 -->
+   <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
-    </el-form-item>
-    <el-form-item label="产品规格">
-      <el-input v-model="formData.productSpecification" :disabled="true" />
-    </el-form-item>
-    <el-form-item label="产品数量">
-      <el-input v-model="formData.productQuantity" :disabled="true" />
-    </el-form-item>
-    <el-form-item label="采购批发单价">
-      <el-input v-model="formData.purchasePrice" :disabled="true" />
-    </el-form-item>
-    <el-form-item label="采购物流运费">
-      <el-input v-model="formData.logisticsFee" :disabled="true" />
-    </el-form-item>
-    <el-form-item label="采购货拉拉费用">
-    <el-input v-model="formData.truckFee" :disabled="true" />
-    </el-form-item>
-    <el-form-item label="采购杂费" prop="otherFees">
-      <el-input-number
-        v-model="formData.otherFees"
-        controls-position="right"
-        :min="0"
-        :precision="2"
-        placeholder="请输入采购杂费"
-        class="!w-1/1"
-      />
-    </el-form-item>
-    <el-form-item label="采购总额">
-      <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
-    </el-form-item>
-
+      </el-form-item>
+      <!-- 产品规格 -->
+      <el-form-item label="产品规格">
+        <el-input v-model="formData.productSpecification" :disabled="true" />
+      </el-form-item>
+      <!-- 产品数量 -->
+      <el-form-item label="产品数量">
+        <el-input v-model="formData.productQuantity" :disabled="true" />
+      </el-form-item>
+      <!-- 出货单价 -->
+      <el-form-item label="出货单价">
+        <el-input v-model="formData.salePrice" :disabled="true" />
+      </el-form-item>
+      <!-- 出货货拉拉费 -->
+      <el-form-item label="出货货拉拉费">
+        <el-input v-model="formData.saleTruckFee" :disabled="true" />
+      </el-form-item>
+      <!-- 出货物流费用 -->
+      <el-form-item label="出货物流费用">
+        <el-input v-model="formData.saleLogisticsFee" :disabled="true" />
+      </el-form-item>
+      <!-- 出货杂费 -->
+      <el-form-item label="出货杂费" prop="saleOtherFees">
+        <el-input-number
+          v-model="formData.saleOtherFees"
+          controls-position="right"
+          :min="0"
+          :precision="2"
+          placeholder="请输入出货杂费"
+          class="!w-1/1"
+        />
+      </el-form-item>
+      <!-- 出货总额 -->
+      <el-form-item label="出货总额">
+        <el-input v-model="formData.totalSaleAmount" :disabled="true" />
+      </el-form-item>
       <!-- 审核相关可编辑字段 -->
 <!--      <el-form-item label="审核情况" prop="auditSituation">-->
 <!--        <el-input-->
@@ -97,14 +102,12 @@ const formData = reactive({
   productName: '',
   productSpecification: '',
   productQuantity: 0,
-  purchasePrice: 0,
-  logisticsFee: 0,  // 原 shippingFee 改为 logisticsFee
-  truckFee: 0,     // 新增货拉拉费用字段
-  otherFees: 0,
-  totalPurchaseAmount: 0,
-  auditSituation: '',
-  auditAmount: 0,
-  auditTime: null as string | null,
+  salePrice: 0,
+  saleTruckFee: 0,
+  saleLogisticsFee: 0,
+  saleOtherFees: 0,
+  totalSaleAmount: 0,
+  auditTime: null,
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -122,19 +125,16 @@ const open = async (id: number) => {
     resetForm()
 
     // 获取订单详情填充表单（复用 AfterSaleForm 的接口）
-    const orderDetail = await PurchaseOrderApi.getPurchaseOrder(id)
+    const orderDetail = await PurchaseOrderApi.getSaleOrder(id)
     formData.id = id
     formData.productName = orderDetail.productName || ''
     formData.productSpecification = orderDetail.productSpecification || ''
     formData.productQuantity = orderDetail.productQuantity || 0
-    formData.purchasePrice = orderDetail.purchasePrice || 0
-    formData.logisticsFee = orderDetail.logisticsFee || 0  // 原 shippingFee 改为 logisticsFee
-    formData.truckFee = orderDetail.truckFee || 0         // 新增货拉拉费用字段
-    formData.otherFees = orderDetail.otherFees || 0
-    formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0
-    // 初始化审核字段（可选填充历史数据）
-    formData.auditSituation = orderDetail.purchaseAfterSalesSituation || ''
-    formData.auditAmount = orderDetail.purchaseAfterSalesAmount || 0
+    formData.salePrice = orderDetail.salePrice || 0
+    formData.saleTruckFee = orderDetail.saleTruckFee || 0
+    formData.saleLogisticsFee = orderDetail.saleLogisticsFee || 0
+    formData.saleOtherFees = orderDetail.saleOtherFees || 0
+    formData.totalSaleAmount = orderDetail.totalSaleAmount || 0
     formData.auditTime = dayjs().format('YYYY-MM-DD HH:mm:ss') // 默认当前时间
   } catch (err) {
     message.error('获取订单信息失败，请重试')
@@ -149,12 +149,11 @@ const resetForm = () => {
   formData.productName = ''
   formData.productSpecification = ''
   formData.productQuantity = 0
-  formData.purchasePrice = 0
-  formData.logisticsFee = 0
-  formData.otherFees = 0
-  formData.totalPurchaseAmount = 0
-  formData.auditSituation = ''
-  formData.auditAmount = 0
+  formData.salePrice = 0
+  formData.saleTruckFee = 0
+  formData.saleLogisticsFee = 0
+  formData.saleOtherFees = 0
+  formData.totalSaleAmount = 0
   formData.auditTime = null
 }
 const emit = defineEmits(['success'])
@@ -166,7 +165,7 @@ const submitForm = async () => {
     await PurchaseOrderApi.updatePurchaseOrderStatus({
       id: formData.id,
       purchaseAuditStatus: 20, // 20 表示审核通过
-      otherFees: formData.otherFees // 传递采购杂费
+      otherFees: formData.saleOtherFees // 传递采购杂费
     })
     message.success('审核成功')
     dialogVisible.value = false

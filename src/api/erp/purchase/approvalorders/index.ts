@@ -1,5 +1,6 @@
 import request from '@/config/axios'
 
+
 export interface PurchaseOrderVO {
   id: number; // 订单工单编号
   no: string; // 采购订单号
@@ -56,6 +57,27 @@ export interface PurchaseOrderItemVO {
   returnCount: number; // 采购退货数量（新增字段）
   purchaser: string; // 采购人员（新增字段）
 }
+// ... 其他代码 ...
+
+// 批发采购售后信息更新请求VO
+export interface ErpWholesalePurchaseAfterSalesUpdateReqVO {
+  id: number; // 编号
+  purchaseAfterSalesStatus?: number; // 采购售后状态
+  purchaseAfterSalesSituation?: string; // 采购售后情况
+  purchaseAfterSalesAmount?: number; // 采购售后金额
+  purchaseAfterSalesTime?: string; // 采购售后时间
+}
+
+// 批发销售售后信息更新请求VO
+export interface ErpWholesaleSaleAfterSalesUpdateReqVO {
+  id: number; // 编号
+  saleAfterSalesStatus?: number; // 销售售后状态
+  saleAfterSalesSituation?: string; // 销售售后情况
+  saleAfterSalesAmount?: number; // 销售售后金额
+  saleAfterSalesTime?: string; // 销售售后时间
+}
+
+// ... 其他代码 ...
 
 // ERP 采购订单 API
 export const PurchaseOrderApi = {
@@ -66,39 +88,67 @@ export const PurchaseOrderApi = {
 
   // 查询采购订单详情
   getPurchaseOrder: async (id: number) => {
-    return await request.get({ url: `/erp/wholesale-purchase-order/get?id=` + id })
+    return await request.get({ url: `/erp/wholesale/purchase/get?id=` + id })
   },
 
-  // 新增采购订单
-  createPurchaseOrder: async (data: PurchaseOrderVO) => {
-    return await request.post({ url: `/erp/wholesale-purchase-order/create`, data })
-  },
+  // // 新增采购订单
+  // createPurchaseOrder: async (data: PurchaseOrderVO) => {
+  //   return await request.post({ url: `/erp/wholesale-purchase-order/create`, data })
+  // },
+  //
+  // // 修改采购订单
+  // updatePurchaseOrder: async (data: PurchaseOrderVO) => {
+  //   return await request.put({ url: `/erp/wholesale-purchase-order/update`, data })
+  // },
 
-  // 修改采购订单
-  updatePurchaseOrder: async (data: PurchaseOrderVO) => {
-    return await request.put({ url: `/erp/wholesale-purchase-order/update`, data })
-  },
-
+  // // 更新采购订单的状态
+  // updatePurchaseOrderStatus: async (id: number, status: number) => {
+  //   return await request.put({
+  //     url: `/erp/wholesale-purchase-order/update-status`,
+  //     params: {
+  //       id,
+  //       status
+  //     }
+  //   })
+  // },
   // 更新采购订单的状态
-  updatePurchaseOrderStatus: async (id: number, status: number) => {
+  updatePurchaseOrderStatus: async (params: { id: number; purchaseAuditStatus: number; otherFees: number }) => {
     return await request.put({
-      url: `/erp/wholesale-purchase-order/update-status`,
-      params: {
-        id,
-        status
-      }
+      url: `/erp/wholesale/update-purchase-audit-status`, // 更新接口路径
+      params // 使用 params 传递参数
     })
   },
 
-  // 删除采购订单
-  deletePurchaseOrder: async (ids: number[]) => {
-    return await request.delete({
-      url: `/erp/wholesale-purchase-order/delete`,
-      params: {
-        ids: ids.join(',')
-      }
+  updateSaleOrderStatus: async (params: { id: number; saleAuditStatus: number; otherFees: number }) => {
+    return await request.put({
+      url: `/erp/wholesale/update-sale-audit-status`, // 更新接口路径
+      params // 使用 params 传递参数
     })
   },
+  // 更新采购售后信息（新增方法）
+  updatePurchaseAfterSales: async (data: ErpWholesalePurchaseAfterSalesUpdateReqVO) => {
+    return await request.put({
+      url: `/erp/wholesale/update-purchase-after-sales`,
+      data
+    })
+  },
+  // 更新销售售后信息（新增方法）
+  updateSalesAfterSales: async (data: ErpWholesaleSaleAfterSalesUpdateReqVO) => {
+    return await request.put({
+      url: `/erp/wholesale/update-sale-after-sales`,
+      data
+    })
+  },
+  //
+  // // 删除采购订单
+  // deletePurchaseOrder: async (ids: number[]) => {
+  //   return await request.delete({
+  //     url: `/erp/wholesale-purchase-order/delete`,
+  //     params: {
+  //       ids: ids.join(',')
+  //     }
+  //   })
+  // },
 
   // 导出采购订单 Excel
   exportPurchaseOrder: async (params: any) => {

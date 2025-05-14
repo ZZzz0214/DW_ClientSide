@@ -17,14 +17,11 @@
       <el-form-item label="产品数量">
         <el-input v-model="formData.productQuantity" :disabled="true" />
       </el-form-item>
-      <el-form-item label="采购批发单价">
+      <el-form-item label="采购单价">
         <el-input v-model="formData.purchasePrice" :disabled="true" />
       </el-form-item>
-      <el-form-item label="物流费用">
-        <el-input v-model="formData.logisticsFee" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="货拉拉费用">
-        <el-input v-model="formData.truckFee" :disabled="true" />
+      <el-form-item label="采购运费">
+        <el-input v-model="formData.shippingFee" :disabled="true" />
       </el-form-item>
       <el-form-item label="采购杂费">
         <el-input v-model="formData.otherFees" :disabled="true" />
@@ -75,7 +72,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { PurchaseOrderApi } from '@/api/erp/purchase/approvalorders'
+import { PurchaseOrderApi } from '@/api/erp/purchase/approvalorder'
 import { useMessage } from '@/hooks/web/useMessage'
 import dayjs from "dayjs";
 import {dateFormatter} from "@/utils/formatTime";
@@ -98,8 +95,6 @@ const formData = reactive({
   otherFees: 0, // 采购杂费
   totalPurchaseAmount: 0, // 采购总额
   purchaseAfterSalesAmount: 0, // 售后金额
-  logisticsFee: 0, // 售后金额
-  truckFee: 0, // 售后金额
   purchaseAfterSalesTime: null as string | null, // 审核售后时间
   purchaseAfterSalesStatus: 30,
   purchaseAfterSalesSituation: '',
@@ -136,8 +131,6 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
     formData.purchaseAfterSalesTime = orderDetail.purchaseAfterSalesTime || null // 审核售后时间
     formData.purchaseAfterSalesSituation = orderDetail.purchaseAfterSalesSituation || ''
     formData.purchaseAfterSalesAmount = orderDetail.purchaseAfterSalesAmount || ''
-    formData.truckFee = orderDetail.truckFee || 0
-    formData.logisticsFee = orderDetail.logisticsFee || 0
     if (!orderDetail.purchaseAfterSalesTime) {
       // 生成符合 yyyy-MM-dd HH:mm:ss 格式的字符串（与 value-format 一致）
       // const now = new Date()

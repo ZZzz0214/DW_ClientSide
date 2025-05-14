@@ -10,6 +10,7 @@
   >
 <!--    <el-table :data="formData" show-summary :summary-method="getSummaries" class="-mt-10px">-->
     <el-table :data="formData"  class="-mt-10px">
+      <el-table-column label="序号" type="index" align="center" width="60" />
       <el-table-column label="采购人员" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
@@ -26,7 +27,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="采购批发单价" min-width="80">
+      <el-table-column label="采购单价" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
@@ -37,25 +38,12 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="物流费用" min-width="80">
+      <el-table-column label="采购运费" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
               disabled
-              v-model="row.logisticsFee"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="货拉拉费用" min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input-number
-              v-model="row.truckFee"
-              controls-position="right"
-              :min="0"
-              :precision="2"
+              v-model="row.shippingFee"
             />
           </el-form-item>
         </template>

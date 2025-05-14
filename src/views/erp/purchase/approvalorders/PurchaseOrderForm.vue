@@ -8,27 +8,17 @@
       v-loading="formLoading"
       :disabled="disabled"
     >
+      <!-- 第一行：订单号 -->
       <el-row :gutter="20">
-        <el-col :span="6">
+        <el-col :span="24">
           <el-form-item label="订单编号" prop="no">
             <el-input disabled v-model="formData.no" placeholder="保存时自动生成" />
           </el-form-item>
         </el-col>
-        <el-col :span="6">
-          <el-form-item label="订单号" prop="orderNumber">
-            <el-input v-model="formData.orderNumber" placeholder="请输入订单号" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="物流公司" prop="logisticsCompany">
-            <el-input v-model="formData.logisticsCompany" placeholder="请输入物流公司" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="物流单号" prop="trackingNumber">
-            <el-input v-model="formData.trackingNumber" placeholder="请输入物流单号" />
-          </el-form-item>
-        </el-col>
+      </el-row>
+
+      <!-- 第二行：产品名称、产品规格、产品数量、发货编码 -->
+      <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item label="产品名称" prop="productName">
             <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" />
@@ -56,29 +46,15 @@
             <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
           </el-form-item>
         </el-col>
+      </el-row>
+      <el-row :gutter="20">
         <el-col :span="8">
-          <el-form-item label="原表商品" prop="originalProductName">
-            <el-input v-model="formData.originalProductName" placeholder="请输入原表商品" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="原表规格" prop="originalStandard">
-            <el-input v-model="formData.originalStandard" placeholder="请输入原表规格" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="原表数量" prop="originalQuantity">
-            <el-input-number
-              v-model="formData.originalQuantity"
-              controls-position="right"
-              :min="1"
-              :precision="2"
-              class="!w-100%"
-              placeholder="请输入原表数量"
-            />
+          <el-form-item label="附件" prop="fileUrl">
+            <UploadFile :is-show-tip="false" v-model="formData.fileUrl" :limit="1" />
           </el-form-item>
         </el-col>
       </el-row>
+
       <!-- 子表的表单 -->
       <ContentWrap>
         <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
@@ -166,7 +142,7 @@
   </Dialog>
 </template>
 <script setup lang="ts">
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalorder'
+import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalorders'
 import PurchaseOrderItemForm from './components/PurchaseOrderItemForm.vue'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 import * as UserApi from '@/api/system/user'
@@ -236,6 +212,7 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       const data = await PurchaseOrderApi.getPurchaseOrder(id);
+      console.log("md"+data)
       formData.value = data;
       // 确保子表单的运费和合计运费正确显示
     } finally {
