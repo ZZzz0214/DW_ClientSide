@@ -10,50 +10,58 @@
   >
 <!--    <el-table :data="formData" show-summary :summary-method="getSummaries" class="-mt-10px">-->
     <el-table :data="formData"  class="-mt-10px">
-      <el-table-column label="序号" type="index" align="center" width="60" />
-      <el-table-column label="采购人员" min-width="80">
+      <el-table-column label="销售人员" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.purchaser" />
+            <el-input v-model="row.salesperson" />
           </el-form-item>
         </template>
       </el-table-column>
 
-      <el-table-column label="供应商名" min-width="120">
+      <el-table-column label="客户名称" min-width="120">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.supplier" />
+            <el-input disabled v-model="row.customerName" />
           </el-form-item>
         </template>
       </el-table-column>
 
-      <el-table-column label="采购单价" min-width="80">
+      <el-table-column label="出货单价" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input disabled v-model="row.salePrice" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="销售物流费用" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
               disabled
-              v-model="row.purchasePrice"
+              v-model="row.saleLogisticsFee"
             />
           </el-form-item>
         </template>
       </el-table-column>
 
-      <el-table-column label="采购运费" min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input
-              disabled
-              v-model="row.shippingFee"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="采购其他费用" min-width="80">
+      <el-table-column label="销售货拉拉费用" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input-number
-              v-model="row.otherFees"
+              v-model="row.saleTruckFee"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="出货其他费用" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input-number
+              v-model="row.saleOtherFees"
               controls-position="right"
               :min="0"
               :precision="2"
@@ -62,13 +70,10 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="采购总额" min-width="80">
+      <el-table-column label="出货总额" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input
-              disabled
-              v-model="row.totalPurchaseAmount"
-            />
+            <el-input disabled v-model="row.totalSaleAmount" />
           </el-form-item>
         </template>
       </el-table-column>
@@ -85,11 +90,10 @@
   </el-row>
 
   <!-- 引入子组件 -->
-  <SelectProduct ref="selectProductRef" @selected="handleProductSelected" />
+<!--  <SelectProduct ref="selectProductRef" @selected="handleProductSelected" />-->
 </template>
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
-import SelectProduct from './SelectProduct.vue';
 import { ProductApi, ProductVO } from '@/api/erp/product/product';
 import { ComboApi, ComboVO } from '@/api/erp/product/combo';
 

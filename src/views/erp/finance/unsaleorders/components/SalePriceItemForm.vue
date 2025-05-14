@@ -75,13 +75,13 @@
   </el-row>
 
   <!-- 引入子组件 -->
-  <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" :comboProductId="comboProductId"/>
+<!--  <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" :comboProductId="comboProductId"/>-->
 </template>
 
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
-import Selectsaleprice from './Selectsaleprice.vue';
+
 
 const props = defineProps<{
   disabled: boolean
@@ -97,11 +97,6 @@ const formRef = ref([]);
 const selectProductRef = ref();
 const salepriceList = ref<SalePriceVO[]>([]); // 销售价格表列表
 
-const comboProductId = ref(null);
-
-const setComboProductId = (id) => {
-  comboProductId.value = id;
-};
 
 // 修改 watch 监听
 watch(
@@ -162,7 +157,6 @@ const validate = () => {
   return formRef.value.validate();
 };
 defineExpose({
-  setComboProductId,
   validate
 });
 

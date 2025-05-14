@@ -162,9 +162,9 @@ const submitForm = async () => {
     formLoading.value = true
     console.log("123",formData.id)
     // 调用审核接口，传递采购杂费
-    await PurchaseOrderApi.updatePurchaseOrderStatus({
+    await PurchaseOrderApi.updateSaleOrderStatus({
       id: formData.id,
-      purchaseAuditStatus: 20, // 20 表示审核通过
+      saleAuditStatus: 20, // 20 表示审核通过
       otherFees: formData.saleOtherFees // 传递采购杂费
     })
     message.success('审核成功')

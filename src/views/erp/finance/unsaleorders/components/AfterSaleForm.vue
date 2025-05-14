@@ -17,33 +17,36 @@
       <el-form-item label="产品数量">
         <el-input v-model="formData.productQuantity" :disabled="true" />
       </el-form-item>
-      <el-form-item label="采购单价">
-        <el-input v-model="formData.purchasePrice" :disabled="true" />
+      <el-form-item label="出货批发单价">
+      <el-input v-model="formData.salePrice" :disabled="true" />
       </el-form-item>
-      <el-form-item label="采购运费">
-        <el-input v-model="formData.shippingFee" :disabled="true" />
+      <el-form-item label="出货物流运费">
+      <el-input v-model="formData.saleLogisticsFee" :disabled="true" />
       </el-form-item>
-      <el-form-item label="采购杂费">
-        <el-input v-model="formData.otherFees" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="采购总额">
-        <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
-      </el-form-item>
+    <el-form-item label="出货货拉拉费用">
+      <el-input v-model="formData.saleTruckFee" :disabled="true" />
+    </el-form-item>
+    <el-form-item label="出货杂费">
+      <el-input v-model="formData.saleOtherFees" :disabled="true" />
+    </el-form-item>
+    <el-form-item label="出货总额">
+   <el-input v-model="formData.totalSaleAmount" :disabled="true" />
+    </el-form-item>
       <!-- 原有字段 -->
       <el-form-item label="售后时间">
-        <el-input v-model="formData.purchaseAfterSalesTime" :disabled="true" />
+        <el-input v-model="formData.saleAfterSalesTime" :disabled="true" />
       </el-form-item>
-      <el-form-item label="售后情况" prop="purchaseAfterSalesSituation">
+      <el-form-item label="售后情况" prop="saleAfterSalesStatus">
         <el-input
           type="textarea"
-          v-model="formData.purchaseAfterSalesSituation"
+          v-model="formData.saleAfterSalesStatus"
           placeholder="请输入售后情况"
           :rows="4"
         />
       </el-form-item>
-      <el-form-item label="售后审核费用" prop="purchaseAfterSalesAmount" >
+      <el-form-item label="售后审核费用" prop="saleAfterSalesAmount" >
         <el-input-number
-          v-model="formData.purchaseAfterSalesAmount"
+          v-model="formData.saleAfterSalesAmount"
           controls-position="right"
           :min="0"
           :precision="2"
@@ -51,10 +54,10 @@
           class="!w-1/1"
         />
       </el-form-item>
-      <el-form-item label="售后审核时间" prop="purchaseAfterSalesTime" >
+      <el-form-item label="售后审核时间" prop="saleAfterSalesTime" >
         <!-- 添加 value-format 指定输出格式为 yyyy-MM-dd HH:mm:ss -->
         <el-date-picker
-          v-model="formData.purchaseAfterSalesTime"
+          v-model="formData.saleAfterSalesTime"
           type="datetime"
           :formatter="dateFormatter"
           placeholder="选择采购售后时间"
@@ -72,7 +75,7 @@
 
 <script setup lang="ts">
 import { ref, reactive } from 'vue'
-import { PurchaseOrderApi } from '@/api/erp/purchase/approvalorder'
+import { PurchaseOrderApi } from '@/api/erp/purchase/approvalorders'
 import { useMessage } from '@/hooks/web/useMessage'
 import dayjs from "dayjs";
 import {dateFormatter} from "@/utils/formatTime";
@@ -87,17 +90,18 @@ const formRef = ref()
 // 修改字段名匹配后端VO
 const formData = reactive({
   id: 0,
-  productName: '', // 产品名称
-  productSpecification: '', // 产品规格
-  productQuantity: 0, // 产品数量
-  purchasePrice: 0, // 采购单价
-  shippingFee: 0, // 采购运费
-  otherFees: 0, // 采购杂费
-  totalPurchaseAmount: 0, // 采购总额
-  purchaseAfterSalesAmount: 0, // 售后金额
-  purchaseAfterSalesTime: null as string | null, // 审核售后时间
-  purchaseAfterSalesStatus: 30,
-  purchaseAfterSalesSituation: '',
+  productName: '',
+  productSpecification: '',
+  productQuantity: 0,
+  salePrice: 0,
+  saleLogisticsFee: 0,
+  saleTruckFee: 0,
+  saleOtherFees: 0,
+  totalSaleAmount: 0,
+  saleAfterSalesStatus: 0,
+  saleAfterSalesSituation: '',
+  saleAfterSalesAmount: 0,
+  saleAfterSalesTime: null as string | null,
 })
 
 // 调整验证规则字段名
@@ -115,23 +119,21 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
     resetForm()
 
     // 根据操作类型设置目标状态（售后→40，反售后→30）
-    formData.purchaseAfterSalesStatus = operationType === 'afterSale' ? 40 : 30
+    formData.saleAfterSalesStatus = operationType === 'afterSale' ? 40 : 30
 
     // 获取订单详情并填充表单
-    const orderDetail = await PurchaseOrderApi.getPurchaseOrder(id)
+    const orderDetail = await PurchaseOrderApi.getSaleOrder(id)
     formData.id = id
     formData.productName = orderDetail.productName || '' // 产品名称
     formData.productSpecification = orderDetail.productSpecification || '' // 产品规格
     formData.productQuantity = orderDetail.productQuantity || 0 // 产品数量
-    formData.purchasePrice = orderDetail.purchasePrice || 0 // 采购单价
-    formData.shippingFee = orderDetail.shippingFee || 0 // 采购运费
-    formData.otherFees = orderDetail.otherFees || 0 // 采购杂费
-    formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0 // 采购总额
-    formData.purchaseAfterSalesAmount = orderDetail.purchaseAfterSalesAmount || 0 // 售后金额
-    formData.purchaseAfterSalesTime = orderDetail.purchaseAfterSalesTime || null // 审核售后时间
-    formData.purchaseAfterSalesSituation = orderDetail.purchaseAfterSalesSituation || ''
-    formData.purchaseAfterSalesAmount = orderDetail.purchaseAfterSalesAmount || ''
-    if (!orderDetail.purchaseAfterSalesTime) {
+    formData.salePrice = orderDetail.salePrice || 0 // 采购单价
+    formData.saleLogisticsFee = orderDetail.saleLogisticsFee || 0 // 采购运费
+    formData.saleTruckFee = orderDetail.saleTruckFee || 0 // 采购杂费
+    formData.saleOtherFees = orderDetail.saleOtherFees || 0 // 采购总额
+    formData.totalSaleAmount = orderDetail.totalSaleAmount || 0 // 售后金额
+    formData.saleAfterSalesAmount = orderDetail.saleAfterSalesAmount || ''
+    if (!orderDetail.saleAfterSalesTime) {
       // 生成符合 yyyy-MM-dd HH:mm:ss 格式的字符串（与 value-format 一致）
       // const now = new Date()
       // const year = now.getFullYear()
@@ -141,12 +143,10 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
       // const minutes = String(now.getMinutes()).padStart(2, '0')
       // const seconds = String(now.getSeconds()).padStart(2, '0')
       // formData.purchaseAfterSalesTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}` // 关键修改：手动拼接格式
-      formData.purchaseAfterSalesTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
-      console.log('生成的时间：', formData.purchaseAfterSalesTime)
+      formData.saleAfterSalesTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
     } else {
       // 直接使用后端返回的字符串（假设后端返回的格式已符合 yyyy-MM-dd HH:mm:ss）
-      formData.purchaseAfterSalesTime = orderDetail.purchaseAfterSalesTime
-      console.log('有时间',formData.purchaseAfterSalesTime)
+      formData.saleAfterSalesTime = orderDetail.saleAfterSalesTime
     }
   } catch (err) {
     message.error('获取订单售后信息失败，请重试')
@@ -161,14 +161,11 @@ const resetForm = () => {
   formData.productName = '' // 产品名称
   formData.productSpecification = '' // 产品规格
   formData.productQuantity = 0 // 产品数量
-  formData.purchasePrice = 0 // 采购单价
-  formData.shippingFee = 0 // 采购运费
-  formData.otherFees = 0 // 采购杂费
-  formData.totalPurchaseAmount = 0 // 采购总额
-  formData.purchaseAfterSalesAmount = 0 // 售后金额
-  formData.purchaseAfterSalesTime = null // 审核售后时间
-  formData.purchaseAfterSalesStatus = 30
-  formData.purchaseAfterSalesSituation = ''
+  formData.salePrice = 0 // 采购单价
+  formData.saleLogisticsFee = 0 // 采购运费
+  formData.saleTruckFee = 0 // 采购杂费
+  formData.saleOtherFees = 0 // 采购总额
+  formData.totalSaleAmount = 0 // 售后金额
 }
 
 const emit = defineEmits(['success'])
@@ -178,7 +175,7 @@ const submitForm = async () => {
     formLoading.value = true
     // 调用新增的updatePurchaseAfterSales接口
     console.log('提交的表单数据：', formData)
-    await PurchaseOrderApi.updatePurchaseAfterSales(formData)
+    await PurchaseOrderApi.updateSalesAfterSales(formData)
     message.success('售后信息更新成功')
     dialogVisible.value = false
     emit('success') // 触发成功事件通知父组件刷新
