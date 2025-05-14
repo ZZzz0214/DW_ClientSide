@@ -39,6 +39,7 @@
           :disabled="isDetail"
           v-model="formData.purchaser"
           placeholder="请输入采购人员信息"
+          @focus="openPurchaserSearch"
           class="w-80"
         />
       </el-form-item>
@@ -49,6 +50,7 @@
           :disabled="isDetail"
           v-model="formData.supplier"
           placeholder="请输入供应商名"
+          @focus="openSupplierSearch"
           class="w-80"
         />
       </el-form-item>
@@ -136,11 +138,27 @@
 
     <!-- 查询组件 -->
     <SelectProduct ref="selectProductRef" @selected="handleProductSelected" />
+
+    <!-- 采购人员搜索弹窗 -->
+    <PurchaserSearchDialog
+      v-model:visible="purchaserSearchDialogVisible"
+      @purchaser-selected="handlePurchaserSelected"
+      ref="purchaserSearchDialog"
+    />
+
+    <!-- 供应商搜索弹窗 -->
+    <SupplierSearchDialog
+      v-model:visible="supplierSearchDialogVisible"
+      @supplier-selected="handleSupplierSelected"
+      ref="supplierSearchDialog"
+    />
   </el-form>
 </template>
 
 <script setup lang="ts">
 import {ref, reactive, watch, PropType} from 'vue';
+import PurchaserSearchDialog from './PurchaserSearchDialog.vue'; // 引入采购人员搜索弹窗组件
+import SupplierSearchDialog from './SupplierSearchDialog.vue'; // 引入供应商搜索弹窗组件
 import SelectProduct from './SelectProduct.vue';
 import {copyValueToTarget} from "@/utils";
 import * as ProductComboApi from '@/api/erp/product/combo'
@@ -160,6 +178,24 @@ const emit = defineEmits(['update:activeName']);
 const formRef = ref();
 const formLoading = ref(false);
 const subTabsName = ref('item');
+const purchaserSearchDialogVisible = ref(false); // 采购人员搜索弹窗的显示状态
+const supplierSearchDialogVisible = ref(false); // 供应商搜索弹窗的显示状态
+
+const openPurchaserSearch = () => {
+  purchaserSearchDialogVisible.value = true;
+};
+
+const handlePurchaserSelected = (purchaser: any) => {
+  formData.value.purchaser = purchaser.name; // 填充采购人员名称
+};
+
+const openSupplierSearch = () => {
+  supplierSearchDialogVisible.value = true;
+};
+
+const handleSupplierSelected = (supplier: any) => {
+  formData.value.supplier = supplier.name; // 填充供应商名称
+};
 
 const formData = ref<ProductComboApi.ComboVO>({
   name: '', // 组品名称

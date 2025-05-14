@@ -50,8 +50,8 @@ export const PurchaserApi = {
   //   return await request.download({ url: `/erp/purchaser/export-excel`, params });
   // },
   //
-  // // 搜索采购人员
-  // searchPurchaser: async (params: any) => {
-  //   return await request.get({ url: `/erp/purchaser/search`, params });
-  // }
+  // 搜索采购人员
+  searchPurchaser: async (params: any) => {
+    return await request.get({ url: `/erp/purchaser/search`, params });
+  }
 };

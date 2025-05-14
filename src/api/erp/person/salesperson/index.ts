@@ -44,4 +44,8 @@ export const ErpSalespersonApi = {
   getSalespersonListByIds: async (ids: number[]) => {
     return await request.get({ url: `/erp/salesperson/list-by-ids`, params: { ids } });
   },
+
+  searchSalesperson: async (params: any) => {
+    return await request.get({ url: `/erp/salesperson/search`, params });
+  }
 };

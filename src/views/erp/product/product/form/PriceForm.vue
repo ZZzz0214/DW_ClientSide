@@ -74,6 +74,8 @@
       <el-input
         v-model="formData.purchaser"
         placeholder="请输入采购人员信息"
+        @focus="openPurchaserSearch"
+        readonly
         class="w-80"
       />
     </el-form-item>
@@ -84,6 +86,8 @@
         v-model="formData.supplier"
         placeholder="请输入供应商名"
         class="w-80"
+        @focus="openSupplierSearch"
+        readonly
       />
     </el-form-item>
 
@@ -136,6 +140,20 @@
       />
     </el-form-item>
   </el-form>
+
+  <!-- 采购人员搜索弹窗 -->
+  <PurchaserSearchDialog
+    v-model:visible="purchaserSearchDialogVisible"
+    @purchaser-selected="handlePurchaserSelected"
+    ref="purchaserSearchDialog"
+  />
+
+  <!-- 供应商搜索弹窗 -->
+  <SupplierSearchDialog
+    v-model:visible="supplierSearchDialogVisible"
+    @supplier-selected="handleSupplierSelected"
+    ref="supplierSearchDialog"
+  />
 </template>
 <script lang="ts" setup>
 import { PropType } from 'vue'
@@ -147,35 +165,13 @@ import {
   RuleConfig,
   SkuList
 } from '@/views/mall/product/spu/components/index'
+import PurchaserSearchDialog from './PurchaserSearchDialog.vue'; // 引入采购人员搜索弹窗组件
+import SupplierSearchDialog from './SupplierSearchDialog.vue'; // 引入供应商搜索弹窗组件
 // import ProductAttributes from './ProductAttributes.vue'
 // import ProductPropertyAddForm from './ProductPropertyAddForm.vue'
 import type { ProductVO } from '@/api/erp/product/product/index';
 
 defineOptions({ name: 'ProductSpuSkuForm' })
-
-// sku 相关属性校验规则
-const ruleConfig: RuleConfig[] = [
-  {
-    name: 'stock',
-    rule: (arg) => arg >= 0,
-    message: '商品库存必须大于等于 1 ！！！'
-  },
-  {
-    name: 'price',
-    rule: (arg) => arg >= 0.01,
-    message: '商品销售价格必须大于等于 0.01 元！！！'
-  },
-  {
-    name: 'marketPrice',
-    rule: (arg) => arg >= 0.01,
-    message: '商品市场价格必须大于等于 0.01 元！！！'
-  },
-  {
-    name: 'costPrice',
-    rule: (arg) => arg >= 0.01,
-    message: '商品成本价格必须大于等于 0.00 元！！！'
-  }
-]
 
 const message = useMessage() // 消息弹窗
 const formLoading = ref(false)
@@ -186,10 +182,10 @@ const props = defineProps({
   },
   isDetail: propTypes.bool.def(false) // 是否作为详情组件
 })
-// const attributesAddFormRef = ref() // 添加商品属性表单
 const formRef = ref() // 表单 Ref
-// const propertyList = ref<PropertyAndValues[]>([]) // 商品属性列表
-// const skuListRef = ref() // 商品属性列表 Ref
+const purchaserSearchDialogVisible = ref(false); // 采购人员搜索弹窗的显示状态
+const supplierSearchDialogVisible = ref(false); // 供应商搜索弹窗的显示状态
+
 const formData = reactive<ProductVO>({
   purchaser: '', // 采购人员
   supplier: '', // 供应商名
@@ -208,6 +204,22 @@ const rules = reactive({
   minPurchasePrice: [{ required: true, message: '对外最低采购单价不能为空', trigger: 'blur' }],
   minWholesalePrice: [{ required: true, message: '对外最低批发单价不能为空', trigger: 'blur' }]
 });
+
+const openPurchaserSearch = () => {
+  purchaserSearchDialogVisible.value = true;
+};
+
+const handlePurchaserSelected = (purchaser: any) => {
+  formData.purchaser = purchaser.name; // 填充采购人员名称
+};
+
+const openSupplierSearch = () => {
+  supplierSearchDialogVisible.value = true;
+};
+
+const handleSupplierSelected = (supplier: any) => {
+  formData.supplier = supplier.name; // 填充供应商名称
+};
 
 /** 将传进来的值赋值给 formData */
 watch(

@@ -12,7 +12,12 @@
       <el-table-column label="销售人员" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input v-model="row.salesperson" />
+            <el-input
+              v-model="row.salesperson"
+              placeholder="请选择销售人员"
+              @focus="openSalespersonSearch(row)"
+              readonly
+            />
           </el-form-item>
         </template>
       </el-table-column>
@@ -93,6 +98,12 @@
 
   <!-- 引入子组件 -->
   <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" :comboProductId="comboProductId"/>
+  <!-- 销售人员搜索弹窗 -->
+  <SalespersonSearchDialog
+    v-model:visible="salespersonSearchDialogVisible"
+    @salesperson-selected="handleSalespersonSelected"
+    ref="salespersonSearchDialog"
+  />
 </template>
 
 <script setup lang="ts">
@@ -105,6 +116,7 @@ import {
   getSumValue
 } from '@/utils';
 import Selectsaleprice from './Selectsaleprice.vue';
+import SalespersonSearchDialog from './SalespersonSearchDialog.vue'; // 引入销售人员搜索弹窗组件
 
 const props = defineProps<{
   items: any[];
@@ -120,11 +132,25 @@ const formRules = reactive({
 const formRef = ref([]);
 const selectProductRef = ref();
 const salepriceList = ref<SalePriceVO[]>([]); // 销售价格表列表
+const salespersonSearchDialogVisible = ref(false); // 销售人员搜索弹窗的显示状态
 
 const comboProductId = ref(null);
 
 const setComboProductId = (id) => {
   comboProductId.value = id;
+};
+
+const openSalespersonSearch = (row) => {
+  salespersonSearchDialogVisible.value = true;
+  row.salesperson = ''; // 清空当前销售人员
+};
+
+const handleSalespersonSelected = (salesperson: any) => {
+  formData.value.forEach((row) => {
+    if (!row.salesperson) {
+      row.salesperson = salesperson.name; // 填充销售人员名称
+    }
+  });
 };
 
 // 初始化设置出库项
