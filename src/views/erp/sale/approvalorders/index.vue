@@ -152,18 +152,21 @@
       </el-form-item>
         <el-form-item>
                 <!-- 新增四个合计字段显示框 -->
-        <el-form-item label="采购单价合计" style="margin-left: 20px;" label-width="100px">
-          <el-input v-model="totalPurchasePrice" disabled class="!w-240px" placeholder="无数据" />
+        <el-form-item label="批发出货单价合计" style="margin-left: 20px;" label-width="140px">
+          <el-input v-model="totalSalePrice" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
-        <el-form-item label="采购运费合计" style="margin-left: 20px;" label-width="100px">
-          <el-input v-model="totalShippingFee" disabled class="!w-240px" placeholder="无数据" />
+        <el-form-item label="批发货拉拉费合计" style="margin-left: 20px;" label-width="140px">
+          <el-input v-model="totalSaleTruckFee" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
-        <el-form-item label="采购杂费合计" style="margin-left: 20px;" label-width="100px">
-          <el-input v-model="totalOtherFees" disabled class="!w-240px" placeholder="无数据" />
+        <el-form-item label="批发出货物流费用合计" style="margin-left: 20px;" label-width="160px">
+          <el-input v-model="totalSaleLogisticsFee" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
-        <el-form-item label="采购总额合计" style="margin-left: 20px;" label-width="100px">
-          <el-input v-model="totalPurchaseAmount" disabled class="!w-240px" placeholder="无数据" />
+        <el-form-item label="批发出货杂费合计" style="margin-left: 20px;" label-width="140px">
+          <el-input v-model="totalSaleOtherFees" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
+          <el-form-item label="批发出货总额合计" style="margin-left: 20px;" label-width="140px">
+            <el-input v-model="totalSaleAmount" disabled class="!w-120px" placeholder="无数据" />
+          </el-form-item>
       </el-form-item>
 
     </el-form>
@@ -311,10 +314,11 @@ defineOptions({ name: 'ErpPurchaseApproval' })
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 // 新增四个合计字段的响应式声明（关键修改）
-const totalPurchasePrice = ref<string>('')
-const totalShippingFee = ref<string>('')
-const totalOtherFees = ref<string>('')
-const totalPurchaseAmount = ref<string>('')
+const totalSalePrice = ref<string>('')
+const totalSaleTruckFee = ref<string>('')
+const totalSaleLogisticsFee = ref<string>('')
+const totalSaleOtherFees = ref<string>('')
+const totalSaleAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -343,11 +347,11 @@ const getList = async () => {
   try {
     const data = await PurchaseOrderApi.getSaleOrderPage(queryParams)
 
-    totalPurchasePrice.value = data.totalPurchasePrice?.toFixed(2) || ''
-    totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
-    totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
-    totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
-    console.log(data.pageResult.list)
+    totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
+    totalSaleTruckFee.value = data.totalSaleTruckFee?.toFixed(2) || ''
+    totalSaleLogisticsFee.value = data.totalSaleLogisticsFee?.toFixed(2) || ''
+    totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
+    totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
 
     list.value = data.pageResult.list
     total.value = data.pageResult.total
