@@ -7,38 +7,40 @@
       label-width="120px"
       v-loading="formLoading"
     >
-      <!-- 复用 AfterSaleForm 的不可编辑字段 -->
-      <el-form-item label="产品名称">
+
+
+    <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="产品规格">
-        <el-input v-model="formData.productSpecification" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="产品数量">
-        <el-input v-model="formData.productQuantity" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="采购批发单价">
-        <el-input v-model="formData.purchasePrice" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="物流费用">
-        <el-input v-model="formData.logisticsFee" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="货拉拉费用">
-        <el-input v-model="formData.truckFee" :disabled="true" />
-      </el-form-item>
-      <el-form-item label="采购杂费" prop="otherFees">
-        <el-input-number
-          v-model="formData.otherFees"
-          controls-position="right"
-          :min="0"
-          :precision="2"
-          placeholder="请输入采购杂费"
-          class="!w-1/1"
-        />
-      </el-form-item>
-      <el-form-item label="采购总额">
-        <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
-      </el-form-item>
+    </el-form-item>
+    <el-form-item label="产品规格">
+      <el-input v-model="formData.productSpecification" :disabled="true" />
+    </el-form-item>
+    <el-form-item label="产品数量">
+      <el-input v-model="formData.productQuantity" :disabled="true" />
+    </el-form-item>
+    <el-form-item label="采购批发单价">
+      <el-input v-model="formData.purchasePrice" :disabled="true" />
+    </el-form-item>
+    <el-form-item label="采购物流运费">
+      <el-input v-model="formData.logisticsFee" :disabled="true" />
+    </el-form-item>
+    <el-form-item label="采购货拉拉费用">
+    <el-input v-model="formData.truckFee" :disabled="true" />
+    </el-form-item>
+    <el-form-item label="采购杂费" prop="otherFees">
+      <el-input-number
+        v-model="formData.otherFees"
+        controls-position="right"
+        :min="0"
+        :precision="2"
+        placeholder="请输入采购杂费"
+        class="!w-1/1"
+      />
+    </el-form-item>
+    <el-form-item label="采购总额">
+      <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
+    </el-form-item>
+
       <!-- 审核相关可编辑字段 -->
 <!--      <el-form-item label="审核情况" prop="auditSituation">-->
 <!--        <el-input-->
@@ -96,14 +98,13 @@ const formData = reactive({
   productSpecification: '',
   productQuantity: 0,
   purchasePrice: 0,
-  shippingFee: 0,
-  logisticsFee: 0,
-  truckFee: 0,
+  logisticsFee: 0,  // 原 shippingFee 改为 logisticsFee
+  truckFee: 0,     // 新增货拉拉费用字段
   otherFees: 0,
   totalPurchaseAmount: 0,
-  auditSituation: '', // 审核情况（对应原售后情况）
-  auditAmount: 0, // 审核费用（对应原售后费用）
-  auditTime: null as string | null, // 审核时间（对应原售后时间）
+  auditSituation: '',
+  auditAmount: 0,
+  auditTime: null as string | null,
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -127,9 +128,8 @@ const open = async (id: number) => {
     formData.productSpecification = orderDetail.productSpecification || ''
     formData.productQuantity = orderDetail.productQuantity || 0
     formData.purchasePrice = orderDetail.purchasePrice || 0
-    formData.shippingFee = orderDetail.shippingFee || 0
-    formData.logisticsFee = orderDetail.logisticsFee || 0
-    formData.truckFee = orderDetail.truckFee || 0
+    formData.logisticsFee = orderDetail.logisticsFee || 0  // 原 shippingFee 改为 logisticsFee
+    formData.truckFee = orderDetail.truckFee || 0         // 新增货拉拉费用字段
     formData.otherFees = orderDetail.otherFees || 0
     formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0
     // 初始化审核字段（可选填充历史数据）
@@ -150,7 +150,7 @@ const resetForm = () => {
   formData.productSpecification = ''
   formData.productQuantity = 0
   formData.purchasePrice = 0
-  formData.shippingFee = 0
+  formData.logisticsFee = 0
   formData.otherFees = 0
   formData.totalPurchaseAmount = 0
   formData.auditSituation = ''
@@ -167,11 +167,11 @@ const submitForm = async () => {
       purchaseAuditStatus: 10, // 20 表示审核通过
       otherFees: formData.otherFees // 传递采购杂费
     })
-    message.success('反审核成功')
+    message.success('审核成功')
     dialogVisible.value = false
     emit('success') // 触发父组件刷新
   } catch (err) {
-    message.error('反审核提交失败，请重试')
+    message.error('审核提交失败，请重试')
   } finally {
     formLoading.value = false
   }

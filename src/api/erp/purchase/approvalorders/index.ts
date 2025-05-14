@@ -85,6 +85,10 @@ export const PurchaseOrderApi = {
   getPurchaseOrderPage: async (params: any) => {
     return await request.get({ url: `/erp/wholesale/purchase/unreviewed-page`, params })
   },
+  getPurchaseReviewedOrderPage: async (params: any) => {
+    return await request.get({ url: `/erp/wholesale/purchase/reviewed-page`, params })
+  },
+
 
   // 查询采购订单详情
   getPurchaseOrder: async (id: number) => {
