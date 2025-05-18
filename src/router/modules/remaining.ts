@@ -469,6 +469,159 @@ const remainingRouter: AppRouteRecordRaw[] = [
     ]
   },
   {
+    path: '/erp/inventory', // ERP 库存管理
+    component: Layout,
+    name: 'ErpInventoryManagement',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'add', // 添加库存
+        component: () => import('@/views/erp/inventory/form/index.vue'),
+        name: 'ErpInventoryAdd',
+        meta: {
+          noCache: false,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '库存添加',
+          activeMenu: '/erp/inventory/index'
+        }
+      },
+      {
+        path: 'edit/:id(\\d+)', // 编辑库存
+        component: () => import('@/views/erp/inventory/form/index.vue'),
+        name: 'ErpInventoryEdit',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '库存编辑',
+          activeMenu: '/erp/inventory/index'
+        }
+      },
+      {
+        path: 'detail/:id(\\d+)', // 库存详情
+        component: () => import('@/views/erp/inventory/form/index.vue'),
+        name: 'ErpInventoryDetail',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '库存详情',
+          activeMenu: '/erp/inventory/index'
+        }
+      }
+    ]
+  },
+
+
+{
+  path: '/erp/notebook', // ERP 记事本管理
+  component: Layout,
+  name: 'ErpNotebookManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'add', // 添加记事本
+      component: () => import('@/views/erp/notebook/form/index.vue'),
+      name: 'ErpNotebookAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '记事本添加',
+        activeMenu: '/erp/notebook/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑记事本
+      component: () => import('@/views/erp/notebook/form/index.vue'),
+      name: 'ErpNotebookEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '记事本编辑',
+        activeMenu: '/erp/notebook/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 记事本详情
+      component: () => import('@/views/erp/notebook/form/index.vue'),
+      name: 'ErpNotebookDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '记事本详情',
+        activeMenu: '/erp/notebook/index'
+      }
+    }
+  ]
+},
+
+{
+  path: '/erp/sample', // ERP 样品管理
+  component: Layout,
+  name: 'ErpSampleManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'add', // 添加样品
+      component: () => import('@/views/erp/sample/form/index.vue'),
+      name: 'ErpSampleAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '样品添加',
+        activeMenu: '/erp/sample/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑样品
+      component: () => import('@/views/erp/sample/form/index.vue'),
+      name: 'ErpSampleEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '样品编辑',
+        activeMenu: '/erp/sample/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 样品详情
+      component: () => import('@/views/erp/sample/form/index.vue'),
+      name: 'ErpSampleDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '样品详情',
+        activeMenu: '/erp/sample/index'
+      }
+    }
+  ]
+},
+
+
+
+  {
     path: '/mall/product', // 商品中心
     component: Layout,
     name: 'ProductCenter',
