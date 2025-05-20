@@ -928,6 +928,513 @@ const remainingRouter: AppRouteRecordRaw[] = [
         component: () => import('@/views/iot/device/detail/index.vue')
       }
     ]
+  },
+  {
+    path: '/erp/private-broadcasting', // ERP 私播货盘管理
+    component: Layout,
+    name: 'ErpPrivateBroadcastingManagement',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'add', // 添加私播货盘
+        component: () => import('@/views/erp/privatebroadcasting/form/index.vue'),
+        name: 'ErpPrivateBroadcastingAdd',
+        meta: {
+          noCache: false,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '私播货盘添加',
+          activeMenu: '/erp/private-broadcasting/index'
+        }
+      },
+      {
+        path: 'edit/:id(\\d+)', // 编辑私播货盘
+        component: () => import('@/views/erp/privatebroadcasting/form/index.vue'),
+        name: 'ErpPrivateBroadcastingEdit',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '私播货盘编辑',
+          activeMenu: '/erp/private-broadcasting/index'
+        }
+      },
+      {
+        path: 'detail/:id(\\d+)', // 私播货盘详情
+        component: () => import('@/views/erp/privatebroadcasting/form/index.vue'),
+        name: 'ErpPrivateBroadcastingDetail',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '私播货盘详情',
+          activeMenu: '/erp/private-broadcasting/index'
+        }
+      }
+    ]
+  },
+  {
+    path: '/erp/private-broadcasting-review',
+    component: Layout,
+    name: 'ErpPrivateBroadcastingReviewManagement',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'add',
+        component: () => import('@/views/erp/privatebroadcastingreview/form/index.vue'),
+        name: 'ErpPrivateBroadcastingReviewAdd',
+        meta: {
+          noCache: false,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '私播复盘添加',
+          activeMenu: '/erp/private-broadcasting-review/index'
+        }
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/erp/privatebroadcastingreview/form/index.vue'),
+        name: 'ErpPrivateBroadcastingReviewEdit',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '私播复盘编辑',
+          activeMenu: '/erp/private-broadcasting-review/index'
+        }
+      },
+      {
+        path: 'detail/:id(\\d+)',
+        component: () => import('@/views/erp/privatebroadcastingreview/form/index.vue'),
+        name: 'ErpPrivateBroadcastingReviewDetail',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '私播复盘详情',
+          activeMenu: '/erp/private-broadcasting-review/index'
+        }
+      }
+    ]
+  },
+  {
+    path: '/erp/private-broadcasting-info',
+    component: Layout,
+    name: 'ErpPrivateBroadcastingInfoManagement',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'add',
+        component: () => import('@/views/erp/privatebroadcastinginfo/form/index.vue'),
+        name: 'ErpPrivateBroadcastingInfoAdd',
+        meta: {
+          noCache: false,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '私播信息添加',
+          activeMenu: '/erp/private-broadcasting-info/index'
+        }
+      },
+      {
+        path: 'edit/:id(\\d+)',
+        component: () => import('@/views/erp/privatebroadcastinginfo/form/index.vue'),
+        name: 'ErpPrivateBroadcastingInfoEdit',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '私播信息编辑',
+          activeMenu: '/erp/private-broadcasting-info/index'
+        }
+      },
+      {
+        path: 'detail/:id(\\d+)',
+        component: () => import('@/views/erp/privatebroadcastinginfo/form/index.vue'),
+        name: 'ErpPrivateBroadcastingInfoDetail',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '私播信息详情',
+          activeMenu: '/erp/private-broadcasting-info/index'
+        }
+      }
+    ]
+  },
+  {
+    path: '/erp/sample', // ERP 样品管理
+    component: Layout,
+    name: 'ErpSampleManagement',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'add', // 添加样品
+        component: () => import('@/views/erp/sample/form/index.vue'),
+        name: 'ErpSampleAdd',
+        meta: {
+          noCache: false,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '样品添加',
+          activeMenu: '/erp/sample/index'
+        }
+      },
+      {
+        path: 'edit/:id(\\d+)', // 编辑样品
+        component: () => import('@/views/erp/sample/form/index.vue'),
+        name: 'ErpSampleEdit',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '样品编辑',
+          activeMenu: '/erp/sample/index'
+        }
+      },
+      {
+        path: 'detail/:id(\\d+)', // 样品详情
+        component: () => import('@/views/erp/sample/form/index.vue'),
+        name: 'ErpSampleDetail',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '样品详情',
+          activeMenu: '/erp/sample/index'
+        }
+      }
+    ]
+  },
+
+
+
+  {
+    path: '/mall/product', // 商品中心
+    component: Layout,
+    name: 'ProductCenter',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'spu/add',
+        component: () => import('@/views/mall/product/spu/form/index.vue'),
+        name: 'ProductSpuAdd',
+        meta: {
+          noCache: false, // 需要缓存
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '商品添加',
+          activeMenu: '/mall/product/spu'
+        }
+      },
+      {
+        path: 'spu/edit/:id(\\d+)',
+        component: () => import('@/views/mall/product/spu/form/index.vue'),
+        name: 'ProductSpuEdit',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:edit',
+          title: '商品编辑',
+          activeMenu: '/mall/product/spu'
+        }
+      },
+      {
+        path: 'spu/detail/:id(\\d+)',
+        component: () => import('@/views/mall/product/spu/form/index.vue'),
+        name: 'ProductSpuDetail',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '商品详情',
+          activeMenu: '/mall/product/spu'
+        }
+      },
+      {
+        path: 'property/value/:propertyId(\\d+)',
+        component: () => import('@/views/mall/product/property/value/index.vue'),
+        name: 'ProductPropertyValue',
+        meta: {
+          noCache: true,
+          hidden: true,
+          canTo: true,
+          icon: 'ep:view',
+          title: '商品属性值',
+          activeMenu: '/product/property'
+        }
+      }
+    ]
+  },
+  {
+    path: '/mall/trade', // 交易中心
+    component: Layout,
+    name: 'TradeCenter',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'order/detail/:id(\\d+)',
+        component: () => import('@/views/mall/trade/order/detail/index.vue'),
+        name: 'TradeOrderDetail',
+        meta: { title: '订单详情', icon: 'ep:view', activeMenu: '/mall/trade/order' }
+      },
+      {
+        path: 'after-sale/detail/:id(\\d+)',
+        component: () => import('@/views/mall/trade/afterSale/detail/index.vue'),
+        name: 'TradeAfterSaleDetail',
+        meta: { title: '退款详情', icon: 'ep:view', activeMenu: '/mall/trade/after-sale' }
+      }
+    ]
+  },
+  {
+    path: '/member',
+    component: Layout,
+    name: 'MemberCenter',
+    meta: { hidden: true },
+    children: [
+      {
+        path: 'user/detail/:id',
+        name: 'MemberUserDetail',
+        meta: {
+          title: '会员详情',
+          noCache: true,
+          hidden: true
+        },
+        component: () => import('@/views/member/user/detail/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/pay',
+    component: Layout,
+    name: 'pay',
+    meta: { hidden: true },
+    children: [
+      {
+        path: 'cashier',
+        name: 'PayCashier',
+        meta: {
+          title: '收银台',
+          noCache: true,
+          hidden: true
+        },
+        component: () => import('@/views/pay/cashier/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/diy',
+    name: 'DiyCenter',
+    meta: { hidden: true },
+    component: Layout,
+    children: [
+      {
+        path: 'template/decorate/:id',
+        name: 'DiyTemplateDecorate',
+        meta: {
+          title: '模板装修',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/mall/promotion/diy/template'
+        },
+        component: () => import('@/views/mall/promotion/diy/template/decorate.vue')
+      },
+      {
+        path: 'page/decorate/:id',
+        name: 'DiyPageDecorate',
+        meta: {
+          title: '页面装修',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/mall/promotion/diy/page'
+        },
+        component: () => import('@/views/mall/promotion/diy/page/decorate.vue')
+      }
+    ]
+  },
+  {
+    path: '/crm',
+    component: Layout,
+    name: 'CrmCenter',
+    meta: { hidden: true },
+    children: [
+      {
+        path: 'clue/detail/:id',
+        name: 'CrmClueDetail',
+        meta: {
+          title: '线索详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/crm/clue'
+        },
+        component: () => import('@/views/crm/clue/detail/index.vue')
+      },
+      {
+        path: 'customer/detail/:id',
+        name: 'CrmCustomerDetail',
+        meta: {
+          title: '客户详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/crm/customer'
+        },
+        component: () => import('@/views/crm/customer/detail/index.vue')
+      },
+      {
+        path: 'business/detail/:id',
+        name: 'CrmBusinessDetail',
+        meta: {
+          title: '商机详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/crm/business'
+        },
+        component: () => import('@/views/crm/business/detail/index.vue')
+      },
+      {
+        path: 'contract/detail/:id',
+        name: 'CrmContractDetail',
+        meta: {
+          title: '合同详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/crm/contract'
+        },
+        component: () => import('@/views/crm/contract/detail/index.vue')
+      },
+      {
+        path: 'receivable-plan/detail/:id',
+        name: 'CrmReceivablePlanDetail',
+        meta: {
+          title: '回款计划详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/crm/receivable-plan'
+        },
+        component: () => import('@/views/crm/receivable/plan/detail/index.vue')
+      },
+      {
+        path: 'receivable/detail/:id',
+        name: 'CrmReceivableDetail',
+        meta: {
+          title: '回款详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/crm/receivable'
+        },
+        component: () => import('@/views/crm/receivable/detail/index.vue')
+      },
+      {
+        path: 'contact/detail/:id',
+        name: 'CrmContactDetail',
+        meta: {
+          title: '联系人详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/crm/contact'
+        },
+        component: () => import('@/views/crm/contact/detail/index.vue')
+      },
+      {
+        path: 'product/detail/:id',
+        name: 'CrmProductDetail',
+        meta: {
+          title: '产品详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/crm/product'
+        },
+        component: () => import('@/views/crm/product/detail/index.vue')
+      }
+    ]
+  },
+  {
+    path: '/ai',
+    component: Layout,
+    name: 'Ai',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'image/square',
+        component: () => import('@/views/ai/image/square/index.vue'),
+        name: 'AiImageSquare',
+        meta: {
+          title: '绘图作品',
+          icon: 'ep:home-filled',
+          noCache: false
+        }
+      }
+    ]
+  },
+  {
+    path: '/:pathMatch(.*)*',
+    component: () => import('@/views/Error/404.vue'),
+    name: '',
+    meta: {
+      title: '404',
+      hidden: true,
+      breadcrumb: false
+    }
+  },
+  {
+    path: '/iot',
+    component: Layout,
+    name: 'IOT',
+    meta: {
+      hidden: true
+    },
+    children: [
+      {
+        path: 'product/detail/:id',
+        name: 'IoTProductDetail',
+        meta: {
+          title: '产品详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/iot/product'
+        },
+        component: () => import('@/views/iot/product/detail/index.vue')
+      },
+      {
+        path: 'device/detail/:id',
+        name: 'IoTDeviceDetail',
+        meta: {
+          title: '设备详情',
+          noCache: true,
+          hidden: true,
+          activeMenu: '/iot/device'
+        },
+        component: () => import('@/views/iot/device/detail/index.vue')
+      }
+    ]
   }
 ]
 
