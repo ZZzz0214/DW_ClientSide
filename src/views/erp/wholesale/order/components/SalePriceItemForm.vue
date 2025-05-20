@@ -8,7 +8,7 @@
     :inline-message="true"
     :disabled="disabled"
   >
-    <el-table :data="formData" class="-mt-10px">
+    <el-table :data="formData" :key="tableKey" class="-mt-10px">
       <el-table-column label="销售人员" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
@@ -93,11 +93,16 @@
   </el-form>
 
   <el-row justify="center" class="mt-3" v-if="!disabled">
-    <el-button @click="handleAdd" round>+ 添加出货产品</el-button>
+    <el-button @click="handleAdd" round>+ 选择客户</el-button>
   </el-row>
 
   <!-- 引入子组件 -->
-  <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" :comboProductId="comboProductId"/>
+<!--  <Selectsaleprice ref="selectProductRef" @selected="handleProductSelected" :comboProductId="comboProductId"/>-->
+  <CustomerSearchDialog
+    ref="selectCustomRef"
+    @customer-selected="handleProductSelected"
+    :comboProductId="comboProductId"/>
+
   <!-- 销售人员搜索弹窗 -->
   <SalespersonSearchDialog
     v-model:visible="salespersonSearchDialogVisible"
@@ -109,14 +114,9 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
-import {
-  erpCountInputFormatter,
-  erpPriceInputFormatter,
-  erpPriceMultiply,
-  getSumValue
-} from '@/utils';
 import Selectsaleprice from './Selectsaleprice.vue';
-import SalespersonSearchDialog from './SalespersonSearchDialog.vue'; // 引入销售人员搜索弹窗组件
+import SalespersonSearchDialog from './SalespersonSearchDialog.vue';
+import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
 
 const props = defineProps<{
   items: any[];
@@ -131,11 +131,12 @@ const formRules = reactive({
 });
 const formRef = ref([]);
 const selectProductRef = ref();
+const selectCustomRef = ref();
 const salepriceList = ref<SalePriceVO[]>([]); // 销售价格表列表
 const salespersonSearchDialogVisible = ref(false); // 销售人员搜索弹窗的显示状态
 
 const comboProductId = ref(null);
-
+const tableKey = ref(0); // 定义一个响应式的 key
 const setComboProductId = (id) => {
   comboProductId.value = id;
 };
@@ -148,9 +149,10 @@ const openSalespersonSearch = (row) => {
 const handleSalespersonSelected = (salesperson: any) => {
   formData.value.forEach((row) => {
     if (!row.salesperson) {
-      row.salesperson = salesperson.name; // 填充销售人员名称
+      row.salesperson = salesperson.salespersonName; // 填充销售人员名称
     }
   });
+  tableKey.value++; // 强制重新渲染表格
 };
 
 // 初始化设置出库项
@@ -181,24 +183,28 @@ watch(() => formData.value, (newVal) => {
 
 // 计算出货运费的方法
 const calculateSaleShippingFee = (item) => {
-  if (item.shippingFeeType === 0) {
-    // 固定运费
-    item.saleLogisticsFee = item.fixedShippingFee;
-  } else if (item.shippingFeeType === 1) {
-    // 按件运费
-    if (item.count <= item.additionalItemQuantity) {
-      item.saleLogisticsFee = item.additionalItemPrice;
-    } else {
-      item.saleLogisticsFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+  if(item.salePrice !== null) {
+    if (item.shippingFeeType === 0) {
+      // 固定运费
+      item.saleLogisticsFee = item.fixedShippingFee;
+    } else if (item.shippingFeeType === 1) {
+      // 按件运费
+      if (item.count <= item.additionalItemQuantity) {
+        item.saleLogisticsFee = item.additionalItemPrice;
+      } else {
+        item.saleLogisticsFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+      }
+    } else if (item.shippingFeeType === 2) {
+      // 按重量
+      const totalWeight = item.count * item.weight;
+      if (totalWeight <= item.firstWeight) {
+        item.saleLogisticsFee = item.firstWeightPrice;
+      } else {
+        item.saleLogisticsFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+      }
     }
-  } else if (item.shippingFeeType === 2) {
-    // 按重量
-    const totalWeight = item.count * item.weight;
-    if (totalWeight <= item.firstWeight) {
-      item.saleLogisticsFee = item.firstWeightPrice;
-    } else {
-      item.saleLogisticsFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
-    }
+  } else {
+    item.saleLogisticsFee = null;
   }
 };
 
@@ -210,7 +216,8 @@ const updateTotalSaleAmount = (item) => {
 
 // 添加按钮操作
 const handleAdd = () => {
-  selectProductRef.value.open(comboProductId.value);
+  // selectProductRef.value.open(comboProductId.value);
+  selectCustomRef.value.open();
 };
 
 // 删除按钮操作
@@ -220,11 +227,13 @@ const handleDelete = (index: number) => {
 
 // 产品选择后的处理
 const handleProductSelected = (selectedProducts: any[]) => {
+  console.log('====================')
   selectedProducts.forEach(product => {
+    console.log(product)
     formData.value.push({
       salesperson: undefined, //销售人员
       customerName: product.customerName, //客户名称
-      salePrice: product.wholesalePrice, //出货批发单价
+      salePrice: product.salePrice, //出货批发单价
       saleLogisticsFee: 1, //销售物流费用
       saleTruckFee: 1, //销售货拉拉费
       saleOtherFees: 1, //销售其他费用
@@ -243,6 +252,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       additionalWeightPrice: product.additionalWeightPrice
     });
   });
+  console.log('--------------------------')
 };
 
 // 表单校验
