@@ -54,5 +54,10 @@ export const SupplierApi = {
   // 导出供应商 Excel
   exportSupplier: async (params) => {
     return await request.download({ url: `/erp/supplier/export-excel`, params })
+  },
+
+  // 搜索供应商人员
+  searchSupplier: async (params: any) => {
+    return await request.get({ url: `/erp/supplier/search`, params });
   }
 }

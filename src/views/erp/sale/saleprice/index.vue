@@ -51,6 +51,13 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="primary"
+          plain
+          @click="openOrganize"
+        >
+          <Icon icon="ep:plus" class="mr-5px" /> 整理
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -146,6 +153,9 @@
     />
   </ContentWrap>
 
+  <!-- 整理组件 -->
+  <SalePriceOrganize ref="organizeRef" />
+
   <!-- 表单弹窗：添加/修改 -->
   <SalePriceForm ref="formRef" @success="getList" />
 </template>
@@ -153,6 +163,8 @@
 <script setup lang="ts">
 import download from '@/utils/download'
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice'
+import { ref } from 'vue';
+import SalePriceOrganize from './components/SalePriceOrganize.vue';
 import SalePriceForm from './SalePriceForm.vue'
 import {SaleOrderApi} from "@/api/erp/sale/orders";
 
@@ -175,6 +187,12 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+const organizeRef = ref(null); // 引用子组件
+// 打开整理弹窗
+const openOrganize = () => {
+  organizeRef.value.open();
+};
 
 /** 查询列表 */
 const getList = async () => {
