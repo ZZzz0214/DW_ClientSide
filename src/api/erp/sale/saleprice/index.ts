@@ -118,5 +118,10 @@ export const SalePriceApi = {
   // 搜索结果
   searchSalePrice: async (params: any) => {
     return await request.get({ url: `/erp/sale-price/search`, params });
+  },
+
+  // 获取缺失价格的销售记录
+  getMissingPrices: async (params: any) => {
+    return await request.get({ url: `/erp/sale-price/missing-prices`, params });
   }
 };

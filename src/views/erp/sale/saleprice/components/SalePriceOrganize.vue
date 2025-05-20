@@ -96,7 +96,9 @@ const handleClose = () => {
 const fetchList = async () => {
   loading.value = true;
   try {
-    const data = await SalePriceApi.getSalePricePage(searchParams);
+    const data = await SalePriceApi.getMissingPrices(searchParams);
+    console.log('=======================')
+    console.log(data)
     list.value = data.list;
     total.value = data.total;
   } finally {
