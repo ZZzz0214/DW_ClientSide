@@ -135,8 +135,6 @@ const handleSalespersonSelected = (salesperson: any) => {
     if (!row.salesperson) {
       row.salesperson = salesperson.salespersonName; // 填充销售人员名称
     }
-    console.log('[]]]]]]]]]]]]]]]]]]]]]]')
-    console.log(row.salesperson)
   });
   tableKey.value++; // 强制重新渲染表格
 };
@@ -188,8 +186,7 @@ const calculateSaleShippingFee = (item) => {
         item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
       }
     }
-  }
-  else {
+  } else {
     item.saleShippingFee = null;
   }
 };
@@ -216,8 +213,6 @@ const handleProductSelected = (selectedProducts: any[]) => {
   console.log('mmmmmmmmmmmmmmmmmmmmmmm')
   selectedProducts.forEach(product => {
     console.log(product)
-    console.log(product.customerName)
-    console.log(product.distributionPrice)
     formData.value.push({
       salesperson: undefined, //销售人员
       customerName: product.customerName, //客户名称

@@ -9,7 +9,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="销售人员名称">
-            <el-input v-model="searchForm.name" />
+            <el-input v-model="searchForm.salespersonName" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -21,8 +21,8 @@
     <el-table :data="salespersonList" @selection-change="handleSelectionChange" ref="table">
       <el-table-column type="selection" width="55" />
       <el-table-column label="销售人员编号" prop="id" />
-      <el-table-column label="销售人员名称" prop="name" />
-      <el-table-column label="联系方式" prop="contact" />
+      <el-table-column label="销售人员名称" prop="salespersonName" />
+      <el-table-column label="联系方式" prop="contactPhone" />
     </el-table>
 
     <template #footer>
@@ -52,7 +52,7 @@ watch(() => props.visible, (newValue) => {
 const dialogTitle = ref('选择销售人员');
 const searchForm = reactive({
   id: '',
-  name: '',
+  salespersonName: '',
 });
 const salespersonList = ref<any[]>([]);
 const selectedSalesperson = ref<any>(null);
@@ -61,7 +61,7 @@ const handleSearch = async () => {
   try {
     const params = {
       id: searchForm.id,
-      name: searchForm.name,
+      salespersonName: searchForm.salespersonName,
     };
     const response = await ErpSalespersonApi.searchSalesperson(params);
     if (Array.isArray(response)) {
@@ -88,6 +88,8 @@ const confirmSelection = () => {
     return;
   }
   emit('salesperson-selected', selectedSalesperson.value);
+  console.log('-=-=--=-=')
+  console.log(selectedSalesperson.value)
   dialogVisible.value = false;
 };
 
