@@ -618,8 +618,171 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   ]
 },
+// ... existing code ...
 
+{
+  path: '/erp/groupbuying', // ERP 团购货盘管理
+  component: Layout,
+  name: 'ErpGroupBuyingManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'add', // 添加团购货盘
+      component: () => import('@/views/erp/groupbuying/form/index.vue'),
+      name: 'ErpGroupBuyingAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '团购货盘添加',
+        activeMenu: '/erp/groupbuying/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑团购货盘
+      component: () => import('@/views/erp/groupbuying/form/index.vue'),
+      name: 'ErpGroupBuyingEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '团购货盘编辑',
+        activeMenu: '/erp/groupbuying/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 团购货盘详情
+      component: () => import('@/views/erp/groupbuying/form/index.vue'),
+      name: 'ErpGroupBuyingDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '团购货盘详情',
+        activeMenu: '/erp/groupbuying/index'
+      }
+    }
+  ]
+},
 
+{
+  path: '/erp/groupbuyingreview', // ERP 团购复盘管理
+  component: Layout,
+  name: 'ErpGroupBuyingReviewManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'add', // 添加团购复盘
+      component: () => import('@/views/erp/groupbuyingreview/form/index.vue'),
+      name: 'ErpGroupBuyingReviewAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '团购复盘添加',
+        activeMenu: '/erp/groupbuyingreview/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑团购复盘
+      component: () => import('@/views/erp/groupbuyingreview/form/index.vue'),
+      name: 'ErpGroupBuyingReviewEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '团购复盘编辑',
+        activeMenu: '/erp/groupbuyingreview/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 团购复盘详情
+      component: () => import('@/views/erp/groupbuyingreview/form/index.vue'),
+      name: 'ErpGroupBuyingReviewDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '团购复盘详情',
+        activeMenu: '/erp/groupbuyingreview/index'
+      }
+    }
+  ]
+},
+
+// ... existing code ...
+
+{
+  path: '/erp/groupbuyinginfo', // ERP 团购信息管理
+  component: Layout,
+  name: 'ErpGroupBuyingInfoManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'index', // 团购信息列表
+      component: () => import('@/views/erp/groupbuyinginfo/index.vue'),
+      name: 'ErpGroupBuyingInfo',
+      meta: {
+        title: '团购信息',
+        icon: 'ep:list',
+        noCache: false
+      }
+    },
+    {
+      path: 'add', // 添加团购信息
+      component: () => import('@/views/erp/groupbuyinginfo/form/index.vue'),
+      name: 'ErpGroupBuyingInfoAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '团购信息添加',
+        activeMenu: '/erp/groupbuyinginfo/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑团购信息
+      component: () => import('@/views/erp/groupbuyinginfo/form/index.vue'),
+      name: 'ErpGroupBuyingInfoEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '团购信息编辑',
+        activeMenu: '/erp/groupbuyinginfo/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 团购信息详情
+      component: () => import('@/views/erp/groupbuyinginfo/form/index.vue'),
+      name: 'ErpGroupBuyingInfoDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '团购信息详情',
+        activeMenu: '/erp/groupbuyinginfo/index'
+      }
+    }
+  ]
+},
+
+// ... existing code ...
 
   {
     path: '/mall/product', // 商品中心
