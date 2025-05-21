@@ -70,9 +70,9 @@
     >
       <el-table-column width="30" label="选择" type="selection" />
       <el-table-column label="编号" align="center" prop="no" />
-      <el-table-column label="品牌名称" align="center" prop="brand" />
+      <el-table-column label="品牌名称" align="center" prop="brandName" />
       <el-table-column label="产品名称" align="center" prop="productName" />
-      <el-table-column label="产品规格" align="center" prop="productSpecification" />
+      <el-table-column label="产品规格" align="center" prop="productSpec" />
       <el-table-column label="客户名称" align="center" prop="customerName" />
       <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
       <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" />
