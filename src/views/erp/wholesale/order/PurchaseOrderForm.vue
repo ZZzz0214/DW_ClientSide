@@ -160,6 +160,8 @@ import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils'
 import * as UserApi from '@/api/system/user'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
+import * as ProductComboApi from "@/api/erp/product/combo";
+import {SalePriceApi} from "@/api/erp/sale/saleprice";
 
 /** ERP 销售订单表单 */
 defineOptions({ name: 'ErpPurchaseOrder' })
@@ -256,8 +258,18 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       const data = await ErpWholesaleApi.getErpWholesale(id);
+      const searchParams = {
+        groupProductId: data.comboProductId,
+        customerName: data.customerName,
+      };
+      const purchaseshippingFeeType = await ProductComboApi.ComboApi.searchCombos(data.comboProductId);
+      const saleshippingFeeType = await SalePriceApi.searchSalePrice(searchParams);
+      console.log('000000000000lllllllloooooooo')
+      console.log(saleshippingFeeType)
+      console.log('000000000000lllllllloooooooo')
+      console.log(data)
+      console.log(id)
       formData.value = data;
-
       // 如果是详情模式，将数据重新组装到 items 和 saleItems
       if (type === 'detail') {
         formData.value.items = [
@@ -270,8 +282,10 @@ const open = async (type: string, id?: number) => {
             truckFee : data.truckFee,
             otherFees: data.otherFees,
             totalPurchaseAmount: data.totalPurchaseAmount,
+            count: data.count,
 
             productName : data.productName,
+            shippingCode : data.shippingCode,
           },
         ]
         formData.value.saleItems = [
@@ -283,10 +297,69 @@ const open = async (type: string, id?: number) => {
             saleTruckFee: data.saleTruckFee,
             saleOtherFees: data.saleOtherFees,
             totalSaleAmount: data.totalSaleAmount,
+            count: data.count,
           },
         ]
       }
+// 如果是编辑模式，将数据重新组装到 items 和 saleItems
+      if (type === 'update') {
+        formData.value.items = [
+          {
+            productId : data.comboProductId,
+            purchaser : data.purchaser,
+            supplier : data.supplier,
+            purchasePrice: data.purchasePrice,
+            logisticsFee : data.logisticsFee,
+            truckFee : data.truckFee,
+            otherFees: data.otherFees,
+            totalPurchaseAmount: data.totalPurchaseAmount,
+            count: data.count,
 
+            productName : data.productName,
+            shippingCode : data.shippingCode,
+
+
+            // 假设这些运费相关的字段已经存在于 data 对象中
+            shippingFeeType: purchaseshippingFeeType[0].shippingFeeType,
+            fixedShippingFee: purchaseshippingFeeType[0].fixedShippingFee,
+            additionalItemQuantity: purchaseshippingFeeType[0].additionalItemQuantity, //按件数量
+            additionalItemPrice: purchaseshippingFeeType[0].additionalItemPrice, //按件费用
+            weight: purchaseshippingFeeType[0].weight,
+            firstWeight: purchaseshippingFeeType[0].firstWeight,
+            firstWeightPrice: purchaseshippingFeeType[0].firstWeightPrice,
+            additionalWeight: purchaseshippingFeeType[0].additionalWeight,
+            additionalWeightPrice: purchaseshippingFeeType[0].additionalWeightPrice
+          },
+        ]
+        console.log('????????????????????????')
+        console.log(formData.value.items)
+        formData.value.saleItems = [
+          {
+            salesperson: data.salesperson,
+            customerName: data.customerName,
+            salePrice: data.salePrice,
+            saleLogisticsFee: data.saleLogisticsFee,
+            saleTruckFee: data.saleTruckFee,
+            saleOtherFees: data.saleOtherFees,
+            totalSaleAmount: data.totalSaleAmount,
+            count: data.count,
+
+            // 假设这些运费相关的字段已经存在于 data 对象中
+            shippingFeeType: saleshippingFeeType[0].shippingFeeType,
+            fixedShippingFee: saleshippingFeeType[0].fixedShippingFee,
+            additionalItemQuantity: saleshippingFeeType[0].additionalItemQuantity, //按件数量
+            additionalItemPrice: saleshippingFeeType[0].additionalItemPrice, //按件费用
+            weight: saleshippingFeeType[0].weight,
+            firstWeight: saleshippingFeeType[0].firstWeight,
+            firstWeightPrice: saleshippingFeeType[0].firstWeightPrice,
+            additionalWeight: saleshippingFeeType[0].additionalWeight,
+            additionalWeightPrice: saleshippingFeeType[0].additionalWeightPrice
+          },
+        ]
+        console.log('????????????????????????')
+        console.log(formData.value.saleItems)
+        console.log('????????????????????????')
+      }
     } finally {
       formLoading.value = false
     }
@@ -345,6 +418,8 @@ const submitForm = async () => {
     }
 
     if (formType.value === 'create') {
+      console.log('!!!!!!!!!!!!!!!!!!!!!!')
+      console.log(data)
       await ErpWholesaleApi.createErpWholesale(data)
       message.success(t('common.createSuccess'))
     } else {
