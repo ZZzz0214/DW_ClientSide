@@ -5,7 +5,7 @@
         v-model="formData.sampleSendDate"
         type="date"
         placeholder="请选择寄样日期"
-        value-format="YYYY-MM-DD"
+        value-format="x"
         :disabled="isDetail"
       />
     </el-form-item>
@@ -14,7 +14,7 @@
         v-model="formData.groupStartDate"
         type="date"
         placeholder="请选择开团日期"
-        value-format="YYYY-MM-DD"
+        value-format="x"
         :disabled="isDetail"
       />
     </el-form-item>
@@ -26,7 +26,7 @@
         v-model="formData.repeatGroupDate"
         type="date"
         placeholder="请选择复团日期"
-        value-format="YYYY-MM-DD"
+        value-format="x"
         :disabled="isDetail"
       />
     </el-form-item>

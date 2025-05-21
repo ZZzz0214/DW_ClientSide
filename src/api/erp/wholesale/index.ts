@@ -6,6 +6,7 @@ export interface ErpWholesaleVO {
   receiverPhone: string; // 收件人电话
   receiverAddress: string; // 收件地址
   afterSalesStatus: string; // 售后状况
+  afterSalesTime?: string; // 售后时间
   remark: string; // 备注信息
   productName: string; // 产品名称
   shippingCode: string; // 发货编码
@@ -18,6 +19,8 @@ export interface ErpWholesaleVO {
   logisticsFee: number; // 物流费用
   otherFees: number; // 其他费用
   totalPurchaseAmount: number; // 采购总额
+  purchaseRemark:string; //采购备注信息
+  saleRemark:string; //出货备注信息
   salePriceId: number; // 关联销售价格表
   salesperson: string; // 销售人员
   customerName: string; // 客户名称

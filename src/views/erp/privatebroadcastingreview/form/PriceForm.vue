@@ -3,9 +3,9 @@
     <el-form-item label="客户名称" prop="customerName">
       <el-input v-model="formData.customerName" placeholder="请输入客户名称" :disabled="isDetail" />
     </el-form-item>
-    <el-form-item label="直播价格" prop="livePrice">
-      <el-input v-model.number="formData.livePrice" placeholder="请输入直播价格" :disabled="isDetail" />
-    </el-form-item>
+<!--    <el-form-item label="直播价格" prop="livePrice">-->
+<!--      <el-input v-model.number="formData.livePrice" placeholder="请输入直播价格" :disabled="isDetail" />-->
+<!--    </el-form-item>-->
     <el-form-item label="产品裸价" prop="productNakedPrice">
       <el-input v-model.number="formData.productNakedPrice" placeholder="请输入产品裸价" :disabled="isDetail" />
     </el-form-item>
@@ -29,7 +29,7 @@ const props = defineProps({
 const formData = ref(props.propFormData)
 const rules = {
   customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
-  livePrice: [{ required: true, message: '直播价格不能为空', trigger: 'blur' }]
+  // livePrice: [{ required: true, message: '直播价格不能为空', trigger: 'blur' }]
 }
 
 const formRef = ref<InstanceType<typeof ElForm>>()

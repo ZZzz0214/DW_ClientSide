@@ -14,6 +14,7 @@ export interface ErpDistributionVO {
   originalQuantity: number; // 原表数量
 
   afterSalesStatus: string; //售后状况
+  afterSalesTime?: string; // 售后时间
   remark: string; //备注信息
   shippingCode: string; //发货编码
 
@@ -26,6 +27,8 @@ export interface ErpDistributionVO {
   shippingFee: number; // 采购运费
   otherFees: number; // 采购其他费用
   totalPurchaseAmount: number; // 采购总额
+  purchaseRemark:string; //采购备注信息
+  saleRemark:string; //出货备注信息
   comboProductId: number; // 关联组品表(也是组品编号)
   salesperson: string; // 销售人员
   customerName: string; // 客户名称

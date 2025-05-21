@@ -52,21 +52,21 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="发货编码" prop="shippingCode">
-            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
+          <el-form-item label="组品编号" prop="comboProductId">
+            <el-input disabled v-model="formData.comboProductId" placeholder="获取后自动生成" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="原表商品" prop="originalProductName">
             <el-input v-model="formData.originalProductName" placeholder="请输入原表商品" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="原表规格" prop="originalStandard">
             <el-input v-model="formData.originalStandard" placeholder="请输入原表规格" />
           </el-form-item>
         </el-col>
-        <el-col :span="8">
+        <el-col :span="6">
           <el-form-item label="原表数量" prop="originalQuantity">
             <el-input-number
               v-model="formData.originalQuantity"
@@ -76,6 +76,11 @@
               class="!w-100%"
               placeholder="请输入原表数量"
             />
+          </el-form-item>
+        </el-col>
+        <el-col :span="6">
+          <el-form-item label="发货编码" prop="shippingCode">
+            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -120,10 +125,20 @@
                     v-model="formData.afterSalesStatus"
                     :rows="2"
                     placeholder="请输入售后状况"
+                    @input="handleAfterSalesStatusChange"
                   />
                 </el-form-item>
               </el-col>
               <el-col :span="12">
+                <el-form-item label="售后时间" prop="afterSalesTime">
+                  <el-input
+                    v-model="formData.afterSalesTime"
+                    placeholder="售后时间"
+                    disabled
+                  />
+                </el-form-item>
+              </el-col>
+              <el-col :span="24">
                 <el-form-item label="备注信息" prop="remark">
                   <el-input
                     type="textarea"
@@ -135,27 +150,27 @@
               </el-col>
             </el-row>
 
-      <!-- 第三行：结算账户 -->
-            <el-row :gutter="20">
-              <el-col :span="24">
-                <el-form-item label="结算账户" prop="accountId">
-                  <el-select
-                    v-model="formData.accountId"
-                    clearable
-                    filterable
-                    placeholder="请选择结算账户"
-                    class="!w-1/1"
-                  >
-                    <el-option
-                      v-for="item in accountList"
-                      :key="item.id"
-                      :label="item.name"
-                      :value="item.id"
-                    />
-                  </el-select>
-                </el-form-item>
-              </el-col>
-            </el-row>
+<!--      &lt;!&ndash; 第三行：结算账户 &ndash;&gt;-->
+<!--            <el-row :gutter="20">-->
+<!--              <el-col :span="24">-->
+<!--                <el-form-item label="结算账户" prop="accountId">-->
+<!--                  <el-select-->
+<!--                    v-model="formData.accountId"-->
+<!--                    clearable-->
+<!--                    filterable-->
+<!--                    placeholder="请选择结算账户"-->
+<!--                    class="!w-1/1"-->
+<!--                  >-->
+<!--                    <el-option-->
+<!--                      v-for="item in accountList"-->
+<!--                      :key="item.id"-->
+<!--                      :label="item.name"-->
+<!--                      :value="item.id"-->
+<!--                    />-->
+<!--                  </el-select>-->
+<!--                </el-form-item>-->
+<!--              </el-col>-->
+<!--            </el-row>-->
     </el-form>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading" v-if="!disabled">
@@ -221,6 +236,7 @@ const formData = ref({
   receiverPhone: '', // 收件电话
   receiverAddress: '', // 收件地址
   afterSalesStatus: '', // 售后状况
+  afterSalesTime: '', // 售后时间，初始为空
 
   productSpecification:'', //产品规格
 
@@ -253,6 +269,16 @@ const subTabsName = ref('purchase') // 默认激活“采购信息”标签
 const purchaseFormRef = ref() // 采购信息表单引用
 const saleFormRef = ref() // 出货信息表单引用
 
+/** 售后时间 */
+const handleAfterSalesStatusChange = () => {
+  if (formData.value.afterSalesStatus) {
+    // 当售后状况发生变化时，设置售后时间为当前时间
+    formData.value.afterSalesTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+  } else {
+    // 如果售后状况为空，则清空售后时间
+    formData.value.afterSalesTime = '';
+  }
+};
 
 /** 打开弹窗 */
 const open = async (type: string, id?: number) => {
@@ -266,19 +292,21 @@ const open = async (type: string, id?: number) => {
     try {
       const data = await ErpDistributionApi.getErpDistribution(id);
       formData.value = data;
-      console.log("000000000000000000000000000000")
-      console.log(data)
 
       // 如果是详情模式，将数据重新组装到 items 和 saleItems
       if (type === 'detail') {
         formData.value.items = [
           {
+            productId : data.comboProductId,
             purchaser : data.purchaser,
             supplier : data.supplier,
             purchasePrice: data.purchasePrice,
             shippingFee: data.shippingFee,
             otherFees: data.otherFees,
             totalPurchaseAmount: data.totalPurchaseAmount,
+
+            productName : data.productName,
+            shippingCode : data.shippingCode,
           },
         ]
         formData.value.saleItems = [
@@ -301,12 +329,12 @@ const open = async (type: string, id?: number) => {
   supplierList.value = await SupplierApi.getSupplierSimpleList()
   // 加载用户列表
   userList.value = await UserApi.getSimpleUserList()
-  // 加载账户列表
-  accountList.value = await AccountApi.getAccountSimpleList()
-  const defaultAccount = accountList.value.find((item) => item.defaultStatus)
-  if (defaultAccount) {
-    formData.value.accountId = defaultAccount.id
-  }
+  // // 加载账户列表
+  // accountList.value = await AccountApi.getAccountSimpleList()
+  // const defaultAccount = accountList.value.find((item) => item.defaultStatus)
+  // if (defaultAccount) {
+  //   formData.value.accountId = defaultAccount.id
+  // }
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
@@ -349,8 +377,6 @@ const submitForm = async () => {
       data.totalSaleAmount = saleItem.totalSaleAmount || 0
     }
 
-    console.log("12312312313123132")
-    console.log(data)
     if (formType.value === 'create') {
       await ErpDistributionApi.createErpDistribution(data)
       message.success(t('common.createSuccess'))
@@ -392,6 +418,9 @@ const resetForm = () => {
     receiverPhone: '', // 收件电话
     receiverAddress: '', // 收件地址
     afterSalesStatus: '', // 售后状况
+    afterSalesTime: '', // 售后时间，初始为空
+
+    productSpecification:'', //产品规格
 
     no: undefined, // 订单单号，后端返回
     purchaser: '', // 采购人员

@@ -17,7 +17,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="供应商名" min-width="120">
+      <el-table-column label="供应商名" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.supplier" />
@@ -25,7 +25,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="采购批发单价" min-width="80">
+      <el-table-column label="采购单价" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
@@ -36,18 +36,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="物流费用" min-width="80">
-        <template #default="{ row }">
-          <el-form-item class="mb-0px!">
-            <el-input
-              disabled
-              v-model="row.logisticsFee"
-            />
-          </el-form-item>
-        </template>
-      </el-table-column>
-
-      <el-table-column label="货拉拉费用" min-width="80">
+      <el-table-column label="采购货拉拉费" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input-number
@@ -60,7 +49,18 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="采购其他费用" min-width="80">
+      <el-table-column label="采购物流费用" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              disabled
+              v-model="row.logisticsFee"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="采购杂费" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input-number
@@ -79,6 +79,18 @@
             <el-input
               disabled
               v-model="row.totalPurchaseAmount"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="采购商品备注" min-width="100">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              v-model="row.purchaseRemark"
+              placeholder="请输入备注"
+              type="textarea"
             />
           </el-form-item>
         </template>
@@ -212,8 +224,9 @@ const handleProductSelected = (selectedProducts: any[]) => {
       purchasePrice: product.wholesalePrice, //采购批发单价
       logisticsFee: 1, //物流费用
       truckFee: 1, //货拉拉费
-      otherFees: 1, //采购其他费用
+      otherFees: 1, //采购杂费
       totalPurchaseAmount: 1, //采购总额
+      purchaseRemark:'', //采购备注
 
       count: 1, //数量
       // 假设这些运费相关的字段已经存在于 product 对象中

@@ -62,6 +62,7 @@ const progressRef = ref() // 进展跟踪 Ref
 
 // 表单数据
 const formData = ref({
+  privateBroadcastingId: undefined,
   no: '',
   brandName: '',
   productName: '',

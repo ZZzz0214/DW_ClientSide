@@ -1,8 +1,8 @@
 <template>
   <el-form ref="formRef" :model="formData" label-width="120px" :rules="rules">
-    <el-form-item label="编号" prop="no">
-      <el-input v-model="formData.no" placeholder="请输入编号" :disabled="isDetail" />
-    </el-form-item>
+<!--    <el-form-item label="编号" prop="no">-->
+<!--      <el-input v-model="formData.no" placeholder="请输入编号" :disabled="isDetail" />-->
+<!--    </el-form-item>-->
     <el-form-item label="产品图片" prop="productImage">
       <el-input v-model="formData.productImage" placeholder="请输入产品图片链接" :disabled="isDetail" />
     </el-form-item>
@@ -26,7 +26,7 @@
         v-model="formData.shelfLife"
         type="date"
         placeholder="请选择保质日期"
-        value-format="YYYY-MM-DD"
+        value-format="x"
         :disabled="isDetail"
       />
     </el-form-item>

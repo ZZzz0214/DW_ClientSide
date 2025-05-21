@@ -6,14 +6,6 @@
     :rules="rules"
     label-width="120px"
   >
-    <!-- 编号 -->
-    <el-form-item label="编号" prop="no">
-      <el-input
-        v-model="formData.no"
-        placeholder="请输入编号"
-        class="w-80"
-      />
-    </el-form-item>
 
     <!-- 客户姓名 -->
     <el-form-item label="客户姓名" prop="customerName">

@@ -22,7 +22,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="客户名称" min-width="120">
+      <el-table-column label="客户名称" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.customerName" />
@@ -46,7 +46,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="出货其他费用" min-width="80">
+      <el-table-column label="出货杂费" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input-number
@@ -64,6 +64,18 @@
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.totalSaleAmount" />
+          </el-form-item>
+        </template>
+      </el-table-column>
+
+      <el-table-column label="出货商品备注" min-width="100">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              v-model="row.saleRemark"
+              placeholder="请输入备注"
+              type="textarea"
+            />
           </el-form-item>
         </template>
       </el-table-column>
@@ -218,8 +230,9 @@ const handleProductSelected = (selectedProducts: any[]) => {
       customerName: product.customerName, //客户名称
       salePrice: product.salePrice, //出货单价
       saleShippingFee: 1, //出货运费
-      saleOtherFees: 1, //销售其他费用
+      saleOtherFees: 1, //销售杂费
       totalSaleAmount: 1, //销售总额
+      saleRemark:'', //出货备注
 
       count: 1, //数量
       // 假设这些运费相关的字段已经存在于 product 对象中
