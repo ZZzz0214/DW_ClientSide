@@ -781,8 +781,192 @@ const remainingRouter: AppRouteRecordRaw[] = [
     }
   ]
 },
+// ... existing code ...
+
+{
+  path: '/erp/live-broadcasting', // ERP 直播货盘管理
+  component: Layout,
+  name: 'ErpLiveBroadcastingManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'index', // 直播货盘列表
+      component: () => import('@/views/erp/livebroadcasting/index.vue'),
+      name: 'ErpLiveBroadcasting',
+      meta: {
+        title: '直播货盘',
+        icon: 'ep:list',
+        noCache: false
+      }
+    },
+    {
+      path: 'add', // 添加直播货盘
+      component: () => import('@/views/erp/livebroadcasting/form/index.vue'),
+      name: 'ErpLiveBroadcastingAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '直播货盘添加',
+        activeMenu: '/erp/live-broadcasting/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑直播货盘
+      component: () => import('@/views/erp/livebroadcasting/form/index.vue'),
+      name: 'ErpLiveBroadcastingEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '直播货盘编辑',
+        activeMenu: '/erp/live-broadcasting/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 直播货盘详情
+      component: () => import('@/views/erp/livebroadcasting/form/index.vue'),
+      name: 'ErpLiveBroadcastingDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '直播货盘详情',
+        activeMenu: '/erp/live-broadcasting/index'
+      }
+    }
+  ]
+},
+// ... existing code ...
+
+{
+  path: '/erp/live-broadcasting-review', // ERP 直播复盘管理
+  component: Layout,
+  name: 'ErpLiveBroadcastingReviewManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'index', // 直播复盘列表
+      component: () => import('@/views/erp/livebroadcastingreview/index.vue'),
+      name: 'ErpLiveBroadcastingReview',
+      meta: {
+        title: '直播复盘',
+        icon: 'ep:list',
+        noCache: false
+      }
+    },
+    {
+      path: 'add', // 添加直播复盘
+      component: () => import('@/views/erp/livebroadcastingreview/form/index.vue'),
+      name: 'ErpLiveBroadcastingReviewAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '直播复盘添加',
+        activeMenu: '/erp/live-broadcasting-review/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑直播复盘
+      component: () => import('@/views/erp/livebroadcastingreview/form/index.vue'),
+      name: 'ErpLiveBroadcastingReviewEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '直播复盘编辑',
+        activeMenu: '/erp/live-broadcasting-review/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 直播复盘详情
+      component: () => import('@/views/erp/livebroadcastingreview/form/index.vue'),
+      name: 'ErpLiveBroadcastingReviewDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '直播复盘详情',
+        activeMenu: '/erp/live-broadcasting-review/index'
+      }
+    }
+  ]
+},
+// ... existing code ...
+
+{
+  path: '/erp/live-broadcasting-info', // ERP 直播信息管理
+  component: Layout,
+  name: 'ErpLiveBroadcastingInfoManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'index', // 直播信息列表
+      component: () => import('@/views/erp/livebroadcastinginfo/index.vue'),
+      name: 'ErpLiveBroadcastingInfo',
+      meta: {
+        title: '直播信息',
+        icon: 'ep:list',
+        noCache: false
+      }
+    },
+    {
+      path: 'add', // 添加直播信息
+      component: () => import('@/views/erp/livebroadcastinginfo/form/index.vue'),
+      name: 'ErpLiveBroadcastingInfoAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '直播信息添加',
+        activeMenu: '/erp/live-broadcasting-info/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑直播信息
+      component: () => import('@/views/erp/livebroadcastinginfo/form/index.vue'),
+      name: 'ErpLiveBroadcastingInfoEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '直播信息编辑',
+        activeMenu: '/erp/live-broadcasting-info/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 直播信息详情
+      component: () => import('@/views/erp/livebroadcastinginfo/form/index.vue'),
+      name: 'ErpLiveBroadcastingInfoDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '直播信息详情',
+        activeMenu: '/erp/live-broadcasting-info/index'
+      }
+    }
+  ]
+},
 
 // ... existing code ...
+
 
   {
     path: '/mall/product', // 商品中心

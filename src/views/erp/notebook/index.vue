@@ -93,8 +93,18 @@
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" />
         <el-table-column label="任务名称" align="center" prop="taskName" />
-        <el-table-column label="任务状态" align="center" prop="taskStatus"/>
-        <el-table-column label="任务人员" align="center" prop="taskPerson" />
+<!--        <el-table-column label="任务状态" align="center" prop="taskStatus"/>-->
+        <el-table-column label="任务状态" align="center"  prop="taskStatus">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_NOTEBOOK_STATUS" :value="scope.row.taskStatus" />
+          </template>
+        </el-table-column>
+        <el-table-column label="任务人员" align="center" prop="taskPerson">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.SYSTEM_USER_LIST" :value="scope.row.taskPerson" />
+          </template>
+        </el-table-column>
+<!--        <el-table-column label="任务人员" align="center" prop="taskPerson" />-->
         <el-table-column label="备注信息" align="center" prop="remark" />
         <el-table-column
           label="创建时间"
@@ -139,6 +149,7 @@
   import { dateFormatter } from '@/utils/formatTime'
   import download from '@/utils/download'
   import { NotebookApi, NotebookVO } from '@/api/erp/notebook'
+  import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 
   /** ERP 记事本列表 */
   defineOptions({ name: 'ErpNotebook' })

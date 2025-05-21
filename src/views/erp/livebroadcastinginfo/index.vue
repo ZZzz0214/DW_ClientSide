@@ -1,4 +1,4 @@
-<!-- ERP 团购信息列表 -->
+<!-- ERP 直播信息列表 -->
 <template>
     <ContentWrap>
       <!-- 搜索工作栏 -->
@@ -36,15 +36,6 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="客户城市" prop="customerCity">
-          <el-input
-            v-model="queryParams.customerCity"
-            placeholder="请输入客户城市"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
         <el-form-item>
           <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -52,7 +43,7 @@
             type="primary"
             plain
             @click="openForm('create')"
-            v-hasPermi="['erp:groupbuyinginfo:create']"
+            v-hasPermi="['erp:livebroadcastinginfo:create']"
           >
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
@@ -61,7 +52,7 @@
             plain
             @click="handleExport"
             :loading="exportLoading"
-            v-hasPermi="['erp:groupbuyinginfo:export']"
+            v-hasPermi="['erp:livebroadcastinginfo:export']"
           >
             <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
@@ -69,115 +60,114 @@
             type="danger"
             plain
             @click="handleDelete(selectionList.map((item) => item.id))"
-            v-hasPermi="['erp:groupbuyinginfo:delete']"
+            v-hasPermi="['erp:livebroadcastinginfo:delete']"
             :disabled="selectionList.length === 0"
           >
             <Icon icon="ep:delete" class="mr-5px" /> 删除
           </el-button>
-        </el-form-item>
-      </el-form>
-    </ContentWrap>
-    <ContentWrap>
-      <el-table
-        v-loading="loading"
-        :data="list"
-        :stripe="true"
-        :show-overflow-tooltip="true"
-        @selection-change="handleSelectionChange"
-      >
-        <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="客户姓名" align="center" prop="customerName" />
-<!--        <el-table-column label="客户职位" align="center" prop="customerPosition" />-->
-        <el-table-column label="客户职位" align="center" prop="customerPosition">
+          </el-form-item>
+        </el-form>
+      </ContentWrap>
+      <ContentWrap>
+        <el-table
+          v-loading="loading"
+          :data="list"
+          :stripe="true"
+          :show-overflow-tooltip="true"
+          @selection-change="handleSelectionChange"
+        >
+          <el-table-column width="30" label="选择" type="selection" />
+          <el-table-column label="编号" align="center" prop="no" />
+          <el-table-column label="客户姓名" align="center" prop="customerName" />
+<!--          <el-table-column label="客户职位" align="center" prop="customerPosition" />-->
+          <el-table-column label="客户职位" align="center" prop="customerPosition">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_POSITION" :value="scope.row.customerPosition" />
           </template>
         </el-table-column>
-        <el-table-column label="客户微信" align="center" prop="customerWechat" />
-<!--        <el-table-column label="平台名称" align="center" prop="platformName" />-->
-        <el-table-column label="平台名称" align="center" prop="platformName">
+          <el-table-column label="客户微信" align="center" prop="customerWechat" />
+<!--          <el-table-column label="平台名称" align="center" prop="platformName" />-->
+          <el-table-column label="平台名称" align="center" prop="platformName">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_PLATFORM_NAME" :value="scope.row.platformName" />
           </template>
         </el-table-column>
-<!--        <el-table-column label="客户属性" align="center" prop="customerAttribute" />-->
-        <el-table-column label="客户属性" align="center" prop="customerAttribute">
+<!--          <el-table-column label="客户属性" align="center" prop="customerAttribute" />-->
+          <el-table-column label="客户属性" align="center" prop="customerAttribute">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_ATTRIBUTE" :value="scope.row.customerAttribute" />
           </template>
         </el-table-column>
-<!--        <el-table-column label="客户城市" align="center" prop="customerCity" />-->
-        <el-table-column label="客户城市" align="center" prop="customerCity">
+<!--          <el-table-column label="客户城市" align="center" prop="customerCity" />-->
+          <el-table-column label="客户城市" align="center" prop="customerCity">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_CITY" :value="scope.row.customerCity" />
           </template>
         </el-table-column>
-<!--        <el-table-column label="客户区县" align="center" prop="customerDistrict" />-->
-        <el-table-column label="客户区县" align="center" prop="customerDistrict">
+<!--          <el-table-column label="客户区县" align="center" prop="customerDistrict" />-->
+          <el-table-column label="客户区县" align="center" prop="customerDistrict">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_DISTRICT" :value="scope.row.customerDistrict" />
           </template>
         </el-table-column>
-        <el-table-column label="用户画像" align="center" prop="userPortrait" />
-        <el-table-column label="招商类目" align="center" prop="recruitmentCategory" />
-        <el-table-column label="选品标准" align="center" prop="selectionCriteria" />
-        <el-table-column label="备注信息" align="center" prop="remark" />
-        <el-table-column label="操作" align="center" width="200">
-          <template #default="scope">
-            <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
-            <el-button
-              link
-              type="primary"
-              @click="openForm('update', scope.row.id)"
-              v-hasPermi="['erp:groupbuyinginfo:update']"
-            >
-              编辑
-            </el-button>
-            <el-button
-              link
-              type="danger"
-              @click="handleDelete([scope.row.id])"
-              v-hasPermi="['erp:groupbuyinginfo:delete']"
-            >
-              删除
-            </el-button>
-          </template>
-        </el-table-column>
-      </el-table>
-      <!-- 分页 -->
-      <Pagination
-        :total="total"
-        v-model:page="queryParams.pageNo"
-        v-model:limit="queryParams.pageSize"
-        @pagination="getList"
-      />
-    </ContentWrap>
-  </template>
+          <el-table-column label="用户画像" align="center" prop="userPortrait" />
+          <el-table-column label="招商类目" align="center" prop="recruitmentCategory" />
+          <el-table-column label="选品标准" align="center" prop="selectionCriteria" />
+          <el-table-column label="备注信息" align="center" prop="remark" />
+          <el-table-column label="操作" align="center" width="200">
+            <template #default="scope">
+              <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
+              <el-button
+                link
+                type="primary"
+                @click="openForm('update', scope.row.id)"
+                v-hasPermi="['erp:livebroadcastinginfo:update']"
+              >
+                编辑
+              </el-button>
+              <el-button
+                link
+                type="danger"
+                @click="handleDelete([scope.row.id])"
+                v-hasPermi="['erp:livebroadcastinginfo:delete']"
+              >
+                删除
+              </el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <!-- 分页 -->
+        <Pagination
+          :total="total"
+          v-model:page="queryParams.pageNo"
+          v-model:limit="queryParams.pageSize"
+          @pagination="getList"
+        />
+      </ContentWrap>
+    </template>
 
   <script setup lang="ts">
-  import { dateFormatter } from '@/utils/formatTime'
   import { DICT_TYPE } from '@/utils/dict'
+  import { dateFormatter } from '@/utils/formatTime'
   import download from '@/utils/download'
-  import { GroupBuyingInfoApi, GroupBuyingInfoVO } from '@/api/erp/groupbuyinginfo'
+  import { LiveBroadcastingInfoApi, LiveBroadcastingInfoVO } from '@/api/erp/livebroadcastinginfo'
 
-  /** ERP 团购信息列表 */
-  defineOptions({ name: 'ErpGroupBuyingInfo' })
+  /** ERP 直播信息列表 */
+  defineOptions({ name: 'ErpLiveBroadcastingInfo' })
 
   const message = useMessage() // 消息弹窗
   const { t } = useI18n() // 国际化
   const { push } = useRouter() // 路由跳转
 
   const loading = ref(true) // 列表的加载中
-  const list = ref<GroupBuyingInfoVO[]>([]) // 列表的数据
+  const list = ref<LiveBroadcastingInfoVO[]>([]) // 列表的数据
   const total = ref(0) // 列表的总页数
   const queryParams = reactive({
     pageNo: 1,
     pageSize: 10,
     no: undefined,
     customerName: undefined,
-    platformName: undefined,
-    customerCity: undefined
+    platformName: undefined
   })
   const queryFormRef = ref() // 搜索的表单
   const exportLoading = ref(false) // 导出的加载中
@@ -186,7 +176,7 @@
   const getList = async () => {
     loading.value = true
     try {
-      const data = await GroupBuyingInfoApi.getGroupBuyingInfoPage(queryParams)
+      const data = await LiveBroadcastingInfoApi.getLiveBroadcastingInfoPage(queryParams)
       list.value = data.list
       total.value = data.total
     } finally {
@@ -208,9 +198,9 @@
 
   const openForm = (type: string, id?: number) => {
     if (type === 'create') {
-      push({ name: 'ErpGroupBuyingInfoAdd' })
+      push({ name: 'ErpLiveBroadcastingInfoAdd' })
     } else if (type === 'update' && typeof id === 'number') {
-      push({ name: 'ErpGroupBuyingInfoEdit', params: { id } })
+      push({ name: 'ErpLiveBroadcastingInfoEdit', params: { id } })
     } else {
       console.error('Invalid type or missing id for edit operation')
     }
@@ -218,12 +208,12 @@
 
   /** 查看详情 */
   const openDetail = (id: number) => {
-    push({ name: 'ErpGroupBuyingInfoDetail', params: { id } })
+    push({ name: 'ErpLiveBroadcastingInfoDetail', params: { id } })
   }
 
   /** 选中操作 */
-  const selectionList = ref<GroupBuyingInfoVO[]>([])
-  const handleSelectionChange = (rows: GroupBuyingInfoVO[]) => {
+  const selectionList = ref<LiveBroadcastingInfoVO[]>([])
+  const handleSelectionChange = (rows: LiveBroadcastingInfoVO[]) => {
     selectionList.value = rows
   }
 
@@ -231,7 +221,7 @@
   const handleDelete = async (ids: number[]) => {
     try {
       await message.delConfirm()
-      await GroupBuyingInfoApi.deleteGroupBuyingInfo(ids)
+      await LiveBroadcastingInfoApi.deleteLiveBroadcastingInfo(ids)
       message.success(t('common.delSuccess'))
       await getList()
       selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
@@ -243,8 +233,8 @@
     try {
       await message.exportConfirm()
       exportLoading.value = true
-      const data = await GroupBuyingInfoApi.exportGroupBuyingInfo(queryParams)
-      download.excel(data, '团购信息.xls')
+      const data = await LiveBroadcastingInfoApi.exportLiveBroadcastingInfo(queryParams)
+      download.excel(data, '直播信息.xls')
     } catch {
     } finally {
       exportLoading.value = false

@@ -1,11 +1,11 @@
 <template>
-    <el-form
-      ref="formRef"
-      :disabled="isDetail"
-      :model="formData"
-      :rules="rules"
-      label-width="120px"
-    >
+  <el-form
+    ref="formRef"
+    :disabled="isDetail"
+    :model="formData"
+    :rules="rules"
+    label-width="120px"
+  >
       <!-- 编号 -->
 <!--      <el-form-item label="编号" prop="no">-->
 <!--        <el-input-->
@@ -17,9 +17,9 @@
 <!--      </el-form-item>-->
 
       <!-- 客户姓名 -->
-      <el-form-item label="客户姓名" prop="customerName">
+      <el-form-item label="客户姓名" prop="customerId">
         <el-input
-          v-model="formData.customerName"
+          v-model="formData.customerId"
           placeholder="请输入客户姓名"
           class="w-240px"
         />
@@ -153,8 +153,10 @@
       <el-form-item label="用户画像" prop="userPortrait">
         <el-input
           v-model="formData.userPortrait"
+          type="textarea"
           placeholder="请输入用户画像"
           class="w-240px"
+          :autosize="{ minRows: 2, maxRows: 4 }"
         />
       </el-form-item>
 
@@ -162,8 +164,10 @@
       <el-form-item label="招商类目" prop="recruitmentCategory">
         <el-input
           v-model="formData.recruitmentCategory"
+          type="textarea"
           placeholder="请输入招商类目"
           class="w-240px"
+          :autosize="{ minRows: 2, maxRows: 4 }"
         />
       </el-form-item>
 
@@ -171,36 +175,38 @@
       <el-form-item label="选品标准" prop="selectionCriteria">
         <el-input
           v-model="formData.selectionCriteria"
-          placeholder="请输入选品标准"
-          class="w-240px"
-        />
-      </el-form-item>
-
-      <!-- 备注 -->
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="formData.remark"
           type="textarea"
-          placeholder="请输入备注"
+          placeholder="请输入选品标准"
           class="w-240px"
           :autosize="{ minRows: 2, maxRows: 4 }"
         />
       </el-form-item>
-    </el-form>
+
+      <!-- 备注信息 -->
+      <el-form-item label="备注信息" prop="remark">
+        <el-input
+          v-model="formData.remark"
+          type="textarea"
+          placeholder="请输入备注信息"
+          class="w-240px"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+        />
+      </el-form-item>
+  </el-form>
   </template>
 
   <script lang="ts" setup>
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
-  import type { GroupBuyingInfoVO } from '@/api/erp/groupbuyinginfo'
+  import type { LiveBroadcastingInfoVO } from '@/api/erp/livebroadcastinginfo'
   import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
-  defineOptions({ name: 'ErpGroupBuyingInfoForm' })
+  defineOptions({ name: 'ErpLiveBroadcastingInfoForm' })
 
   const props = defineProps({
     propFormData: {
-      type: Object as PropType<GroupBuyingInfoVO>,
+      type: Object as PropType<LiveBroadcastingInfoVO>,
       default: () => {}
     },
     isDetail: propTypes.bool.def(false)
@@ -208,9 +214,9 @@
 
   const message = useMessage()
   const formRef = ref()
-  const formData = reactive<GroupBuyingInfoVO>({
+  const formData = reactive<LiveBroadcastingInfoVO>({
     no: '',
-    customerName: '',
+    customerId: undefined,
     customerPosition: '',
     customerWechat: '',
     platformName: '',
@@ -225,7 +231,7 @@
 
   const rules = reactive({
     no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
-    customerName: [{ required: true, message: '客户姓名不能为空', trigger: 'blur' }],
+    customerId: [{ required: true, message: '客户姓名不能为空', trigger: 'blur' }],
     platformName: [{ required: true, message: '平台名称不能为空', trigger: 'blur' }]
   })
 
@@ -238,9 +244,8 @@
     },
     { immediate: true }
   )
-
-  /** 表单校验 */
   const emit = defineEmits(['update:activeName'])
+  /** 表单校验 */
   const validate = async () => {
     if (!formRef) return
     try {
