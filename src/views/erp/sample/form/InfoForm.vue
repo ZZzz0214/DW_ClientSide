@@ -96,15 +96,30 @@
       </el-form-item>
 
       <!-- 样品状态 -->
-      <el-form-item label="样品状态" prop="sampleStatus">
+<!--      <el-form-item label="样品状态" prop="sampleStatus">-->
+<!--        <el-select-->
+<!--          v-model="formData.sampleStatus"-->
+<!--          placeholder="请选择样品状态"-->
+<!--          class="w-80"-->
+<!--        >-->
+<!--          <el-option label="待发货" :value="1" />-->
+<!--          <el-option label="已发货" :value="2" />-->
+<!--          <el-option label="已签收" :value="3" />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+            <!-- 样品状态 -->
+            <el-form-item label="样品状态" prop="sampleStatus">
         <el-select
           v-model="formData.sampleStatus"
           placeholder="请选择样品状态"
           class="w-80"
         >
-          <el-option label="待发货" :value="1" />
-          <el-option label="已发货" :value="2" />
-          <el-option label="已签收" :value="3" />
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.ERP_SAMPLE_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
 
@@ -137,6 +152,7 @@
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { SampleVO } from '@/api/erp/sample'
+  import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 
   defineOptions({ name: 'ErpSampleInfoForm' })
 

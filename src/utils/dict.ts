@@ -240,5 +240,14 @@ export enum DICT_TYPE {
   IOT_PRODUCT_FUNCTION_TYPE = 'iot_product_function_type', // IOT 产品功能类型
   IOT_DATA_TYPE = 'iot_data_type', // IOT 数据类型
   IOT_UNIT_TYPE = 'iot_unit_type', // IOT 单位类型
-  IOT_RW_TYPE = 'iot_rw_type' // IOT 读写类型
+  IOT_RW_TYPE = 'iot_rw_type' ,// IOT 读写类型
+  // ========== 一些其他表的配置模块  ==========
+  ERP_NOTEBOOK_STATUS = 'erp_notebook_status', // ERP 记事本状态
+  SYSTEM_USER_LIST = 'system_user_list', // 系统用户列表  
+  ERP_SAMPLE_STATUS = 'erp_sample_status', // ERP 样品状态
+  ERP_CUSTOMER_POSITION = 'erp_customer_position', // ERP 客户职位
+  ERP_PLATFORM_NAME = 'erp_platform_name', // ERP 平台名称
+  ERP_CUSTOMER_ATTRIBUTE = 'erp_customer_attribute', // ERP 客户属性
+  ERP_CUSTOMER_CITY = 'erp_customer_city', // ERP 客户城市
+  ERP_CUSTOMER_DISTRICT = 'erp_customer_district', // ERP 客户区县
 }

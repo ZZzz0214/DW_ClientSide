@@ -36,6 +36,7 @@
           :precision="2"
           placeholder="请输入开团价格"
           class="w-80"
+          @change="calculateProfit"
         />
       </el-form-item>
   
@@ -43,10 +44,10 @@
       <el-form-item label="渠道毛利" prop="channelProfit">
         <el-input-number
           v-model="formData.channelProfit"
-          :min="0"
           :precision="2"
           placeholder="请输入渠道毛利"
           class="w-80"
+          :disabled="true"
         />
       </el-form-item>
   
@@ -130,6 +131,15 @@
       throw e
     }
   }
+  
+const calculateProfit = () => {
+  if (formData.groupPrice > 0 && formData.supplyGroupPrice > 0) {
+    formData.channelProfit = parseFloat((1 - (formData.supplyGroupPrice / formData.groupPrice)).toFixed(4))
+  } else {
+    formData.channelProfit = 0
+  }
+}
+watch(() => formData.supplyGroupPrice, calculateProfit)
   
   defineExpose({ validate })
   </script>

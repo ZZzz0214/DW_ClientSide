@@ -102,7 +102,7 @@
         <el-table-column label="品牌名称" align="center" prop="brandName" />
         <el-table-column label="产品名称" align="center" prop="productName" />
         <el-table-column label="产品规格" align="center" prop="productSpec" />
-        <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter" width="180px" />
+        <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" width="180px" />
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
         <el-table-column label="操作" align="center" width="200">
           <template #default="scope">
@@ -137,7 +137,7 @@
   </template>
 
   <script setup lang="ts">
-  import { dateFormatter } from '@/utils/formatTime'
+  import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
   import download from '@/utils/download'
   import { GroupBuyingApi, GroupBuyingVO } from '@/api/erp/groupbuying'
 

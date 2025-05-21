@@ -101,13 +101,13 @@
         <el-table-column label="产品规格" align="center" prop="productSpecification" />
         <el-table-column label="产品SKU" align="center" prop="productSku" />
         <el-table-column label="备注信息" align="center" prop="remark" />
-        <el-table-column label="客户名称" align="center" prop="customerId" />
+        <el-table-column label="客户名称" align="center" prop="customerName" />
         <el-table-column label="供团价格" align="center" prop="supplyGroupPrice"/>
         <el-table-column label="开团机制" align="center" prop="groupMechanism" />
-        <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter" />
-        <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter" />
+        <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
+        <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" />
         <el-table-column label="开团销量" align="center" prop="groupSales" />
-        <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter" />
+        <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" />
         <el-table-column label="复团销量" align="center" prop="repeatGroupSales" />
 <!--        <el-table-column label="编号" align="center" prop="no" />-->
 <!--        <el-table-column label="品牌名称" align="center" prop="brandName" />-->
@@ -150,7 +150,7 @@
   </template>
 
   <script setup lang="ts">
-  import { dateFormatter } from '@/utils/formatTime'
+  import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
   import download from '@/utils/download'
   import { GroupBuyingReviewApi, GroupBuyingReviewVO } from '@/api/erp/groupbuyingreview'
 
