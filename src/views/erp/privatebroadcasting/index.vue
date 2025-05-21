@@ -86,7 +86,7 @@
         label="保质日期"
         align="center"
         prop="shelfLife"
-        :formatter="dateFormatter"
+        :formatter="dateFormatter2"
         width="180px"
       />
       <el-table-column
@@ -129,7 +129,7 @@
 </template>
 
 <script setup lang="ts">
-import { dateFormatter } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ErpPrivateBroadcastingApi, ErpPrivateBroadcastingRespVO } from '@/api/erp/privateBroadcasting'
 
