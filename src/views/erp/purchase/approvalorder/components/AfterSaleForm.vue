@@ -31,14 +31,15 @@
       </el-form-item>
       <!-- 原有字段 -->
       <el-form-item label="售后时间">
-        <el-input v-model="formData.purchaseAfterSalesTime" :disabled="true" />
+        <el-input v-model="formData.afterSalesTime" :disabled="true" :value="formatTime(formData.afterSalesTime)"/>
       </el-form-item>
-      <el-form-item label="售后情况" prop="purchaseAfterSalesSituation">
+      <el-form-item label="售后情况" prop="afterSalesStatus">
         <el-input
           type="textarea"
-          v-model="formData.purchaseAfterSalesSituation"
+          v-model="formData.afterSalesStatus"
           placeholder="请输入售后情况"
           :rows="4"
+          @input="handleAfterSalesStatusChange"
         />
       </el-form-item>
       <el-form-item label="售后审核费用" prop="purchaseAfterSalesAmount" >
@@ -75,7 +76,7 @@ import { ref, reactive } from 'vue'
 import { PurchaseOrderApi } from '@/api/erp/purchase/approvalorder'
 import { useMessage } from '@/hooks/web/useMessage'
 import dayjs from "dayjs";
-import {dateFormatter} from "@/utils/formatTime";
+import {dateFormatter, formatTime} from "@/utils/formatTime";
 
 const message = useMessage()
 
@@ -98,6 +99,8 @@ const formData = reactive({
   purchaseAfterSalesTime: null as string | null, // 审核售后时间
   purchaseAfterSalesStatus: 30,
   purchaseAfterSalesSituation: '',
+  afterSalesTime: '',
+  afterSalesStatus: '',
 })
 
 // 调整验证规则字段名
@@ -131,6 +134,8 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
     formData.purchaseAfterSalesTime = orderDetail.purchaseAfterSalesTime || null // 审核售后时间
     formData.purchaseAfterSalesSituation = orderDetail.purchaseAfterSalesSituation || ''
     formData.purchaseAfterSalesAmount = orderDetail.purchaseAfterSalesAmount || ''
+    formData.afterSalesTime = orderDetail.afterSalesTime || ''
+    formData.afterSalesStatus = orderDetail.afterSalesStatus || ''
     if (!orderDetail.purchaseAfterSalesTime) {
       // 生成符合 yyyy-MM-dd HH:mm:ss 格式的字符串（与 value-format 一致）
       // const now = new Date()
@@ -190,4 +195,17 @@ const submitForm = async () => {
 defineExpose({
   open
 })
+
+/** 售后时间 */
+const handleAfterSalesStatusChange = () => {
+  if (formData.afterSalesStatus) {
+    // 当售后状况发生变化时，设置售后时间为当前时间
+    // formData.value.afterSalesTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    formData.afterSalesTime = dayjs().format('YYYY-MM-DD HH:mm:ss') // 默认当前时间
+    // formData.auditTime = dayjs().format('YYYY-MM-DD HH:mm:ss') // 默认当前时间
+  } else {
+    // 如果售后状况为空，则清空售后时间
+    formData.afterSalesTime = '';
+  }
+};
 </script>

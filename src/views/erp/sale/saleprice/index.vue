@@ -95,7 +95,9 @@
       <el-table-column label="组品编号" align="center" prop="groupProductId" />
 
       <!-- 组品简称 -->
-      <el-table-column label="组品简称" align="center" prop="productShortName" />
+      <el-table-column label="产品名称" align="center" prop="productName" />
+      <el-table-column label="产品简称" align="center" prop="productShortName" />
+      <el-table-column label="客户名称" align="center" prop="customerName" />
 
       <!-- 代发单价 -->
       <el-table-column label="代发单价" align="center" prop="distributionPrice" />
@@ -104,7 +106,7 @@
       <el-table-column label="批发单价" align="center" prop="wholesalePrice" />
 
       <!-- 备注信息 -->
-      <el-table-column label="备注信息" align="center" prop="remark" />
+<!--      <el-table-column label="备注信息" align="center" prop="remark" />-->
 
 <!--      &lt;!&ndash; 运费类型 &ndash;&gt;-->
 <!--      <el-table-column label="运费类型" align="center" prop="shippingFeeType">-->

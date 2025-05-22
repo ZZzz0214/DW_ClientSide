@@ -6,7 +6,7 @@
     v-loading="formLoading"
     label-width="0px"
     :inline-message="true"
-    :disabled="disabled"
+    :disabled="disabled|| (purchaseAuditStatus === 20)"
   >
 <el-table :data="formData" class="-mt-10px">
       <el-table-column label="采购人员" min-width="80">
@@ -84,7 +84,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="采购商品备注" min-width="100">
+      <el-table-column label="采购备注" min-width="100">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
@@ -129,10 +129,17 @@ const props = defineProps<{
   items: undefined
   disabled: false
   ssb: number
+  purchaseAuditStatus: number // 新增接收审核状态
 }>()
 
 const formLoading = ref(false) // 表单的加载中
-const formData = ref([])
+// const formData = ref([])
+const formData = ref({
+  // ...其他字段
+  purchaseAuditStatus: 0, // 采购审核状态
+  saleAuditStatus: 0, // 销售审核状态
+  // ...其他字段
+})
 const formRules = reactive({
   count: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }]
 })

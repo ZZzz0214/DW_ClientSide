@@ -8,9 +8,7 @@
   >
     <ContentWrap>
       <!-- 组品基本信息 -->
-      <el-form-item label="组品名称" prop="name">
-        <el-input v-model="formData.name" placeholder="请输入组品名称" disabled />
-      </el-form-item>
+
 
       <el-form-item label="产品图片">
         <el-image
@@ -20,8 +18,10 @@
           :preview-src-list="[formData.image]"
         />
       </el-form-item>
-
-      <el-form-item label="组品简称" prop="shortName">
+      <el-form-item label="产品名称" prop="name">
+        <el-input v-model="formData.name" placeholder="请输入组品名称" disabled />
+      </el-form-item>
+      <el-form-item label="产品简称" prop="shortName">
         <el-input v-model="formData.shortName" placeholder="请输入组品简称" :disabled="isDetail" />
       </el-form-item>
 
@@ -63,7 +63,7 @@
         <el-input v-model="formData.wholesalePrice" placeholder="批发单价" disabled />
       </el-form-item>
 
-      <el-form-item label="产品数量" prop="totalQuantity">
+      <el-form-item label="备注信息" prop="totalQuantity">
         <el-input v-model="formData.totalQuantity" placeholder="产品数量" :disabled="isDetail" />
       </el-form-item>
 
@@ -112,19 +112,18 @@
                     controls-position="right"
                     :min="1"
                     :precision="0"
-                    class="!w-100%"
                     @change="updateComboInfo"
                   />
                 </el-form-item>
               </template>
             </el-table-column>
-            <el-table-column label="备注" min-width="150">
-              <template #default="{ row, $index }">
-                <el-form-item :prop="`items.${$index}.remark`">
-                  <el-input v-model="row.remark" placeholder="请输入备注"  :disabled="isDetail"/>
-                </el-form-item>
-              </template>
-            </el-table-column>
+<!--            <el-table-column label="备注" min-width="150">-->
+<!--              <template #default="{ row, $index }">-->
+<!--                <el-form-item :prop="`items.${$index}.remark`">-->
+<!--                  <el-input v-model="row.remark" placeholder="请输入备注"  :disabled="isDetail"/>-->
+<!--                </el-form-item>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
             <el-table-column align="center" fixed="right" label="操作" width="60">
               <template #default="{ $index }">
                 <el-button @click="handleDelete($index)" link :disabled="isDetail">删除</el-button>

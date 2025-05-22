@@ -4,7 +4,7 @@
     ref="formRef"
     :model="formData"
     :rules="rules"
-    label-width="120px"
+    label-width="160px"
     :disabled="isDetail"
   >
     <!-- 公域活动最低价 -->

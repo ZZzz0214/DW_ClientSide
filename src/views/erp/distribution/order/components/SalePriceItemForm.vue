@@ -6,7 +6,7 @@
     v-loading="formLoading"
     label-width="0px"
     :inline-message="true"
-    :disabled="disabled"
+    :disabled="disabled|| (saleAuditStatus === 20)"
   >
     <el-table :data="formData" :key="tableKey" class="-mt-10px">
       <el-table-column label="销售人员" min-width="80">
@@ -68,11 +68,22 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="出货商品备注" min-width="100">
+      <el-table-column label="出货备注" min-width="100">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
               v-model="row.saleRemark"
+              placeholder="请输入备注"
+              type="textarea"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="中转人员" min-width="100">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              v-model="row.transferPerson"
               placeholder="请输入备注"
               type="textarea"
             />
@@ -114,14 +125,27 @@ import Selectsaleprice from './Selectsaleprice.vue';
 import SalespersonSearchDialog from './SalespersonSearchDialog.vue'; // 引入销售人员搜索弹窗组件
 import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
 
+// const props = defineProps<{
+//   items: any[];
+//   disabled: boolean;
+//   ssb: number; // 父组件传递的产品数量
+// }>();
+
 const props = defineProps<{
-  items: any[];
-  disabled: boolean;
-  ssb: number; // 父组件传递的产品数量
-}>();
+  items: any[]
+  disabled: false
+  ssb: number
+  saleAuditStatus: number // 新增接收审核状态
+}>()
 
 const formLoading = ref(false);
-const formData = ref(props.items);
+//const formData = ref(props.items);
+const formData = ref({
+  // ...其他字段
+  purchaseAuditStatus: 0, // 采购审核状态
+  saleAuditStatus: 0, // 销售审核状态
+  // ...其他字段
+})
 const formRules = reactive({
   count: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }]
 });

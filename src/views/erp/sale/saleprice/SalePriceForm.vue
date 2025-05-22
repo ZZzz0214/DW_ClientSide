@@ -31,7 +31,7 @@
       <!-- 子表的表单 -->
       <ContentWrap>
         <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
-          <el-tab-pane label="销售价格清单" name="item">
+          <el-tab-pane label="基础信息" name="item">
             <SalePriceItemForm
               ref="itemFormRef"
               :item="formData.comboList"
@@ -39,7 +39,7 @@
               @items-updated="handleItemUpdated"
             />
           </el-tab-pane>
-          <el-tab-pane label="销售价格运费信息" name="items">
+          <el-tab-pane label="运费信息" name="items">
             <ShippingCostForm
               ref="itemFormRef"
               v-model:activeName="activeName"

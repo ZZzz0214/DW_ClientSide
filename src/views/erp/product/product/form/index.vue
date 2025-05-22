@@ -1,7 +1,7 @@
 <template>
   <ContentWrap v-loading="formLoading">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="产品基础信息" name="info">
+      <el-tab-pane label="基础信息" name="info">
         <InfoForm
           ref="infoRef"
           v-model:activeName="activeName"
@@ -9,7 +9,7 @@
           :propFormData="formData"
         />
       </el-tab-pane>
-      <el-tab-pane label="合格证信息" name="sku">
+      <el-tab-pane label="合格信息" name="sku">
         <SkuForm
           ref="skuRef"
           v-model:activeName="activeName"
@@ -17,7 +17,7 @@
           :propFormData="formData"
         />
       </el-tab-pane>
-      <el-tab-pane label="库存箱规信息" name="description">
+      <el-tab-pane label="库存箱规" name="description">
         <DescriptionForm
           ref="descriptionRef"
           v-model:activeName="activeName"
@@ -25,7 +25,7 @@
           :propFormData="formData"
         />
       </el-tab-pane>
-      <el-tab-pane label="快递售后信息" name="delivery">
+      <el-tab-pane label="快递售后" name="delivery">
         <DeliveryForm
           ref="deliveryRef"
           v-model:activeName="activeName"

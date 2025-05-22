@@ -89,16 +89,16 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="产品图片" align="center" prop="productImage">
-          <template #default="scope">
-            <el-image
-              v-if="scope.row.productImage"
-              :src="scope.row.productImage"
-              :preview-src-list="[scope.row.productImage]"
-              style="width: 60px; height: 60px"
-            />
-          </template>
-        </el-table-column>
+<!--        <el-table-column label="产品图片" align="center" prop="productImage">-->
+<!--          <template #default="scope">-->
+<!--            <el-image-->
+<!--              v-if="scope.row.productImage"-->
+<!--              :src="scope.row.productImage"-->
+<!--              :preview-src-list="[scope.row.productImage]"-->
+<!--              style="width: 60px; height: 60px"-->
+<!--            />-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column label="品牌名称" align="center" prop="brandName" />
         <el-table-column label="产品名称" align="center" prop="productName" />
         <el-table-column label="产品规格" align="center" prop="productSpec" />

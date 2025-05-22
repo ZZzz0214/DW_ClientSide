@@ -184,10 +184,10 @@
       <el-table-column min-width="180" label="订单号" align="center" prop="orderNumber" />
       <el-table-column label="物流公司" align="center" prop="logisticsCompany" width="120" />
       <el-table-column label="物流单号" align="center" prop="trackingNumber" width="160" />
-      <el-table-column label="收件人姓名" align="center" prop="receiverName" width="120" />
-      <el-table-column label="收件人电话" align="center" prop="receiverPhone" width="120" />
-      <el-table-column label="收件地址" align="center" prop="receiverAddress" min-width="200" />
-      <el-table-column label="原表商品名称" align="center" prop="originalProductName" width="120" />
+      <el-table-column label="收件姓名" align="center" prop="receiverName" width="120" />
+      <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" />
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" />
+      <el-table-column label="原表商品" align="center" prop="originalProductName" width="120" />
       <el-table-column label="原表规格" align="center" prop="originalStandard" width="120" />
       <el-table-column label="原表数量" align="center" prop="originalQuantity" width="100" />
       <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" />
@@ -201,7 +201,7 @@
       <el-table-column label="采购运费" align="center" prop="shippingFee" width="100" />
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" />
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" />
-      <el-table-column label="备注" align="center" prop="remark" width="120" />
+      <el-table-column label="备注信息" align="center" prop="remark" width="120" />
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.purchaseAuditStatus" />

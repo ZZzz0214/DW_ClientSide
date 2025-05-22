@@ -185,9 +185,9 @@
       <el-table-column label="ID" align="center" prop="id" width="80" />
       <el-table-column min-width="180" label="订单编号" align="center" prop="no" />
       <el-table-column label="物流单号" align="center" prop="logisticsNumber" width="160" />
-      <el-table-column label="收件人姓名" align="center" prop="receiverName" width="120" />
-      <el-table-column label="收件人电话" align="center" prop="receiverPhone" width="120" />
-      <el-table-column label="收件地址" align="center" prop="receiverAddress" min-width="200" />
+      <el-table-column label="收件姓名" align="center" prop="receiverName" width="120" />
+      <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" />
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" />
       <el-table-column label="备注信息" align="center" prop="remark" width="120" />
       <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" />
       <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" />

@@ -10,9 +10,14 @@
     >
       <!-- 第一行：订单号 -->
       <el-row :gutter="20">
-        <el-col :span="24">
+        <el-col :span="12">
           <el-form-item label="订单编号" prop="no">
             <el-input disabled v-model="formData.no" placeholder="保存时自动生成" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <el-form-item label="物流单号" prop="logisticsNumber">
+            <el-input  v-model="formData.logisticsNumber" placeholder="请输入物流单号" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -21,12 +26,12 @@
       <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item label="产品名称" prop="productName">
-            <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" />
+            <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="产品规格" prop="productSpecification">
-            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" />
+            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -38,6 +43,7 @@
               :precision="2"
               class="!w-100%"
               placeholder="请输入产品数量"
+              :disabled="formData.purchaseAuditStatus === 20 || formData.saleAuditStatus === 20"
             />
           </el-form-item>
         </el-col>
@@ -47,22 +53,22 @@
           </el-form-item>
         </el-col>
       </el-row>
-      <el-row :gutter="20">
-      <el-col :span="8">
-          <el-form-item label="附件" prop="fileUrl">
-            <UploadFile :is-show-tip="false" v-model="formData.fileUrl" :limit="1" />
-          </el-form-item>
-        </el-col>
-      </el-row>
+<!--      <el-row :gutter="20">-->
+<!--      <el-col :span="8">-->
+<!--          <el-form-item label="附件" prop="fileUrl">-->
+<!--            <UploadFile :is-show-tip="false" v-model="formData.fileUrl" :limit="1" />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--      </el-row>-->
 
       <!-- 子表的表单 -->
       <ContentWrap>
         <el-tabs v-model="subTabsName" @tab-change="switchTab" class="-mt-15px -mb-10px">
           <el-tab-pane label="采购信息" name="purchase">
-            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" @productIdChanged="handleProductIdChanged"/>
+            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" @productIdChanged="handleProductIdChanged" :purchaseAuditStatus="formData.purchaseAuditStatus"/>
           </el-tab-pane>
           <el-tab-pane label="出货信息" name="sale">
-            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" :comboProductId="formData.comboProductId"/>
+            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" :comboProductId="formData.comboProductId" :saleAuditStatus="formData.saleAuditStatus"/>
           </el-tab-pane>
         </el-tabs>
       </ContentWrap>
@@ -283,6 +289,7 @@ const open = async (type: string, id?: number) => {
             otherFees: data.otherFees,
             totalPurchaseAmount: data.totalPurchaseAmount,
             count: data.count,
+            purchaseRemark: data.purchaseRemark,
 
             productName : data.productName,
             shippingCode : data.shippingCode,
@@ -298,6 +305,8 @@ const open = async (type: string, id?: number) => {
             saleOtherFees: data.saleOtherFees,
             totalSaleAmount: data.totalSaleAmount,
             count: data.count,
+            transferPerson: data.transferPerson,
+            saleRemark: data.saleRemark,
           },
         ]
       }
@@ -314,6 +323,7 @@ const open = async (type: string, id?: number) => {
             otherFees: data.otherFees,
             totalPurchaseAmount: data.totalPurchaseAmount,
             count: data.count,
+            purchaseRemark: data.purchaseRemark,
 
             productName : data.productName,
             shippingCode : data.shippingCode,
@@ -343,6 +353,8 @@ const open = async (type: string, id?: number) => {
             saleOtherFees: data.saleOtherFees,
             totalSaleAmount: data.totalSaleAmount,
             count: data.count,
+            transferPerson: data.transferPerson,
+            saleRemark: data.saleRemark,
 
             // 假设这些运费相关的字段已经存在于 data 对象中
             shippingFeeType: saleshippingFeeType[0].shippingFeeType,
@@ -403,6 +415,7 @@ const submitForm = async () => {
       data.totalPurchaseAmount = purchaseItem.totalPurchaseAmount || 0
 
       data.productName = purchaseItem.productName || 0
+      data.purchaseRemark = purchaseItem.purchaseRemark || 0
     }
 
     if (data.saleItems && data.saleItems.length > 0) {
@@ -415,6 +428,8 @@ const submitForm = async () => {
       data.saleTruckFee = saleItem.saleTruckFee || 0
       data.saleOtherFees = saleItem.saleOtherFees || 0
       data.totalSaleAmount = saleItem.totalSaleAmount || 0
+      data.saleRemark = saleItem.saleRemark || 0
+      data.transferPerson = saleItem.transferPerson || 0
     }
 
     if (formType.value === 'create') {

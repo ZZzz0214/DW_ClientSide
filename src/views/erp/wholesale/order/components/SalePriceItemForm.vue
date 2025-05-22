@@ -6,10 +6,10 @@
     v-loading="formLoading"
     label-width="0px"
     :inline-message="true"
-    :disabled="disabled"
+    :disabled="disabled|| (saleAuditStatus === 20)"
   >
     <el-table :data="formData" :key="tableKey" class="-mt-10px">
-      <el-table-column label="销售人员" min-width="80">
+      <el-table-column label="销售人员" min-width="75">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
@@ -22,7 +22,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="客户名称" min-width="80">
+      <el-table-column label="客户名称" min-width="75">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.customerName" />
@@ -30,7 +30,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="出货单价" min-width="80">
+      <el-table-column label="出货单价" min-width="75">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.salePrice" />
@@ -38,7 +38,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="出货货拉拉费" min-width="80">
+      <el-table-column label="出货货拉拉费" min-width="90">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input-number
@@ -51,7 +51,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="出货物流费用" min-width="80">
+      <el-table-column label="出货物流费用" min-width="90">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
@@ -84,12 +84,23 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="出货商品备注" min-width="100">
+      <el-table-column label="出货备注" min-width="100">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
               v-model="row.saleRemark"
               placeholder="请输入备注"
+              type="textarea"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="中转人员" min-width="80">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              v-model="row.transferPerson"
+              placeholder="请输入中转人员"
               type="textarea"
             />
           </el-form-item>
@@ -130,14 +141,25 @@ import Selectsaleprice from './Selectsaleprice.vue';
 import SalespersonSearchDialog from './SalespersonSearchDialog.vue';
 import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
 
+// const props = defineProps<{
+//   items: any[];
+//   disabled: boolean;
+//   ssb: number; // 父组件传递的产品数量
+// }>();
 const props = defineProps<{
-  items: any[];
-  disabled: boolean;
-  ssb: number; // 父组件传递的产品数量
-}>();
-
+  items: any[]
+  disabled: false
+  ssb: number
+  saleAuditStatus: number // 新增接收审核状态
+}>()
+const formData = ref({
+  // ...其他字段
+  purchaseAuditStatus: 0, // 采购审核状态
+  saleAuditStatus: 0, // 销售审核状态
+  // ...其他字段
+})
 const formLoading = ref(false);
-const formData = ref(props.items);
+// const formData = ref(props.items);
 const formRules = reactive({
   count: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }]
 });

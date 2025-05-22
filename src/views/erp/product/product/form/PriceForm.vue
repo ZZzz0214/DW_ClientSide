@@ -67,7 +67,7 @@
     :disabled="isDetail"
     :model="formData"
     :rules="rules"
-    label-width="120px"
+    label-width="160px"
   >
     <!-- 采购人员 -->
     <el-form-item label="采购人员" prop="purchaser">
@@ -121,7 +121,7 @@
     </el-form-item>
 
     <!-- 对外最低采购单价 -->
-    <el-form-item label="对外最低采购单价" prop="minPurchasePrice">
+    <el-form-item label="对外最低出货单价" prop="minPurchasePrice">
       <el-input-number
         v-model="formData.minPurchasePrice"
         :min="0"
@@ -131,14 +131,14 @@
     </el-form-item>
 
     <!-- 对外最低批发单价 -->
-    <el-form-item label="对外最低批发单价" prop="minWholesalePrice">
-      <el-input-number
-        v-model="formData.minWholesalePrice"
-        :min="0"
-        placeholder="请输入对外最低批发单价"
-        class="w-80"
-      />
-    </el-form-item>
+<!--    <el-form-item label="对外最低批发单价" prop="minWholesalePrice">-->
+<!--      <el-input-number-->
+<!--        v-model="formData.minWholesalePrice"-->
+<!--        :min="0"-->
+<!--        placeholder="请输入对外最低批发单价"-->
+<!--        class="w-80"-->
+<!--      />-->
+<!--    </el-form-item>-->
   </el-form>
 
   <!-- 采购人员搜索弹窗 -->

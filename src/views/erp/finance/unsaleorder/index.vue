@@ -182,10 +182,10 @@
         <el-table-column label="订单号" prop="orderNumber" />
         <el-table-column label="物流公司" prop="logisticsCompany" />
         <el-table-column label="物流单号" prop="trackingNumber" />
-        <el-table-column label="收件人姓名" prop="receiverName" />
-        <el-table-column label="收件人电话" prop="receiverPhone" />
-        <el-table-column label="收件地址" prop="receiverAddress" />
-        <el-table-column label="原表商品名称" prop="originalProductName" />
+        <el-table-column label="收件姓名" prop="receiverName" />
+        <el-table-column label="联系电话" prop="receiverPhone" />
+        <el-table-column label="详细地址" prop="receiverAddress" />
+        <el-table-column label="原表商品" prop="originalProductName" />
         <el-table-column label="原表规格" prop="originalStandard" />
         <el-table-column label="原表数量" prop="originalQuantity" />
         <el-table-column label="备注信息" prop="remark" />
@@ -200,6 +200,7 @@
         <el-table-column label="出货运费" prop="saleShippingFee" />
         <el-table-column label="出货杂费" prop="saleOtherFees" />
         <el-table-column label="出货总额" prop="totalSaleAmount" />
+       <el-table-column label="中转人员" prop="transferPerson" />
 
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">

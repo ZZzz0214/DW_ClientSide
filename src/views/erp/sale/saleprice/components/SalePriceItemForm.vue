@@ -8,7 +8,7 @@
     :inline-message="true"
   >
     <el-table :data="formData"  class="-mt-10px">
-      <el-table-column label="组品名称" min-width="120">
+      <el-table-column label="产品名称" min-width="120">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.name" placeholder="请输入组品名称" />
@@ -16,7 +16,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="组品简称" min-width="110">
+      <el-table-column label="产品简称" min-width="110">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.shortName" placeholder="请输入组品简称" />

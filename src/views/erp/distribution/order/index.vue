@@ -163,16 +163,20 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column label="订单单号" align="center" prop="no"  min-width="140" />
-      <el-table-column label="产品名称" align="center" prop="productName" min-width="140" />
-      <el-table-column label="收件姓名" align="center" prop="receiverName" />
+      <el-table-column label="订单编号" align="center" prop="no"  min-width="140" />
+
+
       <el-table-column label="物流公司" align="center" prop="logisticsCompany" />
       <el-table-column label="物流单号" align="center" prop="trackingNumber" />
+      <el-table-column label="收件姓名" align="center" prop="receiverName" />
+      <el-table-column label="联系电话" align="center" prop="receiverPhone" />
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" />
+      <el-table-column label="产品名称" align="center" prop="productName" min-width="140" />
+
+      <el-table-column label="产品规格" align="center" prop="productSpecification" />
       <el-table-column label="产品数量" align="center" prop="productQuantity" />
-      <el-table-column label="采购单价" align="center" prop="purchasePrice" />
-      <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" />
-      <el-table-column label="出货单价" align="center" prop="salePrice" />
-      <el-table-column label="出货总额" align="center" prop="totalSaleAmount" />
+<!--      <el-table-column label="出货单价" align="center" prop="salePrice" />-->
+<!--      <el-table-column label="出货总额" align="center" prop="totalSaleAmount" />-->
 
       <el-table-column label="状态" align="center" fixed="right" width="70" prop="status">
         <template #default="scope">

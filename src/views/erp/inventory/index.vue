@@ -81,7 +81,7 @@
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" />
         <el-table-column label="产品编号" align="center" prop="productId" />
-        <el-table-column label="产品图片" align="center" prop="productImage" />
+<!--        <el-table-column label="产品图片" align="center" prop="productImage" />-->
         <el-table-column label="产品名称" align="center" prop="productName" />
         <el-table-column label="产品简称" align="center" prop="productShortName" />
         <el-table-column label="品牌名称" align="center" prop="brand" />

@@ -200,7 +200,14 @@ export function formatPast2(ms: number): string {
 export function dateFormatter(_row: any, _column: TableColumnCtx<any>, cellValue: any): string {
   return cellValue ? formatDate(cellValue) : ''
 }
-
+/**
+ * 时间格式化函数
+ * @param value 时间值 (Date | string | number)
+ * @param format 格式字符串，默认为 'YYYY-MM-DD HH:mm:ss'
+ */
+export function formatTime(value: Date | string | number, format = 'YYYY-MM-DD HH:mm:ss'): string {
+  return value ? dayjs(value).format(format) : ''
+}
 /**
  * element plus 的时间 Formatter 实现，使用 YYYY-MM-DD 格式
  *

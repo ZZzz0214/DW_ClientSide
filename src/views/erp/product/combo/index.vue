@@ -68,34 +68,36 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
       <!-- 产品名称 -->
+      <el-table-column label="组品编号" align="center" prop="no" />
+      <el-table-column label="产品图片" align="center" prop="no" />
       <el-table-column label="产品名称" align="center" prop="name" />
 
       <!-- 产品简称 -->
       <el-table-column label="产品简称" align="center" prop="shortName" />
 
       <!-- 产品图片 -->
-      <el-table-column label="产品图片" align="center" prop="image">
-        <template #default="scope">
-          <el-image
-            v-if="scope.row.image"
-            style="width: 40px; height: 40px"
-            :src="scope.row.image"
-            :preview-src-list="[scope.row.image]"
-          />
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="产品图片" align="center" prop="image">-->
+<!--        <template #default="scope">-->
+<!--          <el-image-->
+<!--            v-if="scope.row.image"-->
+<!--            style="width: 40px; height: 40px"-->
+<!--            :src="scope.row.image"-->
+<!--            :preview-src-list="[scope.row.image]"-->
+<!--          />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
       <!-- 采购单价 -->
-      <el-table-column label="采购单价" align="center" prop="purchasePrice" />
-
-      <!-- 批发单价 -->
-      <el-table-column label="批发单价" align="center" prop="wholesalePrice" />
-
-      <!-- 发货编码 -->
       <el-table-column label="发货编码" align="center" prop="shippingCode" />
 
+      <!-- 批发单价 -->
+      <el-table-column label="产品重量" align="center" prop="weight" />
+
+      <!-- 发货编码 -->
+      <el-table-column label="采购人员" align="center" prop="purchaser" />
+
       <!-- 产品数量 -->
-      <el-table-column label="产品数量" align="center" prop="totalQuantity" />
+<!--      <el-table-column label="产品数量" align="center" prop="totalQuantity" />-->
 
       <el-table-column label="操作" align="center" width="200">
         <template #default="scope">

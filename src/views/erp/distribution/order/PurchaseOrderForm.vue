@@ -11,32 +11,32 @@
       <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item label="订单编号" prop="no">
-            <el-input disabled v-model="formData.no" placeholder="保存时自动生成" />
+            <el-input disabled v-model="formData.no" placeholder="保存时自动生成" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="订单号" prop="orderNumber">
-            <el-input v-model="formData.orderNumber" placeholder="请输入订单号" />
+            <el-input v-model="formData.orderNumber" placeholder="请输入订单号" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="物流公司" prop="logisticsCompany">
-            <el-input v-model="formData.logisticsCompany" placeholder="请输入物流公司" />
+            <el-input v-model="formData.logisticsCompany" placeholder="请输入物流公司" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="物流单号" prop="trackingNumber">
-            <el-input v-model="formData.trackingNumber" placeholder="请输入物流单号" />
+            <el-input v-model="formData.trackingNumber" placeholder="请输入物流单号" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="产品名称" prop="productName">
-            <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" />
+            <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="产品规格" prop="productSpecification">
-            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" />
+            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -48,22 +48,23 @@
               :precision="2"
               class="!w-100%"
               placeholder="请输入产品数量"
+              :disabled="formData.purchaseAuditStatus === 20 || formData.saleAuditStatus === 20"
             />
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="组品编号" prop="comboProductId">
-            <el-input disabled v-model="formData.comboProductId" placeholder="获取后自动生成" />
+            <el-input disabled v-model="formData.comboProductId" placeholder="获取后自动生成" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="原表商品" prop="originalProductName">
-            <el-input v-model="formData.originalProductName" placeholder="请输入原表商品" />
+            <el-input v-model="formData.originalProductName" placeholder="请输入原表商品" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="原表规格" prop="originalStandard">
-            <el-input v-model="formData.originalStandard" placeholder="请输入原表规格" />
+            <el-input v-model="formData.originalStandard" placeholder="请输入原表规格" type="textarea"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -80,7 +81,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="发货编码" prop="shippingCode">
-            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
+            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" type="textarea"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -89,10 +90,10 @@
       <ContentWrap>
         <el-tabs v-model="subTabsName"  @tab-change="switchTab" class="-mt-15px -mb-10px">
           <el-tab-pane label="采购信息" name="purchase">
-            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" @productIdChanged="handleProductIdChanged"/>
+            <PurchaseOrderItemForm ref="purchaseFormRef" :items="formData.items" :ssb="formData.productQuantity" :disabled="disabled" @productIdChanged="handleProductIdChanged" :purchaseAuditStatus="formData.purchaseAuditStatus"/>
           </el-tab-pane>
           <el-tab-pane label="出货信息" name="sale">
-            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" :comboProductId="formData.comboProductId"/>
+            <SalePriceItemForm ref="saleFormRef" :items="formData.saleItems" :ssb="formData.productQuantity" :disabled="disabled" :comboProductId="formData.comboProductId" :saleAuditStatus="formData.saleAuditStatus"/>
           </el-tab-pane>
         </el-tabs>
       </ContentWrap>
@@ -135,6 +136,7 @@
                     v-model="formData.afterSalesTime"
                     placeholder="售后时间"
                     disabled
+                    :value="formatTime(formData.afterSalesTime)"
                   />
                 </el-form-item>
               </el-col>
@@ -182,17 +184,17 @@
 </template>
 
 <script setup lang="ts">
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
 import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
 import PurchaseOrderItemForm from './components/PurchaseOrderItemForm.vue'
 import SalePriceItemForm from './components/SalePriceItemForm.vue'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
-import { erpPriceInputFormatter, erpPriceMultiply } from '@/utils'
 import * as UserApi from '@/api/system/user'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
 import * as ProductComboApi from "@/api/erp/product/combo";
 import {ref} from "vue";
 import {SalePriceApi} from "@/api/erp/sale/saleprice";
+import { dateFormatter,formatTime } from '@/utils/formatTime'
+import dayjs from "dayjs";
 
 /** ERP 销售订单表单 */
 defineOptions({ name: 'ErpPurchaseOrder' })
@@ -277,7 +279,9 @@ const productList = ref<any[]>([]);
 const handleAfterSalesStatusChange = () => {
   if (formData.value.afterSalesStatus) {
     // 当售后状况发生变化时，设置售后时间为当前时间
-    formData.value.afterSalesTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    // formData.value.afterSalesTime = new Date().toISOString().replace('T', ' ').substring(0, 19);
+    formData.value.afterSalesTime = dayjs().format('YYYY-MM-DD HH:mm:ss') // 默认当前时间
+    // formData.auditTime = dayjs().format('YYYY-MM-DD HH:mm:ss') // 默认当前时间
   } else {
     // 如果售后状况为空，则清空售后时间
     formData.value.afterSalesTime = '';
@@ -295,17 +299,15 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       const data = await ErpDistributionApi.getErpDistribution(id);
+      console.log('000000000000lllllllloooooooo')
+      console.log(data)
       const searchParams = {
         groupProductId: data.comboProductId,
         customerName: data.customerName,
       };
       const purchaseshippingFeeType = await ProductComboApi.ComboApi.searchCombos(data.comboProductId);
       const saleshippingFeeType = await SalePriceApi.searchSalePrice(searchParams);
-      console.log('000000000000lllllllloooooooo')
-      console.log(saleshippingFeeType)
-      console.log('000000000000lllllllloooooooo')
-      console.log(data)
-      console.log(id)
+
       formData.value = data;
       // 如果是详情模式，将数据重新组装到 items 和 saleItems
       if (type === 'detail') {
@@ -319,6 +321,7 @@ const open = async (type: string, id?: number) => {
             otherFees: data.otherFees,
             totalPurchaseAmount: data.totalPurchaseAmount,
             count: data.count,
+            purchaseRemark: data.purchaseRemark,
 
             productName : data.productName,
             shippingCode : data.shippingCode,
@@ -333,6 +336,8 @@ const open = async (type: string, id?: number) => {
             saleOtherFees: data.saleOtherFees,
             totalSaleAmount: data.totalSaleAmount,
             count: data.count,
+            transferPerson: data.transferPerson,
+            saleRemark: data.saleRemark,
           },
         ]
       }
@@ -348,9 +353,10 @@ const open = async (type: string, id?: number) => {
             otherFees: data.otherFees,
             totalPurchaseAmount: data.totalPurchaseAmount,
             count: data.count,
-
+            purchaseRemark: data.purchaseRemark,
             productName : data.productName,
             shippingCode : data.shippingCode,
+            purchaseAuditStatus : data.purchaseAuditStatus,
 
 
             // 假设这些运费相关的字段已经存在于 data 对象中
@@ -376,6 +382,9 @@ const open = async (type: string, id?: number) => {
             saleOtherFees: data.saleOtherFees,
             totalSaleAmount: data.totalSaleAmount,
             count: data.count,
+            saleAuditStatus : data.saleAuditStatus,
+            transferPerson : data.transferPerson,
+            saleRemark: data.saleRemark,
 
             // 假设这些运费相关的字段已经存在于 data 对象中
             shippingFeeType: saleshippingFeeType[0].shippingFeeType,
@@ -433,9 +442,11 @@ const submitForm = async () => {
       data.shippingFee = purchaseItem.shippingFee || 0
       data.otherFees = purchaseItem.otherFees || 0
       data.totalPurchaseAmount = purchaseItem.totalPurchaseAmount || 0
-
       data.productName = purchaseItem.productName || 0
       data.shippingCode = purchaseItem.shippingCode || 0
+
+      data.purchaseRemark = purchaseItem.purchaseRemark || 0
+
     }
 
     if (data.saleItems && data.saleItems.length > 0) {
@@ -447,6 +458,8 @@ const submitForm = async () => {
       data.saleShippingFee = saleItem.saleShippingFee || 0
       data.saleOtherFees = saleItem.saleOtherFees || 0
       data.totalSaleAmount = saleItem.totalSaleAmount || 0
+      data.saleRemark = saleItem.saleRemark || 0
+      data.transferPerson = saleItem.transferPerson || 0
     }
 
     if (formType.value === 'create') {

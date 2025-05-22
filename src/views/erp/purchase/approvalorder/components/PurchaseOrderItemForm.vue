@@ -10,7 +10,7 @@
   >
 <!--    <el-table :data="formData" show-summary :summary-method="getSummaries" class="-mt-10px">-->
     <el-table :data="formData"  class="-mt-10px">
-      <el-table-column label="序号" type="index" align="center" width="60" />
+<!--      <el-table-column label="序号" type="index" align="center" width="60" />-->
       <el-table-column label="采购人员" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
@@ -49,7 +49,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="采购其他费用" min-width="80">
+      <el-table-column label="采购杂费" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input-number
@@ -68,6 +68,17 @@
             <el-input
               disabled
               v-model="row.totalPurchaseAmount"
+            />
+          </el-form-item>
+        </template>
+      </el-table-column>
+      <el-table-column label="采购备注" min-width="100">
+        <template #default="{ row }">
+          <el-form-item class="mb-0px!">
+            <el-input
+              v-model="row.purchaseRemark"
+              placeholder="请输入备注"
+              type="textarea"
             />
           </el-form-item>
         </template>
