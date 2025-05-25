@@ -41,6 +41,17 @@
       <el-form-item label="出货总额">
         <el-input v-model="formData.totalSaleAmount" :disabled="true" />
       </el-form-item>
+
+      <el-form-item label="审核时间" prop="saleApprovalTime">
+        <el-date-picker
+          v-model="formData.saleApprovalTime"
+          type="datetime"
+          value-format="x"
+          placeholder="选择审核时间"
+          :disabled="true"
+          class="!w-1/1"
+        />
+      </el-form-item>
       <!-- 审核相关可编辑字段 -->
 <!--      <el-form-item label="审核情况" prop="auditSituation">-->
 <!--        <el-input-->
@@ -101,6 +112,8 @@ const formData = reactive({
   saleShippingFee: 0,
   saleOtherFees: 0,
   totalSaleAmount: 0,
+  saleApprovalTime: null as string | null,
+  saleUnapproveTime: null as string | null
 })
 
 // 审核验证规则
@@ -128,6 +141,9 @@ const open = async (id: number) => {
     formData.saleShippingFee = orderDetail.saleShippingFee || 0
     formData.saleOtherFees = orderDetail.saleOtherFees || 0
     formData.totalSaleAmount = orderDetail.totalSaleAmount || 0
+    // 填充销售时间数据
+    formData.saleApprovalTime = orderDetail.saleApprovalTime || null
+    formData.saleUnapproveTime = orderDetail.saleUnapproveTime || null
     // 初始化审核字段（可选填充历史数据）
   } catch (err) {
     message.error('获取订单信息失败，请重试')

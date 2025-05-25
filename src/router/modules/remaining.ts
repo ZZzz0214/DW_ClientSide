@@ -965,6 +965,57 @@ const remainingRouter: AppRouteRecordRaw[] = [
   ]
 },
 
+
+{
+  path: '/erp/dropship-assist', // ERP 代发辅助管理
+  component: Layout,
+  name: 'ErpDropshipAssistManagement',
+  meta: {
+    hidden: true
+  },
+  children: [
+    {
+      path: 'add', // 添加代发辅助
+      component: () => import('@/views/erp/dropship/form/index.vue'),
+      name: 'ErpDropshipAssistAdd',
+      meta: {
+        noCache: false,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '代发辅助添加',
+        activeMenu: '/erp/dropship-assist/index'
+      }
+    },
+    {
+      path: 'edit/:id(\\d+)', // 编辑代发辅助
+      component: () => import('@/views/erp/dropship/form/index.vue'),
+      name: 'ErpDropshipAssistEdit',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:edit',
+        title: '代发辅助编辑',
+        activeMenu: '/erp/dropship-assist/index'
+      }
+    },
+    {
+      path: 'detail/:id(\\d+)', // 代发辅助详情
+      component: () => import('@/views/erp/dropship/form/index.vue'),
+      name: 'ErpDropshipAssistDetail',
+      meta: {
+        noCache: true,
+        hidden: true,
+        canTo: true,
+        icon: 'ep:view',
+        title: '代发辅助详情',
+        activeMenu: '/erp/dropship-assist/index'
+      }
+    }
+  ]
+},
+
 // ... existing code ...
 
 

@@ -36,6 +36,27 @@
       <el-form-item label="采购总额">
         <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
       </el-form-item>
+
+<!--      <el-form-item label="审核时间" prop="purchaseApprovalTime">-->
+<!--        <el-date-picker-->
+<!--          v-model="formData.purchaseApprovalTime"-->
+<!--          type="datetime"-->
+<!--          value-format="x"-->
+<!--          placeholder="选择审核时间"-->
+<!--          :disabled="true"-->
+<!--          class="!w-1/1"-->
+<!--        />-->
+<!--      </el-form-item>-->
+      <el-form-item label="反审核时间" prop="purchaseUnapproveTime">
+        <el-date-picker
+          v-model="formData.purchaseUnapproveTime"
+          type="datetime"
+          value-format="x"
+          placeholder="选择反审核时间"
+          :disabled="true"
+          class="!w-1/1"
+        />
+      </el-form-item>
       <!-- 审核相关可编辑字段 -->
 <!--      <el-form-item label="审核情况" prop="auditSituation">-->
 <!--        <el-input-->
@@ -99,6 +120,8 @@ const formData = reactive({
   auditSituation: '', // 审核情况（对应原售后情况）
   auditAmount: 0, // 审核费用（对应原售后费用）
   auditTime: null as string | null, // 审核时间（对应原售后时间）
+  purchaseApprovalTime: null as string | null,
+  purchaseUnapproveTime: null as string | null
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -106,6 +129,7 @@ const formRules = reactive({
   auditSituation: [{ required: true, message: '审核情况不能为空', trigger: 'blur' }],
   auditAmount: [{ required: true, message: '审核费用不能为空', trigger: 'blur' }],
   auditTime: [{ required: true, message: '审核时间不能为空', trigger: 'change' }],
+
 })
 
 // 打开审核弹窗（逻辑与 AfterSaleForm 的 open 方法类似）
@@ -125,6 +149,10 @@ const open = async (id: number) => {
     formData.shippingFee = orderDetail.shippingFee || 0
     formData.otherFees = orderDetail.otherFees || 0
     formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0
+    //审核时间
+    formData.purchaseApprovalTime = orderDetail.purchaseApprovalTime || null
+    formData.purchaseUnapproveTime = orderDetail.purchaseUnapproveTime || null
+
     // 初始化审核字段（可选填充历史数据）
     formData.auditSituation = orderDetail.purchaseAfterSalesSituation || ''
     formData.auditAmount = orderDetail.purchaseAfterSalesAmount || 0

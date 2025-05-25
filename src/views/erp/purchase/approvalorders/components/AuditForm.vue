@@ -41,6 +41,19 @@
       <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
     </el-form-item>
 
+    <!-- 新增审核时间和反审核时间字段 -->
+
+<el-form-item label="反审核时间">
+  <el-date-picker
+    v-model="formData.purchaseUnapproveTime"
+    type="datetime"
+    value-format="x"
+    placeholder="选择反审核时间"
+    :disabled="true"
+    class="!w-1/1"
+  />
+</el-form-item>
+
       <!-- 审核相关可编辑字段 -->
 <!--      <el-form-item label="审核情况" prop="auditSituation">-->
 <!--        <el-input-->
@@ -105,6 +118,9 @@ const formData = reactive({
   auditSituation: '',
   auditAmount: 0,
   auditTime: null as string | null,
+
+  purchaseApprovalTime: null as string | null,
+  purchaseUnapproveTime: null as string | null
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -132,6 +148,9 @@ const open = async (id: number) => {
     formData.truckFee = orderDetail.truckFee || 0         // 新增货拉拉费用字段
     formData.otherFees = orderDetail.otherFees || 0
     formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0
+    // 填充时间数据
+    formData.purchaseApprovalTime = orderDetail.purchaseApprovalTime || null
+    formData.purchaseUnapproveTime = orderDetail.purchaseUnapproveTime || null
     // 初始化审核字段（可选填充历史数据）
     formData.auditSituation = orderDetail.purchaseAfterSalesSituation || ''
     formData.auditAmount = orderDetail.purchaseAfterSalesAmount || 0
