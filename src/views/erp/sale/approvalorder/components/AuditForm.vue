@@ -32,7 +32,6 @@
         <el-input-number
           v-model="formData.saleOtherFees"
           controls-position="right"
-          :min="0"
           :precision="2"
           placeholder="请输入出货杂费"
           class="!w-1/1"

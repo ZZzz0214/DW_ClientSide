@@ -27,7 +27,6 @@
         <el-input-number
           v-model="formData.otherFees"
           controls-position="right"
-          :min="0"
           :precision="2"
           placeholder="请输入采购杂费"
           class="!w-1/1"
