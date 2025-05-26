@@ -41,7 +41,7 @@
       <el-table-column label="出货运费" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.saleShippingFee" />
+            <el-input  v-model="row.saleShippingFee" />
           </el-form-item>
         </template>
       </el-table-column>
