@@ -41,7 +41,12 @@
       <el-table-column label="出货运费" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input  v-model="row.saleShippingFee" />
+            <el-input-number
+              v-model="row.saleShippingFee"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+            />
           </el-form-item>
         </template>
       </el-table-column>
@@ -187,7 +192,7 @@ watch(
 watch(() => props.ssb, (newVal) => {
   formData.value.forEach((item) => {
     item.count = newVal; // 更新子组件中的产品数量
-    calculateSaleShippingFee(item); // 重新计算出货运费
+    // calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
 }, { immediate: true });
@@ -195,42 +200,51 @@ watch(() => props.ssb, (newVal) => {
 // 监听子组件中出货其他费用的变化
 watch(() => formData.value, (newVal) => {
   newVal.forEach((item) => {
-    calculateSaleShippingFee(item); // 重新计算出货运费
+    // calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
 }, { deep: true });
 
 // 计算出货运费的方法
-const calculateSaleShippingFee = (item) => {
-  if(item.salePrice !== null){
-    if (item.shippingFeeType === 0) {
-      // 固定运费
-      item.saleShippingFee = item.fixedShippingFee;
-    } else if (item.shippingFeeType === 1) {
-      // 按件运费
-      if (item.count <= item.additionalItemQuantity) {
-        item.saleShippingFee = item.additionalItemPrice;
-      } else {
-        item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
-      }
-    } else if (item.shippingFeeType === 2) {
-      // 按重量
-      const totalWeight = item.count * item.weight;
-      if (totalWeight <= item.firstWeight) {
-        item.saleShippingFee = item.firstWeightPrice;
-      } else {
-        item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
-      }
-    }
-  } else {
-    item.saleShippingFee = null;
-  }
-};
+// const calculateSaleShippingFee = (item) => {
+//   if(item.salePrice !== null){
+//     if (item.shippingFeeType === 0) {
+//       // 固定运费
+//       item.saleShippingFee = item.fixedShippingFee;
+//     } else if (item.shippingFeeType === 1) {
+//       // 按件运费
+//       if (item.count <= item.additionalItemQuantity) {
+//         item.saleShippingFee = item.additionalItemPrice;
+//       } else {
+//         item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+//       }
+//     } else if (item.shippingFeeType === 2) {
+//       // 按重量
+//       const totalWeight = item.count * item.weight;
+//       if (totalWeight <= item.firstWeight) {
+//         item.saleShippingFee = item.firstWeightPrice;
+//       } else {
+//         item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+//       }
+//     }
+//   } else {
+//     item.saleShippingFee = null;
+//   }
+// };
 
 // 更新出货总额的方法
 const updateTotalSaleAmount = (item) => {
-  item.totalSaleAmount =
-    item.salePrice * item.count + item.saleShippingFee + item.saleOtherFees;
+  console.log("1111111111111111111111")
+  console.log(Number(item.salePrice) )
+  console.log(Number(item.count) )
+  console.log(Number(item.saleShippingFee) )
+  console.log(Number(item.saleOtherFees) )
+  const price = Number(item.salePrice) || 0;
+  const count = Number(item.count) || 0;
+  const shippingFee = Number(item.saleShippingFee) || 0;
+  const otherFees = Number(item.saleOtherFees) || 0;
+
+  item.totalSaleAmount = price * count + shippingFee + otherFees;
 };
 
 // 添加按钮操作
@@ -253,7 +267,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       salesperson: undefined, //销售人员
       customerName: product.customerName, //客户名称
       salePrice: product.salePrice, //出货单价
-      saleShippingFee: 1, //出货运费
+      saleShippingFee: 0, //出货运费
       saleOtherFees: 1, //销售杂费
       totalSaleAmount: 1, //销售总额
       saleRemark:'', //出货备注
