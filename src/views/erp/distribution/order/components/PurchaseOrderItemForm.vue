@@ -164,8 +164,6 @@ watch(() => formData.value, (newVal) => {
 
 // 计算运费的方法
 const calculateShippingFee = (item) => {
-  console.log('7777777777777777777777777')
-  console.log(item.count)
   if (item.shippingFeeType === 0) {
     // 固定运费
     item.shippingFee = item.fixedShippingFee;
@@ -192,8 +190,6 @@ const updateTotalPrice = (item) => {
   item.totalProductPrice =
     item.purchasePrice * item.count + item.shippingFee + item.otherFees;
   item.totalPurchaseAmount = item.totalProductPrice;
-  console.log('656565656565656')
-  console.log(item.totalProductPrice)
 };
 
 

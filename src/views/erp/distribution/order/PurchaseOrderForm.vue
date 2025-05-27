@@ -44,7 +44,7 @@
             <el-input-number
               v-model="formData.productQuantity"
               controls-position="right"
-              :min="1"
+              :min="0"
               :precision="2"
               class="!w-100%"
               placeholder="请输入产品数量"

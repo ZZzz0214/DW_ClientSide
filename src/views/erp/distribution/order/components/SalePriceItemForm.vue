@@ -191,7 +191,14 @@ watch(
 // 监听父组件传递的产品数量变化
 watch(() => props.ssb, (newVal) => {
   formData.value.forEach((item) => {
+    console.log('这是我的count在最开始传入的值')
+    console.log(newVal)
+    console.log(item.count)
     item.count = newVal; // 更新子组件中的产品数量
+    console.log('这是我的count在赋值后传入的值')
+    console.log(newVal)
+    console.log(item.count)
+
     // calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
