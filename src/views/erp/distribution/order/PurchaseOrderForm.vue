@@ -45,7 +45,6 @@
               v-model="formData.productQuantity"
               controls-position="right"
               :min="0"
-              :precision="2"
               class="!w-100%"
               placeholder="请输入产品数量"
               :disabled="formData.purchaseAuditStatus === 20 || formData.saleAuditStatus === 20"

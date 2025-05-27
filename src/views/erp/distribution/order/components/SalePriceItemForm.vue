@@ -198,7 +198,6 @@ watch(() => props.ssb, (newVal) => {
     console.log('这是我的count在赋值后传入的值')
     console.log(newVal)
     console.log(item.count)
-
     // calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
@@ -242,6 +241,7 @@ watch(() => formData.value, (newVal) => {
 // 更新出货总额的方法
 const updateTotalSaleAmount = (item) => {
   console.log("1111111111111111111111")
+  console.log("2222222222222222222222")
   console.log(Number(item.salePrice) )
   console.log(Number(item.count) )
   console.log(Number(item.saleShippingFee) )
@@ -252,6 +252,9 @@ const updateTotalSaleAmount = (item) => {
   const otherFees = Number(item.saleOtherFees) || 0;
 
   item.totalSaleAmount = price * count + shippingFee + otherFees;
+
+  console.log("3333333333333333333333")
+  console.log(Number(item.totalSaleAmount) )
 };
 
 // 添加按钮操作
@@ -279,7 +282,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       totalSaleAmount: 1, //销售总额
       saleRemark:'', //出货备注
 
-      count: 1, //数量
+      count: props.ssb, //数量
       // 假设这些运费相关的字段已经存在于 product 对象中
       shippingFeeType: product.shippingFeeType,
       fixedShippingFee: product.fixedShippingFee,

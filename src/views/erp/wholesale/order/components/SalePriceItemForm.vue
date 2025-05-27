@@ -274,7 +274,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       totalSaleAmount: 1, //销售总额
       saleRemark:'', //出货备注
 
-      count: 1, //数量
+      count: props.ssb, //数量
       // 假设这些运费相关的字段已经存在于 product 对象中
       shippingFeeType: product.shippingFeeType,
       fixedShippingFee: product.fixedShippingFee,
