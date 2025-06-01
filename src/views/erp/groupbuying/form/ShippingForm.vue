@@ -14,7 +14,7 @@
           class="w-80"
         />
       </el-form-item>
-  
+
       <!-- 发货时效 -->
       <el-form-item label="发货时效" prop="shippingTime">
         <el-input
@@ -23,7 +23,7 @@
           class="w-80"
         />
       </el-form-item>
-  
+
       <!-- 发货地区 -->
       <el-form-item label="发货地区" prop="shippingArea">
         <el-input
@@ -34,15 +34,15 @@
       </el-form-item>
     </el-form>
   </template>
-  
+
   <script lang="ts" setup>
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { GroupBuyingVO } from '@/api/erp/groupbuying'
-  
+
   defineOptions({ name: 'ErpGroupBuyingShippingForm' })
-  
+
   const props = defineProps({
     propFormData: {
       type: Object as PropType<GroupBuyingVO>,
@@ -50,7 +50,7 @@
     },
     isDetail: propTypes.bool.def(false)
   })
-  
+
   const message = useMessage()
   const formRef = ref()
   const formData = reactive({
@@ -58,12 +58,12 @@
     shippingTime: '',
     shippingArea: ''
   })
-  
+
   const rules = reactive({
-    expressCompany: [{ required: true, message: '快递公司不能为空', trigger: 'blur' }],
-    shippingTime: [{ required: true, message: '发货时效不能为空', trigger: 'blur' }]
+    // expressCompany: [{ required: true, message: '快递公司不能为空', trigger: 'blur' }],
+    // shippingTime: [{ required: true, message: '发货时效不能为空', trigger: 'blur' }]
   })
-  
+
   /** 将传进来的值赋值给 formData */
   watch(
     () => props.propFormData,
@@ -73,7 +73,7 @@
     },
     { immediate: true }
   )
-  
+
   /** 表单校验 */
   const emit = defineEmits(['update:activeName'])
   const validate = async () => {
@@ -87,6 +87,6 @@
       throw e
     }
   }
-  
+
   defineExpose({ validate })
   </script>

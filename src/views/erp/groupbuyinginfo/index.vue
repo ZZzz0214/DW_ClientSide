@@ -18,19 +18,47 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="客户姓名" prop="customerName">
+        <el-form-item label="客户名称" prop="customerName">
           <el-input
             v-model="queryParams.customerName"
-            placeholder="请输入客户姓名"
+            placeholder="请输入客户名称"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="客户职位" prop="customerPosition">
+          <el-input
+            v-model="queryParams.customerPosition"
+            placeholder="请输入客户职位"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="客户微信" prop="customerWechat">
+          <el-input
+            v-model="queryParams.customerWechat"
+            placeholder="请输入客户微信"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+
         <el-form-item label="平台名称" prop="platformName">
           <el-input
             v-model="queryParams.platformName"
             placeholder="请输入平台名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="客户属性" prop="customerAttribute">
+          <el-input
+            v-model="queryParams.customerAttribute"
+            placeholder="请输入客户属性"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
@@ -45,6 +73,45 @@
             class="!w-240px"
           />
         </el-form-item>
+
+        <el-form-item label="客户区县" prop="customerDistrict">
+          <el-input
+            v-model="queryParams.customerDistrict"
+            placeholder="请输入客户区县"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+
+        <el-form-item label="用户画像" prop="userPortrait">
+          <el-input
+            v-model="queryParams.userPortrait"
+            placeholder="请输入用户画像"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="招商类目" prop="recruitmentCategory">
+          <el-input
+            v-model="queryParams.recruitmentCategory"
+            placeholder="请输入招商类目"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="选品标准" prop="selectionCriteria">
+          <el-input
+            v-model="queryParams.selectionCriteria"
+            placeholder="请输入平台名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+
         <el-form-item>
           <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -84,17 +151,19 @@
         :stripe="true"
         :show-overflow-tooltip="true"
         @selection-change="handleSelectionChange"
+        :row-style="{height: '80px'}"
+        :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="客户姓名" align="center" prop="customerName" />
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
 <!--        <el-table-column label="客户职位" align="center" prop="customerPosition" />-->
         <el-table-column label="客户职位" align="center" prop="customerPosition">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_POSITION" :value="scope.row.customerPosition" />
           </template>
         </el-table-column>
-        <el-table-column label="客户微信" align="center" prop="customerWechat" />
+        <el-table-column label="客户微信" align="center" prop="customerWechat" :show-overflow-tooltip="false"/>
 <!--        <el-table-column label="平台名称" align="center" prop="platformName" />-->
         <el-table-column label="平台名称" align="center" prop="platformName">
           <template #default="scope">
@@ -119,10 +188,9 @@
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_DISTRICT" :value="scope.row.customerDistrict" />
           </template>
         </el-table-column>
-        <el-table-column label="用户画像" align="center" prop="userPortrait" />
-        <el-table-column label="招商类目" align="center" prop="recruitmentCategory" />
-        <el-table-column label="选品标准" align="center" prop="selectionCriteria" />
-        <el-table-column label="备注信息" align="center" prop="remark" />
+        <el-table-column label="选品标准" align="center" prop="selectionCriteria" :show-overflow-tooltip="false"/>
+        <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
+        <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
         <el-table-column label="操作" align="center" width="200">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
@@ -244,7 +312,7 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await GroupBuyingInfoApi.exportGroupBuyingInfo(queryParams)
-      download.excel(data, '团购信息.xls')
+      download.excel(data, '团购信息.xlsx')
     } catch {
     } finally {
       exportLoading.value = false

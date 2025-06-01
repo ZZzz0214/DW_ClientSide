@@ -278,7 +278,7 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await DropshipAssistApi.exportDropshipAssist(queryParams)
-      download.excel(data, '代发辅助.xls')
+      download.excel(data, '代发辅助.xlsx')
     } catch {
     } finally {
       exportLoading.value = false

@@ -9,14 +9,14 @@
             :propFormData="formData"
           />
         </el-tab-pane>
-        <el-tab-pane label="价格机制" name="price">
-          <PriceForm
-            ref="priceRef"
-            v-model:activeName="activeName"
-            :is-detail="isDetail"
-            :propFormData="formData"
-          />
-        </el-tab-pane>
+<!--        <el-tab-pane label="价格机制" name="price">-->
+<!--          <PriceForm-->
+<!--            ref="priceRef"-->
+<!--            v-model:activeName="activeName"-->
+<!--            :is-detail="isDetail"-->
+<!--            :propFormData="formData"-->
+<!--          />-->
+<!--        </el-tab-pane>-->
         <el-tab-pane label="进展跟踪" name="progress">
           <ProgressForm
             ref="progressRef"

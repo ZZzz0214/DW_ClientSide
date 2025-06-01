@@ -29,14 +29,30 @@
 <!--        </el-upload>-->
 <!--      </el-form-item>-->
 
-      <!-- 品牌名称 -->
-      <el-form-item label="品牌名称" prop="brandName">
+      <el-form-item label="产品图片" prop="image">
         <el-input
-          v-model="formData.brandName"
-          placeholder="请输入品牌名称"
+          v-model="formData.image"
+          placeholder="请输入产品图片"
           class="w-80"
         />
       </el-form-item>
+      <!-- 品牌名称 -->
+      <el-form-item label="品牌名称" prop="brand">
+      <el-select
+        v-model="formData.brand"
+        placeholder="请选择品牌名称"
+        class="w-80"
+        filterable
+        :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+      >
+        <el-option
+          v-for="dict in filteredBrandOptions"
+          :key="dict.value"
+          :label="dict.label"
+          :value="dict.value"
+        />
+      </el-select>
+    </el-form-item>
 
       <!-- 产品名称 -->
       <el-form-item label="产品名称" prop="productName">
@@ -62,18 +78,22 @@
           v-model="formData.productSku"
           placeholder="请输入产品SKU"
           class="w-80"
+          type="textarea"
         />
       </el-form-item>
 
       <!-- 市场价格 -->
       <el-form-item label="市场价格" prop="marketPrice">
+        <div style="display: flex; align-items: center;">
         <el-input-number
           v-model="formData.marketPrice"
           :min="0"
           :precision="2"
           placeholder="请输入市场价格"
-          class="w-80"
+          class="w-80!"
         />
+          <span style="margin-left: 25px;">元</span>
+        </div>
       </el-form-item>
 
       <!-- 保质日期 -->
@@ -82,7 +102,7 @@
           v-model="formData.shelfLife"
           type="date"
           placeholder="请选择保质日期"
-          class="w-80"
+          class="w-80!"
           value-format="x"
         />
       </el-form-item>
@@ -93,7 +113,7 @@
           v-model="formData.productStock"
           :min="0"
           placeholder="请输入产品库存"
-          class="w-80"
+          class="w-80!"
         />
       </el-form-item>
 
@@ -115,7 +135,7 @@
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { GroupBuyingVO } from '@/api/erp/groupbuying'
-
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
   defineOptions({ name: 'ErpGroupBuyingInfoForm' })
 
   const props = defineProps({
@@ -138,14 +158,16 @@
     marketPrice: 0,
     shelfLife: undefined,
     productStock: 0,
-    remark: ''
+    remark: '',
+    brand: '', // 品牌名称
   })
 
   const rules = reactive({
-    no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
-    productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-    marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
-    productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }]
+    image: [{ required: true, message: '产品图片不能为空', trigger: 'blur' }],
+    productSku: [{ required: true, message: '产品sku不能为空', trigger: 'blur' }],
+     productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
+    shelfLife: [{ required: true, message: '保质日期不能为空', trigger: 'blur' }],
+    // productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }]
   })
 
   /** 将传进来的值赋值给 formData */
@@ -180,6 +202,34 @@
     }
     reader.readAsDataURL(file.raw)
   }
+
+const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
+const filteredCategoryOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY))
+const filteredStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS))
+
+const filterDictOptions = (value, dictType) => {
+  const allOptions = getStrDictOptions(dictType)
+  if (!value) {
+    if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+      filteredBrandOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRODUCT_CATEGORY) {
+      filteredCategoryOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+      filteredStatusOptions.value = allOptions
+    }
+    return
+  }
+  const filtered = allOptions.filter(item =>
+    item.label.toLowerCase().includes(value.toLowerCase())
+  )
+  if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+    filteredBrandOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRODUCT_CATEGORY) {
+    filteredCategoryOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+    filteredStatusOptions.value = filtered
+  }
+}
 
   defineExpose({ validate })
   </script>

@@ -254,4 +254,9 @@ export enum DICT_TYPE {
   ERP_PRODUCT_BRAND = 'erp_product_brand', // ERP 产品品牌
   ERP_PRODUCT_CATEGORY = 'erp_product_category', // ERP 产品品类
   ERP_PRODUCT_STATUS = 'erp_product_status', // ERP 产品状态
+
+
+  ERP_USER_PORTRAIT = 'erp_user_portrait', // ERP 用户画像
+  ERP_RECRUITMENT_CATEGORY = 'erp_recruitment_category', // ERP 招商类目
+  ERP_SELECTION_CRITERIA = 'erp_selection_criteria', // ERP 选品标准
 }

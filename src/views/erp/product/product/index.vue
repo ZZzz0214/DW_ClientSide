@@ -74,6 +74,15 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="供应商名" prop="supplier">
+        <el-input
+          v-model="queryParams.supplier"
+          placeholder="请输入供应商名"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="创建人员" prop="creator">
         <el-input
           v-model="queryParams.creator"

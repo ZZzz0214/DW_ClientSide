@@ -88,8 +88,8 @@ const formData = reactive({
 })
 
 const rules = reactive({
-  publicData: [{ required: true, message: '公域数据不能为空', trigger: 'blur' }],
-  privateData: [{ required: true, message: '私域数据不能为空', trigger: 'blur' }]
+  // publicData: [{ required: true, message: '公域数据不能为空', trigger: 'blur' }],
+  // privateData: [{ required: true, message: '私域数据不能为空', trigger: 'blur' }]
 })
 
 /** 将传进来的值赋值给 formData */

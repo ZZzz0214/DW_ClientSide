@@ -18,6 +18,15 @@
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="品牌名称" prop="brandName">
+          <el-input
+            v-model="queryParams.brandName"
+            placeholder="请输入品牌名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="产品名称" prop="productName">
           <el-input
             v-model="queryParams.productName"
@@ -27,10 +36,10 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="品牌名称" prop="brandName">
+        <el-form-item label="创建人员" prop="creator">
           <el-input
-            v-model="queryParams.brandName"
-            placeholder="请输入品牌名称"
+            v-model="queryParams.creator"
+            placeholder="请输入创建人员"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
@@ -86,9 +95,11 @@
         :stripe="true"
         :show-overflow-tooltip="true"
         @selection-change="handleSelectionChange"
+        :row-style="{height: '80px'}"
+        :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
 <!--        <el-table-column label="产品图片" align="center" prop="productImage">-->
 <!--          <template #default="scope">-->
 <!--            <el-image-->
@@ -99,10 +110,15 @@
 <!--            />-->
 <!--          </template>-->
 <!--        </el-table-column>-->
-        <el-table-column label="品牌名称" align="center" prop="brandName" />
-        <el-table-column label="产品名称" align="center" prop="productName" />
-        <el-table-column label="产品规格" align="center" prop="productSpec" />
-        <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" width="180px" />
+        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品图片" align="center" prop="image" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
+        <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" width="180px" :show-overflow-tooltip="false"/>
+        <el-table-column label="供团价格" align="center" prop="supplyGroupPrice"  :show-overflow-tooltip="false"/>
+        <el-table-column label="帮卖佣金" align="center" prop="sellingCommission"  :show-overflow-tooltip="false"/>
+        <el-table-column label="开团价格" align="center" prop="groupPrice"  :show-overflow-tooltip="false"/>
+        <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
         <el-table-column label="操作" align="center" width="200">
           <template #default="scope">
@@ -224,7 +240,7 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await GroupBuyingApi.exportGroupBuying(queryParams)
-      download.excel(data, '团购货盘.xls')
+      download.excel(data, '团购货盘.xlsx')
     } catch {
     } finally {
       exportLoading.value = false

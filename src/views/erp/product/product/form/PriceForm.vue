@@ -93,22 +93,28 @@
 
     <!-- 采购单价 -->
     <el-form-item label="采购单价" prop="purchasePrice">
+      <div style="display: flex; align-items: center;">
       <el-input-number
         v-model="formData.purchasePrice"
         :min="0"
         placeholder="请输入采购单价"
         style="width: 200px"
       />
+        <span style="margin-left: 25px;">元</span>
+      </div>
     </el-form-item>
 
     <!-- 批发单价 -->
     <el-form-item label="批发单价" prop="wholesalePrice">
+      <div style="display: flex; align-items: center;">
       <el-input-number
         v-model="formData.wholesalePrice"
         :min="0"
         placeholder="请输入批发单价"
         style="width: 200px"
       />
+        <span style="margin-left: 25px;">元</span>
+      </div>
     </el-form-item>
 
     <!-- 备注信息 -->
@@ -122,12 +128,15 @@
 
     <!-- 对外最低采购单价 -->
     <el-form-item label="对外最低出货单价" prop="minPurchasePrice">
+      <div style="display: flex; align-items: center;">
       <el-input-number
         v-model="formData.minPurchasePrice"
         :min="0"
         placeholder="对外最低出货单价"
         style="width: 200px"
       />
+        <span style="margin-left: 25px;">元</span>
+      </div>
     </el-form-item>
 
     <!-- 对外最低批发单价 -->

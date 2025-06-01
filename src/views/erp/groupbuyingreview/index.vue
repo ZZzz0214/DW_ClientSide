@@ -54,6 +54,44 @@
             placeholder="请选择寄样日期范围"
           />
         </el-form-item>
+        <el-form-item label="开团日期" prop="groupStartDate">
+          <el-date-picker
+            v-model="queryParams.groupStartDate"
+            type="daterange"
+            value-format="YYYY-MM-DD"
+            class="!w-240px"
+            placeholder="请选择寄样日期范围"
+          />
+        </el-form-item>
+        <el-form-item label="复团日期" prop="repeatGroupDate">
+          <el-date-picker
+            v-model="queryParams.repeatGroupDate"
+            type="daterange"
+            value-format="YYYY-MM-DD"
+            class="!w-240px"
+            placeholder="请选择寄样日期范围"
+          />
+        </el-form-item>
+        <el-form-item label="创建人员" prop="creator">
+          <el-input
+            v-model="queryParams.creator"
+            placeholder="请输入创建人员"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="创建时间" prop="createTime">
+          <el-date-picker
+            v-model="queryParams.createTime"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            class="!w-240px"
+            end-placeholder="结束日期"
+            start-placeholder="开始日期"
+            type="daterange"
+            value-format="YYYY-MM-DD HH:mm:ss"
+          />
+        </el-form-item>
         <el-form-item>
           <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -93,22 +131,37 @@
         :stripe="true"
         :show-overflow-tooltip="true"
         @selection-change="handleSelectionChange"
+        :row-style="{height: '80px'}"
+        :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="品牌名称" align="center" prop="brandName" />
-        <el-table-column label="产品名称" align="center" prop="productName" />
-        <el-table-column label="产品规格" align="center" prop="productSpecification" />
-        <el-table-column label="产品SKU" align="center" prop="productSku" />
-        <el-table-column label="备注信息" align="center" prop="remark" />
-        <el-table-column label="客户名称" align="center" prop="customerName" />
-        <el-table-column label="供团价格" align="center" prop="supplyGroupPrice"/>
-        <el-table-column label="开团机制" align="center" prop="groupMechanism" />
-        <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
-        <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" />
-        <el-table-column label="开团销量" align="center" prop="groupSales" />
-        <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" />
-        <el-table-column label="复团销量" align="center" prop="repeatGroupSales" />
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品规格" align="center" prop="productSpecification" :show-overflow-tooltip="false"/>
+<!--        <el-table-column label="产品SKU" align="center" prop="productSku" :show-overflow-tooltip="false"/>-->
+<!--        <el-table-column label="备注信息" align="center" prop="remark" :show-overflow-tooltip="false"/>-->
+        <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
+        <el-table-column label="供团价格" align="center" prop="supplyGroupPrice" :show-overflow-tooltip="false"/>
+        <el-table-column label="开团机制" align="center" prop="groupMechanism" :show-overflow-tooltip="false"/>
+        <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" width="150px"/>
+        <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" width="150px"/>
+        <el-table-column label="开团销量" align="center" prop="groupSales" :show-overflow-tooltip="false"/>
+        <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" width="150px"/>
+        <el-table-column label="复团销量" align="center" prop="repeatGroupSales" :show-overflow-tooltip="false"/>
+        <el-table-column
+          label="创建人员"
+          align="center"
+          prop="creator"
+          :show-overflow-tooltip="false"
+        />
+        <el-table-column
+          label="创建时间"
+          align="center"
+          prop="createTime"
+          :formatter="dateFormatter"
+          width="180px"
+        />
 <!--        <el-table-column label="编号" align="center" prop="no" />-->
 <!--        <el-table-column label="品牌名称" align="center" prop="brandName" />-->
 <!--        <el-table-column label="产品名称" align="center" prop="productName" />-->
@@ -238,7 +291,7 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await GroupBuyingReviewApi.exportGroupBuyingReview(queryParams)
-      download.excel(data, '团购复盘.xls')
+      download.excel(data, '团购复盘.xlsx')
     } catch {
     } finally {
       exportLoading.value = false

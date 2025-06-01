@@ -11,7 +11,7 @@
           v-model="formData.sampleSendDate"
           type="date"
           placeholder="请选择寄样日期"
-          class="w-80"
+          class="w-80!"
           value-format="x"
         />
       </el-form-item>
@@ -20,7 +20,7 @@
           v-model="formData.groupStartDate"
           type="date"
           placeholder="请选择开团日期"
-          class="w-80"
+          class="w-80!"
           value-format="x"
         />
       </el-form-item>
@@ -29,7 +29,7 @@
           v-model="formData.groupSales"
           :min="0"
           placeholder="请输入开团销量"
-          class="w-80"
+          class="w-80!"
         />
       </el-form-item>
       <el-form-item label="复团日期" prop="repeatGroupDate">
@@ -37,7 +37,7 @@
           v-model="formData.repeatGroupDate"
           type="date"
           placeholder="请选择复团日期"
-          class="w-80"
+          class="w-80!"
           value-format="x"
         />
       </el-form-item>
@@ -46,7 +46,7 @@
           v-model="formData.repeatGroupSales"
           :min="0"
           placeholder="请输入复团销量"
-          class="w-80"
+          class="w-80!"
         />
       </el-form-item>
     </el-form>

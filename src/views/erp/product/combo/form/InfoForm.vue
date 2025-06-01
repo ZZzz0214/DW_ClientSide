@@ -30,7 +30,10 @@
       </el-form-item>
 
       <el-form-item label="产品重量" prop="weight">
+        <div style="display: flex; align-items: center;">
         <el-input v-model="formData.weight" placeholder="产品重量" disabled />
+          <span style="margin-left: 25px;">g</span>
+        </div>
       </el-form-item>
 
       <!-- 采购人员 -->
@@ -59,11 +62,17 @@
       </el-form-item>
 
       <el-form-item label="采购单价" prop="purchasePrice">
+        <div style="display: flex; align-items: center;">
         <el-input v-model="formData.purchasePrice" placeholder="采购单价" disabled v-hasPermi="['erp:purchaseproduct:export']"/>
+          <span style="margin-left: 25px;">元</span>
+        </div>
       </el-form-item>
 
       <el-form-item label="批发单价" prop="wholesalePrice">
+        <div style="display: flex; align-items: center;">
         <el-input v-model="formData.wholesalePrice" placeholder="批发单价" disabled v-hasPermi="['erp:purchaseproduct:export']"/>
+          <span style="margin-left: 25px;">元</span>
+        </div>
       </el-form-item>
 
       <el-form-item label="备注信息" prop="totalQuantity">
