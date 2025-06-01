@@ -21,8 +21,8 @@
     <el-table :data="purchaserList" @selection-change="handleSelectionChange" ref="table">
       <el-table-column type="selection" width="55" />
       <el-table-column label="采购人员编号" prop="id" />
-      <el-table-column label="采购人员名称" prop="name" />
-      <el-table-column label="联系方式" prop="contact" />
+      <el-table-column label="采购人员名称" prop="purchaserName" />
+      <el-table-column label="联系方式" prop="contactPhone" />
     </el-table>
 
     <template #footer>
@@ -44,7 +44,14 @@ const props = defineProps({
   },
 });
 
-const dialogVisible = ref(props.visible);
+const dialogVisible = computed({
+  get() {
+    return props.visible;
+  },
+  set(value) {
+    emit('update:visible', value);
+  }
+});
 watch(() => props.visible, (newValue) => {
   dialogVisible.value = newValue;
 });

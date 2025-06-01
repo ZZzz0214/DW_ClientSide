@@ -18,7 +18,7 @@
           :preview-src-list="[formData.image]"
         />
       </el-form-item>
-      <el-form-item label="产品名称" prop="name">
+      <el-form-item label="产品名称" prop="name" >
         <el-input v-model="formData.name" placeholder="请输入组品名称" disabled />
       </el-form-item>
       <el-form-item label="产品简称" prop="shortName">
@@ -39,8 +39,9 @@
           :disabled="isDetail"
           v-model="formData.purchaser"
           placeholder="请输入采购人员信息"
-          @focus="openPurchaserSearch"
+          @click="openPurchaserSearch"
           class="w-80"
+          readonly
         />
       </el-form-item>
 
@@ -50,21 +51,23 @@
           :disabled="isDetail"
           v-model="formData.supplier"
           placeholder="请输入供应商名"
-          @focus="openSupplierSearch"
+          @click="openSupplierSearch"
           class="w-80"
+          readonly
+          v-hasPermi="['erp:purchase:export']"
         />
       </el-form-item>
 
       <el-form-item label="采购单价" prop="purchasePrice">
-        <el-input v-model="formData.purchasePrice" placeholder="采购单价" disabled />
+        <el-input v-model="formData.purchasePrice" placeholder="采购单价" disabled v-hasPermi="['erp:purchaseproduct:export']"/>
       </el-form-item>
 
       <el-form-item label="批发单价" prop="wholesalePrice">
-        <el-input v-model="formData.wholesalePrice" placeholder="批发单价" disabled />
+        <el-input v-model="formData.wholesalePrice" placeholder="批发单价" disabled v-hasPermi="['erp:purchaseproduct:export']"/>
       </el-form-item>
 
       <el-form-item label="备注信息" prop="totalQuantity">
-        <el-input v-model="formData.totalQuantity" placeholder="产品数量" :disabled="isDetail" />
+        <el-input v-model="formData.totalQuantity" placeholder="产品数量" :disabled="isDetail" v-hasPermi="['erp:purchaseproduct:export']"/>
       </el-form-item>
 
       <el-form-item label="产品状态" prop="status">
@@ -75,27 +78,33 @@
       </el-form-item>
 
       <el-tabs v-model="subTabsName" class="-mt-15px -mb-10px">
-        <el-tab-pane label="订单产品清单" name="item">
+        <el-tab-pane label="产品清单" name="item">
           <el-table :data="formData.items" show-summary :summary-method="getSummaries" class="-mt-10px" >
             <el-table-column label="序号" type="index" align="center" width="60" />
             <el-table-column label="产品编号" min-width="120">
               <template #default="{ row }">
-                <span>{{ row.id }}</span>
+                <span>{{ row.no }}</span>
               </template>
             </el-table-column>
+
             <el-table-column label="产品名称" min-width="180">
               <template #default="{ row }">
                 <span>{{ row.name }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="采购单价" min-width="120">
+            <el-table-column label="产品简称" min-width="120">
               <template #default="{ row }">
-                <span>{{ row.purchasePrice }}</span>
+                <span>{{ row.productShortName }}</span>
+              </template>
+            </el-table-column>
+            <el-table-column label="采购单价" min-width="120"  >
+              <template #default="{ row }">
+                <span v-hasPermi="['erp:purchaseproduct:export']">{{ row.purchasePrice }}</span>
               </template>
             </el-table-column>
             <el-table-column label="批发单价" min-width="120">
               <template #default="{ row }">
-                <span>{{ row.wholesalePrice }}</span>
+                <span v-hasPermi="['erp:purchaseproduct:export']">{{ row.wholesalePrice }}</span>
               </template>
             </el-table-column>
             <el-table-column label="产品重量" min-width="120">
@@ -103,18 +112,31 @@
                 <span>{{ row.weight }}</span>
               </template>
             </el-table-column>
-            <el-table-column label="数量" min-width="140">
-              <template #default="{ row, $index }">
-                <el-form-item :prop="`items.${$index}.count`" :rules="formRules.count">
-                  <el-input-number
-                    :disabled="isDetail"
-                    v-model="row.count"
-                    controls-position="right"
-                    :min="1"
-                    :precision="0"
-                    @change="updateComboInfo"
-                  />
-                </el-form-item>
+<!--            <el-table-column label="数量" min-width="140">-->
+<!--              <template #default="{ row, $index }">-->
+<!--                <el-form-item :prop="`items.${$index}.count`" :rules="formRules.count">-->
+<!--                  <el-input-number-->
+<!--                    :disabled="isDetail"-->
+<!--                    v-model="row.count"-->
+<!--                    controls-position="right"-->
+<!--                    :min="1"-->
+<!--                    :precision="0"-->
+<!--                    @change="updateComboInfo"-->
+<!--                  />-->
+<!--                </el-form-item>-->
+<!--              </template>-->
+<!--            </el-table-column>-->
+            <el-table-column label="数量" min-width="140" align="center">
+              <template #default="{ row }">
+                <el-input-number
+                  :disabled="isDetail"
+                  v-model="row.count"
+                  controls-position="right"
+                  :min="1"
+                  :precision="0"
+                  @change="updateComboInfo"
+                  style="width: 100%"
+                />
               </template>
             </el-table-column>
 <!--            <el-table-column label="备注" min-width="150">-->
@@ -186,6 +208,7 @@ const openPurchaserSearch = () => {
 
 const handlePurchaserSelected = (purchaser: any) => {
   formData.value.purchaser = purchaser.purchaserName; // 填充采购人员名称
+  purchaserSearchDialogVisible.value = false; // 添加这行
 };
 
 const openSupplierSearch = () => {
@@ -194,6 +217,7 @@ const openSupplierSearch = () => {
 
 const handleSupplierSelected = (supplier: any) => {
   formData.value.supplier = supplier.name; // 填充供应商名称
+  supplierSearchDialogVisible.value = false; // 添加这行
 };
 
 const formData = ref<ProductComboApi.ComboVO>({
@@ -212,11 +236,11 @@ const formData = ref<ProductComboApi.ComboVO>({
 });
 
 const formRules = reactive({
-  name: [{ required: true, message: '组品名称不能为空', trigger: 'blur' }],
-  shortName: [{ required: true, message: '组品简称不能为空', trigger: 'blur' }],
-  comboId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
-  totalQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
-  count: [{ required: true, message: '组_单数量关系不能为空', trigger: 'blur' }],
+  purchaser: [{ required: true, message: '采购人员不能为空', trigger: 'blur' }],
+  supplier: [{ required: true, message: '供应商名不能为空', trigger: 'blur' }],
+  // comboId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
+  // totalQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
+  // count: [{ required: true, message: '组_单数量关系不能为空', trigger: 'blur' }],
 });
 
 const selectProductRef = ref(); // 初始化 selectProductRef
@@ -235,6 +259,8 @@ const handleProductSelected = (selectedProducts: any[]) => {
       wholesalePrice:product.wholesalePrice || 0, //确保 wholesalePrice 有默认值
       weight: product.weight || 0, // 确保 weight 有默认值
       id: product.id || '', // 确保 productId 有默认值
+      no: product.no || '', // 确保 productId 有默认值
+      productShortName: product.productShortName || '', // 确保 productId 有默认值
       count: 1, // 默认数量为1
       remark: '', // 默认备注为空
       itemQuantity: 1, // 添加 itemQuantity 字段，默认值为1
@@ -252,7 +278,7 @@ const handleDelete = (index: number) => {
 // 更新组品信息
 const updateComboInfo = () => {
   // 更新组品名称
-  const productNames = formData.value.items.map(item => `${item.name || ''}*${item.count || 0}`);
+  const productNames = formData.value.items.map(item => `${item.name || ''}×${item.count || 0}`);
   formData.value.name = productNames.join(' + '); // 更新 namecount 字段
   // 更新产品重量
   const totalWeight = formData.value.items.reduce((sum, item) => sum + (item.weight || 0) * (item.count || 0), 0);

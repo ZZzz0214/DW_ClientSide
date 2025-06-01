@@ -15,7 +15,7 @@
             <el-input
               v-model="row.salesperson"
               placeholder="请选择销售人员"
-              @focus="openSalespersonSearch(row)"
+              @click="openSalespersonSearch(row)"
               readonly
             />
           </el-form-item>

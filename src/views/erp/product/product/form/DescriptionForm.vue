@@ -22,116 +22,142 @@
 
     <!-- 返单时效 -->
     <el-form-item label="返单时效" prop="orderReplenishmentLeadTime">
-      <el-col :span="3">
+        <div style="display: flex; align-items: center;">
         <el-input
           v-model="formData.orderReplenishmentLeadTime"
           placeholder="请输入返单时效数值"
-          class="w-80"
+          class="w-80!"
         />
-      </el-col>
-      <el-col :span="2">
-        <el-select
-          v-model="formData.orderReplenishmentLeadTimeUnit"
-          placeholder="请选择单位"
-          class="w-80"
-        >
-          <el-option label="天" value="天" />
-        </el-select>
-      </el-col>
+        <span style="margin-left: 25px;">天</span>
+        </div>
+<!--      <el-col :span="2">-->
+<!--        <el-select-->
+<!--          v-model="formData.orderReplenishmentLeadTimeUnit"-->
+<!--          placeholder="请选择单位"-->
+<!--          class="w-80"-->
+<!--        >-->
+<!--          <el-option label="天" value="天" />-->
+<!--        </el-select>-->
+<!--      </el-col>-->
     </el-form-item>
 
     <!-- 品长宽高 -->
     <el-form-item label="品长宽高" prop="productDimensions">
-      <el-col :span="3">
+      <div style="display: flex; align-items: center;">
         <el-input
-          v-model="formData.productLength"
-          placeholder="长"
-          class="w-80"
+          v-model="formData.productDimensions"
+          placeholder="品长宽高"
+          class="w-80!"
         />
-      </el-col>
-      <el-col :span="3">
+        <span style="margin-left: 25px;">cm</span>
+      </div>
+<!--      <el-col :span="3">-->
+<!--        <el-input-->
+<!--          v-model="formData.productWidth"-->
+<!--          placeholder="宽"-->
+<!--          class="w-80"-->
+<!--        />-->
+<!--      </el-col>-->
+<!--      <el-col :span="3">-->
+<!--        <el-input-->
+<!--          v-model="formData.productHeight"-->
+<!--          placeholder="高"-->
+<!--          class="w-80"-->
+<!--        />-->
+<!--      </el-col>-->
+<!--      <el-col :span="2">-->
+<!--        <el-select-->
+<!--          v-model="formData.productDimensionsUnit"-->
+<!--          placeholder="请选择单位"-->
+<!--          class="w-80"-->
+<!--        >-->
+<!--          <el-option label="mm" value="mm" />-->
+<!--          <el-option label="cm" value="cm" />-->
+<!--          <el-option label="m" value="m" />-->
+<!--        </el-select>-->
+<!--      </el-col>-->
+    </el-form-item>
+    <el-form-item label="产品重量" prop="weight">
+        <div style="display: flex; align-items: center;">
+          <el-input-number
+            v-model="formData.weight"
+            placeholder="请输入产品重量数值"
+            :min="0"
+            class="w-80!"
+          />
+          <span style="margin-left: 25px;">g</span>
+        </div>
+
+    </el-form-item>
+    <el-form-item label="箱规数量" prop="productWidth">
+      <div style="display: flex; align-items: center;">
         <el-input
           v-model="formData.productWidth"
-          placeholder="宽"
-          class="w-80"
+          placeholder="箱规数量"
+          class="w-80!"
         />
-      </el-col>
-      <el-col :span="3">
-        <el-input
-          v-model="formData.productHeight"
-          placeholder="高"
-          class="w-80"
-        />
-      </el-col>
-      <el-col :span="2">
-        <el-select
-          v-model="formData.productDimensionsUnit"
-          placeholder="请选择单位"
-          class="w-80"
-        >
-          <el-option label="mm" value="mm" />
-          <el-option label="cm" value="cm" />
-          <el-option label="m" value="m" />
-        </el-select>
-      </el-col>
+        <span style="margin-left: 25px;">个</span>
+      </div>
     </el-form-item>
-
     <!-- 箱长宽高 -->
     <el-form-item label="箱长宽高" prop="cartonDimensions">
-      <el-col :span="3">
+      <div style="display: flex; align-items: center;">
         <el-input
           v-model="formData.cartonLength"
-          placeholder="长"
-          class="w-80"
+          placeholder="箱长宽高"
+          class="w-80!"
         />
-      </el-col>
-      <el-col :span="3">
-        <el-input
-          v-model="formData.cartonWidth"
-          placeholder="宽"
-          class="w-80"
-        />
-      </el-col>
-      <el-col :span="3">
-        <el-input
-          v-model="formData.cartonHeight"
-          placeholder="高"
-          class="w-80"
-        />
-      </el-col>
-      <el-col :span="2">
-        <el-select
-          v-model="formData.cartonDimensionsUnit"
-          placeholder="请选择单位"
-          class="w-80"
-        >
-          <el-option label="mm" value="mm" />
-          <el-option label="cm" value="cm" />
-          <el-option label="m" value="m" />
-        </el-select>
-      </el-col>
+      <span style="margin-left: 25px;">cm</span>
+      </div>
+<!--      <el-col :span="3">-->
+<!--        <el-input-->
+<!--          v-model="formData.cartonWidth"-->
+<!--          placeholder="宽"-->
+<!--          class="w-80"-->
+<!--        />-->
+<!--      </el-col>-->
+<!--      <el-col :span="3">-->
+<!--        <el-input-->
+<!--          v-model="formData.cartonHeight"-->
+<!--          placeholder="高"-->
+<!--          class="w-80"-->
+<!--        />-->
+<!--      </el-col>-->
+<!--      <el-col :span="2">-->
+<!--        <el-select-->
+<!--          v-model="formData.cartonDimensionsUnit"-->
+<!--          placeholder="请选择单位"-->
+<!--          class="w-80"-->
+<!--        >-->
+<!--          <el-option label="mm" value="mm" />-->
+<!--          <el-option label="cm" value="cm" />-->
+<!--          <el-option label="m" value="m" />-->
+<!--        </el-select>-->
+<!--      </el-col>-->
     </el-form-item>
 
     <!-- 箱规重量 -->
     <el-form-item label="箱规重量" prop="cartonWeight">
-      <el-col :span="3">
+
+        <div style="display: flex; align-items: center;">
         <el-input-number
           v-model="formData.cartonWeight"
           :min="0"
           placeholder="请输入箱规重量数值"
-          class="w-80"
+          class="w-80!"
         />
-      </el-col>
-      <el-col :span="2">
-        <el-select
-          v-model="formData.cartonWeightUnit"
-          placeholder="请选择单位"
-          class="w-80"
-        >
-          <el-option label="g" value="g" />
-          <el-option label="kg" value="kg" />
-        </el-select>
-      </el-col>
+          <span style="margin-left: 25px;">g</span>
+        </div>
+<!--      <el-col :span="2">-->
+<!--        <el-select-->
+<!--          v-model="formData.cartonWeightUnit"-->
+<!--          placeholder="请选择单位"-->
+<!--          class="w-80"-->
+<!--        >-->
+<!--          <el-option label="g" value="g" />-->
+<!--          <el-option label="kg" value="kg" />-->
+<!--        </el-select>-->
+<!--      </el-col>-->
     </el-form-item>
   </el-form>
 </template>
@@ -171,23 +197,24 @@ const formData = reactive<ProductVO>({
   cartonDimensionsUnit: 'mm', // 箱长宽高单位
   cartonWeight: 0, // 箱规重量
   cartonWeightUnit: 'g', // 箱规重量单位
+  weight: 0, // 产品重量
 });
 
 const rules = reactive({
-  totalQuantity: [{ required: true, message: '现货数量不能为空', trigger: 'blur' }],
-  packagingMaterialQuantity: [
-    { required: true, message: '包材数量不能为空', trigger: 'blur' },
-  ],
-  orderReplenishmentLeadTime: [
-    { required: true, message: '返单时效不能为空', trigger: 'blur' },
-  ],
-  productLength: [{ required: true, message: '品长不能为空', trigger: 'blur' }],
-  productWidth: [{ required: true, message: '品宽不能为空', trigger: 'blur' }],
-  productHeight: [{ required: true, message: '品高不能为空', trigger: 'blur' }],
-  cartonLength: [{ required: true, message: '箱长不能为空', trigger: 'blur' }],
-  cartonWidth: [{ required: true, message: '箱宽不能为空', trigger: 'blur' }],
-  cartonHeight: [{ required: true, message: '箱高不能为空', trigger: 'blur' }],
+  // totalQuantity: [{ required: true, message: '现货数量不能为空', trigger: 'blur' }],
+  // packagingMaterialQuantity: [
+  //   { required: true, message: '包材数量不能为空', trigger: 'blur' },
+  // ],
+  // orderReplenishmentLeadTime: [
+  //   { required: true, message: '返单时效不能为空', trigger: 'blur' },
+  // ],
+  productDimensions: [{ required: true, message: '品长宽高不能为空', trigger: 'blur' }],
+  weight: [{ required: true, message: '产品重量不能为空', trigger: 'blur' }],
+  productWidth: [{ required: true, message: '箱规数量不能为空', trigger: 'blur' }],
+  cartonDimensions: [{ required: true, message: '箱长宽高不能为空', trigger: 'blur' }],
   cartonWeight: [{ required: true, message: '箱规重量不能为空', trigger: 'blur' }],
+  // cartonHeight: [{ required: true, message: '箱高不能为空', trigger: 'blur' }],
+  // cartonWeight: [{ required: true, message: '箱规重量不能为空', trigger: 'blur' }],
 });
 
 watch(

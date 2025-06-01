@@ -9,9 +9,9 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="组品简称" prop="name">
+      <el-form-item label="编号" prop="no">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.no"
           placeholder="请输入名称"
           clearable
           @keyup.enter="handleQuery"
@@ -21,6 +21,42 @@
       <el-form-item label="组品编号" prop="groupProductId">
         <el-input
           v-model="queryParams.groupProductId"
+          placeholder="请输入组品编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品名称" prop="productName">
+        <el-input
+          v-model="queryParams.productName"
+          placeholder="请输入组品编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品简称" prop="productShortName">
+        <el-input
+          v-model="queryParams.productShortName"
+          placeholder="请输入组品编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="客户名称" prop="customerName">
+        <el-input
+          v-model="queryParams.customerName"
+          placeholder="请输入组品编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="创建人员" prop="creator">
+        <el-input
+          v-model="queryParams.creator"
           placeholder="请输入组品编号"
           clearable
           @keyup.enter="handleQuery"
@@ -104,6 +140,19 @@
 
       <!-- 批发单价 -->
       <el-table-column label="批发单价" align="center" prop="wholesalePrice" />
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
+      />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
 
       <!-- 备注信息 -->
 <!--      <el-table-column label="备注信息" align="center" prop="remark" />-->
@@ -169,6 +218,7 @@ import { ref } from 'vue';
 import SalePriceOrganize from './components/SalePriceOrganize.vue';
 import SalePriceForm from './SalePriceForm.vue'
 import {SaleOrderApi} from "@/api/erp/sale/orders";
+import {dateFormatter} from "@/utils/formatTime";
 
 
 /** ERP 销售价格表 */

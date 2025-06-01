@@ -23,11 +23,14 @@
       label="固定运费"
       prop="fixedShippingFee"
     >
+      <div style="display: flex; align-items: center;">
       <el-input
         v-model="formData.fixedShippingFee"
         placeholder="请输入固定运费"
         :disabled="isDetail"
       />
+      <span style="margin-left: 25px;">元</span>
+      </div>
     </el-form-item>
 
     <!-- 按件 - 按件数量 -->
@@ -36,11 +39,14 @@
       label="按件数量"
       prop="additionalItemQuantity"
     >
+      <div style="display: flex; align-items: center;">
       <el-input
         v-model="formData.additionalItemQuantity"
         placeholder="请输入按件数量"
         :disabled="isDetail"
       />
+        <span style="margin-left: 25px;">个</span>
+      </div>
     </el-form-item>
 
     <!-- 按件 - 按件价格 -->
@@ -49,11 +55,14 @@
       label="按件价格"
       prop="additionalItemPrice"
     >
+      <div style="display: flex; align-items: center;">
       <el-input
         v-model="formData.additionalItemPrice"
         placeholder="请输入按件价格"
         :disabled="isDetail"
       />
+        <span style="margin-left: 25px;">元</span>
+      </div>
     </el-form-item>
 
     <!-- 按重量 - 首重重量 -->
@@ -62,11 +71,14 @@
       label="首重重量"
       prop="firstWeight"
     >
+      <div style="display: flex; align-items: center;">
       <el-input
         v-model="formData.firstWeight"
         placeholder="请输入首重重量"
         :disabled="isDetail"
       />
+        <span style="margin-left: 25px;">g</span>
+      </div>
     </el-form-item>
 
     <!-- 按重量 - 首重价格 -->
@@ -75,11 +87,14 @@
       label="首重价格"
       prop="firstWeightPrice"
     >
+      <div style="display: flex; align-items: center;">
       <el-input
         v-model="formData.firstWeightPrice"
         placeholder="请输入首重价格"
         :disabled="isDetail"
       />
+      <span style="margin-left: 25px;">元</span>
+      </div>
     </el-form-item>
 
     <!-- 按重量 - 续重重量 -->
@@ -88,11 +103,14 @@
       label="续重重量"
       prop="additionalWeight"
     >
+      <div style="display: flex; align-items: center;">
       <el-input
         v-model="formData.additionalWeight"
         placeholder="请输入续重重量"
         :disabled="isDetail"
       />
+      <span style="margin-left: 25px;">g</span>
+      </div>
     </el-form-item>
 
     <!-- 按重量 - 续重价格 -->
@@ -101,11 +119,14 @@
       label="续重价格"
       prop="additionalWeightPrice"
     >
+      <div style="display: flex; align-items: center;">
       <el-input
         v-model="formData.additionalWeightPrice"
         placeholder="请输入续重价格"
         :disabled="isDetail"
       />
+        <span style="margin-left: 25px;">元</span>
+      </div>
     </el-form-item>
   </el-form>
 </template>

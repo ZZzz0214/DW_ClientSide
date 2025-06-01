@@ -18,15 +18,6 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="原表商品" prop="originalProduct">
-          <el-input
-            v-model="queryParams.originalProduct"
-            placeholder="请输入原表商品"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
         <el-form-item label="组品编号" prop="comboProductId">
           <el-input
             v-model="queryParams.comboProductId"
@@ -36,6 +27,61 @@
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="发货编码" prop="comboProductId">
+          <el-input
+            v-model="queryParams.comboProductId"
+            placeholder="请输入发货编码"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="原表商品" prop="originalProduct">
+          <el-input
+            v-model="queryParams.originalProduct"
+            placeholder="请输入原表商品"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="原表规格" prop="originalProduct">
+          <el-input
+            v-model="queryParams.originalProduct"
+            placeholder="请输入原表规格"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="产品名称" prop="originalProduct">
+          <el-input
+            v-model="queryParams.originalProduct"
+            placeholder="请输入产品名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="产品规格" prop="originalProduct">
+          <el-input
+            v-model="queryParams.originalProduct"
+            placeholder="请输入产品规格"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="创建人员" prop="originalProduct">
+          <el-input
+            v-model="queryParams.originalProduct"
+            placeholder="请输入创建人员"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+
         <el-form-item label="创建时间" prop="createTime">
           <el-date-picker
             v-model="queryParams.createTime"
@@ -63,7 +109,7 @@
             plain
             @click="handleExport"
             :loading="exportLoading"
-            v-hasPermi="['erp:dropship:export']"
+            v-hasPermi="['erp:dropship:create']"
           >
             <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
@@ -86,17 +132,25 @@
         :stripe="true"
         :show-overflow-tooltip="true"
         @selection-change="handleSelectionChange"
+        :row-style="{height: '80px'}"
+        :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="原表商品" align="center" prop="originalProduct" />
-        <el-table-column label="原表规格" align="center" prop="originalSpec" />
-        <el-table-column label="原表数量" align="center" prop="originalQuantity" />
-        <el-table-column label="组品编号" align="center" prop="comboProductId" />
-        <el-table-column label="发货编码" align="center" prop="shippingCode" />
-        <el-table-column label="产品名称" align="center" prop="productName" />
-        <el-table-column label="产品规格" align="center" prop="productSpec" />
-        <el-table-column label="产品数量" align="center" prop="productQuantity" />
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="原表商品" align="center" prop="originalProduct" :show-overflow-tooltip="false"/>
+        <el-table-column label="原表规格" align="center" prop="originalSpec" :show-overflow-tooltip="false"/>
+        <el-table-column label="原表数量" align="center" prop="originalQuantity" :show-overflow-tooltip="false"/>
+        <el-table-column label="组品编号" align="center" prop="comboProductId" :show-overflow-tooltip="false"/>
+        <el-table-column label="发货编码" align="center" prop="shippingCode" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
+        <el-table-column
+          label="创建人员"
+          align="center"
+          prop="creator"
+          :show-overflow-tooltip="false"
+        />
         <el-table-column
           label="创建时间"
           align="center"

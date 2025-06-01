@@ -44,7 +44,14 @@ const props = defineProps({
   },
 });
 
-const dialogVisible = ref(props.visible);
+const dialogVisible = computed({
+  get() {
+    return props.visible;
+  },
+  set(value) {
+    emit('update:visible', value);
+  }
+});
 watch(() => props.visible, (newValue) => {
   dialogVisible.value = newValue;
 });

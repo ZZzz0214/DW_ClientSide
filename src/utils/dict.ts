@@ -250,4 +250,8 @@ export enum DICT_TYPE {
   ERP_CUSTOMER_ATTRIBUTE = 'erp_customer_attribute', // ERP 客户属性
   ERP_CUSTOMER_CITY = 'erp_customer_city', // ERP 客户城市
   ERP_CUSTOMER_DISTRICT = 'erp_customer_district', // ERP 客户区县
+
+  ERP_PRODUCT_BRAND = 'erp_product_brand', // ERP 产品品牌
+  ERP_PRODUCT_CATEGORY = 'erp_product_category', // ERP 产品品类
+  ERP_PRODUCT_STATUS = 'erp_product_status', // ERP 产品状态
 }

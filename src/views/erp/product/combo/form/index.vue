@@ -1,7 +1,7 @@
 <template>
   <ContentWrap v-loading="formLoading">
     <el-tabs v-model="activeName">
-      <el-tab-pane label="组合产品基础信息" name="info">
+      <el-tab-pane label="基础信息" name="info">
         <InfoForm
           ref="infoRef"
           v-model:activeName="activeName"
@@ -9,6 +9,14 @@
           :propFormData="formData"
         />
       </el-tab-pane>
+<!--      <el-tab-pane label="价格信息" name="price">-->
+<!--        <PriceForm-->
+<!--          ref="priceRef"-->
+<!--          v-model:activeName="activeName"-->
+<!--          :is-detail="isDetail"-->
+<!--          :propFormData="formData"-->
+<!--        />-->
+<!--      </el-tab-pane>-->
       <el-tab-pane label="运费信息" name="shippingcost">
         <CostForm
           ref="shippingcostRef"

@@ -10,10 +10,65 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="名称" prop="name">
+      <el-form-item label="组品编码" prop="no">
+        <el-input
+          v-model="queryParams.no"
+          placeholder="请输入组品编码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品名称" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品简称" prop="shortName">
+        <el-input
+          v-model="queryParams.shortName"
+          placeholder="请输入产品简称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="发货编码" prop="shippingCode">
+        <el-input
+          v-model="queryParams.shippingCode"
+          placeholder="请输入发货编码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="采购人员" prop="purchaser">
+        <el-input
+          v-model="queryParams.purchaser"
+          placeholder="请输入采购人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="供应商名" prop="supplier">
+        <el-input
+          v-model="queryParams.supplier"
+          placeholder="请输入供应商名"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="创建人员" prop="creator">
+        <el-input
+          v-model="queryParams.creator"
+          placeholder="请输入创建人员"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -57,23 +112,34 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:combo-product:export']"
+          v-hasPermi="['erp:product:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" /> 基础导出
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['erp:purchaseproduct:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 采购导出
         </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
+              :row-style="{height: '80px'}"
+              :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}">
       <!-- 产品名称 -->
-      <el-table-column label="组品编号" align="center" prop="no" />
-      <el-table-column label="产品图片" align="center" prop="no" />
-      <el-table-column label="产品名称" align="center" prop="name" />
+      <el-table-column label="组品编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品图片" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="name" :show-overflow-tooltip="false"/>
 
       <!-- 产品简称 -->
-      <el-table-column label="产品简称" align="center" prop="shortName" />
+      <el-table-column label="产品简称" align="center" prop="shortName" :show-overflow-tooltip="false"/>
 
       <!-- 产品图片 -->
 <!--      <el-table-column label="产品图片" align="center" prop="image">-->
@@ -88,13 +154,27 @@
 <!--      </el-table-column>-->
 
       <!-- 采购单价 -->
-      <el-table-column label="发货编码" align="center" prop="shippingCode" />
+      <el-table-column label="发货编码" align="center" prop="shippingCode" :show-overflow-tooltip="false"/>
 
       <!-- 批发单价 -->
-      <el-table-column label="产品重量" align="center" prop="weight" />
+      <el-table-column label="产品重量" align="center" prop="weight" :show-overflow-tooltip="false"/>
 
       <!-- 发货编码 -->
-      <el-table-column label="采购人员" align="center" prop="purchaser" />
+      <el-table-column label="采购人员" align="center" prop="purchaser" :show-overflow-tooltip="false"/>
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
+
+      />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
 
       <!-- 产品数量 -->
 <!--      <el-table-column label="产品数量" align="center" prop="totalQuantity" />-->
@@ -136,6 +216,7 @@
 import download from '@/utils/download'
 import { ComboApi , ComboVO } from '@/api/erp/product/combo'
 import ComboForm  from './ComboForm.vue'
+import {dateFormatter} from "@/utils/formatTime";
 
 
 /** ERP 产品列表 */

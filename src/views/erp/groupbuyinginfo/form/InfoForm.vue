@@ -33,14 +33,30 @@
 <!--          class="w-240px"-->
 <!--        />-->
 <!--      </el-form-item>-->
+<!--      <el-form-item label="客户职位" prop="customerPosition">-->
+<!--        <el-select-->
+<!--          v-model="formData.customerPosition"-->
+<!--          placeholder="请选择客户职位"-->
+<!--          class="w-240px"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="dict in getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_POSITION)"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
       <el-form-item label="客户职位" prop="customerPosition">
         <el-select
           v-model="formData.customerPosition"
           placeholder="请选择客户职位"
           class="w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_CUSTOMER_POSITION)"
         >
           <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_POSITION)"
+            v-for="dict in filteredPositionOptions"
             :key="dict.value"
             :label="dict.label"
             :value="dict.value"
@@ -253,5 +269,18 @@
     }
   }
 
+
+  const filteredPositionOptions = ref(getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_POSITION))
+
+  const filterDictOptions = (value, dictType) => {
+    const allOptions = getStrDictOptions(dictType)
+    if (!value) {
+      filteredPositionOptions.value = allOptions
+      return
+    }
+    filteredPositionOptions.value = allOptions.filter(item =>
+      item.label.toLowerCase().includes(value.toLowerCase())
+    )
+  }
   defineExpose({ validate })
   </script>

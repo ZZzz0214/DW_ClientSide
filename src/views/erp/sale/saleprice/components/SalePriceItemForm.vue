@@ -24,13 +24,13 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="备注信息" fixed="right" min-width="150">
-        <template #default="{ row, $index }">
-          <el-form-item :prop="`${$index}.remark`" class="mb-0px!">
-            <el-input v-model="row.remark" placeholder="请输入备注信息" />
-          </el-form-item>
-        </template>
-      </el-table-column>
+<!--      <el-table-column label="备注信息" fixed="right" min-width="150">-->
+<!--        <template #default="{ row, $index }">-->
+<!--          <el-form-item :prop="`${$index}.remark`" class="mb-0px!">-->
+<!--            <el-input v-model="row.remark" placeholder="请输入备注信息" />-->
+<!--          </el-form-item>-->
+<!--        </template>-->
+<!--      </el-table-column>-->
 
       <el-table-column align="center" fixed="right" label="操作" width="60">
         <template #default="{ $index }">

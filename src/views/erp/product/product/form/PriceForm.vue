@@ -70,15 +70,15 @@
     label-width="160px"
   >
     <!-- 采购人员 -->
-    <el-form-item label="采购人员" prop="purchaser">
-      <el-input
-        v-model="formData.purchaser"
-        placeholder="请输入采购人员信息"
-        @focus="openPurchaserSearch"
-        readonly
-        class="w-80"
-      />
-    </el-form-item>
+<!--    <el-form-item label="采购人员" prop="purchaser">-->
+<!--      <el-input-->
+<!--        v-model="formData.purchaser"-->
+<!--        placeholder="请输入采购人员信息"-->
+<!--        @focus="openPurchaserSearch"-->
+<!--        readonly-->
+<!--        class="w-80"-->
+<!--      />-->
+<!--    </el-form-item>-->
 
     <!-- 供应商名 -->
     <el-form-item label="供应商名" prop="supplier">
@@ -86,7 +86,7 @@
         v-model="formData.supplier"
         placeholder="请输入供应商名"
         class="w-80"
-        @focus="openSupplierSearch"
+        @click="openSupplierSearch"
         readonly
       />
     </el-form-item>
@@ -97,7 +97,7 @@
         v-model="formData.purchasePrice"
         :min="0"
         placeholder="请输入采购单价"
-        class="w-80"
+        style="width: 200px"
       />
     </el-form-item>
 
@@ -107,7 +107,7 @@
         v-model="formData.wholesalePrice"
         :min="0"
         placeholder="请输入批发单价"
-        class="w-80"
+        style="width: 200px"
       />
     </el-form-item>
 
@@ -125,8 +125,8 @@
       <el-input-number
         v-model="formData.minPurchasePrice"
         :min="0"
-        placeholder="请输入对外最低采购单价"
-        class="w-80"
+        placeholder="对外最低出货单价"
+        style="width: 200px"
       />
     </el-form-item>
 
@@ -196,13 +196,9 @@ const formData = reactive<ProductVO>({
   minWholesalePrice: 0, // 对外最低批发单价
 })
 const rules = reactive({
-  purchaser: [{ required: true, message: '采购人员不能为空', trigger: 'blur' }],
   supplier: [{ required: true, message: '供应商名不能为空', trigger: 'blur' }],
   purchasePrice: [{ required: true, message: '采购单价不能为空', trigger: 'blur' }],
   wholesalePrice: [{ required: true, message: '批发单价不能为空', trigger: 'blur' }],
-  remark: [{ required: true, message: '备注信息不能为空', trigger: 'blur' }],
-  minPurchasePrice: [{ required: true, message: '对外最低采购单价不能为空', trigger: 'blur' }],
-  minWholesalePrice: [{ required: true, message: '对外最低批发单价不能为空', trigger: 'blur' }]
 });
 
 const openPurchaserSearch = () => {

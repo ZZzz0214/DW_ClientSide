@@ -22,7 +22,8 @@
               :disabled="formType === 'detail'"
               v-model="formData.customerName"
               placeholder="请选择客户"
-              @focus="openCustomerSearch"
+              @click="openCustomerSearch"
+              readonly
             />
           </el-form-item>
         </el-col>
@@ -55,6 +56,7 @@
       <el-row :gutter="20">
         <el-col :span="12">
           <el-form-item label="代发单价" prop="distributionPrice">
+            <div style="display: flex; align-items: center;">
             <el-input-number
               v-model="formData.distributionPrice"
               controls-position="right"
@@ -63,18 +65,37 @@
               placeholder="请输入代发单价"
               :disabled="formType === 'detail'"
             />
+            <span style="margin-left: 25px;">元</span>
+            </div>
           </el-form-item>
         </el-col>
 
         <!-- 批发单价 -->
-        <el-col :span="12">
+        <el-col :span="16">
           <el-form-item label="批发单价" prop="wholesalePrice">
+            <div style="display: flex; align-items: center;">
             <el-input-number
               v-model="formData.wholesalePrice"
               controls-position="right"
               :min="0"
               :precision="2"
               placeholder="请输入批发单价"
+              :disabled="formType === 'detail'"
+            />
+              <span style="margin-left: 25px;">元</span>
+            </div>
+          </el-form-item>
+        </el-col>
+      </el-row>
+            <!-- 备注信息 -->
+      <el-row :gutter="20">
+        <el-col :span="24">
+          <el-form-item label="备注信息" prop="remark">
+            <el-input
+              v-model="formData.remark"
+              type="textarea"
+              :rows="2"
+              placeholder="请输入备注信息"
               :disabled="formType === 'detail'"
             />
           </el-form-item>
@@ -133,6 +154,7 @@ const formData = ref({
   firstWeightPrice: 0, // 首重价格（单位：元）
   additionalWeight: 0, // 续重重量（单位：kg）
   additionalWeightPrice: 0, // 续重价格（单位：元）
+  remark: undefined, // 新增备注字段
 });
 
 const formRules = reactive({

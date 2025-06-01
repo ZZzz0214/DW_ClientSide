@@ -10,7 +10,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="名称" prop="name">
+      <el-form-item label="产品名称" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入名称"
@@ -19,17 +19,81 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="分类" prop="categoryId">
-        <el-tree-select
-          v-model="queryParams.categoryId"
-          :data="categoryList"
-          :props="defaultProps"
-          check-strictly
-          default-expand-all
-          placeholder="请输入分类"
+
+      <el-form-item label="产品简称" prop="productShortName">
+        <el-input
+          v-model="queryParams.productShortName"
+          placeholder="请输入产品简称"
+          clearable
+          @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="发货编码" prop="shippingCode">
+        <el-input
+          v-model="queryParams.shippingCode"
+          placeholder="请输入发货编码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="品牌名称" prop="brand">
+        <el-input
+          v-model="queryParams.brand"
+          placeholder="请输入品牌名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品品类" prop="categoryId">
+        <el-input
+          v-model="queryParams.categoryId"
+          placeholder="请输入产品品类"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品状态" prop="status">
+        <el-input
+          v-model="queryParams.status"
+          placeholder="请输入产品状态"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="采购人员" prop="purchaser">
+        <el-input
+          v-model="queryParams.purchaser"
+          placeholder="请输入采购人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="创建人员" prop="creator">
+        <el-input
+          v-model="queryParams.creator"
+          placeholder="请输入创建人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+<!--      <el-form-item label="分类" prop="categoryId">-->
+<!--        <el-tree-select-->
+<!--          v-model="queryParams.categoryId"-->
+<!--          :data="categoryList"-->
+<!--          :props="defaultProps"-->
+<!--          check-strictly-->
+<!--          default-expand-all-->
+<!--          placeholder="请输入分类"-->
+<!--          class="!w-240px"-->
+<!--        />-->
+<!--      </el-form-item>-->
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -59,33 +123,47 @@
           :loading="exportLoading"
           v-hasPermi="['erp:product:export']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" /> 基础导出
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleExport"
+          :loading="exportLoading"
+          v-hasPermi="['erp:purchaseproduct:export']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 采购导出
         </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="产品编号" align="center" prop="no" />
-      <el-table-column label="产品图片" align="center" prop="name" />
-      <el-table-column label="产品名称" align="center" prop="name" />
-      <el-table-column label="产品简称" align="center" prop="productShortName" />
-      <el-table-column label="产品规格" align="center" prop="standard" />
-      <el-table-column label="产品日期" align="center" prop="productionDate" />
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
+    :row-style="{height: '80px'}"
+    :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}">
+      <el-table-column label="产品编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品图片" align="center" prop="name" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="name" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品简称" align="center" prop="productShortName"  :show-overflow-tooltip="false"/>
+      <el-table-column label="产品规格" align="center" prop="standard" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品日期" align="center" prop="productionDate" :show-overflow-tooltip="false"/>
       <el-table-column
         label="品牌名称"
         align="center"
         prop="brand"
+        :show-overflow-tooltip="false"
       />
       <el-table-column
         label="产品品类"
         align="center"
         prop="categoryId"
+        :show-overflow-tooltip="false"
       />
       <el-table-column
         label="产品状态"
         align="center"
         prop="status"
+        :show-overflow-tooltip="false"
       />
 <!--      <el-table-column-->
 <!--        label="阿里巴巴活动最低价"-->
@@ -127,6 +205,19 @@
 <!--          <dict-tag :type="DICT_TYPE.COMMON_STATUS" :value="scope.row.status" />-->
 <!--        </template>-->
 <!--      </el-table-column>-->
+
+      <el-table-column
+        label="采购人员"
+        align="center"
+        prop="purchaser"
+        :show-overflow-tooltip="false"
+      />
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
+      />
       <el-table-column
         label="创建时间"
         align="center"
@@ -202,6 +293,7 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ProductApi.getProductPage(queryParams)
+    console.log(data.total)
     list.value = data.list
     total.value = data.total
   } finally {

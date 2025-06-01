@@ -141,13 +141,13 @@ const formData = reactive<ProductVO>({
   afterSalesScript: '' // 售后话术
 });
 const rules = reactive({
-  shippingAddress: [{ required: true, message: '发货地址不能为空', trigger: 'blur' }],
-  returnAddress: [{ required: true, message: '退货地址不能为空', trigger: 'blur' }],
-  logisticsCompany: [{ required: true, message: '快递公司不能为空', trigger: 'blur' }],
-  nonshippingArea: [{ required: true, message: '不发货区不能为空', trigger: 'blur' }],
-  addonShippingArea: [{ required: true, message: '加邮地区不能为空', trigger: 'blur' }],
-  afterSalesStandard: [{ required: true, message: '售后标准不能为空', trigger: 'blur' }],
-  afterSalesScript: [{ required: true, message: '售后话术不能为空', trigger: 'blur' }]
+  // shippingAddress: [{ required: true, message: '发货地址不能为空', trigger: 'blur' }],
+  // returnAddress: [{ required: true, message: '退货地址不能为空', trigger: 'blur' }],
+  // logisticsCompany: [{ required: true, message: '快递公司不能为空', trigger: 'blur' }],
+  // nonshippingArea: [{ required: true, message: '不发货区不能为空', trigger: 'blur' }],
+  // addonShippingArea: [{ required: true, message: '加邮地区不能为空', trigger: 'blur' }],
+  // afterSalesStandard: [{ required: true, message: '售后标准不能为空', trigger: 'blur' }],
+  // afterSalesScript: [{ required: true, message: '售后话术不能为空', trigger: 'blur' }]
 });
 
 /** 将传进来的值赋值给 formData */

@@ -50,6 +50,27 @@
           v-model="formData.comboProductId"
           placeholder="请输入组品编号"
           class="w-80"
+          @click="openComboSearch"
+          readonly
+        />
+      </el-form-item>
+
+
+
+      <el-form-item label="发货编码" prop="shippingCode">
+    <el-input
+      v-model="formData.shippingCode"
+      placeholder="自动填充"
+      readonly
+      class="w-80"
+    />
+  </el-form-item>
+      <el-form-item label="产品名称" prop="name">
+        <el-input
+          v-model="formData.name"
+          placeholder="自动填充"
+          readonly
+          class="w-80"
         />
       </el-form-item>
 
@@ -72,6 +93,12 @@
         />
       </el-form-item>
     </el-form>
+
+    <ComboSearchDialog
+    v-model:visible="comboSearchDialogVisible"
+    @combo-selected="handleComboSelected"
+    ref="comboSearchDialog"
+  />
   </template>
 
   <script lang="ts" setup>
@@ -99,7 +126,9 @@
     originalQuantity: 0,
     comboProductId: '',
     productSpec: '',
-    productQuantity: 0
+    productQuantity: 0,
+    name: '', // 新增的属性
+    shippingCode: '' // 新增的属性
   })
 
   const rules = reactive({
@@ -132,6 +161,19 @@
       throw e
     }
   }
+
+const comboSearchDialogVisible = ref(false);
+const comboSearchDialog = ref();
+
+const openComboSearch = () => {
+  comboSearchDialog.value?.open();
+};
+
+const handleComboSelected = (combo: any) => {
+  formData.comboProductId = combo.id;
+  formData.shippingCode = combo.shippingCode;
+  formData.name = combo.name; // 如果产品名称需要填充
+};
 
   defineExpose({ validate })
   </script>

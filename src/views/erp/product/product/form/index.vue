@@ -9,6 +9,22 @@
           :propFormData="formData"
         />
       </el-tab-pane>
+      <el-tab-pane label="价格信息" name="price" v-hasPermi="['erp:purchaseproduct:export']">
+        <PriceForm
+          ref="priceRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="运费信息" name="shippingcost">
+        <CostForm
+          ref="shippingcostRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+        />
+      </el-tab-pane>
       <el-tab-pane label="合格信息" name="sku">
         <SkuForm
           ref="skuRef"
@@ -41,22 +57,7 @@
           :propFormData="formData"
         />
       </el-tab-pane>
-      <el-tab-pane label="价格信息" name="price">
-        <PriceForm
-          ref="priceRef"
-          v-model:activeName="activeName"
-          :is-detail="isDetail"
-          :propFormData="formData"
-        />
-      </el-tab-pane>
-      <el-tab-pane label="运费信息" name="shippingcost">
-        <CostForm
-          ref="shippingcostRef"
-          v-model:activeName="activeName"
-          :is-detail="isDetail"
-          :propFormData="formData"
-        />
-      </el-tab-pane>
+
     </el-tabs>
     <el-form>
       <el-form-item style="float: right">
