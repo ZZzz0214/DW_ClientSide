@@ -161,19 +161,31 @@
         align="center"
         prop="brand"
         :show-overflow-tooltip="false"
-      />
+      >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brand" />
+        </template>
+      </el-table-column>
       <el-table-column
         label="产品品类"
         align="center"
         prop="categoryId"
         :show-overflow-tooltip="false"
-      />
+      >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_CATEGORY" :value="scope.row.categoryId" />
+        </template>
+      </el-table-column>
       <el-table-column
         label="产品状态"
         align="center"
         prop="status"
         :show-overflow-tooltip="false"
-      />
+      >
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_STATUS" :value="scope.row.status" />
+        </template>
+      </el-table-column>
 <!--      <el-table-column-->
 <!--        label="阿里巴巴活动最低价"-->
 <!--        align="center"-->

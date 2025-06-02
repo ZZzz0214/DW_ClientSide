@@ -181,7 +181,7 @@
           v-for="dict in filteredCategoryOptions"
           :key="dict.value"
           :label="dict.label"
-          :value="dict.value"
+          :value="Number(dict.value)"
         />
       </el-select>
     </el-form-item>
@@ -199,7 +199,7 @@
           v-for="dict in filteredStatusOptions"
           :key="dict.value"
           :label="dict.label"
-          :value="dict.value"
+          :value="Number(dict.value)"
         />
       </el-select>
     </el-form-item>
@@ -344,6 +344,9 @@ const filterDictOptions = (value, dictType) => {
     filteredStatusOptions.value = filtered
   }
 }
+
+
+
 const purchaserSearchDialogVisible = ref(false); // 采购人员搜索弹窗的显示状态
 const openPurchaserSearch = () => {
   purchaserSearchDialogVisible.value = true;

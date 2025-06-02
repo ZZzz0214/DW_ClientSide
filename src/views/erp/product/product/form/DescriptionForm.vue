@@ -42,10 +42,10 @@
     </el-form-item>
 
     <!-- 品长宽高 -->
-    <el-form-item label="品长宽高" prop="productDimensions">
+    <el-form-item label="品长宽高" prop="productLength">
       <div style="display: flex; align-items: center;">
         <el-input
-          v-model="formData.productDimensions"
+          v-model="formData.productLength"
           placeholder="品长宽高"
           class="w-80!"
         />
@@ -100,7 +100,7 @@
       </div>
     </el-form-item>
     <!-- 箱长宽高 -->
-    <el-form-item label="箱长宽高" prop="cartonDimensions">
+    <el-form-item label="箱长宽高" prop="cartonLength">
       <div style="display: flex; align-items: center;">
         <el-input
           v-model="formData.cartonLength"
