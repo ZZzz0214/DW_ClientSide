@@ -52,9 +52,12 @@
       <el-table-column label="采购物流费用" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input
-              disabled
+            <el-input-number
               v-model="row.logisticsFee"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+              @change="updateTotalPrice(row)"
             />
           </el-form-item>
         </template>
@@ -162,7 +165,7 @@ watch(
 watch(() => props.ssb, (newVal) => {
   formData.value.forEach((item) => {
     item.count = newVal; // 更新子组件中的产品数量
-    calculateShippingFee(item); // 重新计算运费
+    //calculateShippingFee(item); // 重新计算运费
     updateTotalPrice(item); // 重新计算合计
   });
 }, { immediate: true });
@@ -170,7 +173,7 @@ watch(() => props.ssb, (newVal) => {
 // 监听子组件中采购其他费用的变化
 watch(() => formData.value, (newVal) => {
   newVal.forEach((item) => {
-    calculateShippingFee(item); // 重新计算运费
+    //calculateShippingFee(item); // 重新计算运费
     updateTotalPrice(item); // 重新计算合计
   });
 }, { deep: true });
@@ -204,6 +207,11 @@ const calculateShippingFee = (item) => {
 
 // 更新合计的方法
 const updateTotalPrice = (item) => {
+  console.log(item.purchasePrice)
+  console.log(item.count)
+  console.log(item.logisticsFee)
+  console.log(item.otherFees)
+  console.log(item.truckFee)
   item.totalProductPrice =
     item.purchasePrice * item.count + item.logisticsFee + item.otherFees + item.truckFee;
   item.totalPurchaseAmount = item.totalProductPrice;

@@ -126,7 +126,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
-import Selectsaleprice from './Selectsaleprice.vue';
 import SalespersonSearchDialog from './SalespersonSearchDialog.vue'; // 引入销售人员搜索弹窗组件
 import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
 
@@ -183,21 +182,15 @@ const handleSalespersonSelected = (salesperson: any) => {
 watch(
   () => props.items,
   (val) => {
-    formData.value = val;
+    formData.value = val || [];
   },
   { immediate: true }
 );
 
 // 监听父组件传递的产品数量变化
 watch(() => props.ssb, (newVal) => {
-  formData.value.forEach((item) => {
-    console.log('这是我的count在最开始传入的值')
-    console.log(newVal)
-    console.log(item.count)
+  formData.value?.forEach((item) => {
     item.count = newVal; // 更新子组件中的产品数量
-    console.log('这是我的count在赋值后传入的值')
-    console.log(newVal)
-    console.log(item.count)
     // calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
@@ -205,7 +198,7 @@ watch(() => props.ssb, (newVal) => {
 
 // 监听子组件中出货其他费用的变化
 watch(() => formData.value, (newVal) => {
-  newVal.forEach((item) => {
+  newVal?.forEach((item) => {
     // calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
@@ -240,12 +233,12 @@ watch(() => formData.value, (newVal) => {
 
 // 更新出货总额的方法
 const updateTotalSaleAmount = (item) => {
-  console.log("1111111111111111111111")
-  console.log("2222222222222222222222")
-  console.log(Number(item.salePrice) )
-  console.log(Number(item.count) )
-  console.log(Number(item.saleShippingFee) )
-  console.log(Number(item.saleOtherFees) )
+  // console.log("1111111111111111111111")
+  // console.log("2222222222222222222222")
+  // console.log(Number(item.salePrice) )
+  // console.log(Number(item.count) )
+  // console.log(Number(item.saleShippingFee) )
+  // console.log(Number(item.saleOtherFees) )
   const price = Number(item.salePrice) || 0;
   const count = Number(item.count) || 0;
   const shippingFee = Number(item.saleShippingFee) || 0;
@@ -253,8 +246,8 @@ const updateTotalSaleAmount = (item) => {
 
   item.totalSaleAmount = price * count + shippingFee + otherFees;
 
-  console.log("3333333333333333333333")
-  console.log(Number(item.totalSaleAmount) )
+  // console.log("3333333333333333333333")
+  // console.log(Number(item.totalSaleAmount) )
 };
 
 // 添加按钮操作

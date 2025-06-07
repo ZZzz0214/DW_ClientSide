@@ -123,6 +123,7 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
 
     // 获取订单详情并填充表单
     const orderDetail = await PurchaseOrderApi.getSaleOrder(id)
+    console.log('订单详情：', orderDetail)
     formData.id = id
     formData.productName = orderDetail.productName || '' // 产品名称
     formData.productSpecification = orderDetail.productSpecification || '' // 产品规格

@@ -110,6 +110,7 @@
               v-model="formData.afterSalesTime"
               placeholder="售后时间"
               disabled
+              :value="formatTime8(formData.afterSalesTime)"
             />
           </el-form-item>
         </el-col>
@@ -167,6 +168,7 @@ import * as UserApi from '@/api/system/user'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
 import * as ProductComboApi from "@/api/erp/product/combo";
 import {SalePriceApi} from "@/api/erp/sale/saleprice";
+import {formatTime, formatTime8} from "@/utils/formatTime";
 
 /** ERP 销售订单表单 */
 defineOptions({ name: 'ErpPurchaseOrder' })
@@ -273,7 +275,6 @@ const open = async (type: string, id?: number) => {
       console.log(saleshippingFeeType)
       console.log('000000000000lllllllloooooooo')
       console.log(data)
-      console.log(id)
       formData.value = data;
       // 如果是详情模式，将数据重新组装到 items 和 saleItems
       if (type === 'detail') {
@@ -355,16 +356,16 @@ const open = async (type: string, id?: number) => {
             transferPerson: data.transferPerson,
             saleRemark: data.saleRemark,
 
-            // 假设这些运费相关的字段已经存在于 data 对象中
-            shippingFeeType: saleshippingFeeType[0].shippingFeeType,
-            fixedShippingFee: saleshippingFeeType[0].fixedShippingFee,
-            additionalItemQuantity: saleshippingFeeType[0].additionalItemQuantity, //按件数量
-            additionalItemPrice: saleshippingFeeType[0].additionalItemPrice, //按件费用
-            weight: saleshippingFeeType[0].weight,
-            firstWeight: saleshippingFeeType[0].firstWeight,
-            firstWeightPrice: saleshippingFeeType[0].firstWeightPrice,
-            additionalWeight: saleshippingFeeType[0].additionalWeight,
-            additionalWeightPrice: saleshippingFeeType[0].additionalWeightPrice
+            // // 假设这些运费相关的字段已经存在于 data 对象中
+            // shippingFeeType: saleshippingFeeType[0].shippingFeeType,
+            // fixedShippingFee: saleshippingFeeType[0].fixedShippingFee,
+            // additionalItemQuantity: saleshippingFeeType[0].additionalItemQuantity, //按件数量
+            // additionalItemPrice: saleshippingFeeType[0].additionalItemPrice, //按件费用
+            // weight: saleshippingFeeType[0].weight,
+            // firstWeight: saleshippingFeeType[0].firstWeight,
+            // firstWeightPrice: saleshippingFeeType[0].firstWeightPrice,
+            // additionalWeight: saleshippingFeeType[0].additionalWeight,
+            // additionalWeightPrice: saleshippingFeeType[0].additionalWeightPrice
           },
         ]
         console.log('????????????????????????')
@@ -449,44 +450,89 @@ const submitForm = async () => {
 }
 
 /** 重置表单 */
+// const resetForm = () => {
+//   formData.value = {
+//     id: undefined,
+//     supplierId: undefined, // 供应商
+//     accountId: undefined, // 结算账户
+//     orderTime: undefined, // 订单时间
+//     remark: undefined, // 备注
+//     fileUrl: '', // 附件
+//
+//     items: [], // 采购列表
+//     saleItems: [], // 出货列表
+//
+//     comboProductId: 0, // 组合产品ID
+//     productName: '', // 产品名称
+//     productQuantity: 0, // 产品数量
+//     shippingCode: '', // 发货编码
+//     receiverName: '', // 收件姓名
+//     receiverPhone: '', // 收件电话
+//     receiverAddress: '', // 收件地址
+//     afterSalesStatus: '', // 售后状况
+//     afterSalesTime: '', // 售后时间，初始为空
+//
+//     no: undefined, // 订单单号，后端返回
+//     purchaser: '', // 采购人员
+//     supplier: '', // 供应商名
+//     purchasePrice: 0, // 采购单价
+//     truckFee: 0, // 货拉拉费
+//     logisticsFee: 0, // 物流费用
+//     otherFees: 0, // 采购其他费用
+//     totalPurchaseAmount: 0, // 采购总额
+//     salesperson: '', // 销售人员
+//     customerName: '', // 客户名称
+//     salePrice: 0, // 出货单价
+//     saleTruckFee: 0, // 销售货拉拉费
+//     saleLogisticsFee: 0, // 销售物流费用
+//     saleOtherFees: 0, // 销售其他费用
+//     totalSaleAmount: 0, // 出货总额
+//   }
+//   formRef.value?.resetFields()
+// }
+
+// ... existing code ...
 const resetForm = () => {
   formData.value = {
     id: undefined,
-    supplierId: undefined, // 供应商
-    accountId: undefined, // 结算账户
-    orderTime: undefined, // 订单时间
-    remark: undefined, // 备注
-    fileUrl: '', // 附件
-
-    items: [], // 采购列表
-    saleItems: [], // 出货列表
-
-    comboProductId: 0, // 组合产品ID
-    productName: '', // 产品名称
-    productQuantity: 0, // 产品数量
-    shippingCode: '', // 发货编码
-    receiverName: '', // 收件姓名
-    receiverPhone: '', // 收件电话
-    receiverAddress: '', // 收件地址
-    afterSalesStatus: '', // 售后状况
-    afterSalesTime: '', // 售后时间，初始为空
-
-    no: undefined, // 订单单号，后端返回
-    purchaser: '', // 采购人员
-    supplier: '', // 供应商名
-    purchasePrice: 0, // 采购单价
-    truckFee: 0, // 货拉拉费
-    logisticsFee: 0, // 物流费用
-    otherFees: 0, // 采购其他费用
-    totalPurchaseAmount: 0, // 采购总额
-    salesperson: '', // 销售人员
-    customerName: '', // 客户名称
-    salePrice: 0, // 出货单价
-    saleTruckFee: 0, // 销售货拉拉费
-    saleLogisticsFee: 0, // 销售物流费用
-    saleOtherFees: 0, // 销售其他费用
-    totalSaleAmount: 0, // 出货总额
+    supplierId: undefined,
+    accountId: undefined,
+    orderTime: undefined,
+    remark: undefined,
+    fileUrl: '',
+    items: [],
+    saleItems: [],
+    comboProductId: 0,
+    productName: '',
+    productQuantity: 0,
+    shippingCode: '',
+    receiverName: '',
+    receiverPhone: '',
+    receiverAddress: '',
+    afterSalesStatus: '',
+    afterSalesTime: '',
+    no: undefined,
+    purchaser: '',
+    supplier: '',
+    purchasePrice: 0,
+    truckFee: 0,
+    logisticsFee: 0,
+    otherFees: 0,
+    totalPurchaseAmount: 0,
+    salesperson: '',
+    customerName: '',
+    salePrice: 0,
+    saleTruckFee: 0,
+    saleLogisticsFee: 0,
+    saleOtherFees: 0,
+    totalSaleAmount: 0
   }
   formRef.value?.resetFields()
+  // 重置子表单引用
+  purchaseFormRef.value?.resetFields?.()
+  saleFormRef.value?.resetFields?.()
+  // 重置标签页状态
+  subTabsName.value = 'purchase'
 }
+// ... existing code ...
 </script>

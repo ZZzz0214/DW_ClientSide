@@ -198,7 +198,7 @@ const getDetail = async () => {
   if (id) {
     formLoading.value = true;
     try {
-      const res = (await ErpProductApi.ProductApi.getProduct(id)) as ErpProductApi.ProductVO;
+      const res = await ErpProductApi.ProductApi.getProduct(id);
       formData.value = res;
 
     } finally {

@@ -54,9 +54,12 @@
       <el-table-column label="出货物流费用" min-width="90">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input
-              disabled
+            <el-input-number
               v-model="row.saleLogisticsFee"
+              controls-position="right"
+              :min="0"
+              :precision="2"
+               @change="() => updateTotalSaleAmount(row)"
             />
           </el-form-item>
         </template>
@@ -137,7 +140,6 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
-import Selectsaleprice from './Selectsaleprice.vue';
 import SalespersonSearchDialog from './SalespersonSearchDialog.vue';
 import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
 
@@ -202,7 +204,7 @@ watch(
 watch(() => props.ssb, (newVal) => {
   formData.value.forEach((item) => {
     item.count = newVal; // 更新子组件中的产品数量
-    calculateSaleShippingFee(item); // 重新计算出货运费
+    //calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
 }, { immediate: true });
@@ -210,7 +212,7 @@ watch(() => props.ssb, (newVal) => {
 // 监听子组件中出货其他费用的变化
 watch(() => formData.value, (newVal) => {
   newVal.forEach((item) => {
-    calculateSaleShippingFee(item); // 重新计算出货运费
+    //calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
 }, { deep: true });

@@ -37,6 +37,13 @@
       <el-table-column label="供应商名" prop="supplier" />
     </el-table>
 
+    <Pagination
+      :total="total"
+      v-model:page="searchForm.pageNo"
+      v-model:limit="searchForm.pageSize"
+      @pagination="handleSearch"
+    />
+
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
       <el-button @click="confirmSelection" type="primary">确 定</el-button>
@@ -57,14 +64,19 @@ const searchForm = reactive({
   id: '',
   name: '',
   createTime: '',
+  pageNo: 1,
+  pageSize: 10
 });
 
 const productList = ref<any[]>([]);
 const selectedProducts = ref<any[]>([]);
-
+const total = ref(0) // 总记录数
 const handleSearch = async () => {
   try {
-    productList.value = await ProductComboApi.ComboApi.searchCombos(searchForm);
+    const data  = await ProductComboApi.ComboApi.getComboPage(searchForm);
+
+    productList.value = data.list
+    total.value = data.total
   } catch (error) {
     ElMessage.error('查询失败');
   }

@@ -273,7 +273,8 @@ const formData = reactive<ProductVO>({
   productionDate:undefined, // 产品日期
   expiryDay: 0, // 保质日期
   expiryUnit: '', // 保质日期单位，默认值为“天”
-  weightUnit: '', // 产品重量单位，默认值为“g”
+  weightUnit: '', // 产品重量单位，默认值为“g”,
+  purchaser:''
 })
 
 const rules = reactive({

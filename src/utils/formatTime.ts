@@ -190,6 +190,25 @@ export function formatPast2(ms: number): string {
   }
 }
 
+
+/**
+ * 时间格式化函数
+ * @param value 时间值 (Date | string | number)
+ * @param format 格式字符串，默认为 'YYYY-MM-DD HH:mm:ss'
+ */
+export function formatTime8(value: Date | string | number, format = 'YYYY-MM-DD HH:mm:ss'): string {
+  if (!value) return '';
+  
+  try {
+    const date = dayjs(value);
+    if (!date.isValid()) return '';
+    
+    // 更安全的时区处理方式
+    return date.add(8, 'hour').format(format);
+  } catch (e) {
+    return '';
+  }
+}
 /**
  * element plus 的时间 Formatter 实现，使用 YYYY-MM-DD HH:mm:ss 格式
  *

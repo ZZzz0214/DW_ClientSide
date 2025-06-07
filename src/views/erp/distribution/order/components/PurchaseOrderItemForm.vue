@@ -140,14 +140,14 @@ const emit = defineEmits(['productIdChanged']);
 watch(
   () => props.items,
   async (val) => {
-    formData.value = val
+    formData.value = val|| []
   },
   { immediate: true }
 )
 
 // 监听父组件传递的产品数量变化
 watch(() => props.ssb, (newVal) => {
-  formData.value.forEach((item) => {
+  formData.value?.forEach((item) => {
     item.count = newVal; // 更新子组件中的产品数量
     calculateShippingFee(item); // 重新计算运费
     updateTotalPrice(item); // 重新计算合计
@@ -156,7 +156,7 @@ watch(() => props.ssb, (newVal) => {
 
 // 监听子组件中采购其他费用的变化
 watch(() => formData.value, (newVal) => {
-  newVal.forEach((item) => {
+  newVal?.forEach((item) => {
     calculateShippingFee(item); // 重新计算运费
     updateTotalPrice(item); // 重新计算合计
   });

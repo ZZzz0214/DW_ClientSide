@@ -125,6 +125,15 @@
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
+
+        <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:product:create']"
+        >
+          <Icon icon="ep:upload" /> 导入
+        </el-button>
         <el-button
           type="success"
           plain
@@ -276,6 +285,7 @@
       @pagination="getList"
     />
   </ContentWrap>
+  <ProductImportForm ref="importFormRef" @success="getList" />
 
 </template>
 
@@ -286,7 +296,7 @@ import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category'
 import { DICT_TYPE } from '@/utils/dict'
 import { defaultProps, handleTree } from '@/utils/tree'
-import { erpPriceTableColumnFormatter } from '@/utils'
+import ProductImportForm from './form/ProductImportForm.vue'
 
 
 /** ERP 产品列表 */
@@ -379,6 +389,12 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+/**导入操作**/
+const importFormRef = ref()
+const handleImport = () => {
+  importFormRef.value.open()
 }
 
 /** 初始化 **/
