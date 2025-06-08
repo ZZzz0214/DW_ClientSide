@@ -89,10 +89,10 @@
         </div>
 
     </el-form-item>
-    <el-form-item label="箱规数量" prop="productWidth">
+    <el-form-item label="箱规数量" prop="productCartonSpec">
       <div style="display: flex; align-items: center;">
         <el-input
-          v-model="formData.productWidth"
+          v-model="formData.productCartonSpec"
           placeholder="箱规数量"
           class="w-80!"
         />
@@ -198,6 +198,7 @@ const formData = reactive<ProductVO>({
   cartonWeight: 0, // 箱规重量
   cartonWeightUnit: 'g', // 箱规重量单位
   weight: 0, // 产品重量
+  productCartonSpec:'',
 });
 
 const rules = reactive({

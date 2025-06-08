@@ -76,7 +76,7 @@
       </el-form-item>
 
       <el-form-item label="备注信息" prop="totalQuantity">
-        <el-input v-model="formData.totalQuantity" placeholder="产品数量" :disabled="isDetail" v-hasPermi="['erp:purchaseproduct:export']"/>
+        <el-input v-model="formData.totalQuantity" placeholder="备注信息" :disabled="isDetail" v-hasPermi="['erp:purchaseproduct:export']"/>
       </el-form-item>
 
       <el-form-item label="产品状态" prop="status">

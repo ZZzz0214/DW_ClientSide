@@ -146,7 +146,7 @@
         <el-button
           type="success"
           plain
-          @click="handleExport"
+          @click="handleExport2"
           :loading="exportLoading"
           v-hasPermi="['erp:purchaseproduct:export']"
         >
@@ -384,7 +384,20 @@ const handleExport = async () => {
     // 发起导出
     exportLoading.value = true
     const data = await ProductApi.exportProduct(queryParams)
-    download.excel(data, '产品.xls')
+    download.excel(data, '产品信息.xlsx')
+  } catch {
+  } finally {
+    exportLoading.value = false
+  }
+}
+const handleExport2 = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    exportLoading.value = true
+    const data = await ProductApi.exportProduct2(queryParams)
+    download.excel(data, '产品信息.xlsx')
   } catch {
   } finally {
     exportLoading.value = false

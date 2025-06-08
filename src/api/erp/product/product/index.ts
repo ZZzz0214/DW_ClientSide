@@ -79,6 +79,7 @@ export interface ProductVO {
   additionalWeightPrice?: number; // 续重价格（单位：元）
   expiryUnit?: string; // 保质日期单位，默认值为“天”
   weightUnit?: string; // 产品重量单位，默认值为“g”
+  creator?:string;
 }
 
 // ERP 产品 API
@@ -116,6 +117,10 @@ export const ProductApi = {
   // 导出产品 Excel
   exportProduct: async (params) => {
     return await request.download({ url: `/erp/product/export-excel`, params })
+  },
+  // 导出产品 Excel
+  exportProduct2: async (params) => {
+    return await request.download({ url: `/erp/product/export-excel2`, params })
   },
 
   // 搜索产品

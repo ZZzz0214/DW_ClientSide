@@ -75,6 +75,9 @@ export const ComboApi = {
     return await request.download({ url: `/erp/combo/export-excel`, params });
   },
 
+  exportCombo2: async (params: any) => {
+    return await request.download({ url: `/erp/combo/export-excel2`, params });
+  },
   // 搜索结果
   searchCombos: async (params: any) => {
     return await request.get({ url: `/erp/combo/search`, params });
