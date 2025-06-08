@@ -104,6 +104,16 @@
           >
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
+
+          <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:dropship:create']"
+        >
+          <Icon icon="ep:upload" /> 导入
+        </el-button>
+        
           <el-button
             type="success"
             plain
@@ -188,6 +198,8 @@
         @pagination="getList"
       />
     </ContentWrap>
+      <!-- 在模板底部添加导入组件 -->
+  <DropshipImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
@@ -283,6 +295,12 @@
     } finally {
       exportLoading.value = false
     }
+  }
+
+    /** 导入操作 */
+  const importFormRef = ref()
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

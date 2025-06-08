@@ -68,60 +68,61 @@ export interface SalePriceVO {
 export const SalePriceApi = {
   // // 查询销售价格表分页
   // getSalePricePage: async (params: SalePricePageReqVO) => {
-  //   return await request.get({ url: `/erp/sale-price/page`, params });
+  //   return await request.get({ url: `/erp/saleprice/page`, params });
   // },
 
   // 查询销售价格表分页
   getSalePricePage: async (params: any) => {
-    return await request.get({ url: `/erp/sale-price/page`, params });
+    return await request.get({ url: `/erp/saleprice/page`, params });
   },
 
   // 获取销售价格精简列表
   getSalePriceSimpleList: async () => {
-    return await request.get({ url: `/erp/sale-price/simple-list` });
+    return await request.get({ url: `/erp/saleprice/simple-list` });
   },
 
   // 查询销售价格表详情
   getSalePrice: async (id: number) => {
-    return await request.get({ url: `/erp/sale-price/get?id=${id}` });
+    return await request.get({ url: `/erp/saleprice/get?id=${id}` });
   },
 
   // 新增销售价格
   createSalePrice: async (data: SalePriceVO) => {
-    return await request.post({ url: `/erp/sale-price/create`, data });
+    return await request.post({ url: `/erp/saleprice/create`, data });
   },
 
   // 修改销售价格
   updateSalePrice: async (data: SalePriceVO) => {
-    return await request.put({ url: `/erp/sale-price/update`, data });
+    return await request.put({ url: `/erp/saleprice/update`, data });
   },
 
 
   // 删除销售价格
   deleteSalePrice: async (ids: number[]) => {
     return await request.delete({
-      url: `/erp/sale-price/delete`,
+      url: `/erp/saleprice/delete`,
       params: {
         ids: ids.join(',')
       }
     })
   },
+
   // // 导出销售价格表 Excel
   // exportSalePrice: async (params: SalePricePageReqVO) => {
-  //   return await request.download({ url: `/erp/sale-price/export-excel`, params });
+  //   return await request.download({ url: `/erp/saleprice/export-excel`, params });
   // },
   // 导出销售价格表 Excel
   exportSalePrice: async (params: any) => {
-    return await request.download({ url: `/erp/sale-price/export-excel`, params });
+    return await request.download({ url: `/erp/saleprice/export-excel`, params });
   },
 
   // 搜索结果
   searchSalePrice: async (params: any) => {
-    return await request.get({ url: `/erp/sale-price/search`, params });
+    return await request.get({ url: `/erp/saleprice/search`, params });
   },
 
   // 获取缺失价格的销售记录
   getMissingPrices: async (params: any) => {
-    return await request.get({ url: `/erp/sale-price/missing-prices`, params });
+    return await request.get({ url: `/erp/saleprice/missing-prices`, params });
   }
 };

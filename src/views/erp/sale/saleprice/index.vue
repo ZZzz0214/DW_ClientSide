@@ -282,6 +282,7 @@ const openForm = (type: string, id?: number) => {
 const handleDelete = async (ids: number[]) => {
   try {
     await message.delConfirm()
+    console.log("删除的id",ids)
     await SalePriceApi.deleteSalePrice(ids)
     message.success(t('common.delSuccess'))
     await getList()
