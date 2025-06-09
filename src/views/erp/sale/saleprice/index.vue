@@ -97,7 +97,7 @@
         type="warning"
         plain
         @click="handleImport"
-        v-hasPermi="['erp:sale-price:input']"
+        v-hasPermi="['erp:sale-price:import']"
       >
         <Icon icon="ep:upload" class="mr-5px" /> 导入
       </el-button>
@@ -195,7 +195,7 @@
           <el-button
             link
             type="danger"
-            @click="handleDelete(scope.row.id)"
+            @click="handleDelete([scope.row.id])"
             v-hasPermi="['erp:sale-price:delete']"
           >
             删除

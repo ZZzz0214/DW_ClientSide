@@ -167,7 +167,7 @@
             <el-button
               link
               type="danger"
-              @click="handleDelete(scope.row.id)"
+              @click="handleDelete([scope.row.id])"
               v-hasPermi="['erp:transit-sale:delete']"
             >
               删除
