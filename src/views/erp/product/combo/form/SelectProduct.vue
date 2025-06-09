@@ -40,7 +40,7 @@
 
     <el-table :data="productList" @selection-change="handleSelectionChange">
       <el-table-column type="selection" width="55" />
-      <el-table-column label="产品编号" prop="id" />
+      <el-table-column label="产品编号" prop="no" />
       <el-table-column label="产品名称" prop="name" />
       <el-table-column label="产品简称" prop="productShortName" />
       <el-table-column label="采购单价" prop="purchasePrice" />

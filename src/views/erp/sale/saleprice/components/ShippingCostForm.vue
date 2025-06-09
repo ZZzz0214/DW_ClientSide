@@ -167,7 +167,7 @@ watch(
   () => props.items,
   (newItems) => {
     if (newItems.length === 0) {
-      formData.shippingFeeType = 0
+      formData.shippingFeeType = null
       return
     }
     const firstItem = newItems[0]

@@ -75,8 +75,8 @@
         </div>
       </el-form-item>
 
-      <el-form-item label="备注信息" prop="totalQuantity">
-        <el-input v-model="formData.totalQuantity" placeholder="备注信息" :disabled="isDetail" v-hasPermi="['erp:purchaseproduct:export']"/>
+      <el-form-item label="备注信息" prop="remark">
+        <el-input v-model="formData.remark" placeholder="备注信息" :disabled="isDetail" v-hasPermi="['erp:purchaseproduct:export']"/>
       </el-form-item>
 
       <el-form-item label="产品状态" prop="status">
@@ -239,9 +239,10 @@ const formData = ref<ProductComboApi.ComboVO>({
   supplier:'', //供应商名
   purchasePrice:0, //采购单价
   wholesalePrice:0, //批发单价
-  totalQuantity:'', // 产品数量
+  totalQuantity:'',
   status: 0, // 产品状态，默认为启用
   items: [],
+  remark:'',
 });
 
 const formRules = reactive({
@@ -271,7 +272,6 @@ const handleProductSelected = (selectedProducts: any[]) => {
       no: product.no || '', // 确保 productId 有默认值
       productShortName: product.productShortName || '', // 确保 productId 有默认值
       count: 1, // 默认数量为1
-      remark: '', // 默认备注为空
       itemQuantity: 1, // 添加 itemQuantity 字段，默认值为1
     });
   });

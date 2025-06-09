@@ -94,6 +94,14 @@
           <Icon icon="ep:plus" class="mr-5px" /> 整理
         </el-button>
         <el-button
+        type="warning"
+        plain
+        @click="handleImport"
+        v-hasPermi="['erp:sale-price:input']"
+      >
+        <Icon icon="ep:upload" class="mr-5px" /> 导入
+      </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -209,6 +217,7 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <SalePriceForm ref="formRef" @success="getList" />
+  <SalePriceImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -219,8 +228,7 @@ import SalePriceOrganize from './components/SalePriceOrganize.vue';
 import SalePriceForm from './SalePriceForm.vue'
 import {SaleOrderApi} from "@/api/erp/sale/orders";
 import {dateFormatter} from "@/utils/formatTime";
-
-
+import SalePriceImportForm from './components/SalePriceImportForm.vue'
 /** ERP 销售价格表 */
 defineOptions({ name: 'ErpSalePrice' })
 
@@ -301,6 +309,13 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** 导入操作 */
+const importFormRef = ref()
+
+const handleImport = () => {
+  importFormRef.value.open()
 }
 
 /** 选中操作 */

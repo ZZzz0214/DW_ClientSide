@@ -21,7 +21,7 @@ export interface ComboVO {
   firstWeightPrice?: number | null; // 首重价格（单位：元）
   additionalWeight?: number | null; // 续重重量（单位：kg）
   additionalWeightPrice?: number | null; // 续重价格（单位：元）
-  totalQuantity: number; // 产品数量（组合产品中包含的单品总数）（修改：必填）
+  totalQuantity?: string; // 备注信息
   creator?: string; // 创建者
   createTime?: Date; // 创建时间（修改：改为驼峰命名）
   updater?: string; // 更新者

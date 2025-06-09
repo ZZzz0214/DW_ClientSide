@@ -15,7 +15,7 @@
           <el-radio :label="2">按重量</el-radio>
         </el-radio-group>
       </el-form-item>
-  
+
       <!-- 固定运费 -->
       <el-form-item
         v-if="formData.shippingFeeType === 0"
@@ -31,7 +31,7 @@
           <span style="margin-left: 25px;">元</span>
         </div>
       </el-form-item>
-  
+
       <!-- 按件 - 按件数量 -->
       <el-form-item
         v-if="formData.shippingFeeType === 1"
@@ -47,7 +47,7 @@
           <span style="margin-left: 25px;">个</span>
         </div>
       </el-form-item>
-  
+
       <!-- 按件 - 按件价格 -->
       <el-form-item
         v-if="formData.shippingFeeType === 1"
@@ -63,7 +63,7 @@
           <span style="margin-left: 25px;">元</span>
         </div>
       </el-form-item>
-  
+
       <!-- 按重量 - 首重重量 -->
       <el-form-item
         v-if="formData.shippingFeeType === 2"
@@ -79,7 +79,7 @@
           <span style="margin-left: 25px;">g</span>
         </div>
       </el-form-item>
-  
+
       <!-- 按重量 - 首重价格 -->
       <el-form-item
         v-if="formData.shippingFeeType === 2"
@@ -95,7 +95,7 @@
           <span style="margin-left: 25px;">元</span>
         </div>
       </el-form-item>
-  
+
       <!-- 按重量 - 续重重量 -->
       <el-form-item
         v-if="formData.shippingFeeType === 2"
@@ -111,7 +111,7 @@
           <span style="margin-left: 25px;">g</span>
         </div>
       </el-form-item>
-  
+
       <!-- 按重量 - 续重价格 -->
       <el-form-item
         v-if="formData.shippingFeeType === 2"
@@ -129,15 +129,15 @@
       </el-form-item>
     </el-form>
   </template>
-  
+
   <script lang="ts" setup>
   import { PropType, watch, reactive, ref } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { ShippingCostVO } from '@/api/erp/product/product/index'
-  
+
   defineOptions({ name: 'ShippingCostForm' })
-  
+
   const message = useMessage()
   const formLoading = ref(false)
   const props = defineProps({
@@ -160,12 +160,12 @@
   const rules = reactive({
     shippingFeeType: [{ required: true, message: '运费类型不能为空', trigger: 'blur' }]
   })
-  
+
   watch(
     () => props.items,
     (newItems) => {
       if (newItems.length === 0) {
-        formData.shippingFeeType = 0
+        formData.shippingFeeType = null
         return
       }
       const firstItem = newItems[0]
@@ -173,7 +173,7 @@
     },
     { immediate: true }
   )
-  
+
   const emit = defineEmits(['update:activeName'])
   const validate = async () => {
     const form = unref(formRef)
@@ -192,7 +192,7 @@
     }
   }
   defineExpose({ validate })
-  
+
   const changeShippingFeeType = () => {
     if (formData.shippingFeeType === 0) {
       formData.fixedShippingFee = null
@@ -207,12 +207,12 @@
     }
     updateRules()
   }
-  
+
   const updateRules = () => {
     const newRules = {
       shippingFeeType: [{ required: true, message: '运费类型不能为空', trigger: 'blur' }]
     }
-  
+
     if (formData.shippingFeeType === 0) {
       newRules.fixedShippingFee = [{ required: true, message: '固定运费不能为空', trigger: 'blur' }]
     } else if (formData.shippingFeeType === 1) {
@@ -224,7 +224,7 @@
       newRules.additionalWeight = [{ required: true, message: '续重重量不能为空', trigger: 'blur' }]
       newRules.additionalWeightPrice = [{ required: true, message: '续重价格不能为空', trigger: 'blur' }]
     }
-  
+
     Object.assign(rules, newRules)
   }
   </script>
