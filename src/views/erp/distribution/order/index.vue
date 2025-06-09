@@ -140,6 +140,25 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
+
+        <el-button
+        type="success"
+        plain
+        @click="handleExport"
+        :loading="exportLoading"
+        v-hasPermi="['erp:distribution:export']"
+      >
+        <Icon icon="ep:download" class="mr-5px" /> 基础导出
+      </el-button>
+      <el-button
+        type="success"
+        plain
+        @click="handleExport2"
+        :loading="exportLoading"
+        v-hasPermi="['erp:distribution:export']"
+      >
+        <Icon icon="ep:download" class="mr-5px" /> 采购导出
+      </el-button>
         <el-button
           type="danger"
           plain

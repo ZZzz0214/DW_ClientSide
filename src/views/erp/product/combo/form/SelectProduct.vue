@@ -1,5 +1,8 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080">
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080"
+          top="5vh"
+          style="max-height: 90vh;">
+    <div style="max-height: calc(90vh - 150px); overflow-y: auto;">
     <el-form :model="searchForm" label-width="100px">
       <!-- 搜索表单 -->
       <el-row :gutter="20">
@@ -50,6 +53,7 @@
       v-model:limit="searchForm.pageSize"
       @pagination="handleSearch"
     />
+    </div>
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
       <el-button @click="confirmSelection" type="primary">确 定</el-button>

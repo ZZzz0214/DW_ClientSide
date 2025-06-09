@@ -125,10 +125,10 @@
     >
       <el-table-column width="30" label="选择" type="selection" />
       <!-- 编号 -->
-      <el-table-column label="编号" align="center" prop="id" />
+      <el-table-column label="编号" align="center" prop="no" />
 
       <!-- 组品编号 -->
-      <el-table-column label="组品编号" align="center" prop="groupProductId" />
+      <el-table-column label="组品编号" align="center" prop="groupProductNo" />
 
       <!-- 组品简称 -->
       <el-table-column label="产品名称" align="center" prop="productName" />
@@ -296,7 +296,7 @@ const handleExport = async () => {
     await message.exportConfirm()
     exportLoading.value = true
     const data = await SalePriceApi.exportSalePrice(queryParams)
-    download.excel(data, '销售价格表.xls')
+    download.excel(data, '销售价格.xlsx')
   } catch {
   } finally {
     exportLoading.value = false

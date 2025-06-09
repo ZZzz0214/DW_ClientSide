@@ -296,10 +296,10 @@ const updateComboInfo = () => {
   // 更新供应商名
   // 更新采购单价
   const purchasePrices = formData.value.items.reduce((sum, item) => sum + (item.purchasePrice || 0) * (item.count || 0), 0);
-  formData.value.purchasePrice = purchasePrices;
+  formData.value.purchasePrice = Number(purchasePrices.toFixed(2)); // 保留2位小数
   // 更新批发单价
   const wholesalePrices = formData.value.items.reduce((sum, item) => sum + (item.wholesalePrice || 0) * (item.count || 0), 0);
-  formData.value.wholesalePrice = wholesalePrices;
+  formData.value.wholesalePrice = Number(wholesalePrices.toFixed(2)); // 保留2位小数
 };
 
 // 表格合计行

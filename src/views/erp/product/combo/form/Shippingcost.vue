@@ -149,16 +149,26 @@ const props = defineProps({
   isDetail: propTypes.bool.def(false) // 是否作为详情组件
 })
 const formRef = ref() // 表单 Ref
-const formData = reactive<ProductVO>({
-  shippingFeeType: 0, // 运费类型
-  fixedShippingFee: null, // 固定运费
-  additionalItemQuantity: null, // 续件数量
-  additionalItemPrice: null, // 续件价格
-  firstWeight: null, // 首重重量
-  firstWeightPrice: null, // 首重价格
-  additionalWeight: null, // 续重重量
-  additionalWeightPrice: null // 续重价格
-})
+// const formData = reactive<ProductVO>({
+//   shippingFeeType: 0, // 运费类型
+//   fixedShippingFee: null, // 固定运费
+//   additionalItemQuantity: null, // 续件数量
+//   additionalItemPrice: null, // 续件价格
+//   firstWeight: null, // 首重重量
+//   firstWeightPrice: null, // 首重价格
+//   additionalWeight: null, // 续重重量
+//   additionalWeightPrice: null // 续重价格
+// })
+const formData = reactive({
+  shippingFeeType: 0 as number,
+  fixedShippingFee: null as number | null,
+  additionalItemQuantity: null as number | null,
+  additionalItemPrice: null as number | null,
+  firstWeight: null as number | null,
+  firstWeightPrice: null as number | null,
+  additionalWeight: null as number | null,
+  additionalWeightPrice: null as number | null
+}) as ProductVO
 const rules = reactive({
   shippingFeeType: [{ required: true, message: '运费类型不能为空', trigger: 'blur' }]
 })

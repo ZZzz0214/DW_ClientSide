@@ -4,7 +4,7 @@
       <el-row :gutter="20">
         <el-col :span="8">
           <el-form-item label="组品编号">
-            <el-input v-model="searchForm.id" />
+            <el-input v-model="searchForm.no" />
           </el-form-item>
         </el-col>
         <el-col :span="8">
@@ -25,7 +25,7 @@
 
     <el-table :data="comboList" @selection-change="handleSelectionChange" ref="table">
       <el-table-column type="selection" width="55" />
-      <el-table-column label="组品编号" prop="id" />
+      <el-table-column label="组品编号" prop="no" />
       <el-table-column label="产品名称" prop="name" />
       <el-table-column label="产品简称" prop="shortName" />
       <el-table-column label="发货编码" prop="shippingCode" />

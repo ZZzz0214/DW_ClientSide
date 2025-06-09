@@ -259,4 +259,7 @@ export enum DICT_TYPE {
   ERP_USER_PORTRAIT = 'erp_user_portrait', // ERP 用户画像
   ERP_RECRUITMENT_CATEGORY = 'erp_recruitment_category', // ERP 招商类目
   ERP_SELECTION_CRITERIA = 'erp_selection_criteria', // ERP 选品标准
+
+
+  ERP_TRANSIT_PERSON = 'erp_transit_person',// ERP 中转人员
 }

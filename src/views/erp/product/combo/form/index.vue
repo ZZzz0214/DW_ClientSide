@@ -71,9 +71,16 @@ const formData = ref<ProductComboApi.ComboVO>({
   supplier:'', //供应商名
   purchasePrice:0, //采购单价
   wholesalePrice:0, //批发单价
-  totalQuantity: '', // 产品数量（必填）
+  totalQuantity: 0, // 产品数量（必填）
   status: 0, // 产品状态（必填）
   items: [], // 关联的单品列表（必填）
+  shippingFeeType: undefined, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
+  fixedShippingFee: undefined, // 固定运费，单位：元
+  additionalItemQuantity: undefined, // 续件数量
+  additionalItemPrice: undefined, // 续件价格，单位：元
+  firstWeight: undefined, // 首重重量，单位：kg
+  firstWeightPrice: undefined, // 首重价格，单位：元
+  additionalWeight: undefined, // 续重重量，单位：kg
 });
 
 /** 获得详情 */
@@ -101,7 +108,9 @@ const submitForm = async () => {
   try {
     // 校验各表单
     await unref(infoRef)?.validate();
-    await unref(shippingcostRef)?.validate();
+   await unref(shippingcostRef).validate();
+
+
     const data = cloneDeep(unref(formData.value))
     // 确保 name 字段的值被正确设置
     if (!data.name) {

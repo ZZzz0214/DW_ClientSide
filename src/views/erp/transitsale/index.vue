@@ -1,7 +1,7 @@
-<!-- ERP 代发辅助列表 -->
+<!-- 中转销售表 -->
 <template>
     <ContentWrap>
-      <!-- 搜索工作栏 -->
+      <!-- 搜索结果栏 -->
       <el-form
         class="-mb-15px"
         :model="queryParams"
@@ -18,70 +18,51 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="组品编号" prop="comboProductId">
+        <el-form-item label="组品编号" prop="groupProductId">
           <el-input
-            v-model="queryParams.comboProductId"
+            v-model="queryParams.groupProductId"
             placeholder="请输入组品编号"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="发货编码" prop="comboProductId">
+        <el-form-item label="产品名称" prop="productName">
           <el-input
-            v-model="queryParams.comboProductId"
-            placeholder="请输入发货编码"
+            v-model="queryParams.productName"
+            placeholder="请输入组品编号"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="原表商品" prop="originalProduct">
+        <el-form-item label="产品简称" prop="productShortName">
           <el-input
-            v-model="queryParams.originalProduct"
-            placeholder="请输入原表商品"
+            v-model="queryParams.productShortName"
+            placeholder="请输入组品编号"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="原表规格" prop="originalProduct">
+        <el-form-item label="中转人员" prop="transitPerson">
           <el-input
-            v-model="queryParams.originalProduct"
-            placeholder="请输入原表规格"
+            v-model="queryParams.transitPerson"
+            placeholder="请输入中转人员"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="产品名称" prop="originalProduct">
+        <el-form-item label="创建人员" prop="creator">
           <el-input
-            v-model="queryParams.originalProduct"
-            placeholder="请输入产品名称"
+            v-model="queryParams.creator"
+            placeholder="请输入组品编号"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="产品规格" prop="originalProduct">
-          <el-input
-            v-model="queryParams.originalProduct"
-            placeholder="请输入产品规格"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="创建人员" prop="originalProduct">
-          <el-input
-            v-model="queryParams.originalProduct"
-            placeholder="请输入创建人员"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-
         <el-form-item label="创建时间" prop="createTime">
           <el-date-picker
             v-model="queryParams.createTime"
@@ -93,6 +74,7 @@
             value-format="YYYY-MM-DD HH:mm:ss"
           />
         </el-form-item>
+
         <el-form-item>
           <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -100,26 +82,16 @@
             type="primary"
             plain
             @click="openForm('create')"
-            v-hasPermi="['erp:dropship:create']"
+            v-hasPermi="['erp:transit-sale:create']"
           >
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
-
-          <el-button
-          type="warning"
-          plain
-          @click="handleImport"
-          v-hasPermi="['erp:dropship:create']"
-        >
-          <Icon icon="ep:upload" /> 导入
-        </el-button>
-
           <el-button
             type="success"
             plain
             @click="handleExport"
             :loading="exportLoading"
-            v-hasPermi="['erp:dropship:create']"
+            v-hasPermi="['erp:transit-sale:export']"
           >
             <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
@@ -127,7 +99,7 @@
             type="danger"
             plain
             @click="handleDelete(selectionList.map((item) => item.id))"
-            v-hasPermi="['erp:dropship:delete']"
+            v-hasPermi="['erp:transit-sale:delete']"
             :disabled="selectionList.length === 0"
           >
             <Icon icon="ep:delete" class="mr-5px" /> 删除
@@ -135,6 +107,7 @@
         </el-form-item>
       </el-form>
     </ContentWrap>
+
     <ContentWrap>
       <el-table
         v-loading="loading"
@@ -142,19 +115,24 @@
         :stripe="true"
         :show-overflow-tooltip="true"
         @selection-change="handleSelectionChange"
-        :row-style="{height: '80px'}"
-        :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
-        <el-table-column label="原表商品" align="center" prop="originalProduct" :show-overflow-tooltip="false"/>
-        <el-table-column label="原表规格" align="center" prop="originalSpec" :show-overflow-tooltip="false"/>
-        <el-table-column label="原表数量" align="center" prop="originalQuantity" :show-overflow-tooltip="false"/>
-        <el-table-column label="组品编号" align="center" prop="comboProductNo" :show-overflow-tooltip="false"/>
-        <el-table-column label="发货编码" align="center" prop="shippingCode" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
+        <!-- 编号 -->
+        <el-table-column label="编号" align="center" prop="no" />
+
+        <!-- 组品编号 -->
+        <el-table-column label="组品编号" align="center" prop="groupProductNo" />
+
+        <!-- 中转人员 -->
+        <el-table-column label="产品名称" align="center" prop="productName" />
+        <el-table-column label="产品简称" align="center" prop="productShortName" />
+        <el-table-column label="中转人员" align="center" prop="transitPerson" />
+
+        <!-- 代发单价 -->
+        <el-table-column label="代发单价" align="center" prop="distributionPrice" />
+
+        <!-- 批发单价 -->
+        <el-table-column label="批发单价" align="center" prop="wholesalePrice" />
         <el-table-column
           label="创建人员"
           align="center"
@@ -168,22 +146,29 @@
           :formatter="dateFormatter"
           width="180px"
         />
+
         <el-table-column label="操作" align="center" width="200">
           <template #default="scope">
-            <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
+            <el-button
+              link
+              @click="openForm('detail',scope.row.id)"
+              v-hasPermi="['erp:transit-sale:query']"
+            >
+              详情
+            </el-button>
             <el-button
               link
               type="primary"
               @click="openForm('update', scope.row.id)"
-              v-hasPermi="['erp:dropship:update']"
+              v-hasPermi="['erp:transit-sale:update']"
             >
               编辑
             </el-button>
             <el-button
               link
               type="danger"
-              @click="handleDelete([scope.row.id])"
-              v-hasPermi="['erp:dropship:delete']"
+              @click="handleDelete(scope.row.id)"
+              v-hasPermi="['erp:transit-sale:delete']"
             >
               删除
             </el-button>
@@ -198,32 +183,32 @@
         @pagination="getList"
       />
     </ContentWrap>
-      <!-- 在模板底部添加导入组件 -->
-  <DropshipImportForm ref="importFormRef" @success="getList" />
+
+    <!-- 表单弹窗：添加/修改 -->
+    <TransitSaleForm ref="formRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
-  import { dateFormatter } from '@/utils/formatTime'
   import download from '@/utils/download'
-  import { DropshipAssistApi, DropshipAssistVO } from '@/api/erp/dropship'
-  import DropshipImportForm from './form/DropshipImportForm.vue'
+  import { TransitSaleApi, TransitSaleVO } from '@/api/erp/transitsale'
+  import { dateFormatter } from '@/utils/formatTime'
+  import TransitSaleForm from './TransitSaleForm.vue'
 
-  /** ERP 代发辅助列表 */
-  defineOptions({ name: 'ErpDropshipAssist' })
+  /** ERP 中转销售表 */
+  defineOptions({ name: 'ErpTransitSale' })
 
   const message = useMessage() // 消息弹窗
   const { t } = useI18n() // 国际化
-  const { push } = useRouter() // 路由跳转
 
   const loading = ref(true) // 列表的加载中
-  const list = ref<DropshipAssistVO[]>([]) // 列表的数据
+  const list = ref<TransitSaleVO[]>([]) // 列表的数据
   const total = ref(0) // 列表的总页数
   const queryParams = reactive({
     pageNo: 1,
     pageSize: 10,
     no: undefined,
-    originalProduct: undefined,
-    comboProductId: undefined,
+    groupProductId: undefined,
+    transitPerson: undefined,
     createTime: undefined
   })
   const queryFormRef = ref() // 搜索的表单
@@ -233,7 +218,7 @@
   const getList = async () => {
     loading.value = true
     try {
-      const data = await DropshipAssistApi.getDropshipAssistPage(queryParams)
+      const data = await TransitSaleApi.getTransitSalePage(queryParams)
       list.value = data.list
       total.value = data.total
     } finally {
@@ -253,32 +238,17 @@
     handleQuery()
   }
 
+  /** 添加/修改操作 */
+  const formRef = ref()
   const openForm = (type: string, id?: number) => {
-    if (type === 'create') {
-      push({ name: 'ErpDropshipAssistAdd' })
-    } else if (type === 'update' && typeof id === 'number') {
-      push({ name: 'ErpDropshipAssistEdit', params: { id } })
-    } else {
-      console.error('Invalid type or missing id for edit operation')
-    }
-  }
-
-  /** 查看详情 */
-  const openDetail = (id: number) => {
-    push({ name: 'ErpDropshipAssistDetail', params: { id } })
-  }
-
-  /** 选中操作 */
-  const selectionList = ref<DropshipAssistVO[]>([])
-  const handleSelectionChange = (rows: DropshipAssistVO[]) => {
-    selectionList.value = rows
+    formRef.value.open(type, id)
   }
 
   /** 删除按钮操作 */
   const handleDelete = async (ids: number[]) => {
     try {
       await message.delConfirm()
-      await DropshipAssistApi.deleteDropshipAssist(ids)
+      await TransitSaleApi.deleteTransitSale(ids)
       message.success(t('common.delSuccess'))
       await getList()
       selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
@@ -290,32 +260,21 @@
     try {
       await message.exportConfirm()
       exportLoading.value = true
-      const data = await DropshipAssistApi.exportDropshipAssist(queryParams)
-      download.excel(data, '代发辅助.xlsx')
+      const data = await TransitSaleApi.exportTransitSale(queryParams)
+      download.excel(data, '中转销售.xlsx')
     } catch {
     } finally {
       exportLoading.value = false
     }
   }
 
-    /** 导入操作 */
-  const importFormRef = ref()
-
-  const handleImport = () => {
-    importFormRef.value.open()
+  /** 选中操作 */
+  const selectionList = ref<TransitSaleVO[]>([])
+  const handleSelectionChange = (rows: TransitSaleVO[]) => {
+    selectionList.value = rows
   }
 
-  /** 初始化 **/
-  onMounted(() => {
-    getList()
+  onMounted(async () => {
+    await getList()
   })
-
-  onUpdated(async () => {
-    // 检测是否需要刷新列表
-    const shouldRefresh = localStorage.getItem('refreshList');
-    if (shouldRefresh) {
-      localStorage.removeItem('refreshList'); // 清除标志
-      await getList(); // 刷新数据
-    }
-  });
   </script>

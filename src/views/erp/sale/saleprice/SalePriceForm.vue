@@ -10,8 +10,8 @@
       <el-row :gutter="20">
         <!-- 组品编号 -->
         <el-col :span="12">
-          <el-form-item label="组品编号" prop="groupProductId">
-            <el-input disabled v-model="formData.groupProductId" placeholder="自动获取" />
+          <el-form-item label="组品编号" prop="no">
+            <el-input disabled v-model="formData.no" placeholder="自动获取" />
           </el-form-item>
         </el-col>
 
@@ -141,27 +141,59 @@ const formType = ref(''); // 表单的类型：create - 新增；update - 修改
 const formData = ref({
   id: undefined,
   groupProductId: undefined, // 组品编号
+  no:undefined,
   customerName: undefined, // 客户名称
-  distributionPrice: 0, // 代发单价，初始化为 0
-  wholesalePrice: 0, // 批发单价，初始化为 0
-  shippingFeeType: undefined, // 运费类型
+  distributionPrice: undefined, // 代发单价，初始化为 0
+  wholesalePrice: undefined, // 批发单价，初始化为 0
   comboList: [], // 子表项
   cost: [], // 子表项
-  fixedShippingFee: 0, // 固定运费（单位：元）
-  additionalItemQuantity: 0, // 按件数量
-  additionalItemPrice: 0, // 按件价格（单位：元）
-  firstWeight: 0, // 首重重量（单位：kg）
-  firstWeightPrice: 0, // 首重价格（单位：元）
-  additionalWeight: 0, // 续重重量（单位：kg）
-  additionalWeightPrice: 0, // 续重价格（单位：元）
+  shippingFeeType: undefined, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
+  fixedShippingFee: undefined, // 固定运费，单位：元
+  additionalItemQuantity: undefined, // 续件数量
+  additionalItemPrice: undefined, // 续件价格，单位：元
+  firstWeight: undefined, // 首重重量，单位：kg
+  firstWeightPrice: undefined, // 首重价格，单位：元
+  additionalWeight: undefined, // 续重重量，单位：kg
   remark: undefined, // 新增备注字段
 });
 
 const formRules = reactive({
   groupProductId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
   customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
-  distributionPrice: [{ required: true, message: '代发单价不能为空', trigger: 'blur' }],
-  wholesalePrice: [{ required: true, message: '批发单价不能为空', trigger: 'blur' }],
+  //distributionPrice: [{ required: true, message: '代发单价不能为空', trigger: 'blur' }],
+  //wholesalePrice: [{ required: true, message: '批发单价不能为空', trigger: 'blur' }],
+  distributionPrice: [
+    {
+      required: true,
+      message: '代发单价不能为空',
+      trigger: 'blur',
+      validator: (rule: any, value: any, callback: any) => {
+        if (value === undefined || value === null || value === '') {
+          callback(new Error('代发单价不能为空'));
+        } else if (value === 0) {
+          callback(new Error('代发单价不能为0'));
+        } else {
+          callback();
+        }
+      }
+    }
+  ],
+  wholesalePrice: [
+    {
+      required: true,
+      message: '批发单价不能为空',
+      trigger: 'blur',
+      validator: (rule: any, value: any, callback: any) => {
+        if (value === undefined || value === null || value === '') {
+          callback(new Error('批发单价不能为空'));
+        } else if (value === 0) {
+          callback(new Error('批发单价不能为0'));
+        } else {
+          callback();
+        }
+      }
+    }
+  ],
 });
 
 const disabled = computed(() => formType.value === 'detail');
@@ -202,6 +234,21 @@ const open = async (type: string, id?: number) => {
           },
         ];
       }
+      if (type === 'update') {
+        formData.value.cost = [
+          {
+            shippingFeeType: data.shippingFeeType, // 运费类型
+            fixedShippingFee: data.fixedShippingFee, // 固定运费（单位：元）
+            additionalItemQuantity: data.additionalItemQuantity, // 按件数量
+            additionalItemPrice: data.additionalItemPrice, // 按件价格（单位：元）
+            firstWeight: data.firstWeight, // 首重重量（单位：kg）
+            firstWeightPrice: data.firstWeightPrice, // 首重价格（单位：元）
+            additionalWeight: data.additionalWeight, // 续重重量（单位：kg）
+            additionalWeightPrice: data.additionalWeightPrice, // 续重价格（单位：元）
+          },
+        ];
+      }
+
     } finally {
       formLoading.value = false;
     }
@@ -214,15 +261,18 @@ const handleItemUpdated = (comboList: any[]) => {
   formData.value.comboList = comboList; // 更新 items 数据
   if (comboList.length > 0) {
     formData.value.groupProductId = comboList[0].groupProductId; // 更新组品编号
+    formData.value.no = comboList[0].no; // 更新组品编号
   }
 };
 
 const handleItemsUpdated = (cost: any[]) => {
   formData.value.cost = cost; // 更新 cost 数组
-
+  // console.log("cost",cost)
   // 如果 cost 数组有数据，则自动绑定到对应字段
   if (cost.length > 0) {
     const costItem = cost[0];
+    // console.log("costItem",cost[0])
+    // console.log(costItem.shippingFeeType)
     formData.value.shippingFeeType = costItem.shippingFeeType;
     formData.value.fixedShippingFee = costItem.fixedShippingFee;
     formData.value.additionalItemQuantity = costItem.additionalItemQuantity;
@@ -245,6 +295,8 @@ const submitForm = async () => {
   try {
     const data = formData.value as unknown as SalePriceVO;
     if (formType.value === 'create') {
+      // console.log("++++++++++++")
+      // console.log(data)
       await SalePriceApi.createSalePrice(data);
       message.success(t('common.createSuccess'));
     } else {
@@ -267,16 +319,15 @@ const resetForm = () => {
     customerName: undefined, // 客户名称
     distributionPrice: 0, // 代发单价，初始化为 0
     wholesalePrice: 0, // 批发单价，初始化为 0
-    shippingFeeType: undefined, // 运费类型
     comboList: [], // 子表项
     cost: [], // 运费子表项
-    fixedShippingFee: 0, // 固定运费（单位：元）
-    additionalItemQuantity: 0, // 按件数量
-    additionalItemPrice: 0, // 按件价格（单位：元）
-    firstWeight: 0, // 首重重量（单位：kg）
-    firstWeightPrice: 0, // 首重价格（单位：元）
-    additionalWeight: 0, // 续重重量（单位：kg）
-    additionalWeightPrice: 0, // 续重价格（单位：元）
+    shippingFeeType: undefined, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
+    fixedShippingFee: undefined, // 固定运费，单位：元
+    additionalItemQuantity: undefined, // 续件数量
+    additionalItemPrice: undefined, // 续件价格，单位：元
+    firstWeight: undefined, // 首重重量，单位：kg
+    firstWeightPrice: undefined, // 首重价格，单位：元
+    additionalWeight: undefined, // 续重重量，单位：kg
   };
   formRef.value?.resetFields();
 };

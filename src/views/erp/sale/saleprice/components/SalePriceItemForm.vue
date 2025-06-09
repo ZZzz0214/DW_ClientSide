@@ -99,6 +99,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       name: product.name, // 组品名称
       shortName: product.shortName, // 组品简称
       remark: product.remark, // 备注信息
+      no: product.no, // 备注信息
     });
   });
   emit('items-updated', formData.value);

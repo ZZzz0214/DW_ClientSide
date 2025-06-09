@@ -78,6 +78,7 @@
       // 提交数据
       const data = cloneDeep(unref(formData.value))
       const id = params.id as unknown as number
+      console.log('data', data)
 
       if (!id) {
         await DropshipAssistApi.DropshipAssistApi.createDropshipAssist(data)

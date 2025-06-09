@@ -13,7 +13,9 @@ export interface DropshipAssistVO {
   productShortName?: string // 产品简称
   productSpec?: string // 产品规格
   productQuantity?: number // 产品数量
-  createTime?: Date // 创建时间
+  createTime?: Date ,// 创建时间
+  comboProductNo?: string // 组品编号
+  name?: string // 组品名称
 }
 
 // ERP 代发辅助保存 Request VO

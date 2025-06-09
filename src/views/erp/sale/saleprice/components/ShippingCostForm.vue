@@ -142,14 +142,14 @@ const message = useMessage() // 消息弹窗
 const formLoading = ref(false)
 const props = defineProps({
   items: {
-    type: Array as PropType<ShippingCostVO[]>,
+    type: Array as PropType<ShippingCostVO>,
     default: () => []
   },
   isDetail: propTypes.bool.def(false) // 是否作为详情组件
 })
 const formRef = ref() // 表单 Ref
 const formData = reactive<ShippingCostVO>({
-  shippingFeeType: 0, // 运费类型
+  //shippingFeeType: 0, // 运费类型
   fixedShippingFee: null, // 固定运费
   additionalItemQuantity: null, // 按件数量
   additionalItemPrice: null, // 按件价格
@@ -178,6 +178,20 @@ watch(
   }
 )
 
+/** 将传进来的值赋值给 formData */
+// watch(
+//   () => props.items,
+//   (data) => {
+//     if (!data) {
+//       return
+//     }
+//     copyValueToTarget(formData, data)
+//   },
+//   {
+//     immediate: true
+//   }
+// )
+
 /** 表单校验 */
 const emit = defineEmits(['update:activeName'])
 const validate = async () => {
@@ -190,6 +204,7 @@ const validate = async () => {
     await form.validate()
     // 将表单数据包装成数组格式传递给父组件
     emit('items-updated', [formData])
+    Object.assign(props.items, formData)
   } catch (e) {
     message.error('请完善运费信息')
     emit('update:activeName', 'shippingcost')
@@ -216,19 +231,39 @@ const changeShippingFeeType = () => {
   updateRules()
 
   // 触发数据更新
-  validate();
+  // validate();
 }
 
 // 添加对表单数据的监听
-watch(() => formData, () => {
-  validate();
-}, { deep: true })
+// watch(() => formData, () => {
+//   validate();
+// }, { deep: true })
 
+/** 动态更新校验规则 */
+// const updateRules = () => {
+//   const newRules = {
+//     shippingFeeType: [{ required: true, message: '运费类型不能为空', trigger: 'blur' }]
+//   }
+//   Object.assign(rules, newRules)
+// }
 /** 动态更新校验规则 */
 const updateRules = () => {
   const newRules = {
     shippingFeeType: [{ required: true, message: '运费类型不能为空', trigger: 'blur' }]
   }
+
+  if (formData.shippingFeeType === 0) {
+    newRules.fixedShippingFee = [{ required: true, message: '固定运费不能为空', trigger: 'blur' }]
+  } else if (formData.shippingFeeType === 1) {
+    newRules.additionalItemQuantity = [{ required: true, message: '续件数量不能为空', trigger: 'blur' }]
+    newRules.additionalItemPrice = [{ required: true, message: '续件价格不能为空', trigger: 'blur' }]
+  } else if (formData.shippingFeeType === 2) {
+    newRules.firstWeight = [{ required: true, message: '首重重量不能为空', trigger: 'blur' }]
+    newRules.firstWeightPrice = [{ required: true, message: '首重价格不能为空', trigger: 'blur' }]
+    newRules.additionalWeight = [{ required: true, message: '续重重量不能为空', trigger: 'blur' }]
+    newRules.additionalWeightPrice = [{ required: true, message: '续重价格不能为空', trigger: 'blur' }]
+  }
+
   Object.assign(rules, newRules)
 }
 </script>

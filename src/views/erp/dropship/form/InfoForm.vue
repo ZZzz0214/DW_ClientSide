@@ -45,9 +45,9 @@
       </el-form-item>
 
       <!-- 组品编号 -->
-      <el-form-item label="组品编号" prop="comboProductId">
+      <el-form-item label="组品编号" prop="comboProductNo">
         <el-input
-          v-model="formData.comboProductId"
+          v-model="formData.comboProductNo"
           placeholder="请输入组品编号"
           class="w-80"
           @click="openComboSearch"
@@ -95,9 +95,10 @@
     </el-form>
 
     <ComboSearchDialog
+      ref="comboSearchDialog"
     v-model:visible="comboSearchDialogVisible"
     @combo-selected="handleComboSelected"
-    ref="comboSearchDialog"
+
   />
   </template>
 
@@ -106,6 +107,7 @@
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { DropshipAssistVO } from '@/api/erp/dropship'
+  import ComboSearchDialog from './ComboSearchDialog.vue'
 
   defineOptions({ name: 'ErpDropshipAssistInfoForm' })
 
@@ -124,7 +126,8 @@
     originalProduct: '',
     originalSpec: '',
     originalQuantity: 0,
-    comboProductId: '',
+    comboProductId: '', // 组品ID
+    comboProductNo: '', // 组品编号
     productSpec: '',
     productQuantity: 0,
     name: '', // 新增的属性
@@ -135,7 +138,8 @@
     no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
     originalProduct: [{ required: true, message: '原表商品不能为空', trigger: 'blur' }],
     originalQuantity: [{ required: true, message: '原表数量不能为空', trigger: 'blur' }],
-    productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }]
+    productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
+    comboProductNo: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }]
   })
 
   /** 将传进来的值赋值给 formData */
@@ -163,14 +167,14 @@
   }
 
 const comboSearchDialogVisible = ref(false);
-const comboSearchDialog = ref();
-
+  const comboSearchDialog = ref();
 const openComboSearch = () => {
   comboSearchDialog.value?.open();
 };
 
 const handleComboSelected = (combo: any) => {
   formData.comboProductId = combo.id;
+  formData.comboProductNo = combo.no; // 显示组品编号
   formData.shippingCode = combo.shippingCode;
   formData.name = combo.name; // 如果产品名称需要填充
 };

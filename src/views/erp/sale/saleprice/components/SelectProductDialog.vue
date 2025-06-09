@@ -1,5 +1,8 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080">
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080"
+  top="5vh"
+  style="max-height: 90vh;">
+  <div style="max-height: calc(90vh - 150px); overflow-y: auto;">
     <el-form :model="searchForm" label-width="100px">
       <!-- 搜索结果表单 -->
       <el-row :gutter="20">
@@ -31,15 +34,21 @@
       </el-row>
     </el-form>
 
-    <el-table :data="productList" @selection-change="handleSelectionChange">
+    <el-table :data="productList" @selection-change="handleSelectionChange" >
       <el-table-column type="selection" width="55" />
-      <el-table-column label="组品编号" prop="id" />
+      <el-table-column label="组品编号" prop="no" />
       <el-table-column label="组品名称" prop="name" />
       <el-table-column label="组品简称" prop="shortName" />
       <el-table-column label="原表数量" prop="totalQuantity" />
       <el-table-column label="产品重量" prop="weight" />
     </el-table>
-
+    <Pagination
+      :total="total"
+      v-model:page="searchForm.pageNo"
+      v-model:limit="searchForm.pageSize"
+      @pagination="handleSearch"
+    />
+  </div>
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
       <el-button @click="confirmSelection" type="primary">确 定</el-button>
@@ -59,17 +68,19 @@ const searchForm = reactive({
   id: '',
   name: '',
   createTime: '',
+  pageNo: 1,
+  pageSize: 10
 });
 
 const productList = ref<any[]>([]);
 const selectedProducts = ref<any[]>([]);
-
+const total = ref(0) // 总记录数
 const handleSearch = async () => {
   try {
-    productList.value = await ProductComboApi.ComboApi.searchCombos(searchForm);
 
-    console.log("99999999999999999999");
-    console.log(productList.value);
+    const data = await ProductComboApi.ComboApi.getComboPage(searchForm);
+    productList.value = data.list
+    total.value = data.total
   } catch (error) {
     ElMessage.error('查询失败');
   }
