@@ -53,7 +53,6 @@
             <el-input-number
               v-model="row.otherFees"
               controls-position="right"
-              :min="0"
               :precision="2"
             />
           </el-form-item>
@@ -164,6 +163,12 @@ watch(() => formData.value, (newVal) => {
 
 // 计算运费的方法
 const calculateShippingFee = (item) => {
+  if (!item.count || item.count === 0) {
+    item.shippingFee = 0; // 设置为null而不是0
+    return;
+  }
+
+
   if (item.shippingFeeType === 0) {
     // 固定运费
     item.shippingFee = item.fixedShippingFee;
@@ -187,9 +192,13 @@ const calculateShippingFee = (item) => {
 
 // 更新合计的方法
 const updateTotalPrice = (item) => {
-  item.totalProductPrice =
-    item.purchasePrice * item.count + item.shippingFee + item.otherFees;
-  item.totalPurchaseAmount = item.totalProductPrice;
+ // item.totalProductPrice =
+ //   item.purchasePrice * item.count + item.shippingFee + item.otherFees;
+ // item.totalPurchaseAmount = item.totalProductPrice;
+
+  const total = item.purchasePrice * item.count + item.shippingFee + item.otherFees;
+  item.totalProductPrice = Number(total.toFixed(2));
+  item.totalPurchaseAmount = Number(total.toFixed(2));
 };
 
 

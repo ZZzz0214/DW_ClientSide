@@ -260,7 +260,25 @@ const formData = ref({
 })
 const formRules = reactive({
   supplierId: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
-  orderTime: [{ required: true, message: '订单时间不能为空', trigger: 'blur' }]
+  orderTime: [{ required: true, message: '订单时间不能为空', trigger: 'blur' }],
+  orderNumber: [{ required: true, message: '订单号不能为空', trigger: 'blur' }],
+  receiverName: [{ required: true, message: '收件姓名不能为空', trigger: 'blur' }],
+  receiverPhone: [
+    { required: true, message: '联系电话不能为空', trigger: 'blur' }
+  ],
+  receiverAddress: [{ required: true, message: '收件地址不能为空', trigger: 'blur' }],
+  productQuantity: [{
+    required: true,
+    message: '产品数量不能为空',
+    trigger: 'blur',
+    validator: (rule, value, callback) => {
+      if (!value || value <= 0) {
+        callback(new Error('产品数量必须大于0'));
+      } else {
+        callback();
+      }
+    }
+  }]
 })
 const disabled = computed(() => formType.value === 'detail')
 const formRef = ref() // 表单 Ref
@@ -273,6 +291,8 @@ const subTabsName = ref('purchase') // 默认激活“采购信息”标签
 const purchaseFormRef = ref() // 采购信息表单引用
 const saleFormRef = ref() // 出货信息表单引用
 const productList = ref<any[]>([]);
+
+
 
 /** 售后时间 */
 const handleAfterSalesStatusChange = () => {
@@ -298,19 +318,19 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       const data = await ErpDistributionApi.getErpDistribution(id);
-      // console.log('000000000000lllllllloooooooo')
-      // console.log(data)
-      const searchParams = {
-        groupProductId: data.comboProductId,
-        customerName: data.customerName,
-      };
-      //const purchaseshippingFeeType = await ProductComboApi.ComboApi.searchCombos(data.comboProductId);
-      const purchaseshippingFeeType = (await ProductComboApi.ComboApi.getComboPage({
-        comboProductId: data.comboProductId,
-        pageSize: 1
-      })).list;
-      //const saleshippingFeeType = await SalePriceApi.searchSalePrice(searchParams);
-      // console.log('查看运费类型',saleshippingFeeType)
+      console.log('000000000000lllllllloooooooo')
+      console.log(data)
+      // const searchParams = {
+      //   groupProductId: data.comboProductId,
+      //   customerName: data.customerName,
+      // };
+      // //const purchaseshippingFeeType = await ProductComboApi.ComboApi.searchCombos(data.comboProductId);
+      // const purchaseshippingFeeType = (await ProductComboApi.ComboApi.getComboPage({
+      //   comboProductId: data.comboProductId,
+      //   pageSize: 1
+      // })).list;
+      // //const saleshippingFeeType = await SalePriceApi.searchSalePrice(searchParams);
+      // // console.log('查看运费类型',saleshippingFeeType)
 
       formData.value = data;
       // 如果是详情模式，将数据重新组装到 items 和 saleItems
@@ -361,16 +381,16 @@ const open = async (type: string, id?: number) => {
             shippingCode : data.shippingCode,
             purchaseAuditStatus : data.purchaseAuditStatus,
 
-            // 假设这些运费相关的字段已经存在于 data 对象中
-            shippingFeeType: purchaseshippingFeeType[0]?.shippingFeeType,
-            fixedShippingFee: purchaseshippingFeeType[0]?.fixedShippingFee,
-            additionalItemQuantity: purchaseshippingFeeType[0]?.additionalItemQuantity, //按件数量
-            additionalItemPrice: purchaseshippingFeeType[0]?.additionalItemPrice, //按件费用
-            weight: purchaseshippingFeeType[0]?.weight,
-            firstWeight: purchaseshippingFeeType[0]?.firstWeight,
-            firstWeightPrice: purchaseshippingFeeType[0]?.firstWeightPrice,
-            additionalWeight: purchaseshippingFeeType[0]?.additionalWeight,
-            additionalWeightPrice: purchaseshippingFeeType[0]?.additionalWeightPrice
+            // // 假设这些运费相关的字段已经存在于 data 对象中
+            // shippingFeeType: purchaseshippingFeeType[0]?.shippingFeeType,
+            // fixedShippingFee: purchaseshippingFeeType[0]?.fixedShippingFee,
+            // additionalItemQuantity: purchaseshippingFeeType[0]?.additionalItemQuantity, //按件数量
+            // additionalItemPrice: purchaseshippingFeeType[0]?.additionalItemPrice, //按件费用
+            // weight: purchaseshippingFeeType[0]?.weight,
+            // firstWeight: purchaseshippingFeeType[0]?.firstWeight,
+            // firstWeightPrice: purchaseshippingFeeType[0]?.firstWeightPrice,
+            // additionalWeight: purchaseshippingFeeType[0]?.additionalWeight,
+            // additionalWeightPrice: purchaseshippingFeeType[0]?.additionalWeightPrice
           },
         ]
         // console.log('????????????????????????')
@@ -408,10 +428,10 @@ const open = async (type: string, id?: number) => {
       formLoading.value = false
     }
   }
-  // 加载供应商列表
-  supplierList.value = await SupplierApi.getSupplierSimpleList()
-  // 加载用户列表
-  userList.value = await UserApi.getSimpleUserList()
+  // // 加载供应商列表
+  // supplierList.value = await SupplierApi.getSupplierSimpleList()
+  // // 加载用户列表
+  // userList.value = await UserApi.getSimpleUserList()
   // // 加载账户列表
   // accountList.value = await AccountApi.getAccountSimpleList()
   // const defaultAccount = accountList.value.find((item) => item.defaultStatus)
@@ -428,6 +448,20 @@ const submitForm = async () => {
   await formRef.value.validate()
   await purchaseFormRef.value.validate()
   await saleFormRef.value.validate()
+
+  // 校验采购信息
+  if (!formData.value.items || formData.value.items.length === 0) {
+    message.error('请添加采购信息');
+    subTabsName.value = 'purchase';
+    return;
+  }
+
+  // 校验出货信息
+  if (!formData.value.saleItems || formData.value.saleItems.length === 0) {
+    message.error('请添加出货信息');
+    subTabsName.value = 'sale';
+    return;
+  }
   // 提交请求
   formLoading.value = true
   try {

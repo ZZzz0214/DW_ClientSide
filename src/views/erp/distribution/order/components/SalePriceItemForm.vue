@@ -40,13 +40,17 @@
 
       <el-table-column label="出货运费" min-width="80">
         <template #default="{ row }">
+<!--          <el-form-item class="mb-0px!">-->
+<!--            <el-input-number-->
+<!--              v-model="row.saleShippingFee"-->
+<!--              controls-position="right"-->
+<!--              :min="0"-->
+<!--              :precision="2"-->
+<!--              disabled-->
+<!--            />-->
+<!--          </el-form-item>-->
           <el-form-item class="mb-0px!">
-            <el-input-number
-              v-model="row.saleShippingFee"
-              controls-position="right"
-              :min="0"
-              :precision="2"
-            />
+            <el-input disabled v-model="row.saleShippingFee" />
           </el-form-item>
         </template>
       </el-table-column>
@@ -57,7 +61,6 @@
             <el-input-number
               v-model="row.saleOtherFees"
               controls-position="right"
-              :min="0"
               :precision="2"
               @change="() => updateTotalSaleAmount(row)"
             />
@@ -143,15 +146,15 @@ const props = defineProps<{
 }>()
 
 const formLoading = ref(false);
-//const formData = ref(props.items);
-const formData = ref({
-  // ...其他字段
-  purchaseAuditStatus: 0, // 采购审核状态
-  saleAuditStatus: 0, // 销售审核状态
-  // ...其他字段
-})
+const formData = ref(props.items);
+// const formData = ref({
+//   // ...其他字段
+//   purchaseAuditStatus: 0, // 采购审核状态
+//   saleAuditStatus: 0, // 销售审核状态
+//   // ...其他字段
+// })
 const formRules = reactive({
-  count: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }]
+  salesperson: [{ required: true, message: '销售人员不能为空', trigger: 'blur' }]
 });
 const formRef = ref([]);
 const selectProductRef = ref();
@@ -191,7 +194,7 @@ watch(
 watch(() => props.ssb, (newVal) => {
   formData.value?.forEach((item) => {
     item.count = newVal; // 更新子组件中的产品数量
-    // calculateSaleShippingFee(item); // 重新计算出货运费
+     calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
 }, { immediate: true });
@@ -199,37 +202,41 @@ watch(() => props.ssb, (newVal) => {
 // 监听子组件中出货其他费用的变化
 watch(() => formData.value, (newVal) => {
   newVal?.forEach((item) => {
-    // calculateSaleShippingFee(item); // 重新计算出货运费
+     calculateSaleShippingFee(item); // 重新计算出货运费
     updateTotalSaleAmount(item); // 重新计算出货总额
   });
 }, { deep: true });
 
-// 计算出货运费的方法
-// const calculateSaleShippingFee = (item) => {
-//   if(item.salePrice !== null){
-//     if (item.shippingFeeType === 0) {
-//       // 固定运费
-//       item.saleShippingFee = item.fixedShippingFee;
-//     } else if (item.shippingFeeType === 1) {
-//       // 按件运费
-//       if (item.count <= item.additionalItemQuantity) {
-//         item.saleShippingFee = item.additionalItemPrice;
-//       } else {
-//         item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
-//       }
-//     } else if (item.shippingFeeType === 2) {
-//       // 按重量
-//       const totalWeight = item.count * item.weight;
-//       if (totalWeight <= item.firstWeight) {
-//         item.saleShippingFee = item.firstWeightPrice;
-//       } else {
-//         item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
-//       }
-//     }
-//   } else {
-//     item.saleShippingFee = null;
-//   }
-// };
+//计算出货运费的方法
+const calculateSaleShippingFee = (item) => {
+  if (!item.count || item.count === 0) {
+    item.saleShippingFee = 0; // 设置为null而不是0
+    return;
+  }
+  if(item.salePrice !== null){
+    if (item.shippingFeeType === 0) {
+      // 固定运费
+      item.saleShippingFee = item.fixedShippingFee;
+    } else if (item.shippingFeeType === 1) {
+      // 按件运费
+      if (item.count <= item.additionalItemQuantity) {
+        item.saleShippingFee = item.additionalItemPrice;
+      } else {
+        item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+      }
+    } else if (item.shippingFeeType === 2) {
+      // 按重量
+      const totalWeight = item.count * item.weight;
+      if (totalWeight <= item.firstWeight) {
+        item.saleShippingFee = item.firstWeightPrice;
+      } else {
+        item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+      }
+    }
+  } else {
+    item.saleShippingFee = null;
+  }
+};
 
 // 更新出货总额的方法
 const updateTotalSaleAmount = (item) => {
