@@ -71,8 +71,7 @@
             <el-input-number
               v-model="formData.originalQuantity"
               controls-position="right"
-              :min="1"
-              :precision="2"
+              :min="0"
               class="!w-100%"
               placeholder="请输入原表数量"
             />
@@ -227,7 +226,7 @@ const formData = ref({
   items: [], // 采购列表
   saleItems: [], // 出货列表
 
-  comboProductId: 0, // 组合产品ID
+  comboProductId: undefined, // 组合产品ID
   logisticsCompany: '', // 物流公司
   trackingNumber: '', // 物流单号
   productName: '', // 产品名称
@@ -462,6 +461,12 @@ const submitForm = async () => {
     subTabsName.value = 'sale';
     return;
   }
+    // 校验出货信息中的销售人员不能为空
+    if (formData.value.saleItems.some(item => !item.salesperson)) {
+    message.error('出货信息中的销售人员不能为空');
+    subTabsName.value = 'sale';
+    return;
+  }
   // 提交请求
   formLoading.value = true
   try {
@@ -530,7 +535,7 @@ const resetForm = () => {
     items: [], // 采购列表
     saleItems: [], // 出货列表
 
-    comboProductId: 0, // 组合产品ID
+    comboProductId: undefined, // 组合产品ID
     logisticsCompany: '', // 物流公司
     trackingNumber: '', // 物流单号
     productName: '', // 产品名称

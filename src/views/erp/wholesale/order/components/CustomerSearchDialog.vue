@@ -13,6 +13,11 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
+          <el-form-item label="联系电话">
+            <el-input v-model="searchForm.mobile" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
           <el-button @click="handleSearch">查询</el-button>
         </el-col>
       </el-row>

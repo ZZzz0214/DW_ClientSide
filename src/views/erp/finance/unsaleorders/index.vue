@@ -180,28 +180,32 @@
       :stripe="true"
       :show-overflow-tooltip="true"
       @selection-change="handleSelectionChange"
+      :row-style="{height: '80px'}"
+      :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column label="ID" align="center" prop="id" width="80" />
-      <el-table-column min-width="180" label="订单编号" align="center" prop="no" />
-      <el-table-column label="物流单号" align="center" prop="logisticsNumber" width="160" />
-      <el-table-column label="收件姓名" align="center" prop="receiverName" width="120" />
-      <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" />
-      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" />
-      <el-table-column label="备注信息" align="center" prop="remark" width="120" />
-      <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" />
-      <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" />
-      <el-table-column label="产品名称" align="center" prop="productName" width="120" />
-      <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" />
-      <el-table-column label="产品数量" align="center" prop="productQuantity" width="100" />
-      <el-table-column label="销售人员" align="center" prop="salesperson" width="120" />
-      <el-table-column label="客户名称" align="center" prop="customerName" width="120" />
-      <el-table-column label="出货单价" align="center" prop="salePrice" width="100" />
-      <el-table-column label="出货货拉拉费" align="center" prop="saleTruckFee" width="100" />
-      <el-table-column label="出货物流费用" align="center" prop="saleLogisticsFee" width="100" />
-      <el-table-column label="出货杂费" align="center" prop="saleOtherFees" width="100" />
-      <el-table-column label="出货总额" align="center" prop="totalSaleAmount" width="120" />
-      <el-table-column label="中转人员" prop="transferPerson" />
+      <el-table-column min-width="180" label="订单编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column label="物流单号" align="center" prop="logisticsNumber" width="160" :show-overflow-tooltip="false"/>
+      <el-table-column label="收件姓名" align="center" prop="receiverName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" :show-overflow-tooltip="false"/>
+      <el-table-column label="备注信息" align="center" prop="remark" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="productName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品数量" align="center" prop="productQuantity" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="售后状况" align="center" prop="afterSalesStatus" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="售后时间" align="center" prop="afterSalesTime" width="100" :formatter="dateFormatter2" :show-overflow-tooltip="false"/>
+      <el-table-column label="销售人员" align="center" prop="salesperson" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="客户名称" align="center" prop="customerName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货单价" align="center" prop="salePrice" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货货拉拉费" align="center" prop="saleTruckFee" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货物流费用" align="center" prop="saleLogisticsFee" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货杂费" align="center" prop="saleOtherFees" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货总额" align="center" prop="totalSaleAmount" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货备注" align="center" prop="saleRemark" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="中转人员" prop="transferPerson" :show-overflow-tooltip="false"/>
 
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">

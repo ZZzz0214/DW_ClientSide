@@ -237,7 +237,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       additionalWeight: product.additionalWeight,
       additionalWeightPrice: product.additionalWeightPrice
     });
-    emit('productIdChanged', product.id);
+    emit('productIdChanged', product.no);
   });
 
 };

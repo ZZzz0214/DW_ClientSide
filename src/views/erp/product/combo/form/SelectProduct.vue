@@ -21,7 +21,21 @@
             <el-input v-model="searchForm.productShortName" />
           </el-form-item>
         </el-col>
-
+        <el-col :span="8">
+          <el-form-item label="发货编码">
+            <el-input v-model="searchForm.shippingCode" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="产品重量">
+            <el-input v-model="searchForm.weight" />
+          </el-form-item>
+        </el-col>
+        <el-col :span="8">
+          <el-form-item label="采购人员">
+            <el-input v-model="searchForm.purchaser" />
+          </el-form-item>
+        </el-col>
 <!--        <el-col :span="8">-->
 <!--          <el-form-item label="创建时间">-->
 <!--            <el-date-picker-->
@@ -43,8 +57,9 @@
       <el-table-column label="产品编号" prop="no" />
       <el-table-column label="产品名称" prop="name" />
       <el-table-column label="产品简称" prop="productShortName" />
-      <el-table-column label="采购单价" prop="purchasePrice" />
+      <el-table-column label="发货编码" prop="shippingCode" />
       <el-table-column label="产品重量" prop="weight" />
+      <el-table-column label="采购人员" prop="purchaser" />
     </el-table>
     <!-- 添加分页组件 -->
     <Pagination

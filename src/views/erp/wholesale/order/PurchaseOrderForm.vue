@@ -421,6 +421,19 @@ const submitForm = async () => {
   await formRef.value.validate()
   await purchaseFormRef.value.validate()
   await saleFormRef.value.validate()
+  // 校验采购信息
+  if (!formData.value.items || formData.value.items.length === 0) {
+    message.error('请添加采购信息');
+    subTabsName.value = 'purchase';
+    return;
+  }
+
+  // 校验出货信息
+  if (!formData.value.saleItems || formData.value.saleItems.length === 0) {
+    message.error('请添加出货信息');
+    subTabsName.value = 'sale';
+    return;
+  }
   // 提交请求
   formLoading.value = true
   try {

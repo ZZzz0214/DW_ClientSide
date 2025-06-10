@@ -1,41 +1,63 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080">
-    <el-form :model="searchForm" label-width="100px">
-      <el-row :gutter="20">
-        <el-col :span="8">
-          <el-form-item label="组品编号">
-            <el-input v-model="searchForm.no" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="产品名称">
-            <el-input v-model="searchForm.name" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-form-item label="产品简称">
-            <el-input v-model="searchForm.shortName" />
-          </el-form-item>
-        </el-col>
-        <el-col :span="8">
-          <el-button @click="handleQuery">查询</el-button>
-        </el-col>
-      </el-row>
-    </el-form>
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080"
+          top="5vh"
+          style="max-height: 90vh;">
+    <div style="max-height: calc(90vh - 150px); overflow-y: auto;">
+      <el-form :model="searchForm" label-width="100px">
+        <!-- 搜索结果表单 -->
+        <el-row :gutter="20">
+          <el-col :span="8">
+            <el-form-item label="组品编号">
+              <el-input v-model="searchForm.no" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="产品名称">
+              <el-input v-model="searchForm.name" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="产品简称">
+              <el-input v-model="searchForm.shortName" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="发货编码">
+              <el-input v-model="searchForm.shippingCode" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="产品重量">
+              <el-input v-model="searchForm.weight" />
+            </el-form-item>
+          </el-col>
+          <el-col :span="8">
+            <el-form-item label="采购人员">
+              <el-input v-model="searchForm.purchaser" />
+            </el-form-item>
+          </el-col>
 
-    <el-table :data="comboList" @selection-change="handleSelectionChange" ref="table">
-      <el-table-column type="selection" width="55" />
-      <el-table-column label="组品编号" prop="no" />
-      <el-table-column label="产品名称" prop="name" />
-      <el-table-column label="产品简称" prop="shortName" />
-      <el-table-column label="发货编码" prop="shippingCode" />
-    </el-table>
-    <Pagination
-      :total="total"
-      v-model:page="searchForm.pageNo"
-      v-model:limit="searchForm.pageSize"
-      @pagination="handleSearch"
-    />
+        </el-row>
+        <el-button @click="handleSearch">查询</el-button>
+      </el-form>
+
+      <el-table :data="productList" @selection-change="handleSelectionChange">
+        <el-table-column type="selection" width="55" />
+        <el-table-column label="组品编号" prop="no" />
+        <el-table-column label="产品名称" prop="name" />
+        <el-table-column label="产品简称" prop="shortName" />
+        <el-table-column label="发货编码" prop="shippingCode" />
+        <el-table-column label="产品重量" prop="weight" />
+        <el-table-column label="采购人员" prop="purchaser" />
+      </el-table>
+
+      <Pagination
+        :total="total"
+        v-model:page="searchForm.pageNo"
+        v-model:limit="searchForm.pageSize"
+        @pagination="handleSearch"
+      />
+    </div>
     <template #footer>
       <el-button @click="dialogVisible = false">取 消</el-button>
       <el-button @click="confirmSelection" type="primary">确 定</el-button>
@@ -76,24 +98,23 @@ const dialogVisible = computed({
 
 const dialogTitle = ref('选择组品');
 const comboList = ref<any[]>([]);
+const productList = ref<any[]>([]);
 const selectedCombo = ref<any>(null);
 const total = ref(0) // 总记录数
 const handleSearch = async () => {
   try {
-    const data = await ProductComboApi.ComboApi.getComboPage({
-      searchForm
-    });
-    comboList.value = data.list
+    const data  = await ProductComboApi.ComboApi.getComboPage(searchForm);
+    productList.value = data.list
     total.value = data.total
   } catch (error) {
     ElMessage.error('查询失败');
   }
 };
 
-const handleQuery = () => {
-  searchForm.pageNo = 1
-  handleSearch()
-}
+// const handleQuery = () => {
+//   searchForm.pageNo = 1
+//   handleSearch()
+// }
 
 const handleSelectionChange = (selection: any[]) => {
   selectedCombo.value = selection.length > 0 ? selection[0] : null;
