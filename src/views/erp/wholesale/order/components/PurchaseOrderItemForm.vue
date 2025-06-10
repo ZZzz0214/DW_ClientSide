@@ -42,7 +42,6 @@
             <el-input-number
               v-model="row.truckFee"
               controls-position="right"
-              :min="0"
               :precision="2"
             />
           </el-form-item>
@@ -55,7 +54,6 @@
             <el-input-number
               v-model="row.logisticsFee"
               controls-position="right"
-              :min="0"
               :precision="2"
               @change="updateTotalPrice(row)"
             />
@@ -69,7 +67,6 @@
             <el-input-number
               v-model="row.otherFees"
               controls-position="right"
-              :min="0"
               :precision="2"
             />
           </el-form-item>
@@ -182,6 +179,10 @@ watch(() => formData.value, (newVal) => {
 const calculateShippingFee = (item) => {
   console.log('7777777777777777777777777')
   console.log(item.count)
+  if (!item.count || item.count === 0) {
+    item.shippingFee = 0; // 设置为null而不是0
+    return;
+  }
   if (item.shippingFeeType === 0) {
     // 固定运费
     item.logisticsFee = item.fixedShippingFee;
@@ -207,17 +208,16 @@ const calculateShippingFee = (item) => {
 
 // 更新合计的方法
 const updateTotalPrice = (item) => {
-  console.log(item.purchasePrice)
-  console.log(item.count)
-  console.log(item.logisticsFee)
-  console.log(item.otherFees)
-  console.log(item.truckFee)
   item.totalProductPrice =
-    item.purchasePrice * item.count + item.logisticsFee + item.otherFees + item.truckFee;
-  item.totalPurchaseAmount = item.totalProductPrice;
-  console.log('656565656565656')
-  console.log(item.totalProductPrice)
+   item.purchasePrice * item.count + item.logisticsFee + item.otherFees + item.truckFee;
+ item.totalPurchaseAmount = Number(item.totalProductPrice.toFixed(2));
 };
+// 更新合计的方法
+// const updateTotalPrice = (item) => {
+//   const total = item.purchasePrice * item.count + item.shippingFee + item.otherFees;
+//   item.totalProductPrice = Number(total.toFixed(2));
+//   item.totalPurchaseAmount = Number(total.toFixed(2));
+// };
 
 
 
@@ -237,9 +237,9 @@ const handleProductSelected = (selectedProducts: any[]) => {
       purchaser: product.purchaser, //采购人员
       supplier: product.supplier, //供应商名
       purchasePrice: product.wholesalePrice, //采购批发单价
-      logisticsFee: 1, //物流费用
-      truckFee: 1, //货拉拉费
-      otherFees: 1, //采购杂费
+      logisticsFee: 0, //物流费用
+      truckFee: 0, //货拉拉费
+      otherFees: 0, //采购杂费
       totalPurchaseAmount: 1, //采购总额
       purchaseRemark:'', //采购备注
 

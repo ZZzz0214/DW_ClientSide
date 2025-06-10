@@ -161,32 +161,37 @@
       :stripe="true"
       :show-overflow-tooltip="true"
       @selection-change="handleSelectionChange"
+      :row-style="{height: '80px'}"
+      :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column label="ID" align="center" prop="id" width="80" />
-      <el-table-column min-width="180" label="订单编号" align="center" prop="no" />
-      <el-table-column min-width="180" label="订单号" align="center" prop="orderNumber" />
-      <el-table-column label="物流公司" align="center" prop="logisticsCompany" width="120" />
-      <el-table-column label="物流单号" align="center" prop="trackingNumber" width="160" />
-      <el-table-column label="收件姓名" align="center" prop="receiverName" width="120" />
-      <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" />
-      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" />
-      <el-table-column label="原表商品" align="center" prop="originalProductName" width="120" />
-      <el-table-column label="原表规格" align="center" prop="originalStandard" width="120" />
-      <el-table-column label="原表数量" align="center" prop="originalQuantity" width="100" />
-      <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" />
-      <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" />
-      <el-table-column label="产品名称" align="center" prop="productName" width="120" />
-      <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" />
-      <el-table-column label="产品数量" align="center" prop="productQuantity" width="100" />
-      <el-table-column label="采购人员" align="center" prop="purchaser" width="120" />
-      <el-table-column label="供应商名" align="center" prop="supplier" width="120" />
-      <el-table-column label="采购单价" align="center" prop="purchasePrice" width="100" />
-      <el-table-column label="采购运费" align="center" prop="shippingFee" width="100" />
-      <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" />
-      <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" />
-      <el-table-column label="备注信息" align="center" prop="remark" width="120" />
-      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
+      <el-table-column min-width="180" label="订单编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column min-width="180" label="订单号" align="center" prop="orderNumber" :show-overflow-tooltip="false"/>
+      <el-table-column label="物流公司" align="center" prop="logisticsCompany" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="物流单号" align="center" prop="trackingNumber" width="160" :show-overflow-tooltip="false"/>
+      <el-table-column label="收件姓名" align="center" prop="receiverName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" :show-overflow-tooltip="false"/>
+      <el-table-column label="原表商品" align="center" prop="originalProductName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="原表规格" align="center" prop="originalStandard" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="原表数量" align="center" prop="originalQuantity" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="备注信息" align="center" prop="remark" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="productName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品数量" align="center" prop="productQuantity" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="售后状况" align="center" prop="afterSalesStatus" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="售后时间" align="center" prop="afterSalesTime" width="100" :formatter="dateFormatter2" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购人员" align="center" prop="purchaser" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="供应商名" align="center" prop="supplier" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购单价" align="center" prop="purchasePrice" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购运费" align="center" prop="shippingFee" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购备注" align="center" prop="purchaseRemark" width="120" :show-overflow-tooltip="false"/>
+
+      <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.purchaseAuditStatus" />
         </template>
@@ -265,6 +270,7 @@ import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
+import {dateFormatter2} from "@/utils/formatTime";
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpPurchaseUnApproval' })

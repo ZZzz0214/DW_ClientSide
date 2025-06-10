@@ -199,9 +199,31 @@
 <!--      <el-table-column label="出货单价" align="center" prop="salePrice" />-->
 <!--      <el-table-column label="出货总额" align="center" prop="totalSaleAmount" />-->
 
-      <el-table-column label="状态" align="center" fixed="right" width="70" prop="status">
+<!--      <el-table-column label="状态" align="center" fixed="right" width="70" prop="status">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.purchaseAuditStatus === 20 && scope.row.saleAuditStatus === 20 ? 20 : 10"  />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+      <el-table-column label="审核状态" align="center" fixed="right" width="120" prop="status">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center">
+              <span class="w-16 text-right">采购:</span>
+              <dict-tag
+                :type="DICT_TYPE.ERP_AUDIT_STATUS"
+                :value="scope.row.purchaseAuditStatus"
+                size="small"
+              />
+            </div>
+            <div class="flex items-center">
+              <span class="w-16 text-right">销售:</span>
+              <dict-tag
+                :type="DICT_TYPE.ERP_AUDIT_STATUS"
+                :value="scope.row.saleAuditStatus"
+                size="small"
+              />
+            </div>
+          </div>
         </template>
       </el-table-column>
       <el-table-column label="操作" align="center" fixed="right" width="220">

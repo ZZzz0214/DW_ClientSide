@@ -85,7 +85,7 @@
           </el-form-item>
         </el-col>
         <el-col :span="8">
-          <el-form-item label="收件地址" prop="receiverAddress">
+          <el-form-item label="详细地址" prop="receiverAddress">
             <el-input type="textarea" :rows="1" v-model="formData.receiverAddress" placeholder="请输入详细地址" />
           </el-form-item>
         </el-col>
@@ -230,7 +230,32 @@ const formData = ref({
 })
 const formRules = reactive({
   supplierId: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
-  orderTime: [{ required: true, message: '订单时间不能为空', trigger: 'blur' }]
+  orderTime: [{ required: true, message: '订单时间不能为空', trigger: 'blur' }],
+  productQuantity: [
+    {
+      required: true,
+      message: '产品数量不能为空',
+      trigger: 'blur',
+      validator: (rule, value, callback) => {
+        if (value === null || value === undefined || value === '') {
+          callback(new Error('产品数量不能为空'));
+        } else if (value <= 0) {
+          callback(new Error('产品数量必须大于0'));
+        } else {
+          callback();
+        }
+      }
+    }
+  ],
+  receiverName: [
+    { required: true, message: '收件姓名不能为空', trigger: 'blur' }
+  ],
+  receiverPhone: [
+    { required: true, message: '联系电话不能为空', trigger: 'blur' }
+  ],
+  receiverAddress: [
+    { required: true, message: '收件地址不能为空', trigger: 'blur' }
+  ]
 })
 const disabled = computed(() => formType.value === 'detail')
 const formRef = ref() // 表单 Ref

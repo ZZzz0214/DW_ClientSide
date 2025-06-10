@@ -110,7 +110,7 @@
                 </el-form-item>
               </el-col>
               <el-col :span="8">
-                <el-form-item label="收件地址" prop="receiverAddress">
+                <el-form-item label="详细地址" prop="receiverAddress">
                   <el-input type="textarea" :rows="1" v-model="formData.receiverAddress" placeholder="请输入详细地址" />
                 </el-form-item>
               </el-col>

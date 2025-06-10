@@ -176,31 +176,36 @@
       :stripe="true"
       :show-overflow-tooltip="true"
       @selection-change="handleSelectionChange"
+      :row-style="{height: '80px'}"
+      :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="订单编号" prop="no" />
-        <el-table-column label="订单号" prop="orderNumber" />
-        <el-table-column label="物流公司" prop="logisticsCompany" />
-        <el-table-column label="物流单号" prop="trackingNumber" />
-        <el-table-column label="收件姓名" prop="receiverName" />
-        <el-table-column label="联系电话" prop="receiverPhone" />
-        <el-table-column label="详细地址" prop="receiverAddress" />
-        <el-table-column label="原表商品" prop="originalProductName" />
-        <el-table-column label="原表规格" prop="originalStandard" />
-        <el-table-column label="原表数量" prop="originalQuantity" />
-        <el-table-column label="备注信息" prop="remark" />
-        <el-table-column label="组品编号" prop="comboProductId" />
-        <el-table-column label="发货编码" prop="shippingCode" />
-        <el-table-column label="产品名称" prop="productName" />
-        <el-table-column label="产品规格" prop="productSpecification" />
-        <el-table-column label="产品数量" prop="productQuantity" />
-        <el-table-column label="销售人员" prop="salesperson" />
-        <el-table-column label="客户名称" prop="customerName" />
-        <el-table-column label="出货单价" prop="salePrice" />
-        <el-table-column label="出货运费" prop="saleShippingFee" />
-        <el-table-column label="出货杂费" prop="saleOtherFees" />
-        <el-table-column label="出货总额" prop="totalSaleAmount" />
-        <el-table-column label="中转人员" prop="transferPerson" />
+        <el-table-column label="订单编号" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="订单号" prop="orderNumber" :show-overflow-tooltip="false"/>
+        <el-table-column label="物流公司" prop="logisticsCompany" :show-overflow-tooltip="false"/>
+        <el-table-column label="物流单号" prop="trackingNumber" :show-overflow-tooltip="false"/>
+        <el-table-column label="收件姓名" prop="receiverName" :show-overflow-tooltip="false"/>
+        <el-table-column label="联系电话" prop="receiverPhone" :show-overflow-tooltip="false"/>
+        <el-table-column label="详细地址" prop="receiverAddress" :show-overflow-tooltip="false"/>
+        <el-table-column label="原表商品" prop="originalProductName" :show-overflow-tooltip="false"/>
+        <el-table-column label="原表规格" prop="originalStandard" :show-overflow-tooltip="false"/>
+        <el-table-column label="原表数量" prop="originalQuantity" :show-overflow-tooltip="false"/>
+        <el-table-column label="备注信息" prop="remark" :show-overflow-tooltip="false"/>
+        <el-table-column label="组品编号" prop="comboProductId" :show-overflow-tooltip="false"/>
+        <el-table-column label="发货编码" prop="shippingCode" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品规格" prop="productSpecification" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品数量" prop="productQuantity" :show-overflow-tooltip="false"/>
+      <el-table-column label="售后状况" align="center" prop="afterSalesStatus" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="售后时间" align="center" prop="afterSalesTime" width="100" :formatter="dateFormatter2" :show-overflow-tooltip="false"/>
+        <el-table-column label="销售人员" prop="salesperson" :show-overflow-tooltip="false"/>
+        <el-table-column label="客户名称" prop="customerName" :show-overflow-tooltip="false"/>
+        <el-table-column label="出货单价" prop="salePrice" :show-overflow-tooltip="false"/>
+        <el-table-column label="出货运费" prop="saleShippingFee" :show-overflow-tooltip="false"/>
+        <el-table-column label="出货杂费" prop="saleOtherFees" :show-overflow-tooltip="false"/>
+        <el-table-column label="出货总额" prop="totalSaleAmount" :show-overflow-tooltip="false"/>
+        <el-table-column label="出货备注" prop="saleRemark" :show-overflow-tooltip="false"/>
+        <el-table-column label="中转人员" prop="transferPerson" :show-overflow-tooltip="false"/>
 
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
@@ -281,6 +286,7 @@ import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
+import {dateFormatter2} from "@/utils/formatTime";
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpSaleApproval' })

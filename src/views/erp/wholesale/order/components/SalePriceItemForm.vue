@@ -44,7 +44,6 @@
             <el-input-number
               v-model="row.saleTruckFee"
               controls-position="right"
-              :min="0"
               :precision="2"
             />
           </el-form-item>
@@ -57,7 +56,6 @@
             <el-input-number
               v-model="row.saleLogisticsFee"
               controls-position="right"
-              :min="0"
               :precision="2"
                @change="() => updateTotalSaleAmount(row)"
             />
@@ -71,7 +69,6 @@
             <el-input-number
               v-model="row.saleOtherFees"
               controls-position="right"
-              :min="0"
               :precision="2"
               @change="() => updateTotalSaleAmount(row)"
             />
@@ -270,9 +267,9 @@ const handleProductSelected = (selectedProducts: any[]) => {
       salesperson: undefined, //销售人员
       customerName: product.customerName, //客户名称
       salePrice: product.salePrice, //出货批发单价
-      saleLogisticsFee: 1, //销售物流费用
-      saleTruckFee: 1, //销售货拉拉费
-      saleOtherFees: 1, //销售杂费
+      saleLogisticsFee: 0, //销售物流费用
+      saleTruckFee: 0, //销售货拉拉费
+      saleOtherFees: 0, //销售杂费
       totalSaleAmount: 1, //销售总额
       saleRemark:'', //出货备注
 

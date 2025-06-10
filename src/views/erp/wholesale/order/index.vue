@@ -161,23 +161,43 @@
       :stripe="true"
       :show-overflow-tooltip="true"
       @selection-change="handleSelectionChange"
+      :row-style="{height: '80px'}"
+      :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column min-width="180" label="订单编号" align="center" prop="no" />
-      <el-table-column label="物流单号" align="center" prop="logisticsNumber" min-width="200" />
-      <el-table-column label="收件姓名" align="center" prop="receiverName" min-width="200" />
-      <el-table-column label="联系电话" align="center" prop="receiverPhone" />
-      <el-table-column label="详细地址" align="center" prop="receiverAddress" />
-      <el-table-column label="产品名称" align="center" prop="productName" />
-      <el-table-column label="产品规格" align="center" prop="productSpecification" />
-      <el-table-column label="产品数量" align="center" prop="productQuantity" />
+      <el-table-column min-width="180" label="订单编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column label="物流单号" align="center" prop="logisticsNumber" min-width="200" :show-overflow-tooltip="false" />
+      <el-table-column label="收件姓名" align="center" prop="receiverName" min-width="200" :show-overflow-tooltip="false"/>
+      <el-table-column label="联系电话" align="center" prop="receiverPhone" :show-overflow-tooltip="false"/>
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品规格" align="center" prop="productSpecification" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
 
 
-      <el-table-column label="状态" align="center" fixed="right" width="90" prop="status">
+      <el-table-column label="审核状态" align="center" fixed="right" width="120" prop="status">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.status" />
+          <div class="flex flex-col gap-1">
+            <div class="flex items-center">
+              <span class="w-16 text-right">采购:</span>
+              <dict-tag
+                :type="DICT_TYPE.ERP_AUDIT_STATUS"
+                :value="scope.row.purchaseAuditStatus"
+                size="small"
+              />
+            </div>
+            <div class="flex items-center">
+              <span class="w-16 text-right">销售:</span>
+              <dict-tag
+                :type="DICT_TYPE.ERP_AUDIT_STATUS"
+                :value="scope.row.saleAuditStatus"
+                size="small"
+              />
+            </div>
+          </div>
         </template>
       </el-table-column>
+
       <el-table-column label="操作" align="center" fixed="right" width="220">
         <template #default="scope">
           <el-button
