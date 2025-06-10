@@ -224,6 +224,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       otherFees: 1, //采购杂费
       totalPurchaseAmount: 1, //采购总额
       purchaseRemark:'', //采购备注
+      shippingCode: product.shippingCode,
 
       count: props.ssb, //数量
       // 假设这些运费相关的字段已经存在于 product 对象中

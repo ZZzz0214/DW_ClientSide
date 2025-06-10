@@ -11,32 +11,33 @@
       <el-row :gutter="20">
         <el-col :span="6">
           <el-form-item label="订单编号" prop="no">
-            <el-input disabled v-model="formData.no" placeholder="保存时自动生成" type="textarea"/>
+            <el-input disabled v-model="formData.no" placeholder="自动生成" type="textarea"
+                      :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="订单号" prop="orderNumber">
-            <el-input v-model="formData.orderNumber" placeholder="请输入订单号" type="textarea"/>
+            <el-input v-model="formData.orderNumber" placeholder="请输入订单号" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="物流公司" prop="logisticsCompany">
-            <el-input v-model="formData.logisticsCompany" placeholder="请输入物流公司" type="textarea"/>
+            <el-input v-model="formData.logisticsCompany" placeholder="请输入物流公司" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="物流单号" prop="trackingNumber">
-            <el-input v-model="formData.trackingNumber" placeholder="请输入物流单号" type="textarea"/>
+            <el-input v-model="formData.trackingNumber" placeholder="请输入物流单号" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="产品名称" prop="productName">
-            <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" type="textarea"/>
+            <el-input disabled v-model="formData.productName" placeholder="自动生成" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="产品规格" prop="productSpecification">
-            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" type="textarea"/>
+            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -53,17 +54,17 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="组品编号" prop="comboProductId">
-            <el-input disabled v-model="formData.comboProductId" placeholder="获取后自动生成" type="textarea"/>
+            <el-input disabled v-model="formData.comboProductId" placeholder="自动生成" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="原表商品" prop="originalProductName">
-            <el-input v-model="formData.originalProductName" placeholder="请输入原表商品" type="textarea"/>
+            <el-input v-model="formData.originalProductName" placeholder="请输入原表商品" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
           <el-form-item label="原表规格" prop="originalStandard">
-            <el-input v-model="formData.originalStandard" placeholder="请输入原表规格" type="textarea"/>
+            <el-input v-model="formData.originalStandard" placeholder="请输入原表规格" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -79,7 +80,7 @@
         </el-col>
         <el-col :span="6">
           <el-form-item label="发货编码" prop="shippingCode">
-            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" type="textarea"/>
+            <el-input disabled v-model="formData.shippingCode" placeholder="自动生成" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -110,7 +111,7 @@
               </el-col>
               <el-col :span="8">
                 <el-form-item label="详细地址" prop="receiverAddress">
-                  <el-input type="textarea" :rows="1" v-model="formData.receiverAddress" placeholder="请输入详细地址" />
+                  <el-input type="textarea"  v-model="formData.receiverAddress" placeholder="请输入详细地址"  :autosize="{ minRows: 1, maxRows: 4 }"/>
                 </el-form-item>
               </el-col>
             </el-row>
@@ -125,6 +126,7 @@
                     :rows="2"
                     placeholder="请输入售后状况"
                     @input="handleAfterSalesStatusChange"
+                    :autosize="{ minRows: 1, maxRows: 4 }"
                   />
                 </el-form-item>
               </el-col>
@@ -200,8 +202,17 @@ defineOptions({ name: 'ErpPurchaseOrder' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
-const handleProductIdChanged = (productId: number) => {
-  formData.value.comboProductId = productId;
+// const handleProductIdChanged = (productId: number) => {
+//   formData.value.comboProductId = productId;
+// };
+const handleProductIdChanged = (productNo: string) => {
+  // 从采购信息中获取对应的发货编码
+  const purchaseItem = formData.value.items?.[0];
+  if (purchaseItem) {
+    formData.value.comboProductId = productNo;
+    formData.value.shippingCode = purchaseItem.shippingCode;
+    formData.value.productName = purchaseItem.productName;
+  }
 };
 const switchTab = (newTabName) => {
   if (newTabName === 'sale') {

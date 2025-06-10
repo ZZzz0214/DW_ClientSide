@@ -22,36 +22,98 @@
         </el-col>
       </el-row>
 
-      <!-- 第二行：产品名称、产品规格、产品数量、发货编码 -->
-      <el-row :gutter="20">
-        <el-col :span="6">
-          <el-form-item label="产品名称" prop="productName">
-            <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" type="textarea"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="产品规格" prop="productSpecification">
-            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" type="textarea"/>
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="产品数量" prop="productQuantity">
-            <el-input-number
-              v-model="formData.productQuantity"
-              controls-position="right"
-              :min="0"
-              class="!w-100%"
-              placeholder="请输入产品数量"
-              :disabled="formData.purchaseAuditStatus === 20 || formData.saleAuditStatus === 20"
-            />
-          </el-form-item>
-        </el-col>
-        <el-col :span="6">
-          <el-form-item label="发货编码" prop="shippingCode">
-            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />
-          </el-form-item>
-        </el-col>
-      </el-row>
+<!--      &lt;!&ndash; 第二行：产品名称、产品规格、产品数量、发货编码 &ndash;&gt;-->
+<!--      <el-row :gutter="20">-->
+<!--        <el-col :span="6">-->
+<!--          <el-form-item label="产品名称" prop="productName">-->
+<!--            <el-input disabled v-model="formData.productName" placeholder="添加采购信息后自动生成" type="textarea"/>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="6">-->
+<!--          <el-form-item label="产品规格" prop="productSpecification">-->
+<!--            <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" type="textarea"/>-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="6">-->
+<!--          <el-form-item label="产品数量" prop="productQuantity">-->
+<!--            <el-input-number-->
+<!--              v-model="formData.productQuantity"-->
+<!--              controls-position="right"-->
+<!--              :min="0"-->
+<!--              class="!w-100%"-->
+<!--              placeholder="请输入产品数量"-->
+<!--              :disabled="formData.purchaseAuditStatus === 20 || formData.saleAuditStatus === 20"-->
+<!--            />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+<!--        <el-col :span="6">-->
+<!--          <el-form-item label="发货编码" prop="shippingCode">-->
+<!--            <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
+
+<!--      </el-row>-->
+
+      <!-- 第二行：产品名称、产品规格、产品数量、发货编码和组品编号 -->
+
+    <el-row :gutter="20">
+      <el-col :span="6">
+        <el-form-item label="产品名称" prop="productName">
+          <el-input disabled v-model="formData.productName" placeholder="自动生成" type="textarea"
+                    :autosize="{ minRows: 1, maxRows: 4 }"/>
+        </el-form-item>
+      </el-col>
+      <el-col :span="6">
+        <el-form-item label="产品规格" prop="productSpecification">
+          <el-input v-model="formData.productSpecification" placeholder="请输入产品规格" type="textarea"
+                    :autosize="{ minRows: 1, maxRows: 4 }"/>
+        </el-form-item>
+      </el-col>
+      <el-col :span="6">
+        <el-form-item label="产品数量" prop="productQuantity">
+          <el-input-number
+            v-model="formData.productQuantity"
+            controls-position="right"
+            :min="0"
+            class="!w-100%"
+            placeholder="请输入产品数量"
+            :disabled="formData.purchaseAuditStatus === 20 || formData.saleAuditStatus === 20"
+          />
+        </el-form-item>
+      </el-col>
+<!--      <el-col :span="6">-->
+<!--        <el-form-item label="组品编码" prop="comboProductId">-->
+<!--          <el-input disabled v-model="formData.comboProductId" placeholder="获取后自动生成" type="textarea" :rows="1"/>-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="发货编码" prop="shippingCode">-->
+<!--          <el-input disabled v-model="formData.shippingCode" placeholder="获取后自动生成" type="textarea" :rows="1"/>-->
+<!--        </el-form-item>-->
+
+<!--      </el-col>-->
+
+      <el-col :span="6">
+        <el-form-item label="组品编码" prop="comboProductId">
+          <el-input
+            disabled
+            v-model="formData.comboProductId"
+            placeholder="获取后自动生成"
+            type="textarea"
+            :autosize="{ minRows: 1, maxRows: 4 }"
+          />
+        </el-form-item>
+        <el-form-item label="发货编码" prop="shippingCode">
+          <el-input
+            disabled
+            v-model="formData.shippingCode"
+            placeholder="获取后自动生成"
+            type="textarea"
+            :autosize="{ minRows: 1, maxRows: 4 }"
+          />
+        </el-form-item>
+      </el-col>
+    </el-row>
+
+
 <!--      <el-row :gutter="20">-->
 <!--      <el-col :span="8">-->
 <!--          <el-form-item label="附件" prop="fileUrl">-->
@@ -86,7 +148,7 @@
         </el-col>
         <el-col :span="8">
           <el-form-item label="详细地址" prop="receiverAddress">
-            <el-input type="textarea" :rows="1" v-model="formData.receiverAddress" placeholder="请输入详细地址" />
+            <el-input type="textarea" :autosize="{ minRows: 1, maxRows: 4 }" v-model="formData.receiverAddress" placeholder="请输入详细地址" />
           </el-form-item>
         </el-col>
       </el-row>
@@ -96,11 +158,12 @@
         <el-col :span="12">
           <el-form-item label="售后状况" prop="afterSalesStatus">
             <el-input
-              type="textarea"
               v-model="formData.afterSalesStatus"
               :rows="2"
               placeholder="请输入售后状况"
               @input="handleAfterSalesStatusChange"
+              type="textarea"
+              :autosize="{ minRows: 1, maxRows: 4 }"
             />
           </el-form-item>
         </el-col>
@@ -176,8 +239,17 @@ defineOptions({ name: 'ErpPurchaseOrder' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 
-const handleProductIdChanged = (productId: number) => {
-  formData.value.comboProductId = productId;
+// const handleProductIdChanged = (productId: number) => {
+//   formData.value.comboProductId = productId;
+// };
+
+const handleProductIdChanged = (productNo: string) => {
+  // 从采购信息中获取对应的发货编码
+  const purchaseItem = formData.value.items?.[0];
+  if (purchaseItem) {
+    formData.value.comboProductId = productNo;
+    formData.value.shippingCode = purchaseItem.shippingCode;
+  }
 };
 const switchTab = (newTabName) => {
   if (newTabName === 'sale') {
@@ -202,7 +274,7 @@ const formData = ref({
   items: [], // 采购列表
   saleItems: [], // 出货列表
 
-  comboProductId: 0, // 组合产品ID
+  comboProductId: undefined, // 组合产品ID
   productName: '', // 产品名称
   productQuantity: 0, // 产品数量
   shippingCode: '', // 发货编码
@@ -540,7 +612,7 @@ const resetForm = () => {
     fileUrl: '',
     items: [],
     saleItems: [],
-    comboProductId: 0,
+    comboProductId: undefined,
     productName: '',
     productQuantity: 0,
     shippingCode: '',
