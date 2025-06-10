@@ -29,6 +29,7 @@
           <el-col :span="12">
           <el-form-item label="中转人员" prop="transitPerson">
             <el-select
+              :disabled="formType === 'detail'"
               v-model="formData.transitPerson"
               placeholder="请选择中转人员"
               class="w-80"

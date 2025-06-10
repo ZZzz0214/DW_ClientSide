@@ -50,6 +50,10 @@ export const ComboApi = {
     return await request.get({ url: `/erp/combo/simple-list` });
   },
 
+  getComboSimpleList2: async () => {
+    return await request.download({ url: `/erp/combo/get-import-template` });
+  },
+
   // 查询组合产品详情
   getCombo: async (id: number) => {
     return await request.get({ url: `/erp/combo/get?id=${id}` });

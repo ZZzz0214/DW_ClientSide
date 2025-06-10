@@ -108,6 +108,14 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:combo-product:import']"
+        >
+          <Icon icon="ep:upload" class="mr-5px" /> 导入
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -209,7 +217,7 @@
       @pagination="getList"
     />
   </ContentWrap>
-
+  <ComboImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -217,7 +225,7 @@ import download from '@/utils/download'
 import { ComboApi , ComboVO } from '@/api/erp/product/combo'
 import ComboForm  from './ComboForm.vue'
 import {dateFormatter} from "@/utils/formatTime";
-
+import ComboImportForm from './form/ComboImportForm.vue'
 
 /** ERP 产品列表 */
 defineOptions({ name: 'ErpCombo' })
@@ -322,6 +330,14 @@ const handleExport2 = async () => {
     exportLoading.value = false
   }
 }
+
+/** 导入操作 */
+const importFormRef = ref()
+
+const handleImport = () => {
+  importFormRef.value.open()
+}
+
 
 
 /** 初始化 **/

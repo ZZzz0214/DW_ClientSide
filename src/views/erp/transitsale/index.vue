@@ -86,6 +86,15 @@
           >
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
+
+          <el-button
+            type="warning"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:transit-sale:import']"
+          >
+            <Icon icon="ep:upload" class="mr-5px" /> 导入
+          </el-button>
           <el-button
             type="success"
             plain
@@ -126,8 +135,16 @@
         <!-- 中转人员 -->
         <el-table-column label="产品名称" align="center" prop="productName" />
         <el-table-column label="产品简称" align="center" prop="productShortName" />
-        <el-table-column label="中转人员" align="center" prop="transitPerson" />
-
+        <el-table-column
+          label="中转人员"
+          align="center"
+          prop="transitPerson"
+          :show-overflow-tooltip="false"
+        >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_TRANSIT_PERSON" :value="scope.row.transitPerson" />
+          </template>
+        </el-table-column>
         <!-- 代发单价 -->
         <el-table-column label="代发单价" align="center" prop="distributionPrice" />
 
@@ -186,6 +203,7 @@
 
     <!-- 表单弹窗：添加/修改 -->
     <TransitSaleForm ref="formRef" @success="getList" />
+    <TransitSaleImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
@@ -193,7 +211,8 @@
   import { TransitSaleApi, TransitSaleVO } from '@/api/erp/transitsale'
   import { dateFormatter } from '@/utils/formatTime'
   import TransitSaleForm from './TransitSaleForm.vue'
-
+  import TransitSaleImportForm from './form/TransitSaleImportForm.vue'
+  import { DICT_TYPE } from '@/utils/dict'
   /** ERP 中转销售表 */
   defineOptions({ name: 'ErpTransitSale' })
 
@@ -267,6 +286,14 @@
       exportLoading.value = false
     }
   }
+
+
+/** 导入操作 */
+  const importFormRef = ref()
+
+    const handleImport = () => {
+      importFormRef.value.open()
+    }
 
   /** 选中操作 */
   const selectionList = ref<TransitSaleVO[]>([])
