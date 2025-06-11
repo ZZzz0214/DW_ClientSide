@@ -238,7 +238,10 @@ const handleProductSelected = (selectedProducts: any[]) => {
       additionalWeight: product.additionalWeight,
       additionalWeightPrice: product.additionalWeightPrice
     });
-    emit('productIdChanged', product.no);
+    emit('productIdChanged', {
+      id: product.id,
+      no: product.no 
+    });
   });
 
 };

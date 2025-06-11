@@ -53,8 +53,8 @@
           </el-form-item>
         </el-col>
         <el-col :span="6">
-          <el-form-item label="组品编号" prop="comboProductId">
-            <el-input disabled v-model="formData.comboProductId" placeholder="自动生成" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
+          <el-form-item label="组品编号" prop="comboProductNo">
+            <el-input disabled v-model="formData.comboProductNo" placeholder="自动生成" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
           </el-form-item>
         </el-col>
         <el-col :span="6">
@@ -205,11 +205,11 @@ const message = useMessage() // 消息弹窗
 // const handleProductIdChanged = (productId: number) => {
 //   formData.value.comboProductId = productId;
 // };
-const handleProductIdChanged = (productNo: string) => {
-  // 从采购信息中获取对应的发货编码
+const handleProductIdChanged = (product: {id: number, no: string}) => {
   const purchaseItem = formData.value.items?.[0];
   if (purchaseItem) {
-    formData.value.comboProductId = productNo;
+    formData.value.comboProductId = product.id; // 存储产品ID
+    formData.value.comboProductNo = product.no; // 显示产品编号
     formData.value.shippingCode = purchaseItem.shippingCode;
     formData.value.productName = purchaseItem.productName;
   }
@@ -236,8 +236,8 @@ const formData = ref({
 
   items: [], // 采购列表
   saleItems: [], // 出货列表
-
-  comboProductId: undefined, // 组合产品ID
+  comboProductId: undefined, // 组合产品ID(数值)
+  comboProductNo: undefined, // 组合产品编号(字符串)
   logisticsCompany: '', // 物流公司
   trackingNumber: '', // 物流单号
   productName: '', // 产品名称
