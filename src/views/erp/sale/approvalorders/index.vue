@@ -136,7 +136,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:purchase-order:export']"
+          v-hasPermi="['erp:saleorder:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -432,8 +432,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await PurchaseOrderApi.exportPurchaseOrder(queryParams)
-    download.excel(data, '销售订单.xls')
+    const data = await PurchaseOrderApi.exportPurchaseOrder2(queryParams)
+    download.excel(data, '批发订单.xlsx')
   } catch {
   } finally {
     exportLoading.value = false

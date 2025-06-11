@@ -366,8 +366,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    // const data = await ErpWholesaleApi.exportErpWholesale(queryParams)
-    // download.excel(data, '销售订单.xls')
+    const data = await ErpWholesaleApi.exportErpWholesale(queryParams)
+    download.excel(data, '批发订单.xlsx')
   } catch {
   } finally {
     exportLoading.value = false

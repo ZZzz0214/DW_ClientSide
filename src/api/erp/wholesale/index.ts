@@ -77,7 +77,7 @@ export const ErpWholesaleApi = {
   },
 
   // // 导出批发列表 Excel
-  // exportErpWholesale: async (params: any) => {
-  //   return await request.download({ url: `/erp/wholesale/export-excel`, params });
-  // },
+  exportErpWholesale: async (params: any) => {
+    return await request.download({ url: `/erp/wholesale/export-excel`, params });
+  },
 };

@@ -142,24 +142,6 @@
         </el-button>
 
         <el-button
-        type="success"
-        plain
-        @click="handleExport"
-        :loading="exportLoading"
-        v-hasPermi="['erp:distribution:export']"
-      >
-        <Icon icon="ep:download" class="mr-5px" /> 基础导出
-      </el-button>
-      <el-button
-        type="success"
-        plain
-        @click="handleExport2"
-        :loading="exportLoading"
-        v-hasPermi="['erp:distribution:export']"
-      >
-        <Icon icon="ep:download" class="mr-5px" /> 采购导出
-      </el-button>
-        <el-button
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
@@ -204,6 +186,21 @@
 <!--          <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.purchaseAuditStatus === 20 && scope.row.saleAuditStatus === 20 ? 20 : 10"  />-->
 <!--        </template>-->
 <!--      </el-table-column>-->
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
+
+      />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+
       <el-table-column label="审核状态" align="center" fixed="right" width="120" prop="status">
         <template #default="scope">
           <div class="flex flex-col gap-1">
@@ -289,7 +286,7 @@
 
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter2 } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
 import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
@@ -397,8 +394,8 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    // const data = await ErpDistributionApi.exportErpDistribution(queryParams)
-    // download.excel(data, '销售订单.xls')
+     const data = await ErpDistributionApi.exportErpDistribution(queryParams)
+     download.excel(data, '代发订单.xlsx')
   } catch {
   } finally {
     exportLoading.value = false

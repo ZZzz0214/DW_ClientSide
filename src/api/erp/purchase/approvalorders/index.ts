@@ -166,6 +166,18 @@ export const PurchaseOrderApi = {
 
   // 导出采购订单 Excel
   exportPurchaseOrder: async (params: any) => {
-    return await request.download({ url: `/erp/wholesale-purchase-order/export-excel`, params })
+    return await request.download({ url: `/erp/wholesale/purchase/export-approved`, params })
+  }
+,
+  exportPurchaseOrder2: async (params: any) => {
+    return await request.download({ url: `/erp/wholesale/sale/export-approved`, params })
+  }
+,
+  exportPurchaseOrder3: async (params: any) => {
+    return await request.download({ url: `/erp/wholesale/purchase/export-unapproved`, params })
+  }
+  ,
+  exportPurchaseOrder4: async (params: any) => {
+    return await request.download({ url: `/erp/wholesale/sale/export-unapproved`, params })
   }
 }

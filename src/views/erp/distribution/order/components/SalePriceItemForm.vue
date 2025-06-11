@@ -131,7 +131,7 @@ import { ref, onMounted, watch } from 'vue';
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
 import SalespersonSearchDialog from './SalespersonSearchDialog.vue'; // 引入销售人员搜索弹窗组件
 import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
-
+const message = useMessage() // 消息弹窗
 // const props = defineProps<{
 //   items: any[];
 //   disabled: boolean;
@@ -260,6 +260,11 @@ const updateTotalSaleAmount = (item) => {
 // 添加按钮操作
 const handleAdd = () => {
   // selectProductRef.value.open(comboProductId.value);
+
+  if (formData.value.length >= 1) {
+    message.warning('只能添加一条出货信息');
+    return;
+  }
   selectCustomRef.value.open();
 };
 
@@ -270,6 +275,10 @@ const handleDelete = (index: number) => {
 
 // 产品选择后的处理
 const handleProductSelected = (selectedProducts: any[]) => {
+  if (formData.value.length >= 1) {
+    message.warning('只能添加一条出货信息');
+    return;
+  }
   console.log('mmmmmmmmmmmmmmmmmmmmmmm')
   selectedProducts.forEach(product => {
     console.log(product)

@@ -103,13 +103,7 @@ import { ref, onMounted, watch } from 'vue';
 import SelectProduct from './SelectProduct.vue';
 import { ProductApi, ProductVO } from '@/api/erp/product/product';
 import { ComboApi, ComboVO } from '@/api/erp/product/combo';
-import { StockApi } from '@/api/erp/stock/stock';
-import {
-  erpCountInputFormatter,
-  erpPriceInputFormatter,
-  erpPriceMultiply,
-  getSumValue
-} from '@/utils'
+const message = useMessage() // 消息弹窗
 
 const props = defineProps<{
   items: undefined
@@ -204,7 +198,11 @@ const updateTotalPrice = (item) => {
 
 
 const handleAdd = () => {
-  selectProductRef.value.open(); // 调用子组件的 open 方法
+  if (formData.value.length >= 1) {
+    message.warning('只能添加一条采购信息');
+    return;
+  }
+  selectProductRef.value.open();
 };
 
 const handleDelete = (index: number) => {
@@ -212,6 +210,10 @@ const handleDelete = (index: number) => {
 };
 
 const handleProductSelected = (selectedProducts: any[]) => {
+  if (formData.value.length >= 1) {
+    message.warning('只能添加一条采购信息');
+    return;
+  }
   selectedProducts.forEach(product => {
     formData.value.push({
       productId: product.id, //产品id
@@ -240,7 +242,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
     });
     emit('productIdChanged', {
       id: product.id,
-      no: product.no 
+      no: product.no
     });
   });
 

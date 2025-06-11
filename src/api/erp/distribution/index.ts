@@ -84,8 +84,8 @@ export const ErpDistributionApi = {
     });
   },
 
-  // // 导出代发列表 Excel
-  // exportErpDistribution: async (params: any) => {
-  //   return await request.download({ url: `/erp/distribution/export-excel`, params })
-  // }
+  // 导出代发列表 Excel
+  exportErpDistribution: async (params: any) => {
+    return await request.download({ url: `/erp/distribution/export-excel`, params })
+  }
 };
