@@ -287,7 +287,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       customerName: product.customerName, //客户名称
       salePrice: product.salePrice, //出货单价
       saleShippingFee: 0, //出货运费
-      saleOtherFees: 1, //销售杂费
+      saleOtherFees: 0, //销售杂费
       totalSaleAmount: 1, //销售总额
       saleRemark:'', //出货备注
 

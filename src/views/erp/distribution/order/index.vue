@@ -132,6 +132,14 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:distribution:import']"
+        >
+          <Icon icon="ep:upload" class="mr-5px" /> 导入
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -282,20 +290,20 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <PurchaseOrderForm ref="formRef" @success="getList" />
+  <DistributionImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
 import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
-import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/utils'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
+import DistributionImportForm from './components/DistributionImportForm.vue'
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpdistributionOrder' })
@@ -400,6 +408,13 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+// 添加导入处理方法
+const importFormRef = ref()
+
+const handleImport = () => {
+  importFormRef.value.open()
 }
 
 /** 选中操作 */

@@ -223,7 +223,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       supplier: product.supplier, //供应商名
       purchasePrice: product.purchasePrice, //采购代发单价
       shippingFee: 1, //采购运费
-      otherFees: 1, //采购杂费
+      otherFees: 0, //采购杂费
       totalPurchaseAmount: 1, //采购总额
       purchaseRemark:'', //采购备注
       shippingCode: product.shippingCode,

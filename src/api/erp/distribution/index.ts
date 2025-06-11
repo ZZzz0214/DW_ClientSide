@@ -88,4 +88,10 @@ export const ErpDistributionApi = {
   exportErpDistribution: async (params: any) => {
     return await request.download({ url: `/erp/distribution/export-excel`, params })
   }
+
+  ,
+  importDistributionTemplate: async () => {
+    return await request.download({ url: `/erp/distribution/get-import-template` });
+  },
+
 };
