@@ -520,7 +520,7 @@ const submitForm = async () => {
       await ErpDistributionApi.createErpDistribution(data)
       message.success(t('common.createSuccess'))
     } else {
-      console.log('!!!!!!!!!!!!!!!!!!!!!!')
+      console.log('更更111111111111111111!')
       console.log(data)
       await ErpDistributionApi.updateErpDistribution(data)
       message.success(t('common.updateSuccess'))
