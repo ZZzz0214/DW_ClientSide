@@ -52,7 +52,7 @@
           <el-form-item class="mb-0px!">
             <el-input-number
               v-model="row.otherFees"
-              controls-position="right"
+              :controls="false"
               :precision="2"
             />
           </el-form-item>

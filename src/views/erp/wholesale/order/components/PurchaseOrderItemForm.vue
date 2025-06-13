@@ -41,7 +41,7 @@
           <el-form-item class="mb-0px!">
             <el-input-number
               v-model="row.truckFee"
-              controls-position="right"
+              :controls="false"
               :precision="2"
             />
           </el-form-item>
@@ -53,7 +53,7 @@
           <el-form-item class="mb-0px!">
             <el-input-number
               v-model="row.logisticsFee"
-              controls-position="right"
+              :controls="false"
               :precision="2"
               @change="updateTotalPrice(row)"
             />
@@ -66,7 +66,7 @@
           <el-form-item class="mb-0px!">
             <el-input-number
               v-model="row.otherFees"
-              controls-position="right"
+              :controls="false"
               :precision="2"
             />
           </el-form-item>
@@ -117,13 +117,7 @@ import { ref, onMounted, watch } from 'vue';
 import SelectProduct from './SelectProduct.vue';
 import { ProductApi, ProductVO } from '@/api/erp/product/product';
 import { ComboApi, ComboVO } from '@/api/erp/product/combo';
-import { StockApi } from '@/api/erp/stock/stock';
-import {
-  erpCountInputFormatter,
-  erpPriceInputFormatter,
-  erpPriceMultiply,
-  getSumValue
-} from '@/utils'
+const message = useMessage() // 消息弹窗
 
 const props = defineProps<{
   items: undefined
@@ -170,7 +164,7 @@ watch(() => props.ssb, (newVal) => {
 // 监听子组件中采购其他费用的变化
 watch(() => formData.value, (newVal) => {
   newVal.forEach((item) => {
-    //calculateShippingFee(item); // 重新计算运费
+   // calculateShippingFee(item); // 重新计算运费
     updateTotalPrice(item); // 重新计算合计
   });
 }, { deep: true });
@@ -222,6 +216,10 @@ const updateTotalPrice = (item) => {
 
 
 const handleAdd = () => {
+  if (formData.value.length >= 1) {
+    message.warning('只能添加一条采购信息');
+    return;
+  }
   selectProductRef.value.open(); // 调用子组件的 open 方法
 };
 
@@ -230,6 +228,10 @@ const handleDelete = (index: number) => {
 };
 
 const handleProductSelected = (selectedProducts: any[]) => {
+  if (formData.value.length >= 1) {
+    message.warning('只能添加一条采购信息');
+    return;
+  }
   selectedProducts.forEach(product => {
     formData.value.push({
       productId: product.id, //产品id
@@ -246,17 +248,20 @@ const handleProductSelected = (selectedProducts: any[]) => {
 
       count: props.ssb, //数量
       // 假设这些运费相关的字段已经存在于 product 对象中
-      shippingFeeType: product.shippingFeeType,
-      fixedShippingFee: product.fixedShippingFee,
-      additionalItemQuantity: product.additionalItemQuantity, //按件数量
-      additionalItemPrice: product.additionalItemPrice, //按件费用
-      weight: product.weight,
-      firstWeight: product.firstWeight,
-      firstWeightPrice: product.firstWeightPrice,
-      additionalWeight: product.additionalWeight,
-      additionalWeightPrice: product.additionalWeightPrice
+      // shippingFeeType: product.shippingFeeType,
+      // fixedShippingFee: product.fixedShippingFee,
+      // additionalItemQuantity: product.additionalItemQuantity, //按件数量
+      // additionalItemPrice: product.additionalItemPrice, //按件费用
+      // weight: product.weight,
+      // firstWeight: product.firstWeight,
+      // firstWeightPrice: product.firstWeightPrice,
+      // additionalWeight: product.additionalWeight,
+      // additionalWeightPrice: product.additionalWeightPrice
     });
-    emit('productIdChanged', product.no);
+    emit('productIdChanged', {
+      id: product.id,
+      no: product.no
+    });
   });
 
 };

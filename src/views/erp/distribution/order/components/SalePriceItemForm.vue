@@ -60,7 +60,7 @@
           <el-form-item class="mb-0px!">
             <el-input-number
               v-model="row.saleOtherFees"
-              controls-position="right"
+              :controls="false"
               :precision="2"
               @change="() => updateTotalSaleAmount(row)"
             />
@@ -252,6 +252,7 @@ const updateTotalSaleAmount = (item) => {
   const otherFees = Number(item.saleOtherFees) || 0;
 
   item.totalSaleAmount = price * count + shippingFee + otherFees;
+  item.totalSaleAmount=Number(item.totalSaleAmount.toFixed(2));
 
   // console.log("3333333333333333333333")
   // console.log(Number(item.totalSaleAmount) )
@@ -279,7 +280,6 @@ const handleProductSelected = (selectedProducts: any[]) => {
     message.warning('只能添加一条出货信息');
     return;
   }
-  console.log('mmmmmmmmmmmmmmmmmmmmmmm')
   selectedProducts.forEach(product => {
     console.log(product)
     formData.value.push({

@@ -132,6 +132,14 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:wholesale:import']"
+        >
+          <Icon icon="ep:upload" class="mr-5px" /> 导入
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -257,21 +265,20 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <PurchaseOrderForm ref="formRef" @success="getList" />
+  <WholesaleImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { dateFormatter2 } from '@/utils/formatTime'
 import download from '@/utils/download'
-import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/order'
-import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
 import { ErpWholesaleApi, ErpWholesaleVO } from '@/api/erp/wholesale'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
-import { erpCountTableColumnFormatter, erpPriceTableColumnFormatter } from '@/utils'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
+import WholesaleImportForm from './components/WholesaleImportForm.vue'
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpWholesaleOrder' })
@@ -372,6 +379,13 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+// 导入
+const importFormRef = ref()
+
+const handleImport = () => {
+  importFormRef.value.open()
 }
 
 /** 选中操作 */

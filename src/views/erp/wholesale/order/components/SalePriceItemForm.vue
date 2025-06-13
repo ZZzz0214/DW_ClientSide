@@ -43,7 +43,7 @@
           <el-form-item class="mb-0px!">
             <el-input-number
               v-model="row.saleTruckFee"
-              controls-position="right"
+              :controls="false"
               :precision="2"
             />
           </el-form-item>
@@ -55,7 +55,7 @@
           <el-form-item class="mb-0px!">
             <el-input-number
               v-model="row.saleLogisticsFee"
-              controls-position="right"
+              :controls="false"
               :precision="2"
                @change="() => updateTotalSaleAmount(row)"
             />
@@ -68,7 +68,7 @@
           <el-form-item class="mb-0px!">
             <el-input-number
               v-model="row.saleOtherFees"
-              controls-position="right"
+              :controls="false"
               :precision="2"
               @change="() => updateTotalSaleAmount(row)"
             />
@@ -138,7 +138,10 @@
 import { ref, onMounted, watch } from 'vue';
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
 import SalespersonSearchDialog from './SalespersonSearchDialog.vue';
-import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
+import CustomerSearchDialog from './CustomerSearchDialog.vue';
+import { it } from 'node:test';
+import { number } from 'vue-types';
+const message = useMessage() // 消息弹窗// 引入客户人员搜索弹窗组件
 
 // const props = defineProps<{
 //   items: any[];
@@ -245,11 +248,16 @@ const calculateSaleShippingFee = (item) => {
 const updateTotalSaleAmount = (item) => {
   item.totalSaleAmount =
     item.salePrice * item.count + item.saleLogisticsFee + item.saleOtherFees + item.saleTruckFee;
+    item.totalSaleAmount=Number(item.totalSaleAmount.toFixed(2))
 };
 
 // 添加按钮操作
 const handleAdd = () => {
   // selectProductRef.value.open(comboProductId.value);
+  if (formData.value.length >= 1) {
+    message.warning('只能添加一条出货信息');
+    return;
+  }
   selectCustomRef.value.open();
 };
 
@@ -260,7 +268,10 @@ const handleDelete = (index: number) => {
 
 // 产品选择后的处理
 const handleProductSelected = (selectedProducts: any[]) => {
-  console.log('====================')
+  if (formData.value.length >= 1) {
+    message.warning('只能添加一条出货信息');
+    return;
+  }
   selectedProducts.forEach(product => {
     console.log(product)
     formData.value.push({

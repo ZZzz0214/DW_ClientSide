@@ -92,10 +92,10 @@
 <!--      </el-col>-->
 
       <el-col :span="6">
-        <el-form-item label="组品编码" prop="comboProductId">
+        <el-form-item label="组品编码" prop="comboProductNo">
           <el-input
             disabled
-            v-model="formData.comboProductId"
+            v-model="formData.comboProductNo"
             placeholder="获取后自动生成"
             type="textarea"
             :autosize="{ minRows: 1, maxRows: 4 }"
@@ -243,22 +243,14 @@ const message = useMessage() // 消息弹窗
 //   formData.value.comboProductId = productId;
 // };
 
-const handleProductIdChanged = (productNo: string) => {
-  // 从采购信息中获取对应的发货编码
-  const purchaseItem = formData.value.items?.[0];
-  if (purchaseItem) {
-    formData.value.comboProductId = productNo;
-    formData.value.shippingCode = purchaseItem.shippingCode;
-  }
-};
-const switchTab = (newTabName) => {
-  if (newTabName === 'sale') {
-    // 假设 comboProductId 是从采购信息中获取的
-    const comboProductId = formData.value.comboProductId;
-    saleFormRef.value.setComboProductId(comboProductId);
-  }
-};
-
+// const handleProductIdChanged = (productNo: string) => {
+//   // 从采购信息中获取对应的发货编码
+//   const purchaseItem = formData.value.items?.[0];
+//   if (purchaseItem) {
+//     formData.value.comboProductId = productNo;
+//     formData.value.shippingCode = purchaseItem.shippingCode;
+//   }
+// };
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -300,6 +292,25 @@ const formData = ref({
   saleOtherFees: 0, // 销售其他费用
   totalSaleAmount: 0, // 出货总额
 })
+
+const handleProductIdChanged = (product: {id: number, no: string}) => {
+  const purchaseItem = formData.value.items?.[0];
+  if (purchaseItem) {
+    formData.value.comboProductId = product.id; // 存储产品ID
+    formData.value.comboProductNo = product.no; // 显示产品编号
+    formData.value.shippingCode = purchaseItem.shippingCode;
+    formData.value.productName = purchaseItem.productName;
+  }
+};
+const switchTab = (newTabName) => {
+  if (newTabName === 'sale') {
+    // 假设 comboProductId 是从采购信息中获取的
+    const comboProductId = formData.value.comboProductId;
+    saleFormRef.value.setComboProductId(comboProductId);
+  }
+};
+
+
 const formRules = reactive({
   supplierId: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
   orderTime: [{ required: true, message: '订单时间不能为空', trigger: 'blur' }],
@@ -506,6 +517,12 @@ const submitForm = async () => {
     subTabsName.value = 'sale';
     return;
   }
+  // 校验出货信息中的销售人员不能为空
+  if (formData.value.saleItems.some(item => !item.salesperson)) {
+    message.error('出货信息中的销售人员不能为空');
+    subTabsName.value = 'sale';
+    return;
+  }
   // 提交请求
   formLoading.value = true
   try {
@@ -548,6 +565,8 @@ const submitForm = async () => {
       await ErpWholesaleApi.createErpWholesale(data)
       message.success(t('common.createSuccess'))
     } else {
+      console.log('!!!!!!!!!!!!!!!!!!!!!!')
+      console.log(data)
       await ErpWholesaleApi.updateErpWholesale(data)
       message.success(t('common.updateSuccess'))
     }

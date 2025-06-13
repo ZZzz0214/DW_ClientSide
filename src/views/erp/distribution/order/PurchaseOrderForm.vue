@@ -205,23 +205,6 @@ const message = useMessage() // 消息弹窗
 // const handleProductIdChanged = (productId: number) => {
 //   formData.value.comboProductId = productId;
 // };
-const handleProductIdChanged = (product: {id: number, no: string}) => {
-  const purchaseItem = formData.value.items?.[0];
-  if (purchaseItem) {
-    formData.value.comboProductId = product.id; // 存储产品ID
-    formData.value.comboProductNo = product.no; // 显示产品编号
-    formData.value.shippingCode = purchaseItem.shippingCode;
-    formData.value.productName = purchaseItem.productName;
-  }
-};
-const switchTab = (newTabName) => {
-  if (newTabName === 'sale') {
-    // 假设 comboProductId 是从采购信息中获取的
-    const comboProductId = formData.value.comboProductId;
-    saleFormRef.value.setComboProductId(comboProductId);
-  }
-};
-
 const dialogVisible = ref(false) // 弹窗的是否展示
 const dialogTitle = ref('') // 弹窗的标题
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -268,6 +251,25 @@ const formData = ref({
   saleOtherFees: 0, // 销售其他费用
   totalSaleAmount: 0, // 出货总额
 })
+const handleProductIdChanged = (product: {id: number, no: string}) => {
+  const purchaseItem = formData.value.items?.[0];
+  if (purchaseItem) {
+    formData.value.comboProductId = product.id; // 存储产品ID
+    formData.value.comboProductNo = product.no; // 显示产品编号
+    formData.value.shippingCode = purchaseItem.shippingCode;
+    formData.value.productName = purchaseItem.productName;
+  }
+};
+const switchTab = (newTabName) => {
+  if (newTabName === 'sale') {
+    // 假设 comboProductId 是从采购信息中获取的
+    const comboProductId = formData.value.comboProductId;
+    saleFormRef.value.setComboProductId(comboProductId);
+  }
+};
+
+
+
 const formRules = reactive({
   supplierId: [{ required: true, message: '供应商不能为空', trigger: 'blur' }],
   orderTime: [{ required: true, message: '订单时间不能为空', trigger: 'blur' }],
