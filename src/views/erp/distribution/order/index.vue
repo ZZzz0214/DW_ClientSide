@@ -132,6 +132,15 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="primary"
+          plain
+          @click="handleCopyCreate"
+          v-hasPermi="['erp:distribution:copycreate']"
+          :disabled="selectionList.length !== 1"
+        >
+          <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+        </el-button>
+        <el-button
           type="warning"
           plain
           @click="handleImport"
@@ -366,6 +375,24 @@ const resetQuery = () => {
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
   formRef.value.open(type, id)
+}
+
+/** 复制新增操作 */
+const handleCopyCreate = () => {
+  if (selectionList.value.length !== 1) {
+    message.warning('请选择一条数据进行复制')
+    return
+  }
+  // 添加调试信息，查看选中的数据
+  console.log('选中的数据：', selectionList.value[0])
+  // 获取完整数据，确保所有字段都有
+  ErpDistributionApi.getErpDistribution(selectionList.value[0].id).then(data => {
+    console.log('获取完整数据：', data)
+    formRef.value.open('create', undefined, data)
+  }).catch(error => {
+    console.error('获取数据失败', error)
+    message.error('获取数据失败，请重试')
+  })
 }
 
 /** 删除按钮操作 */

@@ -181,6 +181,55 @@ const handleSalespersonSelected = (salesperson: any) => {
   });
   tableKey.value++; // 强制重新渲染表格
 };
+//计算出货运费的方法
+const calculateSaleShippingFee = (item) => {
+  if (!item || !item.count || item.count === 0) {
+    if (item) item.saleShippingFee = 0; // 设置为0而不是null
+    return;
+  }
+  
+  if (!item.salePrice && item.salePrice !== 0) {
+    item.saleShippingFee = 0;
+    return;
+  }
+
+  if (item.shippingFeeType === 0) {
+    // 固定运费
+    item.saleShippingFee = item.fixedShippingFee;
+  } else if (item.shippingFeeType === 1) {
+    // 按件运费
+    if (item.count <= item.additionalItemQuantity) {
+      item.saleShippingFee = item.additionalItemPrice;
+    } else {
+      item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+    }
+  } else if (item.shippingFeeType === 2) {
+    // 按重量
+    const totalWeight = item.count * item.weight;
+    if (totalWeight <= item.firstWeight) {
+      item.saleShippingFee = item.firstWeightPrice;
+    } else {
+      item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+    }
+  } else {
+    // 如果没有指定运费类型，默认为0
+    item.saleShippingFee = 0;
+  }
+};
+
+// 更新出货总额的方法
+const updateTotalSaleAmount = (item) => {
+  if (!item) return;
+  
+  const price = Number(item.salePrice) || 0;
+  const count = Number(item.count) || 0;
+  const shippingFee = Number(item.saleShippingFee) || 0;
+  const otherFees = Number(item.saleOtherFees) || 0;
+
+  item.totalSaleAmount = price * count + shippingFee + otherFees;
+  item.totalSaleAmount = Number(item.totalSaleAmount.toFixed(2));
+};
+
 // 初始化设置出库项
 watch(
   () => props.items,
@@ -192,75 +241,26 @@ watch(
 
 // 监听父组件传递的产品数量变化
 watch(() => props.ssb, (newVal) => {
-  formData.value?.forEach((item) => {
-    item.count = newVal; // 更新子组件中的产品数量
-     calculateSaleShippingFee(item); // 重新计算出货运费
-    updateTotalSaleAmount(item); // 重新计算出货总额
+  if (!formData.value) return;
+  formData.value.forEach((item) => {
+    if (item) {
+      item.count = newVal; // 更新子组件中的产品数量
+      calculateSaleShippingFee(item); // 重新计算出货运费
+      updateTotalSaleAmount(item); // 重新计算出货总额
+    }
   });
 }, { immediate: true });
 
 // 监听子组件中出货其他费用的变化
 watch(() => formData.value, (newVal) => {
-  newVal?.forEach((item) => {
-     calculateSaleShippingFee(item); // 重新计算出货运费
-    updateTotalSaleAmount(item); // 重新计算出货总额
+  if (!newVal) return;
+  newVal.forEach((item) => {
+    if (item) {
+      calculateSaleShippingFee(item); // 重新计算出货运费
+      updateTotalSaleAmount(item); // 重新计算出货总额
+    }
   });
 }, { deep: true });
-
-//计算出货运费的方法
-const calculateSaleShippingFee = (item) => {
-
-  console.log("item.count",item.count)
-  if (!item.count || item.count === 0) {
-    item.saleShippingFee = 0; // 设置为null而不是0
-    return;
-  }
-  console.log("item.shippingFeeType",item.shippingFeeType)
-  if(item.salePrice !== null){
-
-    if (item.shippingFeeType === 0) {
-      // 固定运费
-      item.saleShippingFee = item.fixedShippingFee;
-    } else if (item.shippingFeeType === 1) {
-      // 按件运费
-      if (item.count <= item.additionalItemQuantity) {
-        item.saleShippingFee = item.additionalItemPrice;
-      } else {
-        item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
-      }
-    } else if (item.shippingFeeType === 2) {
-      // 按重量
-      const totalWeight = item.count * item.weight;
-      if (totalWeight <= item.firstWeight) {
-        item.saleShippingFee = item.firstWeightPrice;
-      } else {
-        item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
-      }
-    }
-  } else {
-    item.saleShippingFee = null;
-  }
-};
-
-// 更新出货总额的方法
-const updateTotalSaleAmount = (item) => {
-  // console.log("1111111111111111111111")
-  // console.log("2222222222222222222222")
-  // console.log(Number(item.salePrice) )
-  // console.log(Number(item.count) )
-  // console.log(Number(item.saleShippingFee) )
-  // console.log(Number(item.saleOtherFees) )
-  const price = Number(item.salePrice) || 0;
-  const count = Number(item.count) || 0;
-  const shippingFee = Number(item.saleShippingFee) || 0;
-  const otherFees = Number(item.saleOtherFees) || 0;
-
-  item.totalSaleAmount = price * count + shippingFee + otherFees;
-  item.totalSaleAmount=Number(item.totalSaleAmount.toFixed(2));
-
-  // console.log("3333333333333333333333")
-  // console.log(Number(item.totalSaleAmount) )
-};
 
 // 添加按钮操作
 const handleAdd = () => {

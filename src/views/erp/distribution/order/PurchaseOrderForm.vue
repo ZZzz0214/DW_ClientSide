@@ -221,6 +221,7 @@ const formData = ref({
   saleItems: [], // 出货列表
   comboProductId: undefined, // 组合产品ID(数值)
   comboProductNo: undefined, // 组合产品编号(字符串)
+  orderNumber: '', // 订单号
   logisticsCompany: '', // 物流公司
   trackingNumber: '', // 物流单号
   productName: '', // 产品名称
@@ -320,13 +321,122 @@ const handleAfterSalesStatusChange = () => {
 };
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, copyData?: any) => {
+  console.log('打开弹窗', type, id, copyData)
   dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
+  
+  // 复制新增时，修改标题为"复制新增"
+  if (type === 'create' && copyData) {
+    dialogTitle.value = '复制新增'
+  } else {
+    dialogTitle.value = t('action.' + type)
+  }
+  
   formType.value = type
   resetForm()
+  
+  // 复制新增时，设置数据
+  if (type === 'create' && copyData) {
+    console.log('复制新增，设置数据', copyData)
+    console.log('原订单号:', copyData.orderNumber)
+    console.log('原物流单号:', copyData.trackingNumber)
+    formLoading.value = true
+    try {
+      // 复制数据但排除一些字段
+      const { id: _, no: __, createTime: ___, updateTime: ____, ...dataToCopy } = copyData
+      formData.value = {
+        ...formData.value,
+        ...dataToCopy,
+        id: undefined, // 确保ID为空
+        no: undefined, // 确保订单编号为空，让后端自动生成
+        purchaseAuditStatus: 10, // 重置审核状态为未审核
+        saleAuditStatus: 10, // 重置审核状态为未审核
+        // 保留订单号和物流单号供用户参考和修改
+        orderNumber: copyData.orderNumber || '', // 保留原订单号供参考
+        trackingNumber: copyData.trackingNumber || '', // 保留原物流单号供参考
+      }
+      
+      console.log('复制后的表单数据:', formData.value)
+      console.log('复制后的订单号:', formData.value.orderNumber)
+      console.log('复制后的物流单号:', formData.value.trackingNumber)
+      
+      // 重新组装采购信息和销售信息
+      formData.value.items = [
+        {
+          productId: copyData.comboProductId,
+          purchaser: copyData.purchaser,
+          supplier: copyData.supplier,
+          purchasePrice: copyData.purchasePrice,
+          shippingFee: copyData.shippingFee,
+          otherFees: copyData.otherFees,
+          totalPurchaseAmount: copyData.totalPurchaseAmount,
+          count: copyData.productQuantity,
+          purchaseRemark: copyData.purchaseRemark,
+          productName: copyData.productName,
+          shippingCode: copyData.shippingCode,
+          purchaseAuditStatus: 10, // 重置审核状态为未审核
+        },
+      ]
+      
+      // 获取销售价格表的运费信息
+      let saleShippingInfo = {};
+      if (copyData.comboProductId && copyData.customerName) {
+        try {
+          const searchParams = {
+            groupProductId: copyData.comboProductId,
+            customerName: copyData.customerName,
+          };
+          const salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
+          if (salePriceResult && salePriceResult.length > 0) {
+            saleShippingInfo = {
+              shippingFeeType: salePriceResult[0].shippingFeeType,
+              fixedShippingFee: salePriceResult[0].fixedShippingFee,
+              additionalItemQuantity: salePriceResult[0].additionalItemQuantity,
+              additionalItemPrice: salePriceResult[0].additionalItemPrice,
+              weight: salePriceResult[0].weight,
+              firstWeight: salePriceResult[0].firstWeight,
+              firstWeightPrice: salePriceResult[0].firstWeightPrice,
+              additionalWeight: salePriceResult[0].additionalWeight,
+              additionalWeightPrice: salePriceResult[0].additionalWeightPrice
+            };
+          }
+        } catch (error) {
+          console.warn('获取销售价格表运费信息失败:', error);
+        }
+      }
+      
+      formData.value.saleItems = [
+        {
+          salesperson: copyData.salesperson,
+          customerName: copyData.customerName,
+          salePrice: copyData.salePrice,
+          saleShippingFee: copyData.saleShippingFee,
+          saleOtherFees: copyData.saleOtherFees,
+          totalSaleAmount: copyData.totalSaleAmount,
+          count: copyData.productQuantity,
+          saleAuditStatus: 10, // 重置审核状态为未审核
+          transferPerson: copyData.transferPerson,
+          saleRemark: copyData.saleRemark,
+          // 添加运费相关字段
+          ...saleShippingInfo
+        },
+      ]
+      
+      // 使用setTimeout确保所有数据都已设置完毕后再触发重计算
+      setTimeout(() => {
+        if (saleFormRef.value) {
+          console.log('触发销售信息重计算')
+          saleFormRef.value.recalculateShipping()
+        }
+        // 切换到采购信息标签，方便用户操作
+        subTabsName.value = 'purchase'
+      }, 200)
+    } finally {
+      formLoading.value = false
+    }
+  }
   // 修改时，设置数据
-  if (id) {
+  else if (id) {
     formLoading.value = true
     try {
       const data = await ErpDistributionApi.getErpDistribution(id);
@@ -559,6 +669,7 @@ const resetForm = () => {
     saleItems: [], // 出货列表
 
     comboProductId: undefined, // 组合产品ID
+    orderNumber: '', // 订单号
     logisticsCompany: '', // 物流公司
     trackingNumber: '', // 物流单号
     productName: '', // 产品名称
