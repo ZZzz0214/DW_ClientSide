@@ -191,8 +191,8 @@ import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 import * as UserApi from '@/api/system/user'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
 import * as ProductComboApi from "@/api/erp/product/combo";
-import {ref} from "vue";
-import {SalePriceApi} from "@/api/erp/sale/saleprice";
+import {ref, nextTick} from "vue";
+import { SalePriceApi } from "@/api/erp/sale/saleprice";
 import { dateFormatter,formatTime } from '@/utils/formatTime'
 import dayjs from "dayjs";
 
@@ -392,21 +392,36 @@ const open = async (type: string, id?: number) => {
             productName : data.productName,
             shippingCode : data.shippingCode,
             purchaseAuditStatus : data.purchaseAuditStatus,
-
-            // // 假设这些运费相关的字段已经存在于 data 对象中
-            // shippingFeeType: purchaseshippingFeeType[0]?.shippingFeeType,
-            // fixedShippingFee: purchaseshippingFeeType[0]?.fixedShippingFee,
-            // additionalItemQuantity: purchaseshippingFeeType[0]?.additionalItemQuantity, //按件数量
-            // additionalItemPrice: purchaseshippingFeeType[0]?.additionalItemPrice, //按件费用
-            // weight: purchaseshippingFeeType[0]?.weight,
-            // firstWeight: purchaseshippingFeeType[0]?.firstWeight,
-            // firstWeightPrice: purchaseshippingFeeType[0]?.firstWeightPrice,
-            // additionalWeight: purchaseshippingFeeType[0]?.additionalWeight,
-            // additionalWeightPrice: purchaseshippingFeeType[0]?.additionalWeightPrice
           },
         ]
-        // console.log('????????????????????????')
-        // console.log(formData.value.items)
+
+        // 获取销售价格表的运费信息
+        let saleShippingInfo = {};
+        if (data.comboProductId && data.customerName) {
+          try {
+            const searchParams = {
+              groupProductId: data.comboProductId,
+              customerName: data.customerName,
+            };
+            const salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
+            if (salePriceResult && salePriceResult.length > 0) {
+              saleShippingInfo = {
+                shippingFeeType: salePriceResult[0].shippingFeeType,
+                fixedShippingFee: salePriceResult[0].fixedShippingFee,
+                additionalItemQuantity: salePriceResult[0].additionalItemQuantity,
+                additionalItemPrice: salePriceResult[0].additionalItemPrice,
+                weight: salePriceResult[0].weight,
+                firstWeight: salePriceResult[0].firstWeight,
+                firstWeightPrice: salePriceResult[0].firstWeightPrice,
+                additionalWeight: salePriceResult[0].additionalWeight,
+                additionalWeightPrice: salePriceResult[0].additionalWeightPrice
+              };
+            }
+          } catch (error) {
+            console.warn('获取销售价格表运费信息失败:', error);
+          }
+        }
+
         formData.value.saleItems = [
           {
             salesperson: data.salesperson,
@@ -415,26 +430,23 @@ const open = async (type: string, id?: number) => {
             saleShippingFee: data.saleShippingFee,
             saleOtherFees: data.saleOtherFees,
             totalSaleAmount: data.totalSaleAmount,
-            count: data.count,
+            count: data.productQuantity || data.count, // 确保使用正确的产品数量
             saleAuditStatus : data.saleAuditStatus,
             transferPerson : data.transferPerson,
             saleRemark: data.saleRemark,
-
-            // // 假设这些运费相关的字段已经存在于 data 对象中
-            // shippingFeeType: saleshippingFeeType[0].shippingFeeType,
-            // fixedShippingFee: saleshippingFeeType[0].fixedShippingFee,
-            // additionalItemQuantity: saleshippingFeeType[0].additionalItemQuantity, //按件数量
-            // additionalItemPrice: saleshippingFeeType[0].additionalItemPrice, //按件费用
-            // weight: saleshippingFeeType[0].weight,
-            // firstWeight: saleshippingFeeType[0].firstWeight,
-            // firstWeightPrice: saleshippingFeeType[0].firstWeightPrice,
-            // additionalWeight: saleshippingFeeType[0].additionalWeight,
-            // additionalWeightPrice: saleshippingFeeType[0].additionalWeightPrice
+            // 添加运费相关字段
+            ...saleShippingInfo
           },
         ]
-        console.log('????????????????????????')
-        console.log(formData.value.saleItems)
-        console.log('????????????????????????')
+        console.log('编辑模式 - 销售项目数据:', formData.value.saleItems)
+        
+        // 使用setTimeout确保所有数据都已设置完毕后再触发重计算
+        setTimeout(() => {
+          if (saleFormRef.value) {
+            console.log('编辑模式触发重新计算运费')
+            saleFormRef.value.recalculateShipping()
+          }
+        }, 100)
       }
     } finally {
       formLoading.value = false
@@ -514,16 +526,14 @@ const submitForm = async () => {
       data.totalSaleAmount = saleItem.totalSaleAmount || 0
       data.saleRemark = saleItem.saleRemark || 0
       data.transferPerson = saleItem.transferPerson || 0
+
     }
 
     if (formType.value === 'create') {
-      console.log('!!!!!!!!!!!!!!!!!!!!!!')
-      console.log(data)
       await ErpDistributionApi.createErpDistribution(data)
       message.success(t('common.createSuccess'))
+
     } else {
-      console.log('更更111111111111111111!')
-      console.log(data)
       await ErpDistributionApi.updateErpDistribution(data)
       message.success(t('common.updateSuccess'))
     }

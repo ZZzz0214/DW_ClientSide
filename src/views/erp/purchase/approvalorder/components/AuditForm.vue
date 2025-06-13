@@ -8,11 +8,17 @@
       v-loading="formLoading"
     >
       <!-- 复用 AfterSaleForm 的不可编辑字段 -->
+      <el-form-item label="物流公司">
+        <el-input v-model="formData.logisticsCompany" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流单号">
+        <el-input v-model="formData.trackingNumber" :disabled="true" />
+      </el-form-item>
       <el-form-item label="产品名称">
-        <el-input v-model="formData.productName" :disabled="true" />
+        <el-input v-model="formData.productName" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }" :disabled="true" />
       </el-form-item>
       <el-form-item label="产品规格">
-        <el-input v-model="formData.productSpecification" :disabled="true" />
+        <el-input v-model="formData.productSpecification" :disabled="true" type="textarea" :autosize="{ minRows: 1, maxRows: 4 }"/>
       </el-form-item>
       <el-form-item label="产品数量">
         <el-input v-model="formData.productQuantity" :disabled="true" />
@@ -111,6 +117,8 @@ const formData = reactive({
   id: 0,
   productName: '',
   productSpecification: '',
+  logisticsCompany: '',
+  trackingNumber: '',
   productQuantity: 0,
   purchasePrice: 0,
   shippingFee: 0,
@@ -143,6 +151,8 @@ const open = async (id: number) => {
     formData.id = id
     formData.productName = orderDetail.productName || ''
     formData.productSpecification = orderDetail.productSpecification || ''
+    formData.logisticsCompany = orderDetail.logisticsCompany || ''
+    formData.trackingNumber = orderDetail.trackingNumber || ''
     formData.productQuantity = orderDetail.productQuantity || 0
     formData.purchasePrice = orderDetail.purchasePrice || 0
     formData.shippingFee = orderDetail.shippingFee || 0

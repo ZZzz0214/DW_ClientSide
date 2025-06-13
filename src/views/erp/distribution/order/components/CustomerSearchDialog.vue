@@ -113,7 +113,7 @@ const confirmSelection = async () => {
     const salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
     console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
     console.log(salePriceResult)
-    console.log(salePriceResult[0].distributionPrice)
+    console.log(salePriceResult[0].fixedShippingFee)
     if (salePriceResult.length > 0) {
       // 如果搜索到出货单价，返回对应数据
       emit('customer-selected',  [

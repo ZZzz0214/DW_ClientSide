@@ -209,11 +209,15 @@ watch(() => formData.value, (newVal) => {
 
 //计算出货运费的方法
 const calculateSaleShippingFee = (item) => {
+
+  console.log("item.count",item.count)
   if (!item.count || item.count === 0) {
     item.saleShippingFee = 0; // 设置为null而不是0
     return;
   }
+  console.log("item.shippingFeeType",item.shippingFeeType)
   if(item.salePrice !== null){
+
     if (item.shippingFeeType === 0) {
       // 固定运费
       item.saleShippingFee = item.fixedShippingFee;
@@ -311,9 +315,23 @@ const handleProductSelected = (selectedProducts: any[]) => {
 const validate = () => {
   return formRef.value.validate();
 };
+
+// 重新计算运费
+const recalculateShipping = () => {
+  console.log('重新计算运费被调用')
+  formData.value?.forEach((item) => {
+    console.log('计算运费前的item:', item)
+    calculateSaleShippingFee(item); // 重新计算出货运费
+    updateTotalSaleAmount(item); // 重新计算出货总额
+    console.log('计算运费后的item:', item)
+  });
+  tableKey.value++; // 强制重新渲染表格
+};
+
 defineExpose({
   setComboProductId,
-  validate
+  validate,
+  recalculateShipping
 });
 
 // 初始化

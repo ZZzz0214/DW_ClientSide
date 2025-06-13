@@ -315,6 +315,7 @@ const getList = async () => {
 
     list.value = data.list
     total.value = data.total
+    console.log("批发22222222222---")
     console.log(data)
   } finally {
     loading.value = false

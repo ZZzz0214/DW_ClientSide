@@ -343,7 +343,7 @@ const getList = async () => {
     list.value = data.list
     total.value = data.total
 
-    console.log("222222222222222")
+    console.log("代发222222222222222---")
     console.log(data)
   } finally {
     loading.value = false
