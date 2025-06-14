@@ -191,65 +191,86 @@ const handleSalespersonSelected = (salesperson: any) => {
   tableKey.value++; // 强制重新渲染表格
 };
 
+// 计算出货运费的方法
+const calculateSaleShippingFee = (item) => {
+  if (!item || !item.count || item.count === 0) {
+    if (item) item.saleLogisticsFee = 0;
+    return;
+  }
+  
+  if (!item.salePrice && item.salePrice !== 0) {
+    item.saleLogisticsFee = 0;
+    return;
+  }
+
+  if (item.shippingFeeType === 0) {
+    // 固定运费
+    item.saleLogisticsFee = item.fixedShippingFee;
+  } else if (item.shippingFeeType === 1) {
+    // 按件运费
+    if (item.count <= item.additionalItemQuantity) {
+      item.saleLogisticsFee = item.additionalItemPrice;
+    } else {
+      item.saleLogisticsFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+    }
+  } else if (item.shippingFeeType === 2) {
+    // 按重量
+    const totalWeight = item.count * item.weight;
+    if (totalWeight <= item.firstWeight) {
+      item.saleLogisticsFee = item.firstWeightPrice;
+    } else {
+      item.saleLogisticsFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+    }
+  } else {
+    item.saleLogisticsFee = 0;
+  }
+};
+
+// 更新出货总额的方法
+const updateTotalSaleAmount = (item) => {
+  if (!item) return;
+  
+  const price = Number(item.salePrice) || 0;
+  const count = Number(item.count) || 0;
+  const logisticsFee = Number(item.saleLogisticsFee) || 0;
+  const otherFees = Number(item.saleOtherFees) || 0;
+  const truckFee = Number(item.saleTruckFee) || 0;
+
+  item.totalSaleAmount = price * count + logisticsFee + otherFees + truckFee;
+  item.totalSaleAmount = Number(item.totalSaleAmount.toFixed(2));
+};
+
 // 初始化设置出库项
 watch(
   () => props.items,
   (val) => {
-    formData.value = val;
+    formData.value = val || [];
   },
   { immediate: true }
 );
 
 // 监听父组件传递的产品数量变化
 watch(() => props.ssb, (newVal) => {
+  if (!formData.value) return;
   formData.value.forEach((item) => {
-    item.count = newVal; // 更新子组件中的产品数量
-    //calculateSaleShippingFee(item); // 重新计算出货运费
-    updateTotalSaleAmount(item); // 重新计算出货总额
+    if (item) {
+      item.count = newVal; // 更新子组件中的产品数量
+      // calculateSaleShippingFee(item); // 重新计算出货运费
+      updateTotalSaleAmount(item); // 重新计算出货总额
+    }
   });
 }, { immediate: true });
 
 // 监听子组件中出货其他费用的变化
 watch(() => formData.value, (newVal) => {
+  if (!newVal) return;
   newVal.forEach((item) => {
-    //calculateSaleShippingFee(item); // 重新计算出货运费
-    updateTotalSaleAmount(item); // 重新计算出货总额
+    if (item) {
+      // calculateSaleShippingFee(item); // 重新计算出货运费
+      updateTotalSaleAmount(item); // 重新计算出货总额
+    }
   });
 }, { deep: true });
-
-// 计算出货运费的方法
-const calculateSaleShippingFee = (item) => {
-  if(item.salePrice !== null) {
-    if (item.shippingFeeType === 0) {
-      // 固定运费
-      item.saleLogisticsFee = item.fixedShippingFee;
-    } else if (item.shippingFeeType === 1) {
-      // 按件运费
-      if (item.count <= item.additionalItemQuantity) {
-        item.saleLogisticsFee = item.additionalItemPrice;
-      } else {
-        item.saleLogisticsFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
-      }
-    } else if (item.shippingFeeType === 2) {
-      // 按重量
-      const totalWeight = item.count * item.weight;
-      if (totalWeight <= item.firstWeight) {
-        item.saleLogisticsFee = item.firstWeightPrice;
-      } else {
-        item.saleLogisticsFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
-      }
-    }
-  } else {
-    item.saleLogisticsFee = null;
-  }
-};
-
-// 更新出货总额的方法
-const updateTotalSaleAmount = (item) => {
-  item.totalSaleAmount =
-    item.salePrice * item.count + item.saleLogisticsFee + item.saleOtherFees + item.saleTruckFee;
-    item.totalSaleAmount=Number(item.totalSaleAmount.toFixed(2))
-};
 
 // 添加按钮操作
 const handleAdd = () => {

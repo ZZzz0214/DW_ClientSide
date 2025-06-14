@@ -143,38 +143,10 @@ const comboProductList = ref<ComboVO[]>([]); // 组合产品列表
 const selectProductRef = ref(); // 定义 ref 引用
 
 const emit = defineEmits(['productIdChanged']);
-/** 初始化设置入库项 */
-watch(
-  () => props.items,
-  async (val) => {
-    formData.value = val
-  },
-  { immediate: true }
-)
-
-// 监听父组件传递的产品数量变化
-watch(() => props.ssb, (newVal) => {
-  formData.value.forEach((item) => {
-    item.count = newVal; // 更新子组件中的产品数量
-    //calculateShippingFee(item); // 重新计算运费
-    updateTotalPrice(item); // 重新计算合计
-  });
-}, { immediate: true });
-
-// 监听子组件中采购其他费用的变化
-watch(() => formData.value, (newVal) => {
-  newVal.forEach((item) => {
-   // calculateShippingFee(item); // 重新计算运费
-    updateTotalPrice(item); // 重新计算合计
-  });
-}, { deep: true });
-
 // 计算运费的方法
 const calculateShippingFee = (item) => {
-  console.log('7777777777777777777777777')
-  console.log(item.count)
-  if (!item.count || item.count === 0) {
-    item.shippingFee = 0; // 设置为null而不是0
+  if (!item || !item.count || item.count === 0) {
+    if (item) item.shippingFee = 0; // 设置为0而不是null
     return;
   }
   if (item.shippingFeeType === 0) {
@@ -198,20 +170,52 @@ const calculateShippingFee = (item) => {
   }
 };
 
-
-
 // 更新合计的方法
 const updateTotalPrice = (item) => {
-  item.totalProductPrice =
-   item.purchasePrice * item.count + item.logisticsFee + item.otherFees + item.truckFee;
- item.totalPurchaseAmount = Number(item.totalProductPrice.toFixed(2));
+  if (!item) return;
+  
+  const price = Number(item.purchasePrice) || 0;
+  const count = Number(item.count) || 0;
+  const logisticsFee = Number(item.logisticsFee) || 0;
+  const otherFees = Number(item.otherFees) || 0;
+  const truckFee = Number(item.truckFee) || 0;
+
+  const total = price * count + logisticsFee + otherFees + truckFee;
+  item.totalProductPrice = Number(total.toFixed(2));
+  item.totalPurchaseAmount = Number(total.toFixed(2));
 };
-// 更新合计的方法
-// const updateTotalPrice = (item) => {
-//   const total = item.purchasePrice * item.count + item.shippingFee + item.otherFees;
-//   item.totalProductPrice = Number(total.toFixed(2));
-//   item.totalPurchaseAmount = Number(total.toFixed(2));
-// };
+
+/** 初始化设置入库项 */
+watch(
+  () => props.items,
+  async (val) => {
+    formData.value = val || []
+  },
+  { immediate: true }
+)
+
+// 监听父组件传递的产品数量变化
+watch(() => props.ssb, (newVal) => {
+  if (!formData.value) return;
+  formData.value.forEach((item) => {
+    if (item) {
+      item.count = newVal; // 更新子组件中的产品数量
+      // calculateShippingFee(item); // 重新计算运费
+      updateTotalPrice(item); // 重新计算合计
+    }
+  });
+}, { immediate: true });
+
+// 监听子组件中采购其他费用的变化
+watch(() => formData.value, (newVal) => {
+  if (!newVal) return;
+  newVal.forEach((item) => {
+    if (item) {
+      // calculateShippingFee(item); // 重新计算运费
+      updateTotalPrice(item); // 重新计算合计
+    }
+  });
+}, { deep: true });
 
 
 

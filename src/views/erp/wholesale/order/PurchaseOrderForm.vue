@@ -267,6 +267,7 @@ const formData = ref({
   saleItems: [], // 出货列表
 
   comboProductId: undefined, // 组合产品ID
+  logisticsNumber: '', // 物流单号
   productName: '', // 产品名称
   productQuantity: 0, // 产品数量
   shippingCode: '', // 发货编码
@@ -363,13 +364,81 @@ const handleAfterSalesStatusChange = () => {
 };
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, copyData?: any) => {
+  console.log('打开弹窗', type, id, copyData)
   dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
+  
+  // 复制新增时，修改标题为"复制新增"
+  if (type === 'create' && copyData) {
+    dialogTitle.value = '复制新增'
+  } else {
+    dialogTitle.value = t('action.' + type)
+  }
+  
   formType.value = type
   resetForm()
+  
+  // 复制新增时，设置数据
+  if (type === 'create' && copyData) {
+    console.log('复制新增，设置数据', copyData)
+    formLoading.value = true
+    try {
+      // 复制数据但排除一些字段
+      const { id: _, no: __, createTime: ___, updateTime: ____, ...dataToCopy } = copyData
+      formData.value = {
+        ...formData.value,
+        ...dataToCopy,
+        id: undefined, // 确保ID为空
+        no: undefined, // 确保订单编号为空，让后端自动生成
+        purchaseAuditStatus: 10, // 重置审核状态为未审核
+        saleAuditStatus: 10, // 重置审核状态为未审核
+      }
+      
+      console.log('复制后的表单数据:', formData.value)
+      
+      // 重新组装采购信息和销售信息
+      formData.value.items = [
+        {
+          productId: copyData.comboProductId,
+          purchaser: copyData.purchaser,
+          supplier: copyData.supplier,
+          purchasePrice: copyData.purchasePrice,
+          logisticsFee: copyData.logisticsFee,
+          truckFee: copyData.truckFee,
+          otherFees: copyData.otherFees,
+          totalPurchaseAmount: copyData.totalPurchaseAmount,
+          count: copyData.productQuantity,
+          purchaseRemark: copyData.purchaseRemark,
+          productName: copyData.productName,
+          shippingCode: copyData.shippingCode,
+          purchaseAuditStatus: 10, // 重置审核状态为未审核
+        },
+      ]
+      
+      formData.value.saleItems = [
+        {
+          salesperson: copyData.salesperson,
+          customerName: copyData.customerName,
+          salePrice: copyData.salePrice,
+          saleLogisticsFee: copyData.saleLogisticsFee,
+          saleTruckFee: copyData.saleTruckFee,
+          saleOtherFees: copyData.saleOtherFees,
+          totalSaleAmount: copyData.totalSaleAmount,
+          count: copyData.productQuantity,
+          saleAuditStatus: 10, // 重置审核状态为未审核
+          transferPerson: copyData.transferPerson,
+          saleRemark: copyData.saleRemark,
+        },
+      ]
+      
+      // 切换到采购信息标签，方便用户操作
+      subTabsName.value = 'purchase'
+    } finally {
+      formLoading.value = false
+    }
+  }
   // 修改时，设置数据
-  if (id) {
+  else if (id) {
     formLoading.value = true
     try {
       const data = await ErpWholesaleApi.getErpWholesale(id);
@@ -632,6 +701,7 @@ const resetForm = () => {
     items: [],
     saleItems: [],
     comboProductId: undefined,
+    logisticsNumber: '', // 物流单号
     productName: '',
     productQuantity: 0,
     shippingCode: '',
