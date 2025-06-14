@@ -42,7 +42,7 @@
           @input="handleAfterSalesStatusChange"
         />
       </el-form-item>
-      <el-form-item label="售后审核费用" prop="purchaseAfterSalesAmount" >
+      <el-form-item label="采购售后金额" prop="purchaseAfterSalesAmount" >
         <el-input-number
           v-model="formData.purchaseAfterSalesAmount"
           controls-position="right"
@@ -52,7 +52,7 @@
           class="!w-1/1"
         />
       </el-form-item>
-      <el-form-item label="售后审核时间" prop="purchaseAfterSalesTime" >
+      <el-form-item label="采购售后时间" prop="purchaseAfterSalesTime" >
         <!-- 添加 value-format 指定输出格式为 yyyy-MM-dd HH:mm:ss -->
         <el-date-picker
           v-model="formData.purchaseAfterSalesTime"
@@ -136,6 +136,7 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
     formData.purchaseAfterSalesAmount = orderDetail.purchaseAfterSalesAmount || ''
     formData.afterSalesTime = orderDetail.afterSalesTime || ''
     formData.afterSalesStatus = orderDetail.afterSalesStatus || ''
+    console.log('售后时间'+orderDetail.purchaseAfterSalesTime)
     if (!orderDetail.purchaseAfterSalesTime) {
       // 生成符合 yyyy-MM-dd HH:mm:ss 格式的字符串（与 value-format 一致）
       // const now = new Date()

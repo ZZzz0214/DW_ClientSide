@@ -52,7 +52,7 @@
 <!--          class="!w-1/1"-->
 <!--        />-->
 <!--      </el-form-item>-->
-      <el-form-item label="反审核时间" prop="purchaseUnapproveTime">
+      <el-form-item label="采购反审核时间" prop="purchaseUnapproveTime">
         <el-date-picker
           v-model="formData.purchaseUnapproveTime"
           type="datetime"

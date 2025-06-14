@@ -132,6 +132,14 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:sale-order:import']"
+        >
+          <Icon icon="ep:upload" class="mr-5px" /> 导入
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -273,6 +281,7 @@
   <PurchaseOrderForm ref="formRef" @success="getList" />
   <AfterSaleForm ref="afterSaleFormRef" @success="getList" />
   <AuditForm ref="auditFormRef" @success="getList" />
+  <SaleOrderImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -282,6 +291,7 @@ import { SaleOrderApi, SaleOrderVO } from '@/api/erp/sale/approvalorder'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import AfterSaleForm from './components/AfterSaleForm.vue'
 import AuditForm from './components/AuditForm.vue'
+import SaleOrderImportForm from './components/SaleOrderImportForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
@@ -392,6 +402,12 @@ const afterSaleFormRef = ref()
 
 const handleAfterSaleWithDetails = (id: number, operationType: 'afterSale' | 'antiAfterSale') => {
   afterSaleFormRef.value.open(id, operationType)  // 传递操作类型给弹窗
+}
+
+/** 导入按钮操作 */
+const importFormRef = ref()
+const handleImport = () => {
+  importFormRef.value.open()
 }
 
 /** 导出按钮操作 */

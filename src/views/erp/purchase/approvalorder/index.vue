@@ -132,6 +132,14 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:purchase-order:import']"
+        >
+          <Icon icon="ep:upload" class="mr-5px" /> 导入
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -206,6 +214,9 @@
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="采购备注" align="center" prop="purchaseRemark" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购反审核时间" align="center" prop="purchaseUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="采购售后金额" align="center" prop="purchaseAfterSalesAmount" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购售后时间" align="center" prop="purchaseAfterSalesTime" width="120" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
 
       <el-table-column
         label="创建人员"
@@ -315,6 +326,7 @@
   <PurchaseOrderForm ref="formRef" @success="getList" />
   <AfterSaleForm ref="afterSaleFormRef" @success="getList" />
   <AuditForm ref="auditFormRef" @success="getList" />
+  <PurchaseOrderImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -324,6 +336,7 @@ import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalor
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import AfterSaleForm from './components/AfterSaleForm.vue'
 import AuditForm from './components/AuditForm.vue'
+import PurchaseOrderImportForm from './components/PurchaseOrderImportForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
@@ -454,6 +467,13 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+// 添加导入处理方法
+const importFormRef = ref()
+
+const handleImport = () => {
+  importFormRef.value.open()
 }
 
 /** 选中操作 */

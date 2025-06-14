@@ -155,4 +155,21 @@ export const PurchaseOrderApi = {
       data
     })
   },
+
+  // 导入采购订单
+  importPurchaseOrder: async (file: File) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    return await request.upload({
+      url: `/erp/purchase-order/import`,
+      data: formData
+    })
+  },
+
+  // 下载采购订单导入模板
+  importPurchaseOrderTemplate: async () => {
+    return await request.download({
+      url: `/erp/distribution/purchase/get-import-template`
+    })
+  }
 }

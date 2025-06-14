@@ -123,9 +123,16 @@ export const SaleOrderApi = {
   // 导出销售订单 Excel
   exportSaleOrder: async (params: any) => {
     return await request.download({ url: `/erp/distribution/export-sale-excel`, params })
-  }
-,
+  },
+  
   exportSaleOrder2: async (params: any) => {
     return await request.download({ url: `/erp/distribution/export-reviewed-sale-excel`, params })
+  },
+
+  // 导入销售订单模板
+  importSaleOrderTemplate: async () => {
+    return await request.download({
+      url: `/erp/distribution/sale/get-import-template`
+    })
   }
 }

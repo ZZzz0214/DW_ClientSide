@@ -11,7 +11,7 @@
       <el-table-column label="产品名称" min-width="120">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.name" placeholder="请输入组品名称" />
+            <el-input disabled v-model="row.name" placeholder="请输入组品名称" type="textarea" :autosize="{ minRows: 2, maxRows: 4 }"/>
           </el-form-item>
         </template>
       </el-table-column>
