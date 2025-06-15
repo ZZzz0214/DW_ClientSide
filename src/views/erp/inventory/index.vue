@@ -50,6 +50,14 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="warning"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:inventory:import']"
+          >
+            <Icon icon="ep:upload" /> 导入
+          </el-button>
+          <el-button
             type="success"
             plain
             @click="handleExport"
@@ -84,8 +92,24 @@
 <!--        <el-table-column label="产品图片" align="center" prop="productImage" />-->
         <el-table-column label="产品名称" align="center" prop="productName" />
         <el-table-column label="产品简称" align="center" prop="productShortName" />
-        <el-table-column label="品牌名称" align="center" prop="brand" />
-        <el-table-column label="产品品类" align="center" prop="category" />
+        <el-table-column
+          label="品牌名称"
+          align="center"
+          prop="brand"
+        >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brand" />
+          </template>
+        </el-table-column>
+        <el-table-column
+          label="产品品类"
+          align="center"
+          prop="category"
+        >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_CATEGORY" :value="scope.row.category" />
+          </template>
+        </el-table-column>
         <el-table-column label="现货库存" align="center" prop="spotInventory" />
         <el-table-column label="剩余库存" align="center" prop="remainingInventory" />
         <el-table-column label="备注信息" align="center" prop="remark" />
@@ -126,13 +150,17 @@
         @pagination="getList"
       />
     </ContentWrap>
+
+    <!-- 导入组件 -->
+    <InventoryImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
   import { dateFormatter } from '@/utils/formatTime'
   import download from '@/utils/download'
   import { InventoryApi, InventoryVO } from '@/api/erp/inventory'
-
+  import InventoryImportForm from './form/InventoryImportForm.vue'
+  import { DICT_TYPE } from '@/utils/dict'
 
   /** ERP 库存列表 */
   defineOptions({ name: 'ErpInventory' })
@@ -214,11 +242,18 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await InventoryApi.exportInventory(queryParams)
-      download.excel(data, '库存.xls')
+      download.excel(data, '库存表.xlsx')
     } catch {
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

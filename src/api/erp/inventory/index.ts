@@ -5,6 +5,7 @@ export interface InventoryVO {
   id?: number // 库存编号
   no?: string // 库存编号
   productId?: number // 单品ID
+  productNo?: string // 产品编号
   productImage?: string // 产品图片
   productName?: string // 产品名称
   productShortName?: string // 产品简称
@@ -19,8 +20,13 @@ export interface InventoryVO {
 // ERP 库存保存 Request VO
 export interface InventorySaveReqVO {
   id?: number // 库存ID
-  no: string // 库存编号
+  no?: string // 库存编号
   productId: number // 单品ID
+  productNo?: string // 产品编号
+  productName?: string // 产品名称
+  productShortName?: string // 产品简称
+  brand?: string // 品牌名称
+  category?: string // 产品品类
   spotInventory: number // 现货库存
   remainingInventory: number // 剩余库存
   remark?: string // 备注信息
@@ -68,5 +74,18 @@ export const InventoryApi = {
   // 导出库存 Excel
   exportInventory: async (params: InventoryPageReqVO) => {
     return await request.download({ url: `/erp/inventory/export-excel`, params })
-  }
+  },
+
+  // 获取库存导入模板
+  importInventoryTemplate: async () => {
+    return await request.download({ url: `/erp/inventory/get-import-template` })
+  },
+
+  // 导入库存
+  // importInventory: async (file: File, updateSupport: boolean) => {
+  //   const formData = new FormData()
+  //   formData.append('file', file)
+  //   formData.append('updateSupport', String(updateSupport))
+  //   return await request.post({ url: `/erp/inventory/import`, data: formData })
+  // }
 }

@@ -6,14 +6,63 @@
     :rules="rules"
     label-width="120px"
   >
- <!-- 产品编号 -->
- <el-form-item label="产品编号" prop="productId">
-   <el-input
-     v-model="formData.productId"
-     placeholder="请输入产品编号"
-     class="w-80"
-     :disabled="isDetail"
-   />
+    <!-- 产品编号 -->
+    <el-form-item label="产品编号" prop="productId">
+      <el-input
+        :value="formData.productNo || ''"
+        placeholder="请点击选择产品"
+        class="w-80"
+        :disabled="isDetail"
+        readonly
+        @click="openProductSelect"
+        style="cursor: pointer;"
+      >
+        <template #append>
+          <el-button @click="openProductSelect" :disabled="isDetail">
+            <Icon icon="ep:search" />
+          </el-button>
+        </template>
+      </el-input>
+    </el-form-item>
+
+    <!-- 产品名称 -->
+    <el-form-item label="产品名称" prop="productName">
+      <el-input
+        v-model="formData.productName"
+        placeholder="选择产品后自动填充"
+        class="w-80"
+        :disabled="true"
+      />
+    </el-form-item>
+
+    <!-- 产品简称 -->
+    <el-form-item label="产品简称" prop="productShortName">
+      <el-input
+        v-model="formData.productShortName"
+        placeholder="选择产品后自动填充"
+        class="w-80"
+        :disabled="true"
+      />
+    </el-form-item>
+
+    <!-- 品牌名称 -->
+    <el-form-item label="品牌名称" prop="brand">
+      <el-input
+        v-model="formData.brand"
+        placeholder="选择产品后自动填充"
+        class="w-80"
+        :disabled="true"
+      />
+    </el-form-item>
+
+    <!-- 产品品类 -->
+    <el-form-item label="产品品类" prop="category">
+      <el-input
+        v-model="formData.category"
+        placeholder="选择产品后自动填充"
+        class="w-80"
+        :disabled="true"
+      />
     </el-form-item>
 
     <!-- 现货库存 -->
@@ -47,6 +96,9 @@
       />
     </el-form-item>
   </el-form>
+
+  <!-- 产品选择弹窗 -->
+  <SelectProduct ref="selectProductRef" @selected="handleProductSelected" />
 </template>
 
 <script lang="ts" setup>
@@ -54,6 +106,7 @@ import { PropType } from 'vue'
 import { copyValueToTarget } from '@/utils'
 import { propTypes } from '@/utils/propTypes'
 import type { InventoryVO } from '@/api/erp/inventory'
+import SelectProduct from './SelectProduct.vue'
 
 defineOptions({ name: 'ErpInventoryInfoForm' })
 
@@ -67,20 +120,47 @@ const props = defineProps({
 
 const message = useMessage()
 const formRef = ref()
+const selectProductRef = ref()
+
 const formData = reactive<InventoryVO>({
   productId: undefined,
+  productNo: '',
+  productName: '',
+  productShortName: '',
+  brand: '',
+  category: '',
   spotInventory: 0,
   remainingInventory: 0,
   remark: ''
 })
 
 const rules = reactive({
-  no: [{ required: true, message: '库存编号不能为空', trigger: 'blur' }],
+  productId: [{ required: true, message: '产品编号不能为空', trigger: 'blur' }],
   productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
   spotInventory: [{ required: true, message: '现货库存不能为空', trigger: 'blur' }],
-  remainingInventory: [{ required: true, message: '剩余库存不能为空', trigger: 'blur' }],
-  status: [{ required: true, message: '状态不能为空', trigger: 'blur' }]
+  remainingInventory: [{ required: true, message: '剩余库存不能为空', trigger: 'blur' }]
 })
+
+/** 打开产品选择弹窗 */
+const openProductSelect = () => {
+  if (!props.isDetail) {
+    selectProductRef.value?.open()
+  }
+}
+
+/** 处理产品选择 */
+const handleProductSelected = (product: any) => {
+  console.log('选择的产品:', product)
+  formData.productId = product.id  // 保存产品ID用于后端
+  formData.productNo = product.no || product.id || ''  // 保存产品编号用于显示
+  formData.productName = product.name || ''
+  formData.productShortName = product.productShortName || ''
+  formData.brand = product.brand || ''
+  formData.category = product.categoryId || ''
+  
+  // 同步到父组件的数据
+  Object.assign(props.propFormData, formData)
+}
 
 /** 将传进来的值赋值给 formData */
 watch(

@@ -74,4 +74,11 @@ export const DropshipAssistApi = {
   exportDropshipAssist: async (params: DropshipAssistPageReqVO) => {
     return await request.download({ url: `/erp/dropship-assist/export-excel`, params })
   }
+  ,
+
+  importDropshipTemplate: async () => {
+    return await request.download({ url: `/erp/dropship-assist/get-import-template` });
+  },
+
+
 }

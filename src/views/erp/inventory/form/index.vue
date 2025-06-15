@@ -53,7 +53,8 @@ const detailRef = ref() // 明细信息 Ref
 // 表单数据
 const formData = ref<InventoryApi.InventoryVO>({
   no: '',
-  productId: 0,
+  productId: undefined,
+  productNo: '',
   productName: '',
   productShortName: '',
   brand: '',
@@ -72,6 +73,7 @@ const getDetail = async () => {
   if (id) {
     formLoading.value = true
     try {
+      console.log("库存id"+id)
       const res = await InventoryApi.InventoryApi.getInventory(id)
       formData.value = res
     } finally {

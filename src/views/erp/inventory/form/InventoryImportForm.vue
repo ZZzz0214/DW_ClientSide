@@ -1,5 +1,5 @@
 <template>
-  <Dialog v-model="dialogVisible" title="代发辅助导入" width="400">
+  <Dialog v-model="dialogVisible" title="库存导入" width="400">
     <el-upload
       ref="uploadRef"
       v-model:file-list="fileList"
@@ -20,7 +20,7 @@
         <div class="el-upload__tip text-center">
           <div class="el-upload__tip">
             <el-checkbox v-model="updateSupport" />
-            是否更新已经存在的代发辅助数据
+            是否更新已经存在的库存数据
           </div>
           <span>仅允许导入 xls、xlsx 格式文件。</span>
           <el-link
@@ -42,11 +42,11 @@
 </template>
 
 <script lang="ts" setup>
-import { DropshipAssistApi } from '@/api/erp/dropship'
+import { InventoryApi } from '@/api/erp/inventory'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import download from '@/utils/download'
 
-defineOptions({ name: 'ErpDropshipImportForm' })
+defineOptions({ name: 'ErpInventoryImportForm' })
 
 const message = useMessage() // 消息弹窗
 
@@ -54,10 +54,10 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const formLoading = ref(false) // 表单的加载中
 const uploadRef = ref()
 const importUrl =
-  import.meta.env.VITE_BASE_URL + import.meta.env.VITE_API_URL + '/erp/dropship-assist/import'
+  import.meta.env.VITE_BASE_URL + import.meta.env.VITE_API_URL + '/erp/inventory/import'
 const uploadHeaders = ref() // 上传 Header 头
 const fileList = ref([]) // 文件列表
-const updateSupport = ref(0) // 是否更新已经存在的代发辅助数据
+const updateSupport = ref(0) // 是否更新已经存在的库存数据
 
 /** 打开弹窗 */
 const open = () => {
@@ -132,7 +132,7 @@ const handleExceed = (): void => {
 
 /** 下载模板操作 */
 const importTemplate = async () => {
-  const res = await DropshipAssistApi.importDropshipTemplate()
-  download.excel(res, '代发辅助导入模版.xlsx')
+  const res = await InventoryApi.importInventoryTemplate()
+  download.excel(res, '库存导入模版.xlsx')
 }
-</script>
+</script> 
