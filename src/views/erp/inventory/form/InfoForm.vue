@@ -6,13 +6,13 @@
     :rules="rules"
     label-width="120px"
   >
-    <!-- 产品编号 -->
-    <el-form-item label="产品编号" prop="productId">
-      <el-input
+ <!-- 产品编号 -->
+ <el-form-item label="产品编号" prop="productId">
+   <el-input
         :value="formData.productNo || ''"
         placeholder="请点击选择产品"
-        class="w-80"
-        :disabled="isDetail"
+     class="w-80"
+     :disabled="isDetail"
         readonly
         @click="openProductSelect"
         style="cursor: pointer;"
@@ -48,7 +48,7 @@
     <!-- 品牌名称 -->
     <el-form-item label="品牌名称" prop="brand">
       <el-input
-        v-model="formData.brand"
+        v-model="brandDisplayValue"
         placeholder="选择产品后自动填充"
         class="w-80"
         :disabled="true"
@@ -58,11 +58,11 @@
     <!-- 产品品类 -->
     <el-form-item label="产品品类" prop="category">
       <el-input
-        v-model="formData.category"
+        v-model="categoryDisplayValue"
         placeholder="选择产品后自动填充"
         class="w-80"
         :disabled="true"
-      />
+   />
     </el-form-item>
 
     <!-- 现货库存 -->
@@ -107,6 +107,7 @@ import { copyValueToTarget } from '@/utils'
 import { propTypes } from '@/utils/propTypes'
 import type { InventoryVO } from '@/api/erp/inventory'
 import SelectProduct from './SelectProduct.vue'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
 defineOptions({ name: 'ErpInventoryInfoForm' })
 
@@ -121,6 +122,21 @@ const props = defineProps({
 const message = useMessage()
 const formRef = ref()
 const selectProductRef = ref()
+
+// 字典转换的计算属性
+const brandDisplayValue = computed(() => {
+  if (!formData.brand) return ''
+  const brandOptions = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)
+  const brandOption = brandOptions.find(option => option.value === formData.brand)
+  return brandOption ? brandOption.label : formData.brand
+})
+
+const categoryDisplayValue = computed(() => {
+  if (!formData.category) return ''
+  const categoryOptions = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)
+  const categoryOption = categoryOptions.find(option => option.value === formData.category)
+  return categoryOption ? categoryOption.label : formData.category
+})
 
 const formData = reactive<InventoryVO>({
   productId: undefined,

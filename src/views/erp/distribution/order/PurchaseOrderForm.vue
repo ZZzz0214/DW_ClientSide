@@ -329,7 +329,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
   if (type === 'create' && copyData) {
     dialogTitle.value = '复制新增'
   } else {
-    dialogTitle.value = t('action.' + type)
+  dialogTitle.value = t('action.' + type)
   }
   
   formType.value = type

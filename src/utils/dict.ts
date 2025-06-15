@@ -243,7 +243,7 @@ export enum DICT_TYPE {
   IOT_RW_TYPE = 'iot_rw_type' ,// IOT 读写类型
   // ========== 一些其他表的配置模块  ==========
   ERP_NOTEBOOK_STATUS = 'erp_notebook_status', // ERP 记事本状态
-  SYSTEM_USER_LIST = 'system_user_list', // 系统用户列表  
+  SYSTEM_USER_LIST = 'system_user_list', // 系统用户列表
   ERP_SAMPLE_STATUS = 'erp_sample_status', // ERP 样品状态
   ERP_CUSTOMER_POSITION = 'erp_customer_position', // ERP 客户职位
   ERP_PLATFORM_NAME = 'erp_platform_name', // ERP 平台名称
@@ -253,7 +253,7 @@ export enum DICT_TYPE {
 
   ERP_PRODUCT_BRAND = 'erp_product_brand', // ERP 产品品牌
   ERP_PRODUCT_CATEGORY = 'erp_product_category', // ERP 产品品类
-  ERP_PRODUCT_STATUS = 'erp_product_status', // ERP 产品状态
+  ERP_PRODUCT_STATUS = 'status', // ERP 产品状态
 
 
   ERP_USER_PORTRAIT = 'erp_user_portrait', // ERP 用户画像

@@ -41,10 +41,10 @@
 <!--          class="w-80"-->
 <!--        />-->
 <!--      </el-form-item>-->
-      <el-form-item label="团购货盘表ID" prop="groupBuyingId">
+      <el-form-item label="货盘编号" prop="groupBuyingNo">
       <el-input
-        v-model="formData.groupBuyingId"
-        placeholder="请输入团购货盘表ID"
+        v-model="formData.groupBuyingNo"
+        placeholder="请选择团购货盘"
         class="w-80"
         @click="openGroupBuyingSearch"
         readonly
@@ -55,12 +55,10 @@
 
     <!-- 品牌名称 -->
     <el-form-item label="品牌名称" prop="brandName">
-      <el-input
-        v-model="formData.brandName"
-        placeholder="自动填充"
-        readonly
-        class="w-80"
-      />
+      <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+        <dict-tag v-if="formData.brandName" :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="formData.brandName" />
+        <span v-else style="color: #c0c4cc;">自动填充</span>
+      </div>
     </el-form-item>
         <!-- 产品名称 -->
     <el-form-item label="产品名称" prop="productName">
@@ -103,7 +101,7 @@
       <el-form-item label="客户名称" prop="customerName">
         <el-input
           v-model="formData.customerName"
-          placeholder="请输入客户名称"
+          placeholder="请选择客户"
           class="w-80"
           @click="openCustomerSearch"
           readonly
@@ -135,6 +133,14 @@
           <span style="margin-left: 25px;">元</span>
         </div>
       </el-form-item>
+    <!-- 货盘状态 -->
+    <el-form-item label="货盘状态" prop="status">
+      <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+        <dict-tag v-if="formData.status" :type="DICT_TYPE.ERP_PRODUCT_STATUS" :value="formData.status" />
+        <span v-else style="color: #c0c4cc;">自动填充</span>
+      </div>
+    </el-form-item>
+
     <!-- 开团机制 -->
     <el-form-item label="开团机制" prop="groupMechanism">
       <el-input
@@ -170,8 +176,11 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
+  import { DICT_TYPE } from '@/utils/dict'
   import type { GroupBuyingReviewVO } from '@/api/erp/groupbuyingreview'
+  import type { CustomerVO } from '@/api/erp/sale/customer'
   import CustomerSearchDialog from "@/views/erp/sale/saleprice/components/CustomerSearchDialog.vue";
+  import GroupBuyingSearchDialog from "./GroupBuyingSearchDialog.vue"
 
   defineOptions({ name: 'ErpGroupBuyingReviewInfoForm' })
   const message = useMessage()
@@ -187,16 +196,23 @@
   const formRef = ref()
   const formData = reactive({
     groupBuyingId: undefined as number | undefined,
-  productName: '',
-  brandName: '',
-  productSpec: '',
-  productSku: '',
-  groupMechanism: ''
+    groupBuyingNo: '', // 货盘编号（用于显示）
+    customerId: undefined as number | undefined, // 客户ID（传递给后端）
+    productName: '',
+    brandName: '',
+    productSpec: '',
+    productSku: '',
+    groupMechanism: '',
+    status: undefined, // 货盘状态
+    remark: '',
+    customerName: '', // 客户名称（用于显示）
+    supplyGroupPrice: 0,
+    expressFee: 0
   })
 
   const rules = reactive({
     //no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
-    groupBuyingId: [{ required: true, message: '货盘表ID不能为空', trigger: 'blur' }],
+    groupBuyingNo: [{ required: true, message: '请选择团购货盘', trigger: 'blur' }],
     customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
     supplyGroupPrice: [{ required: true, message: '供团价格不能为空', trigger: 'blur' }],
     groupMechanism: [{ required: true, message: '开团机制不能为空', trigger: 'blur' }]
@@ -234,12 +250,25 @@ const openGroupBuyingSearch = () => {
 };
 
 const handleGroupBuyingSelected = (groupBuying: any) => {
-  formData.groupBuyingId = groupBuying.no;
-  formData.productName = groupBuying.productName;
-  formData.brandName = groupBuying.brandName;
-  formData.productSpec = groupBuying.productSpec;
-  formData.productSku = groupBuying.productSku;
-  formData.groupMechanism = groupBuying.groupMechanism;
+  // 填充货盘ID（使用真实的ID传递给后端）
+  formData.groupBuyingId = groupBuying.id;
+  // 填充货盘编号（用于显示）
+  formData.groupBuyingNo = groupBuying.no || '';
+  // 自动填充货盘相关信息
+  formData.productName = groupBuying.productName || '';
+  formData.brandName = groupBuying.brandName || '';
+  formData.productSpec = groupBuying.productSpec || '';
+  formData.productSku = groupBuying.productSku || '';
+  formData.groupMechanism = groupBuying.groupMechanism || '';
+  formData.status = groupBuying.status; // 填充货盘状态
+  // 如果货盘有供团价格，也可以自动填充
+  if (groupBuying.supplyGroupPrice) {
+    formData.supplyGroupPrice = groupBuying.supplyGroupPrice;
+  }
+  // 如果货盘有快递费用，也可以自动填充
+  if (groupBuying.expressFee) {
+    formData.expressFee = groupBuying.expressFee;
+  }
 };
   // 客户搜索弹窗相关
   const customerSearchDialogVisible = ref(false); // 客户搜索弹窗的显示状态
@@ -250,7 +279,8 @@ const handleGroupBuyingSelected = (groupBuying: any) => {
   };
 
   const handleCustomerSelected = (customer: CustomerVO) => {
-    formData.customerName = customer.name; // 填充客户名称
+    formData.customerId = customer.id; // 填充客户ID（传递给后端）
+    formData.customerName = customer.name; // 填充客户名称（用于显示）
   };
   defineExpose({ validate })
   </script>

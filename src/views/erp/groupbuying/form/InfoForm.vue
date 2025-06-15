@@ -29,17 +29,17 @@
 <!--        </el-upload>-->
 <!--      </el-form-item>-->
 
-      <el-form-item label="产品图片" prop="image">
+      <el-form-item label="产品图片" prop="productImage">
         <el-input
-          v-model="formData.image"
+          v-model="formData.productImage"
           placeholder="请输入产品图片"
           class="w-80"
         />
       </el-form-item>
       <!-- 品牌名称 -->
-      <el-form-item label="品牌名称" prop="brand">
+      <el-form-item label="品牌名称" prop="brandName">
       <el-select
-        v-model="formData.brand"
+        v-model="formData.brandName"
         placeholder="请选择品牌名称"
         class="w-80"
         filterable
@@ -79,6 +79,7 @@
           placeholder="请输入产品SKU"
           class="w-80"
           type="textarea"
+          :autosize="{ minRows: 2, maxRows: 4 }"
         />
       </el-form-item>
 
@@ -127,6 +128,24 @@
           :autosize="{ minRows: 2, maxRows: 4 }"
         />
       </el-form-item>
+
+      <!-- 货盘状态 -->
+      <el-form-item label="货盘状态" prop="status">
+        <el-select
+          v-model="formData.status"
+          placeholder="请选择货盘状态"
+          class="w-80"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_STATUS)"
+        >
+          <el-option
+            v-for="dict in filteredStatusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
   </template>
 
@@ -160,6 +179,7 @@ import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
     productStock: 0,
     remark: '',
     brand: '', // 品牌名称
+    status: undefined, // 货盘状态
   })
 
   const rules = reactive({
@@ -167,6 +187,7 @@ import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
     productSku: [{ required: true, message: '产品sku不能为空', trigger: 'blur' }],
      productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
     shelfLife: [{ required: true, message: '保质日期不能为空', trigger: 'blur' }],
+    status: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }],
     // productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }]
   })
 

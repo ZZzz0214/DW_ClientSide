@@ -49,6 +49,8 @@
     contactPhone: '',
     address: '',
     comboProductId: '',
+    shippingCode: '',
+    comboProductName: '',
     productSpec: '',
     productQuantity: 0,
     customerName: '',

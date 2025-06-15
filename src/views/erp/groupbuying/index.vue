@@ -68,6 +68,14 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="warning"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:groupbuying:import']"
+          >
+            <Icon icon="ep:upload" /> 导入
+          </el-button>
+          <el-button
             type="success"
             plain
             @click="handleExport"
@@ -110,10 +118,24 @@
 <!--            />-->
 <!--          </template>-->
 <!--        </el-table-column>-->
-        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品图片" align="center" prop="image" :show-overflow-tooltip="false"/>
+        <el-table-column
+          label="品牌名称"
+          align="center"
+          prop="brandName"
+          :show-overflow-tooltip="false"
+        >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
+          </template>
+        </el-table-column>
+        <el-table-column label="产品图片" align="center" prop="productImage" :show-overflow-tooltip="false"/>
         <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
+        <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_STATUS" :value="scope.row.status" />
+          </template>
+        </el-table-column>
         <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" width="180px" :show-overflow-tooltip="false"/>
         <el-table-column label="供团价格" align="center" prop="supplyGroupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="帮卖佣金" align="center" prop="sellingCommission"  :show-overflow-tooltip="false"/>
@@ -150,12 +172,16 @@
         @pagination="getList"
       />
     </ContentWrap>
+    <!-- 在模板底部添加导入组件 -->
+    <GroupBuyingImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
   import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
   import download from '@/utils/download'
   import { GroupBuyingApi, GroupBuyingVO } from '@/api/erp/groupbuying'
+  import GroupBuyingImportForm from './form/GroupBuyingImportForm.vue'
+  import { DICT_TYPE } from '@/utils/dict'
 
   /** ERP 团购货盘列表 */
   defineOptions({ name: 'ErpGroupBuying' })
@@ -245,6 +271,13 @@
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

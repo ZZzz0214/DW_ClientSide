@@ -187,29 +187,29 @@ const calculateSaleShippingFee = (item) => {
     if (item) item.saleShippingFee = 0; // 设置为0而不是null
     return;
   }
-  
+
   if (!item.salePrice && item.salePrice !== 0) {
     item.saleShippingFee = 0;
     return;
   }
 
-  if (item.shippingFeeType === 0) {
-    // 固定运费
-    item.saleShippingFee = item.fixedShippingFee;
-  } else if (item.shippingFeeType === 1) {
-    // 按件运费
-    if (item.count <= item.additionalItemQuantity) {
-      item.saleShippingFee = item.additionalItemPrice;
-    } else {
-      item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
-    }
-  } else if (item.shippingFeeType === 2) {
-    // 按重量
-    const totalWeight = item.count * item.weight;
-    if (totalWeight <= item.firstWeight) {
-      item.saleShippingFee = item.firstWeightPrice;
-    } else {
-      item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+    if (item.shippingFeeType === 0) {
+      // 固定运费
+      item.saleShippingFee = item.fixedShippingFee;
+    } else if (item.shippingFeeType === 1) {
+      // 按件运费
+      if (item.count <= item.additionalItemQuantity) {
+        item.saleShippingFee = item.additionalItemPrice;
+      } else {
+        item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+      }
+    } else if (item.shippingFeeType === 2) {
+      // 按重量
+      const totalWeight = item.count * item.weight;
+      if (totalWeight <= item.firstWeight) {
+        item.saleShippingFee = item.firstWeightPrice;
+      } else {
+        item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
     }
   } else {
     // 如果没有指定运费类型，默认为0

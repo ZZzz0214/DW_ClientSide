@@ -203,23 +203,23 @@ const calculateSaleShippingFee = (item) => {
     return;
   }
 
-  if (item.shippingFeeType === 0) {
-    // 固定运费
-    item.saleLogisticsFee = item.fixedShippingFee;
-  } else if (item.shippingFeeType === 1) {
-    // 按件运费
-    if (item.count <= item.additionalItemQuantity) {
-      item.saleLogisticsFee = item.additionalItemPrice;
-    } else {
-      item.saleLogisticsFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
-    }
-  } else if (item.shippingFeeType === 2) {
-    // 按重量
-    const totalWeight = item.count * item.weight;
-    if (totalWeight <= item.firstWeight) {
-      item.saleLogisticsFee = item.firstWeightPrice;
-    } else {
-      item.saleLogisticsFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+    if (item.shippingFeeType === 0) {
+      // 固定运费
+      item.saleLogisticsFee = item.fixedShippingFee;
+    } else if (item.shippingFeeType === 1) {
+      // 按件运费
+      if (item.count <= item.additionalItemQuantity) {
+        item.saleLogisticsFee = item.additionalItemPrice;
+      } else {
+        item.saleLogisticsFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+      }
+    } else if (item.shippingFeeType === 2) {
+      // 按重量
+      const totalWeight = item.count * item.weight;
+      if (totalWeight <= item.firstWeight) {
+        item.saleLogisticsFee = item.firstWeightPrice;
+      } else {
+        item.saleLogisticsFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
     }
   } else {
     item.saleLogisticsFee = 0;

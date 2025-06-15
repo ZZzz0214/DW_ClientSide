@@ -92,6 +92,7 @@
     shelfLife: undefined,
     productStock: 0,
     remark: '',
+    status: undefined,
     corePrice: 0,
     distributionPrice: 0,
     supplyGroupPrice: 0,

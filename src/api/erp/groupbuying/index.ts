@@ -13,6 +13,7 @@ export interface GroupBuyingVO {
   shelfLife?: Date // 保质日期
   productStock?: number // 产品库存
   remark?: string // 备注信息
+  status?: number // 货盘状态
   corePrice?: number // 核心价格
   distributionPrice?: number // 分发价格
   supplyGroupPrice?: number // 供团价格
@@ -45,6 +46,7 @@ export interface GroupBuyingSaveReqVO {
   shelfLife?: Date // 保质日期
   productStock?: number // 产品库存
   remark?: string // 备注信息
+  status?: number // 货盘状态
   corePrice?: number // 核心价格
   distributionPrice?: number // 分发价格
   supplyGroupPrice?: number // 供团价格
@@ -106,5 +108,10 @@ export const GroupBuyingApi = {
   // 导出团购货盘 Excel
   exportGroupBuying: async (params: GroupBuyingPageReqVO) => {
     return await request.download({ url: `/erp/group-buying/export-excel`, params })
+  },
+
+  // 下载团购货盘导入模板
+  importGroupBuyingTemplate: async () => {
+    return await request.download({ url: `/erp/group-buying/get-import-template` })
   }
 }

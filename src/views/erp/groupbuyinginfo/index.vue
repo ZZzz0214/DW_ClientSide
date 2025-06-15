@@ -124,6 +124,14 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="warning"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:groupbuyinginfo:import']"
+          >
+            <Icon icon="ep:upload" /> 导入
+          </el-button>
+          <el-button
             type="success"
             plain
             @click="handleExport"
@@ -221,6 +229,8 @@
         @pagination="getList"
       />
     </ContentWrap>
+    <!-- 在模板底部添加导入组件 -->
+    <GroupBuyingInfoImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
@@ -228,6 +238,7 @@
   import { DICT_TYPE } from '@/utils/dict'
   import download from '@/utils/download'
   import { GroupBuyingInfoApi, GroupBuyingInfoVO } from '@/api/erp/groupbuyinginfo'
+  import GroupBuyingInfoImportForm from './form/GroupBuyingInfoImportForm.vue'
 
   /** ERP 团购信息列表 */
   defineOptions({ name: 'ErpGroupBuyingInfo' })
@@ -317,6 +328,13 @@
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

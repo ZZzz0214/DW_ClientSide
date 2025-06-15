@@ -6,8 +6,11 @@ export interface GroupBuyingReviewVO {
   no?: string // 编号
   remark?: string // 备注信息
   customerId?: number // 客户编号
+  customerName?: string // 客户名称（用于显示）
   groupBuyingId?: number // 团购货盘表ID
+  groupBuyingNo?: string // 货盘编号（用于显示）
   supplyGroupPrice?: number // 供团价格
+  status?: number // 货盘状态
   sampleSendDate?: Date // 寄样日期
   groupStartDate?: Date // 开团日期
   groupSales?: number // 开团销量
@@ -24,6 +27,7 @@ export interface GroupBuyingReviewSaveReqVO {
   customerId: number // 客户编号
   groupBuyingId: number // 团购货盘表ID
   supplyGroupPrice?: number // 供团价格
+  status?: number // 货盘状态
   sampleSendDate?: Date // 寄样日期
   groupStartDate?: Date // 开团日期
   groupSales?: number // 开团销量

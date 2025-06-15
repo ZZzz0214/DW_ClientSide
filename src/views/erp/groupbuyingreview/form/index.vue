@@ -63,14 +63,19 @@
   // 表单数据
   const formData = ref<GroupBuyingReviewApi.GroupBuyingReviewVO>({
     no: '',
+    groupBuyingId: undefined,
+    groupBuyingNo: '', // 货盘编号（用于显示）
+    customerId: undefined, // 客户ID（传递给后端）
     brandName: '',
     productName: '',
     productSpec: '',
     productSku: '',
     remark: '',
-    customerName: '',
+    customerName: '', // 客户名称（用于显示）
     supplyGroupPrice: 0,
+    expressFee: 0,
     groupMechanism: '',
+    status: undefined, // 货盘状态
     sampleSendDate: undefined,
     groupStartDate: undefined,
     groupSales: 0,

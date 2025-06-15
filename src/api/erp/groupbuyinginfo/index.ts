@@ -79,5 +79,10 @@ export const GroupBuyingInfoApi = {
   // 导出团购信息 Excel
   exportGroupBuyingInfo: async (params: GroupBuyingInfoPageReqVO) => {
     return await request.download({ url: `/erp/group-buying-info/export-excel`, params })
+  },
+
+  // 导入团购信息模板
+  importGroupBuyingInfoTemplate: async () => {
+    return await request.download({ url: `/erp/group-buying-info/get-import-template` })
   }
 }

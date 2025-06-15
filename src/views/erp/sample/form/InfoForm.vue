@@ -64,8 +64,30 @@
       <el-form-item label="组品编号" prop="comboProductId">
         <el-input
           v-model="formData.comboProductId"
-          placeholder="请输入组品编号"
+          placeholder="请点击选择组品编号"
           class="w-80"
+          readonly
+          @click="openComboSelectDialog"
+          :disabled="isDetail"
+          style="cursor: pointer;"
+        />
+      </el-form-item>
+
+      <el-form-item label="发货编码" prop="shippingCode">
+        <el-input
+          v-model="formData.shippingCode"
+          placeholder="发货编码"
+          class="w-80"
+          readonly
+        />
+      </el-form-item>
+
+      <el-form-item label="产品名称" prop="comboProductName">
+        <el-input
+          v-model="formData.comboProductName"
+          placeholder="产品名称"
+          class="w-80"
+          readonly
         />
       </el-form-item>
 
@@ -90,8 +112,12 @@
       <el-form-item label="客户名称" prop="customerName">
         <el-input
           v-model="formData.customerName"
-          placeholder="请输入客户名称"
+          placeholder="请点击选择客户"
           class="w-80"
+          readonly
+          @click="openCustomerSearchDialog"
+          :disabled="isDetail"
+          style="cursor: pointer;"
         />
       </el-form-item>
 
@@ -145,6 +171,12 @@
         />
       </el-form-item>
     </el-form>
+
+    <!-- 组品选择弹窗 -->
+    <ComboSelectDialog ref="comboSelectDialogRef" @combo-selected="handleComboSelected" />
+    
+    <!-- 客户搜索弹窗 -->
+    <CustomerSearchDialog ref="customerSearchDialogRef" @customer-selected="handleCustomerSelected" />
   </template>
 
   <script lang="ts" setup>
@@ -153,6 +185,8 @@
   import { propTypes } from '@/utils/propTypes'
   import type { SampleVO } from '@/api/erp/sample'
   import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
+  import ComboSelectDialog from './ComboSelectDialog.vue'
+  import CustomerSearchDialog from './CustomerSearchDialog.vue'
 
   defineOptions({ name: 'ErpSampleInfoForm' })
 
@@ -161,11 +195,14 @@
       type: Object as PropType<SampleVO>,
       default: () => {}
     },
-    isDetail: propTypes.bool.def(false)
+    isDetail: propTypes.bool.def(false),
+    activeName: propTypes.string.def('info')
   })
 
   const message = useMessage()
   const formRef = ref()
+  const comboSelectDialogRef = ref()
+  const customerSearchDialogRef = ref()
   const formData = reactive<SampleVO>({
     no: '',
     logisticsCompany: '',
@@ -174,6 +211,8 @@
     contactPhone: '',
     address: '',
     comboProductId: '',
+    shippingCode: '',
+    comboProductName: '',
     productSpec: '',
     productQuantity: 1,
     customerName: '',
@@ -189,10 +228,10 @@
     receiverName: [{ required: true, message: '收件姓名不能为空', trigger: 'blur' }],
     contactPhone: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
     address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }],
-    comboProductId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
+    comboProductId: [{ required: true, message: '请选择组品编号', trigger: 'change' }],
     productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
     productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
-    customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+    customerName: [{ required: true, message: '请选择客户名称', trigger: 'change' }],
     sampleStatus: [{ required: true, message: '样品状态不能为空', trigger: 'blur' }]
   })
 
@@ -205,6 +244,58 @@
     },
     { immediate: true }
   )
+
+  /** 打开组品选择弹窗 */
+  const openComboSelectDialog = () => {
+    console.log('点击了组品选择按钮')
+    console.log('comboSelectDialogRef:', comboSelectDialogRef.value)
+    if (comboSelectDialogRef.value) {
+      console.log('调用弹窗的open方法')
+      comboSelectDialogRef.value.open()
+    } else {
+      console.error('组品选择弹窗引用为空')
+    }
+  }
+
+  /** 处理组品选择 */
+  const handleComboSelected = (combo: any) => {
+    formData.comboProductId = combo.no || combo.id?.toString() || ''
+    formData.shippingCode = combo.shippingCode || ''
+    formData.comboProductName = combo.name || ''
+    
+    // 同步数据到父组件
+    Object.assign(props.propFormData, formData)
+    
+    // 触发组品编号字段的验证
+    nextTick(() => {
+      formRef.value?.validateField('comboProductId')
+    })
+  }
+
+  /** 打开客户搜索弹窗 */
+  const openCustomerSearchDialog = () => {
+    console.log('点击了客户搜索按钮')
+    console.log('customerSearchDialogRef:', customerSearchDialogRef.value)
+    if (customerSearchDialogRef.value) {
+      console.log('调用弹窗的open方法')
+      customerSearchDialogRef.value.open()
+    } else {
+      console.error('客户搜索弹窗引用为空')
+    }
+  }
+
+  /** 处理客户选择 */
+  const handleCustomerSelected = (customer: any) => {
+    formData.customerName = customer.name || ''
+    
+    // 同步数据到父组件
+    Object.assign(props.propFormData, formData)
+    
+    // 触发客户名称字段的验证
+    nextTick(() => {
+      formRef.value?.validateField('customerName')
+    })
+  }
 
   /** 表单校验 */
   const emit = defineEmits(['update:activeName'])

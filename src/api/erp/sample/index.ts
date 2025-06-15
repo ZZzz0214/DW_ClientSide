@@ -31,6 +31,8 @@ export interface SampleSaveReqVO {
   contactPhone: string // 联系电话
   address: string // 详细地址
   comboProductId: string // 组品编号
+  shippingCode?: string // 发货编码
+  comboProductName?: string // 组合产品名称
   productSpec: string // 产品规格
   productQuantity: number // 产品数量
   customerName: string // 客户名称
@@ -82,5 +84,15 @@ export const SampleApi = {
   // 导出样品 Excel
   exportSample: async (params: SamplePageReqVO) => {
     return await request.download({ url: `/erp/sample/export-excel`, params })
+  },
+
+  // 导入样品
+  importSample: async (data: any) => {
+    return await request.post({ url: `/erp/sample/import`, data })
+  },
+
+  // 下载样品导入模板
+  importSampleTemplate: async () => {
+    return await request.download({ url: `/erp/sample/get-import-template` })
   }
 }

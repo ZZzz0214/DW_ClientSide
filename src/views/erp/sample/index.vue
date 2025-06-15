@@ -62,6 +62,14 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="warning"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:sample:import']"
+          >
+            <Icon icon="ep:upload" /> 导入
+          </el-button>
+          <el-button
             type="success"
             plain
             @click="handleExport"
@@ -140,6 +148,9 @@
         @pagination="getList"
       />
     </ContentWrap>
+
+    <!-- 导入组件 -->
+    <SampleImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
@@ -147,6 +158,7 @@
   import download from '@/utils/download'
   import { SampleApi, SampleVO } from '@/api/erp/sample'
   import { DICT_TYPE } from '@/utils/dict'
+  import SampleImportForm from './form/SampleImportForm.vue'
 
   /** ERP 样品列表 */
   defineOptions({ name: 'ErpSample' })
@@ -231,11 +243,18 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await SampleApi.exportSample(queryParams)
-      download.excel(data, '样品.xls')
+      download.excel(data, '样品表.xlsx')
     } catch {
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

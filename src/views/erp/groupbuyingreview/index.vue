@@ -104,6 +104,14 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="warning"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:groupbuyingreview:import']"
+          >
+            <Icon icon="ep:upload" /> 导入
+          </el-button>
+          <el-button
             type="success"
             plain
             @click="handleExport"
@@ -136,7 +144,11 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
-        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false"/>
+        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
+          </template>
+        </el-table-column>
         <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
         <el-table-column label="产品规格" align="center" prop="productSpecification" :show-overflow-tooltip="false"/>
 <!--        <el-table-column label="产品SKU" align="center" prop="productSku" :show-overflow-tooltip="false"/>-->
@@ -200,12 +212,16 @@
         @pagination="getList"
       />
     </ContentWrap>
+    <!-- 在模板底部添加导入组件 -->
+    <GroupBuyingReviewImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
   import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
   import download from '@/utils/download'
   import { GroupBuyingReviewApi, GroupBuyingReviewVO } from '@/api/erp/groupbuyingreview'
+  import { DICT_TYPE } from '@/utils/dict'
+  import GroupBuyingReviewImportForm from './form/GroupBuyingReviewImportForm.vue'
 
   /** ERP 团购复盘列表 */
   defineOptions({ name: 'ErpGroupBuyingReview' })
@@ -296,6 +312,13 @@
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

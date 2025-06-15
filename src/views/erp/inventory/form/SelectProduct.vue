@@ -43,8 +43,16 @@
         <el-table-column label="产品编号" prop="no" />
         <el-table-column label="产品名称" prop="name" />
         <el-table-column label="产品简称" prop="productShortName" />
-        <el-table-column label="品牌名称" prop="brand" />
-        <el-table-column label="产品品类" prop="categoryId" />
+        <el-table-column label="品牌名称" prop="brand">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brand" />
+          </template>
+        </el-table-column>
+        <el-table-column label="产品品类" prop="categoryId">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_CATEGORY" :value="scope.row.categoryId" />
+          </template>
+        </el-table-column>
         <el-table-column label="发货编码" prop="shippingCode" />
         <el-table-column label="产品重量" prop="weight" />
       </el-table>
@@ -68,6 +76,7 @@
 import { ref, reactive } from 'vue'
 import { ElMessage } from 'element-plus'
 import * as ProductApi from '@/api/erp/product/product/index'
+import { DICT_TYPE } from '@/utils/dict'
 
 const dialogVisible = ref(false)
 const dialogTitle = ref('选择产品')
