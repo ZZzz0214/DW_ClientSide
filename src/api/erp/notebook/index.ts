@@ -67,5 +67,18 @@ export const NotebookApi = {
   // 导出记事本 Excel
   exportNotebook: async (params: NotebookPageReqVO) => {
     return await request.download({ url: `/erp/notebook/export-excel`, params })
+  },
+
+  // 导入记事本 Excel
+  importNotebook: async (file: File, updateSupport: boolean) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('updateSupport', String(updateSupport))
+    return await request.post({ url: `/erp/notebook/import`, data: formData })
+  },
+
+  // 下载记事本导入模板
+  importNotebookTemplate: async () => {
+    return await request.download({ url: `/erp/notebook/get-import-template` })
   }
 }

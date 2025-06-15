@@ -62,6 +62,14 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="warning"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:notebook:import']"
+          >
+            <Icon icon="ep:upload" /> 导入
+          </el-button>
+          <el-button
             type="success"
             plain
             @click="handleExport"
@@ -143,6 +151,9 @@
         @pagination="getList"
       />
     </ContentWrap>
+
+    <!-- 导入组件 -->
+    <NotebookImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
@@ -150,6 +161,7 @@
   import download from '@/utils/download'
   import { NotebookApi, NotebookVO } from '@/api/erp/notebook'
   import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
+  import NotebookImportForm from './form/NotebookImportForm.vue'
 
   /** ERP 记事本列表 */
   defineOptions({ name: 'ErpNotebook' })
@@ -220,11 +232,18 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await NotebookApi.exportNotebook(queryParams)
-      download.excel(data, '记事本.xls')
+      download.excel(data, '记事本.xlsx')
     } catch {
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 打开表单页面 */
