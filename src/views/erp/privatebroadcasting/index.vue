@@ -40,6 +40,23 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="info"
+          plain
+          @click="openForm('copy', selectionList[0]?.id)"
+          v-hasPermi="['erp:private-broadcasting:create']"
+          :disabled="selectionList.length !== 1"
+        >
+          <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+        </el-button>
+        <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:private-broadcasting:import']"
+        >
+          <Icon icon="ep:upload" /> 导入
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -79,9 +96,18 @@
           />
         </template>
       </el-table-column>
-      <el-table-column label="品牌名称" align="center" prop="brandId" />
+      <el-table-column label="品牌名称" align="center" prop="brandId">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandId" />
+        </template>
+      </el-table-column>
       <el-table-column label="产品名称" align="center" prop="productName" />
       <el-table-column label="产品规格" align="center" prop="productSpec" />
+      <el-table-column label="货盘状态" align="center" prop="privateStatus">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRIVATE_STATUS" :value="scope.row.privateStatus" />
+        </template>
+      </el-table-column>
       <el-table-column
         label="保质日期"
         align="center"
@@ -126,12 +152,17 @@
       @pagination="getList"
     />
   </ContentWrap>
+
+  <!-- 导入组件 -->
+  <PrivateBroadcastingImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
+import { DICT_TYPE } from '@/utils/dict'
 import { ErpPrivateBroadcastingApi, ErpPrivateBroadcastingRespVO } from '@/api/erp/privateBroadcasting'
+import PrivateBroadcastingImportForm from './form/PrivateBroadcastingImportForm.vue'
 
 /** ERP 私播货盘列表 */
 defineOptions({ name: 'ErpPrivateBroadcasting' })
@@ -179,6 +210,8 @@ const resetQuery = () => {
 const openForm = (type: string, id?: number) => {
   if (type === 'create') {
     push({ name: 'ErpPrivateBroadcastingAdd' })
+  } else if (type === 'copy' && typeof id === 'number') {
+    push({ name: 'ErpPrivateBroadcastingAdd', params: { copyId: id } })
   } else if (type === 'update' && typeof id === 'number') {
     push({ name: 'ErpPrivateBroadcastingEdit', params: { id } })
   } else {
@@ -214,11 +247,18 @@ const handleExport = async () => {
     await message.exportConfirm()
     exportLoading.value = true
     const data = await ErpPrivateBroadcastingApi.exportPrivateBroadcasting(queryParams)
-    download.excel(data, '私播货盘.xls')
+    download.excel(data, '私播货盘.xlsx')
   } catch {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** 导入操作 */
+const importFormRef = ref()
+
+const handleImport = () => {
+  importFormRef.value.open()
 }
 
 /** 初始化 **/

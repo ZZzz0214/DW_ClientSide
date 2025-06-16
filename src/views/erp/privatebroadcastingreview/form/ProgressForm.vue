@@ -4,7 +4,7 @@
       :disabled="isDetail"
       :model="formData"
       :rules="rules"
-      label-width="120px"
+      label-width="140px"
     >
       <!-- 寄样日期 -->
       <el-form-item label="寄样日期" prop="sampleSendDate">

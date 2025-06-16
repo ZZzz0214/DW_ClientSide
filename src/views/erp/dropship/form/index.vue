@@ -57,11 +57,29 @@
       isDetail.value = true
     }
     const id = params.id as unknown as number
+    const copyId = params.copyId as unknown as number
+    
     if (id) {
       formLoading.value = true
       try {
         const res = await DropshipAssistApi.DropshipAssistApi.getDropshipAssist(id)
         formData.value = res
+      } finally {
+        formLoading.value = false
+      }
+    } else if (copyId) {
+      // 复制模式
+      formLoading.value = true
+      try {
+        const res = await DropshipAssistApi.DropshipAssistApi.getDropshipAssist(copyId)
+        // 复制数据，但重置关键字段
+        formData.value = {
+          ...res,
+          id: undefined,
+          no: '',
+          createTime: undefined,
+          updateTime: undefined
+        }
       } finally {
         formLoading.value = false
       }

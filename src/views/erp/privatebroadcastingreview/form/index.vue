@@ -64,11 +64,22 @@
   const formData = ref({
     id: undefined,
     no: '',
+    privateBroadcastingId: undefined,
+    privateBroadcastingNo: '',
+    brandName: undefined,
+    productName: '',
+    productSpec: '',
+    productSku: '',
+    livePrice: undefined,
+    privateStatus: undefined,
     remark: '',
+    customerId: undefined,
     customerName: '',
     productPrice: 0,
+    productNakedPrice: 0,
     expressFee: 0,
     distributionPrice: 0,
+    dropshipPrice: 0,
     sampleSendDate: '',
     groupStartDate: '',
     groupSales: 0,
@@ -82,11 +93,30 @@
       isDetail.value = true
     }
     const id = params.id as unknown as number
+    const copyId = params.copyId as unknown as number
+
     if (id) {
       formLoading.value = true
       try {
         const res = await PrivateBroadcastingReviewApi.ErpPrivateBroadcastingReviewApi.getPrivateBroadcastingReview(id)
+        console.log(formData.value)
         formData.value = res
+      } finally {
+        formLoading.value = false
+      }
+    } else if (copyId) {
+      // 复制模式
+      formLoading.value = true
+      try {
+        const res = await PrivateBroadcastingReviewApi.ErpPrivateBroadcastingReviewApi.getPrivateBroadcastingReview(copyId)
+        // 复制数据，但重置关键字段
+        formData.value = {
+          ...res,
+          id: undefined,
+          no: '',
+          createTime: undefined,
+          updateTime: undefined
+        }
       } finally {
         formLoading.value = false
       }

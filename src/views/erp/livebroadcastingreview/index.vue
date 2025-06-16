@@ -48,6 +48,14 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="info"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:livebroadcastingreview:import']"
+          >
+            <Icon icon="ep:upload" class="mr-5px" /> 导入
+          </el-button>
+          <el-button
             type="success"
             plain
             @click="handleExport"
@@ -78,9 +86,18 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="品牌名称" align="center" prop="brandName" />
-        <el-table-column label="产品名称" align="center" prop="productName" />
+        <el-table-column label="品牌名称" align="center" prop="brandId">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandId" />
+          </template>
+        </el-table-column>
+                <el-table-column label="产品名称" align="center" prop="productName" />
         <el-table-column label="产品规格" align="center" prop="productSpec" />
+        <el-table-column label="货盘状态" align="center" prop="liveStatus">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
+          </template>
+        </el-table-column>
         <el-table-column label="客户名称" align="center" prop="customerName" />
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
         <el-table-column label="开播日期" align="center" prop="liveStartDate" :formatter="dateFormatter2" />
@@ -114,12 +131,16 @@
         @pagination="getList"
       />
     </ContentWrap>
+    <!-- 导入组件 -->
+    <LiveBroadcastingReviewImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
   import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
   import download from '@/utils/download'
   import { LiveBroadcastingReviewApi, LiveBroadcastingReviewVO } from '@/api/erp/livebroadcastingreview'
+  import LiveBroadcastingReviewImportForm from './form/LiveBroadcastingReviewImportForm.vue'
+  import { DICT_TYPE } from '@/utils/dict'
 
   /** ERP 直播复盘列表 */
   defineOptions({ name: 'ErpLiveBroadcastingReview' })
@@ -203,11 +224,18 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await LiveBroadcastingReviewApi.exportLiveBroadcastingReview(queryParams)
-      download.excel(data, '直播复盘.xls')
+      download.excel(data, '直播复盘.xlsx')
     } catch {
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

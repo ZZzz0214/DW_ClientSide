@@ -7,6 +7,7 @@ export interface LiveBroadcastingReviewVO {
   liveBroadcastingId?: number // 直播货盘表ID
   remark?: string // 备注信息
   customerId?: number // 客户ID
+  customerName?: string // 客户名称（用于显示）
   livePlatform?: string // 直播平台
   liveCommission?: number // 直播佣金
   publicCommission?: number // 公开佣金
@@ -17,6 +18,14 @@ export interface LiveBroadcastingReviewVO {
   repeatLiveDate?: Date // 复播日期
   repeatLiveSales?: number // 复播销量
   createTime?: Date // 创建时间
+  productImage?: string // 产品图片
+  brandId?: number // 品牌ID
+  brandName?: string // 品牌名称
+  productName?: string // 产品名称
+  productSpec?: string // 产品规格
+  productSku?: string // 产品SKU
+  livePrice?: number // 直播价格
+  liveStatus?: number // 货盘状态
 }
 
 // ERP 直播复盘保存 Request VO
@@ -81,5 +90,10 @@ export const LiveBroadcastingReviewApi = {
   // 导出直播复盘 Excel
   exportLiveBroadcastingReview: async (params: LiveBroadcastingReviewPageReqVO) => {
     return await request.download({ url: `/erp/live-broadcasting-review/export-excel`, params })
+  },
+
+  // 下载直播复盘导入模板
+  importLiveBroadcastingReviewTemplate: async () => {
+    return await request.download({ url: `/erp/live-broadcasting-review/get-import-template` })
   }
 }

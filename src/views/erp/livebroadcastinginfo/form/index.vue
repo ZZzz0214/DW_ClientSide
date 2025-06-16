@@ -38,7 +38,7 @@
   <script lang="ts" setup>
   import { cloneDeep } from 'lodash-es'
   import { useTagsViewStore } from '@/store/modules/tagsView'
-  import * as LiveBroadcastingInfoApi from '@/api/erp/livebroadcastinginfo'
+  import { LiveBroadcastingInfoApi, LiveBroadcastingInfoVO } from '@/api/erp/livebroadcastinginfo'
   import InfoForm from './InfoForm.vue'
 
   defineOptions({ name: 'ErpLiveBroadcastingInfoAdd' })
@@ -54,9 +54,11 @@
   const infoRef = ref() // 基础信息 Ref
   const activeName = ref('info') // Tab 激活的窗口
   // 表单数据
-  const formData = ref<LiveBroadcastingInfoApi.LiveBroadcastingInfoVO>({
+  const formData = ref<LiveBroadcastingInfoVO>({
+    id: undefined,
     no: '',
-    customerId: 0,
+    customerId: undefined,
+    customerName: '', // 添加客户名称字段
     customerPosition: '',
     customerWechat: '',
     platformName: '',
@@ -78,7 +80,7 @@
     if (id) {
       formLoading.value = true
       try {
-        const res = await LiveBroadcastingInfoApi.LiveBroadcastingInfoApi.getLiveBroadcastingInfo(id)
+        const res = await LiveBroadcastingInfoApi.getLiveBroadcastingInfo(id)
         formData.value = res
       } finally {
         formLoading.value = false
@@ -90,24 +92,34 @@
   const submitForm = async () => {
     formLoading.value = true
     try {
-      // 校验表单
-      await unref(infoRef)?.validate()
+      // 校验表单并获取表单数据
+      const validatedData = await unref(infoRef)?.validate()
+      console.log('校验后的数据:', validatedData)
 
       // 提交数据
-      const data = cloneDeep(unref(formData.value))
+      const data = cloneDeep(validatedData)
       const id = params.id as unknown as number
+      
+      // 如果是更新操作，确保ID被包含在数据中
+      if (id) {
+        data.id = id
+      }
+      
+      console.log('准备提交的数据:', data)
 
       if (!id) {
-        await LiveBroadcastingInfoApi.LiveBroadcastingInfoApi.createLiveBroadcastingInfo(data)
+        await LiveBroadcastingInfoApi.createLiveBroadcastingInfo(data)
         message.success(t('common.createSuccess'))
       } else {
-        await LiveBroadcastingInfoApi.LiveBroadcastingInfoApi.updateLiveBroadcastingInfo(data)
+        await LiveBroadcastingInfoApi.updateLiveBroadcastingInfo(data)
         message.success(t('common.updateSuccess'))
       }
 
       // 设置刷新标志
       localStorage.setItem('refreshList', 'true')
       close()
+    } catch (error) {
+      console.error('提交失败:', error)
     } finally {
       formLoading.value = false
     }

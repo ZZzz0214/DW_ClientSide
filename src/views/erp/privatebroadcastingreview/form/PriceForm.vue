@@ -4,14 +4,17 @@
       :disabled="isDetail"
       :model="formData"
       :rules="rules"
-      label-width="120px"
+      label-width="140px"
     >
       <!-- 客户名称 -->
-      <el-form-item label="客户名称" prop="customerId">
+      <el-form-item label="客户名称" prop="customerName">
         <el-input
-          v-model="formData.customerId"
-          placeholder="请输入客户名称"
+          v-model="formData.customerName"
+          placeholder="请选择客户"
           class="w-80"
+          readonly
+          :disabled="isDetail"
+          @click="openCustomerSearch"
         />
       </el-form-item>
 
@@ -48,12 +51,19 @@
         />
       </el-form-item>
     </el-form>
+    
+    <!-- 客户选择弹窗 -->
+    <CustomerSearchDialog
+      v-model:visible="customerSearchDialogVisible"
+      @customer-selected="handleCustomerSelected"
+    />
   </template>
 
   <script lang="ts" setup>
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
+  import CustomerSearchDialog from './CustomerSearchDialog.vue'
 
   defineOptions({ name: 'ErpPrivateBroadcastingReviewPriceForm' })
 
@@ -68,18 +78,18 @@
   const message = useMessage()
   const formRef = ref()
   const formData = reactive({
+    customerId: undefined,
     customerName: '',
     productPrice: 0,
     expressFee: 0,
     distributionPrice: 0,
-    customerId:0,
-    productNakedPrice:0,
-    dropshipPrice:0,
+    productNakedPrice: 0,
+    dropshipPrice: 0,
   })
 
   const rules = reactive({
-    customerId: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
-    productPrice: [{ required: true, message: '产品裸价不能为空', trigger: 'blur' }]
+    customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+    productNakedPrice: [{ required: true, message: '产品裸价不能为空', trigger: 'blur' }]
   })
 
   watch(
@@ -90,6 +100,26 @@
     },
     { immediate: true }
   )
+
+  // 客户选择弹窗
+  const customerSearchDialogVisible = ref(false)
+
+  const openCustomerSearch = () => {
+    if (!props.isDetail) {
+      customerSearchDialogVisible.value = true
+    }
+  }
+
+  const handleCustomerSelected = (customer: any) => {
+    formData.customerId = customer.id
+    formData.customerName = customer.name
+    
+    // 同时更新父组件的 propFormData
+    Object.assign(props.propFormData, {
+      customerId: customer.id,
+      customerName: customer.name
+    })
+  }
 
   const emit = defineEmits(['update:activeName'])
   const validate = async () => {

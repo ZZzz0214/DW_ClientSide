@@ -48,6 +48,14 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="warning"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:livebroadcastinginfo:import']"
+          >
+            <Icon icon="ep:upload" /> 导入
+          </el-button>
+          <el-button
             type="success"
             plain
             @click="handleExport"
@@ -80,36 +88,36 @@
           <el-table-column label="编号" align="center" prop="no" />
           <el-table-column label="客户姓名" align="center" prop="customerName" />
 <!--          <el-table-column label="客户职位" align="center" prop="customerPosition" />-->
-          <el-table-column label="客户职位" align="center" prop="customerPosition">
-          <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_POSITION" :value="scope.row.customerPosition" />
-          </template>
-        </el-table-column>
+                <el-table-column label="客户职位" align="center" prop="customerPosition">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_POSITION" :value="scope.row.customerPosition" />
+        </template>
+      </el-table-column>
           <el-table-column label="客户微信" align="center" prop="customerWechat" />
 <!--          <el-table-column label="平台名称" align="center" prop="platformName" />-->
-          <el-table-column label="平台名称" align="center" prop="platformName">
-          <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_PLATFORM_NAME" :value="scope.row.platformName" />
-          </template>
-        </el-table-column>
+                <el-table-column label="平台名称" align="center" prop="platformName">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_LIVE_PLATFORM_NAME" :value="scope.row.platformName" />
+        </template>
+      </el-table-column>
 <!--          <el-table-column label="客户属性" align="center" prop="customerAttribute" />-->
-          <el-table-column label="客户属性" align="center" prop="customerAttribute">
-          <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_ATTRIBUTE" :value="scope.row.customerAttribute" />
-          </template>
-        </el-table-column>
+                <el-table-column label="客户属性" align="center" prop="customerAttribute">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_ATTRIBUTE" :value="scope.row.customerAttribute" />
+        </template>
+      </el-table-column>
 <!--          <el-table-column label="客户城市" align="center" prop="customerCity" />-->
-          <el-table-column label="客户城市" align="center" prop="customerCity">
-          <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_CITY" :value="scope.row.customerCity" />
-          </template>
-        </el-table-column>
+                <el-table-column label="客户城市" align="center" prop="customerCity">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_CITY" :value="scope.row.customerCity" />
+        </template>
+      </el-table-column>
 <!--          <el-table-column label="客户区县" align="center" prop="customerDistrict" />-->
-          <el-table-column label="客户区县" align="center" prop="customerDistrict">
-          <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_DISTRICT" :value="scope.row.customerDistrict" />
-          </template>
-        </el-table-column>
+                <el-table-column label="客户区县" align="center" prop="customerDistrict">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_DISTRICT" :value="scope.row.customerDistrict" />
+        </template>
+      </el-table-column>
           <el-table-column label="用户画像" align="center" prop="userPortrait" />
           <el-table-column label="招商类目" align="center" prop="recruitmentCategory" />
           <el-table-column label="选品标准" align="center" prop="selectionCriteria" />
@@ -137,20 +145,22 @@
           </el-table-column>
         </el-table>
         <!-- 分页 -->
-        <Pagination
-          :total="total"
-          v-model:page="queryParams.pageNo"
-          v-model:limit="queryParams.pageSize"
-          @pagination="getList"
-        />
-      </ContentWrap>
-    </template>
+              <Pagination
+        :total="total"
+        v-model:page="queryParams.pageNo"
+        v-model:limit="queryParams.pageSize"
+        @pagination="getList"
+      />
+    </ContentWrap>
+    <!-- 导入组件 -->
+    <LiveBroadcastingInfoImportForm ref="importFormRef" @success="getList" />
+  </template>
 
   <script setup lang="ts">
-  import { DICT_TYPE } from '@/utils/dict'
-  import { dateFormatter } from '@/utils/formatTime'
   import download from '@/utils/download'
   import { LiveBroadcastingInfoApi, LiveBroadcastingInfoVO } from '@/api/erp/livebroadcastinginfo'
+  import { DICT_TYPE } from '@/utils/dict'
+  import LiveBroadcastingInfoImportForm from './form/LiveBroadcastingInfoImportForm.vue'
 
   /** ERP 直播信息列表 */
   defineOptions({ name: 'ErpLiveBroadcastingInfo' })
@@ -234,11 +244,18 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await LiveBroadcastingInfoApi.exportLiveBroadcastingInfo(queryParams)
-      download.excel(data, '直播信息.xls')
+      download.excel(data, '直播信息.xlsx')
     } catch {
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

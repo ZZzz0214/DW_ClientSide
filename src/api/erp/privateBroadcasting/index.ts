@@ -88,5 +88,20 @@ export const ErpPrivateBroadcastingApi = {
   // 根据ID列表获取私播货盘列表
   getPrivateBroadcastingListByIds: async (ids: number[]) => {
     return await request.get({ url: `/erp/private-broadcasting/list-by-ids`, params: { ids } })
+  },
+
+  // 导出私播货盘
+  exportPrivateBroadcasting: async (params: ErpPrivateBroadcastingPageReqVO) => {
+    return await request.download({ url: `/erp/private-broadcasting/export-excel`, params })
+  },
+
+  // 下载私播货盘导入模版
+  importPrivateBroadcastingTemplate: async () => {
+    return await request.download({ url: `/erp/private-broadcasting/get-import-template` })
+  },
+
+  // 导入私播货盘
+  importPrivateBroadcasting: async (params: any) => {
+    return await request.upload({ url: `/erp/private-broadcasting/import`, ...params })
   }
 }

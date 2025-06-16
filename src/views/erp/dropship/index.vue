@@ -104,6 +104,15 @@
           >
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
+          <el-button
+            type="info"
+            plain
+            @click="openForm('copy', selectionList[0]?.id)"
+            v-hasPermi="['erp:dropship:create']"
+            :disabled="selectionList.length !== 1"
+          >
+            <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+          </el-button>
 
           <el-button
           type="warning"
@@ -256,6 +265,8 @@
   const openForm = (type: string, id?: number) => {
     if (type === 'create') {
       push({ name: 'ErpDropshipAssistAdd' })
+    } else if (type === 'copy' && typeof id === 'number') {
+      push({ name: 'ErpDropshipAssistAdd', params: { copyId: id } })
     } else if (type === 'update' && typeof id === 'number') {
       push({ name: 'ErpDropshipAssistEdit', params: { id } })
     } else {

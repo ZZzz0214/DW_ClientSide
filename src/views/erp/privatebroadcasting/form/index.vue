@@ -74,18 +74,19 @@ const shippingRef = ref() // 发货信息 Ref
 const formData = ref<ErpPrivateBroadcastingApi.ErpPrivateBroadcastingRespVO>({
   no: '',
   productImage: '',
-  brandId: 0,
+  brandId: undefined,
   productName: '',
   productSpec: '',
   productSku: '',
-  marketPrice: 0,
+  marketPrice: undefined,
   shelfLife: '',
-  productStock: 0,
+  productStock: undefined,
   remark: '',
-  livePrice: 0,
-  productNakedPrice: 0,
-  expressFee: 0,
-  dropshipPrice: 0,
+  privateStatus: undefined, // 货盘状态
+  livePrice: undefined,
+  productNakedPrice: undefined,
+  expressFee: undefined,
+  dropshipPrice: undefined,
   publicLink: '',
   coreSellingPoint: '',
   expressCompany: '',
@@ -99,11 +100,49 @@ const getDetail = async () => {
     isDetail.value = true
   }
   const id = params.id as unknown as number
+  const copyId = params.copyId as unknown as number
+
   if (id) {
     formLoading.value = true
     try {
       const res = await ErpPrivateBroadcastingApi.ErpPrivateBroadcastingApi.getPrivateBroadcasting(id)
-      formData.value = res
+
+      // 确保数字类型字段正确转换
+      formData.value = {
+        ...res,
+        brandId: res.brandId != null ? Number(res.brandId) : undefined,
+        privateStatus: res.privateStatus != null ? Number(res.privateStatus) : undefined,
+        marketPrice: res.marketPrice != null ? Number(res.marketPrice) : undefined,
+        productStock: res.productStock != null ? Number(res.productStock) : undefined,
+        livePrice: res.livePrice != null ? Number(res.livePrice) : undefined,
+        productNakedPrice: res.productNakedPrice != null ? Number(res.productNakedPrice) : undefined,
+        expressFee: res.expressFee != null ? Number(res.expressFee) : undefined,
+        dropshipPrice: res.dropshipPrice != null ? Number(res.dropshipPrice) : undefined
+      }
+    } finally {
+      formLoading.value = false
+    }
+  } else if (copyId) {
+    // 复制模式
+    formLoading.value = true
+    try {
+      const res = await ErpPrivateBroadcastingApi.ErpPrivateBroadcastingApi.getPrivateBroadcasting(copyId)
+      // 复制数据，但重置关键字段
+      formData.value = {
+        ...res,
+        id: undefined,
+        no: '',
+        createTime: undefined,
+        updateTime: undefined,
+        privateStatus: 10, // 重置为未审核状态
+        brandId: res.brandId != null ? Number(res.brandId) : undefined,
+        marketPrice: res.marketPrice != null ? Number(res.marketPrice) : undefined,
+        productStock: res.productStock != null ? Number(res.productStock) : undefined,
+        livePrice: res.livePrice != null ? Number(res.livePrice) : undefined,
+        productNakedPrice: res.productNakedPrice != null ? Number(res.productNakedPrice) : undefined,
+        expressFee: res.expressFee != null ? Number(res.expressFee) : undefined,
+        dropshipPrice: res.dropshipPrice != null ? Number(res.dropshipPrice) : undefined
+      }
     } finally {
       formLoading.value = false
     }

@@ -40,6 +40,23 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="info"
+          plain
+          @click="openForm('copy', selectionList[0]?.id)"
+          v-hasPermi="['erp:private-broadcasting-review:create']"
+          :disabled="selectionList.length !== 1"
+        >
+          <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+        </el-button>
+        <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:private-broadcasting-review:import']"
+        >
+          <Icon icon="ep:upload" /> 导入
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleExport"
@@ -70,7 +87,12 @@
     >
       <el-table-column width="30" label="选择" type="selection" />
       <el-table-column label="编号" align="center" prop="no" />
-      <el-table-column label="品牌名称" align="center" prop="brandName" />
+      <el-table-column label="私播货盘编号" align="center" prop="privateBroadcastingNo" />
+      <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
+        </template>
+      </el-table-column>
       <el-table-column label="产品名称" align="center" prop="productName" />
       <el-table-column label="产品规格" align="center" prop="productSpec" />
       <el-table-column label="客户名称" align="center" prop="customerName" />
@@ -106,13 +128,17 @@
       @pagination="getList"
     />
   </ContentWrap>
+
+  <!-- 导入组件 -->
+  <PrivateBroadcastingReviewImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ErpPrivateBroadcastingReviewApi, ErpPrivateBroadcastingReviewRespVO } from '@/api/erp/privateBroadcastingReview'
-
+import PrivateBroadcastingReviewImportForm from './form/PrivateBroadcastingReviewImportForm.vue'
+import { DICT_TYPE } from '@/utils/dict'
 /** ERP 私播复盘列表 */
 defineOptions({ name: 'ErpPrivateBroadcastingReview' })
 
@@ -159,6 +185,8 @@ const resetQuery = () => {
 const openForm = (type: string, id?: number) => {
   if (type === 'create') {
     push({ name: 'ErpPrivateBroadcastingReviewAdd' })
+  } else if (type === 'copy' && typeof id === 'number') {
+    push({ name: 'ErpPrivateBroadcastingReviewAdd', params: { copyId: id } })
   } else if (type === 'update' && typeof id === 'number') {
     push({ name: 'ErpPrivateBroadcastingReviewEdit', params: { id } })
   } else {
@@ -194,11 +222,18 @@ const handleExport = async () => {
     await message.exportConfirm()
     exportLoading.value = true
     const data = await ErpPrivateBroadcastingReviewApi.exportPrivateBroadcastingReview(queryParams)
-    download.excel(data, '私播复盘.xls')
+    download.excel(data, '私播复盘.xlsx')
   } catch {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** 导入操作 */
+const importFormRef = ref()
+
+const handleImport = () => {
+  importFormRef.value.open()
 }
 
 /** 初始化 **/

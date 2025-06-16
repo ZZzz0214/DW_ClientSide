@@ -4,6 +4,7 @@ import request from '@/config/axios'
 export interface ErpPrivateBroadcastingInfoRespVO {
   id?: number // 私播信息编号
   no?: string // 编号
+  customerId?: number // 客户ID
   customerName?: string // 客户姓名
   customerPosition?: string // 客户职位
   customerWechat?: string // 客户微信
@@ -22,6 +23,7 @@ export interface ErpPrivateBroadcastingInfoRespVO {
 export interface ErpPrivateBroadcastingInfoSaveReqVO {
   id?: number // 私播信息编号
   no: string // 编号
+  customerId?: number // 客户ID
   customerName?: string // 客户姓名
   customerPosition?: string // 客户职位
   customerWechat?: string // 客户微信
@@ -37,7 +39,12 @@ export interface ErpPrivateBroadcastingInfoSaveReqVO {
 
 // ERP 私播信息分页 Request VO
 export interface ErpPrivateBroadcastingInfoPageReqVO {
+  pageNo?: number // 页码
+  pageSize?: number // 页大小
   no?: string // 编号
+  customerName?: string // 客户姓名
+  platformName?: string // 平台名称
+  customerCity?: string // 客户城市
   createTime?: Date[] // 创建时间范围
 }
 
@@ -71,5 +78,15 @@ export const ErpPrivateBroadcastingInfoApi = {
   // 根据ID列表获取私播信息列表
   getPrivateBroadcastingInfoListByIds: async (ids: number[]) => {
     return await request.get({ url: `/erp/private-broadcasting-info/list-by-ids`, params: { ids } })
+  },
+
+  // 导出私播信息 Excel
+  exportPrivateBroadcastingInfo: async (params: ErpPrivateBroadcastingInfoPageReqVO) => {
+    return await request.download({ url: `/erp/private-broadcasting-info/export-excel`, params })
+  },
+
+  // 下载私播信息导入模板
+  importPrivateBroadcastingInfoTemplate: async () => {
+    return await request.download({ url: `/erp/private-broadcasting-info/get-import-template` })
   }
 }

@@ -6,6 +6,7 @@ export interface LiveBroadcastingVO {
   no?: string // 编号
   productImage?: string // 产品图片
   brandId?: number // 品牌ID
+  brandName?: string // 品牌名称
   productName?: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
@@ -14,6 +15,7 @@ export interface LiveBroadcastingVO {
   productStock?: number // 产品库存
   coreSellingPoint?: string // 核心卖点
   remark?: string // 备注信息
+  liveStatus?: number // 直播货盘状态
   livePrice?: number // 直播价格
   liveCommission?: number // 直播佣金
   publicCommission?: number // 公开佣金
@@ -30,6 +32,7 @@ export interface LiveBroadcastingSaveReqVO {
   no: string // 编号
   productImage?: string // 产品图片
   brandId: number // 品牌ID
+  brandName?: string // 品牌名称
   productName: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
@@ -38,6 +41,7 @@ export interface LiveBroadcastingSaveReqVO {
   productStock: number // 产品库存
   coreSellingPoint?: string // 核心卖点
   remark?: string // 备注信息
+  liveStatus?: number // 直播货盘状态
   livePrice: number // 直播价格
   liveCommission: number // 直播佣金
   publicCommission?: number // 公开佣金
@@ -51,6 +55,7 @@ export interface LiveBroadcastingSaveReqVO {
 export interface LiveBroadcastingPageReqVO {
   no?: string // 编号
   brandId?: number // 品牌ID
+  brandName?: string // 品牌名称
   productName?: string // 产品名称
   createTime?: Date[] // 创建时间
 }
@@ -90,5 +95,10 @@ export const LiveBroadcastingApi = {
   // 导出直播货盘 Excel
   exportLiveBroadcasting: async (params: LiveBroadcastingPageReqVO) => {
     return await request.download({ url: `/erp/live-broadcasting/export-excel`, params })
+  },
+
+  // 下载直播货盘导入模板
+  importLiveBroadcastingTemplate: async () => {
+    return await request.download({ url: `/erp/live-broadcasting/get-import-template` })
   }
 }

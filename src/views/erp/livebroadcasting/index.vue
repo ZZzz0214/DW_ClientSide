@@ -18,6 +18,15 @@
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="品牌名称" prop="brandName">
+          <el-input
+            v-model="queryParams.brandName"
+            placeholder="请输入品牌名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="产品名称" prop="productName">
           <el-input
             v-model="queryParams.productName"
@@ -38,6 +47,15 @@
           >
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
+
+          <el-button
+            type="info"
+            plain
+            @click="handleImport"
+            v-hasPermi="['erp:livebroadcasting:import']"
+          >
+            <Icon icon="ep:upload" class="mr-5px" /> 导入
+          </el-button>
           <el-button
             type="success"
             plain
@@ -47,6 +65,7 @@
           >
             <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
+
           <el-button
             type="danger"
             plain
@@ -80,9 +99,18 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="品牌名称" align="center" prop="brandName" />
+        <el-table-column label="品牌名称" align="center" prop="brandName">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandId" />
+          </template>
+        </el-table-column>
         <el-table-column label="产品名称" align="center" prop="productName" />
         <el-table-column label="产品规格" align="center" prop="productSpec" />
+        <el-table-column label="货盘状态" align="center" prop="liveStatus">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
+          </template>
+        </el-table-column>
         <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" />
         <el-table-column label="操作" align="center" width="200">
           <template #default="scope">
@@ -114,12 +142,16 @@
         @pagination="getList"
       />
     </ContentWrap>
+    <!-- 在模板底部添加导入组件 -->
+    <LiveBroadcastingImportForm ref="importFormRef" @success="getList" />
   </template>
 
   <script setup lang="ts">
   import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
   import download from '@/utils/download'
   import { LiveBroadcastingApi, LiveBroadcastingVO } from '@/api/erp/livebroadcasting'
+  import LiveBroadcastingImportForm from './form/LiveBroadcastingImportForm.vue'
+  import { DICT_TYPE } from '@/utils/dict'
 
   /** ERP 直播货盘列表 */
   defineOptions({ name: 'ErpLiveBroadcasting' })
@@ -135,6 +167,7 @@
     pageNo: 1,
     pageSize: 10,
     no: undefined,
+    brandName: undefined,
     productName: undefined
   })
   const queryFormRef = ref() // 搜索的表单
@@ -202,11 +235,18 @@
       await message.exportConfirm()
       exportLoading.value = true
       const data = await LiveBroadcastingApi.exportLiveBroadcasting(queryParams)
-      download.excel(data, '直播货盘.xls')
+      download.excel(data, '直播货盘.xlsx')
     } catch {
     } finally {
       exportLoading.value = false
     }
+  }
+
+  /** 导入操作 */
+  const importFormRef = ref()
+
+  const handleImport = () => {
+    importFormRef.value.open()
   }
 
   /** 初始化 **/

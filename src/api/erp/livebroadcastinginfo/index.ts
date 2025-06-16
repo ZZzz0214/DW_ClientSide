@@ -5,6 +5,7 @@ export interface LiveBroadcastingInfoVO {
   id?: number // 直播信息编号
   no?: string // 编号
   customerId?: number // 客户ID
+  customerName?: string // 客户名称
   customerPosition?: string // 客户职位
   customerWechat?: string // 客户微信
   platformName?: string // 平台名称
@@ -23,6 +24,7 @@ export interface LiveBroadcastingInfoSaveReqVO {
   id?: number // 直播信息ID
   no: string // 编号
   customerId: number // 客户ID
+  customerName?: string // 客户名称
   customerPosition?: string // 客户职位
   customerWechat?: string // 客户微信
   platformName?: string // 平台名称
@@ -78,5 +80,10 @@ export const LiveBroadcastingInfoApi = {
   // 导出直播信息 Excel
   exportLiveBroadcastingInfo: async (params: LiveBroadcastingInfoPageReqVO) => {
     return await request.download({ url: `/erp/live-broadcasting-info/export-excel`, params })
+  },
+
+  // 下载直播信息导入模板
+  importLiveBroadcastingInfoTemplate: async () => {
+    return await request.download({ url: `/erp/live-broadcasting-info/get-import-template` })
   }
 }

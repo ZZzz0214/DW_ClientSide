@@ -72,14 +72,16 @@
     productStock: 0,
     coreSellingPoint: '',
     remark: '',
+    brandId: undefined,
+    brandName: '',
+    liveStatus: undefined,
     livePrice: 0,
     liveCommission: 0,
     publicCommission: 0,
     rebateCommission: 0,
     expressCompany: '',
     shippingTime: '',
-    shippingArea: '',
-    brandId:undefined
+    shippingArea: ''
   })
 
   /** 获得详情 */

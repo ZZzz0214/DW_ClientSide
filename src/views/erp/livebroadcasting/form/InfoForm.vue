@@ -23,11 +23,25 @@
 
       <!-- 品牌名称 -->
       <el-form-item label="品牌名称" prop="brandId">
-        <el-input
+        <div v-if="isDetail" class="w-240px" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+          <dict-tag v-if="formData.brandId !== undefined && formData.brandId !== null" :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="formData.brandId" />
+          <span v-else style="color: #c0c4cc;">未设置</span>
+        </div>
+        <el-select
+          v-else
           v-model="formData.brandId"
-          placeholder="请输入品牌名称"
+          placeholder="请选择品牌名称"
           class="w-240px"
-        />
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+        >
+          <el-option
+            v-for="dict in filteredBrandOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="Number(dict.value)"
+          />
+        </el-select>
       </el-form-item>
 
       <!-- 产品名称 -->
@@ -89,6 +103,29 @@
         />
       </el-form-item>
 
+      <!-- 货盘状态 -->
+      <el-form-item label="货盘状态" prop="liveStatus">
+        <div v-if="isDetail" class="w-240px" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+          <dict-tag v-if="formData.liveStatus !== undefined && formData.liveStatus !== null" :type="DICT_TYPE.ERP_LIVE_STATUS" :value="formData.liveStatus" />
+          <span v-else style="color: #c0c4cc;">未设置</span>
+        </div>
+        <el-select
+          v-else
+          v-model="formData.liveStatus"
+          placeholder="请选择货盘状态"
+          class="w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_STATUS)"
+        >
+          <el-option
+            v-for="dict in filteredLiveStatusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="Number(dict.value)"
+          />
+        </el-select>
+      </el-form-item>
+
       <!-- 核心卖点 -->
       <el-form-item label="核心卖点" prop="coreSellingPoint">
         <el-input
@@ -117,6 +154,7 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
+  import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
   import type { LiveBroadcastingVO } from '@/api/erp/livebroadcasting'
 
   defineOptions({ name: 'ErpLiveBroadcastingInfoForm' })
@@ -135,24 +173,57 @@
     no: '',
     productImage: '',
     brandName: '',
-    brandId:undefined,
+    brandId: undefined,
     productName: '',
     productSpec: '',
     productSku: '',
     marketPrice: 0,
     shelfLife: '',
     productStock: 0,
+    liveStatus: undefined,
     coreSellingPoint: '',
     remark: ''
   })
 
+  // 字典选项
+  const filteredBrandOptions = ref<any[]>([])
+  const filteredLiveStatusOptions = ref<any[]>([])
+
   const rules = reactive({
     no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
     productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-    brandName: [{ required: true, message: '品牌名称不能为空', trigger: 'blur' }],
+    brandId: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
     marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
-    productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }]
+    productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
+    liveStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
   })
+
+  // 初始化字典选项
+  onMounted(() => {
+    filteredBrandOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)
+    filteredLiveStatusOptions.value = getStrDictOptions(DICT_TYPE.ERP_LIVE_STATUS)
+  })
+
+  // 字典选项过滤方法
+  const filterDictOptions = (value, dictType) => {
+    const allOptions = getStrDictOptions(dictType)  
+    if (!value) {
+      if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+        filteredBrandOptions.value = allOptions
+      } else if (dictType === DICT_TYPE.ERP_LIVE_STATUS) {
+        filteredLiveStatusOptions.value = allOptions
+      }
+      return
+    }
+    const filtered = allOptions.filter(item =>
+      item.label.toLowerCase().includes(value.toLowerCase())
+    )
+    if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+      filteredBrandOptions.value = filtered
+    } else if (dictType === DICT_TYPE.ERP_LIVE_STATUS) {
+      filteredLiveStatusOptions.value = filtered
+    }
+  }
 
   /** 将传进来的值赋值给 formData */
   watch(
@@ -160,6 +231,13 @@
     (data) => {
       if (!data) return
       copyValueToTarget(formData, data)
+      // 确保数值类型字段正确转换
+      if (data.brandId !== undefined && data.brandId !== null) {
+        formData.brandId = Number(data.brandId)
+      }
+      if (data.liveStatus !== undefined && data.liveStatus !== null) {
+        formData.liveStatus = Number(data.liveStatus)
+      }
     },
     { immediate: true }
   )
