@@ -217,6 +217,9 @@ export const DICT_TYPE = {
   ERP_AUDIT_STATUS: 'erp_audit_status', // ERP 审批状态
   ERP_STOCK_RECORD_BIZ_TYPE: 'erp_stock_record_biz_type', // 库存明细的业务类型
   ERP_SHOUHOU_STATUS: 'erp_shouhou_status',
+  ERP_FINANCE_CATEGORY: 'erp_finance_category', // ERP 财务收付类目
+  ERP_FINANCE_INCOME_EXPENSE: 'erp_finance_income_expense', // ERP 财务收入支出
+  ERP_FINANCE_BILL_STATUS: 'erp_finance_bill_status', // ERP 财务账单状态
 
   // ========== AI - 人工智能模块  ==========
   AI_PLATFORM: 'ai_platform', // AI 平台
