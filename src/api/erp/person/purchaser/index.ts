@@ -3,6 +3,7 @@ import request from '@/config/axios';
 // ERP 采购人员 VO
 export interface PurchaserVO {
   id: number; // 编号
+  no: string; // 采购人员编号
   purchaserName: string; // 采购人员姓名
   receiverName: string; // 收件姓名
   contactPhone: string; // 联系电话

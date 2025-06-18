@@ -160,7 +160,28 @@
     :row-style="{height: '80px'}"
     :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}">
       <el-table-column label="产品编号" align="center" prop="no" :show-overflow-tooltip="false"/>
-      <el-table-column label="产品图片" align="center" prop="name" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品图片" align="center" prop="image" width="100" :show-overflow-tooltip="false">
+        <template #default="scope">
+          <div v-if="getImageUrls(scope.row.image).length > 0" class="relative">
+            <el-image
+              :src="getImageUrls(scope.row.image)[0]"
+              :preview-src-list="getImageUrls(scope.row.image)"
+              class="w-12 h-12 rounded"
+              fit="cover"
+              :preview-teleported="true"
+            />
+            <div 
+              v-if="getImageUrls(scope.row.image).length > 1" 
+              class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+            >
+              {{ getImageUrls(scope.row.image).length }}
+            </div>
+          </div>
+          <div v-else class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+            <Icon icon="ep:picture" class="text-gray-400" />
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="产品名称" align="center" prop="name" :show-overflow-tooltip="false"/>
       <el-table-column label="产品简称" align="center" prop="productShortName"  :show-overflow-tooltip="false"/>
       <el-table-column label="产品规格" align="center" prop="standard" :show-overflow-tooltip="false"/>
@@ -433,4 +454,10 @@ onUpdated(async () => {
     await getList(); // 刷新数据
   }
 });
+
+/** 获取图片URLs */
+const getImageUrls = (images: string | undefined): string[] => {
+  if (!images) return []
+  return images.split(',').map(img => img.trim()).filter(img => img)
+}
 </script>

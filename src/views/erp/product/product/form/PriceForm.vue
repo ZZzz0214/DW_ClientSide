@@ -215,7 +215,7 @@ const openPurchaserSearch = () => {
 };
 
 const handlePurchaserSelected = (purchaser: any) => {
-  formData.purchaser = purchaser.name; // 填充采购人员名称
+  formData.purchaser = purchaser.purchaserName; // 填充采购人员名称
 };
 
 const openSupplierSearch = () => {

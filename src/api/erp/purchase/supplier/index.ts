@@ -3,6 +3,7 @@ import request from '@/config/axios'
 // ERP 供应商 VO
 export interface SupplierVO {
   id: number // 供应商编号
+  no: string // 供应商编号
   name: string // 供应商名称
   contact: string // 联系人
   mobile: string // 手机号码

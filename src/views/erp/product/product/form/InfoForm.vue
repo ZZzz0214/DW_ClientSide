@@ -11,11 +11,15 @@
 
     <!-- 产品图片 -->
     <el-form-item label="产品图片" prop="image">
-      <UploadImg
+      <UploadImgs
         v-model="formData.image"
         :disabled="isDetail"
-        height="80px"
+        :limit="5"
+        :is-show-tip="false"
       />
+      <div class="text-gray-400 text-xs mt-1">
+        最多可上传5张图片，列表显示第一张
+      </div>
     </el-form-item>
 
     <!-- 产品名称 -->
@@ -69,16 +73,18 @@
 
 <!--      </el-col>-->
 
-<!--&lt;!&ndash;      <el-col :span="2">&ndash;&gt;-->
-<!--&lt;!&ndash;        <el-select&ndash;&gt;-->
-<!--&lt;!&ndash;          v-model="formData.weightUnit"&ndash;&gt;-->
-<!--&lt;!&ndash;          placeholder="请选择单位"&ndash;&gt;-->
-<!--&lt;!&ndash;          class="w-80"&ndash;&gt;-->
-<!--&lt;!&ndash;        >&ndash;&gt;-->
-<!--&lt;!&ndash;          <el-option label="g" value="g" />&ndash;&gt;-->
-<!--&lt;!&ndash;          <el-option label="kg" value="kg" />&ndash;&gt;-->
-<!--&lt;!&ndash;        </el-select>&ndash;&gt;-->
-<!--&lt;!&ndash;      </el-col>&ndash;&gt;-->
+<!-- 
+      <el-col :span="2">
+        <el-select
+          v-model="formData.weightUnit"
+          placeholder="请选择单位"
+          class="w-80"
+        >
+          <el-option label="g" value="g" />
+          <el-option label="kg" value="kg" />
+        </el-select>
+      </el-col>
+-->
 <!--    </el-form-item>-->
 
     <!-- 产品日期 -->
@@ -125,30 +131,31 @@
 <!--      />-->
 <!--    </el-form-item>-->
 
-<!--    &lt;!&ndash; 产品品类 &ndash;&gt;-->
-<!--    <el-form-item label="产品品类" prop="categoryId">-->
-<!--      <el-cascader-->
-<!--        v-model="formData.categoryId"-->
-<!--        :options="categoryList"-->
-<!--        :props="defaultProps"-->
-<!--        placeholder="请选择产品品类"-->
-<!--        class="w-80"-->
-<!--        clearable-->
-<!--        filterable-->
-<!--      />-->
-<!--    </el-form-item>-->
+<!-- 产品品类
+    <el-form-item label="产品品类" prop="categoryId">
+      <el-cascader
+        v-model="formData.categoryId"
+        :options="categoryList"
+        :props="defaultProps"
+        placeholder="请选择产品品类"
+        class="w-80"
+        clearable
+        filterable
+      />
+    </el-form-item>
 
-<!--    &lt;!&ndash; 产品状态 &ndash;&gt;-->
-<!--    <el-form-item label="产品状态" prop="status">-->
-<!--      <el-select-->
-<!--        v-model="formData.status"-->
-<!--        placeholder="请选择产品状态"-->
-<!--        class="w-80"-->
-<!--      >-->
-<!--        <el-option label="启用" :value="0" />-->
-<!--        <el-option label="禁用" :value="1" />-->
-<!--      </el-select>-->
-<!--    </el-form-item>-->
+    产品状态
+    <el-form-item label="产品状态" prop="status">
+      <el-select
+        v-model="formData.status"
+        placeholder="请选择产品状态"
+        class="w-80"
+      >
+        <el-option label="启用" :value="0" />
+        <el-option label="禁用" :value="1" />
+      </el-select>
+    </el-form-item>
+-->
 
         <!-- 品牌名称 -->
         <el-form-item label="品牌名称" prop="brand">
@@ -238,6 +245,7 @@ import { copyValueToTarget } from '@/utils'
 import { propTypes } from '@/utils/propTypes'
 import { defaultProps, handleTree } from '@/utils/tree'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 import type { ProductVO  } from '@/api/erp/product/product/index'
 import * as ProductCategoryApi from '@/api/erp/product/category/index'
@@ -261,7 +269,7 @@ const formRef = ref() // 表单 Ref
 const formData = reactive<ProductVO>({
   id: undefined, // 产品编号
   name: '', // 产品名称
-  image: '', // 产品图片
+  image: [] as any, // 产品图片（前端使用数组，提交时转为字符串）
   productShortName: '', // 产品简称
   shippingCode: '', // 发货编码
   brand: '', // 品牌名称
@@ -272,8 +280,8 @@ const formData = reactive<ProductVO>({
   weight: 0, // 产品重量
   productionDate:undefined, // 产品日期
   expiryDay: 0, // 保质日期
-  expiryUnit: '', // 保质日期单位，默认值为“天”
-  weightUnit: '', // 产品重量单位，默认值为“g”,
+  expiryUnit: '', // 保质日期单位，默认值为"天"
+  weightUnit: '', // 产品重量单位，默认值为"g",
   purchaser:''
 })
 
@@ -296,7 +304,18 @@ watch(
     if (!data) {
       return
     }
+    // 先复制基础数据
     copyValueToTarget(formData, data)
+    // 处理图片字符串转数组（用于编辑时回显）
+    if (data.image) {
+      if (typeof data.image === 'string') {
+        formData.image = data.image.split(',').filter(img => img.trim())
+      } else if (Array.isArray(data.image)) {
+        formData.image = data.image
+      }
+    } else {
+      formData.image = []
+    }
   },
   {
     immediate: true
@@ -309,8 +328,13 @@ const validate = async () => {
   if (!formRef) return
   try {
     await unref(formRef)?.validate()
+    // 处理图片数组转字符串
+    const submitData = { ...formData }
+    if (Array.isArray(submitData.image)) {
+      submitData.image = submitData.image.join(',')
+    }
     // 校验通过更新数据
-    Object.assign(props.propFormData, formData)
+    Object.assign(props.propFormData, submitData)
   } catch (e) {
     message.error('【基础设置】不完善，请填写相关信息')
     emit('update:activeName', 'info')
