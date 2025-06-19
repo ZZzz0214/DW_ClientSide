@@ -9,15 +9,28 @@
     <ContentWrap>
       <!-- 组品基本信息 -->
 
+      <!-- 产品图片上传区域 -->
+      <div class="form-section">
+        <div class="section-title">
+          <Icon icon="ep:picture" class="section-icon" />
+          <span>产品展示</span>
+        </div>
+        <el-form-item label="产品图片" prop="image" class="image-form-item">
+          <div class="image-upload-container">
+            <UploadImgs
+              v-model="formData.image"
+              :disabled="isDetail"
+              :limit="5"
+              :is-show-tip="false"
+            />
+            <div class="upload-tip">
+              <Icon icon="ep:info-filled" class="tip-icon" />
+              最多可上传5张图片，列表显示第一张
+            </div>
+          </div>
+        </el-form-item>
+      </div>
 
-      <el-form-item label="产品图片">
-        <el-image
-          v-if="formData.image"
-          style="width: 100px; height: 100px"
-          :src="formData.image"
-          :preview-src-list="[formData.image]"
-        />
-      </el-form-item>
       <el-form-item label="产品名称" prop="name" >
         <el-input v-model="formData.name" placeholder="请输入组品名称" disabled />
       </el-form-item>
@@ -190,8 +203,10 @@ import {ref, reactive, watch, PropType} from 'vue';
 import PurchaserSearchDialog from './PurchaserSearchDialog.vue'; // 引入采购人员搜索弹窗组件
 import SupplierSearchDialog from './SupplierSearchDialog.vue'; // 引入供应商搜索弹窗组件
 import SelectProduct from './SelectProduct.vue';
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue';
 import {copyValueToTarget} from "@/utils";
 import * as ProductComboApi from '@/api/erp/product/combo'
+
 const props = defineProps({
   propFormData: {
     type: Object as PropType<ProductComboApi.ComboVO>,
@@ -231,7 +246,7 @@ const handleSupplierSelected = (supplier: any) => {
 
 const formData = ref<ProductComboApi.ComboVO>({
   name: '', // 组品名称
-  image: '', // 产品图片
+  image: [] as any, // 产品图片（前端使用数组，提交时转为字符串）
   shortName:'', //组品简称
   shippingCode:'', //发货编码
   weight: 0, // 产品重量
@@ -246,6 +261,7 @@ const formData = ref<ProductComboApi.ComboVO>({
 });
 
 const formRules = reactive({
+  image: [{ required: true, message: '产品图片不能为空', trigger: 'blur' }],
   purchaser: [{ required: true, message: '采购人员不能为空', trigger: 'blur' }],
   supplier: [{ required: true, message: '供应商名不能为空', trigger: 'blur' }],
   // comboId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
@@ -316,8 +332,15 @@ const validate = async () => {
   }
   try {
     await form.validate();
+    
+    // 处理图片数组转字符串
+    const submitData = { ...formData.value }
+    if (Array.isArray(submitData.image)) {
+      submitData.image = submitData.image.join(',')
+    }
+    
     // 校验通过更新数据
-    Object.assign(props.propFormData, formData.value);
+    Object.assign(props.propFormData, submitData);
   } catch (e) {
     console.error('表单校验失败:', e);
     emit('update:activeName', 'info');
@@ -332,6 +355,23 @@ watch(
     if (!data) return
     // fix：三个表单组件监听赋值必须使用 copyValueToTarget 使用 formData.value = data 会监听非常多次
     copyValueToTarget(formData.value, data)
+    
+    // 处理图片字符串转数组（用于编辑时回显）
+    if (data.image) {
+      if (typeof data.image === 'string') {
+        formData.value.image = data.image.split(',').filter(img => img.trim())
+      } else if (Array.isArray(data.image)) {
+        formData.value.image = data.image
+      }
+    } else {
+      formData.value.image = []
+    }
+    
+    // 处理复制数据时的特殊逻辑
+    if (data.name && data.name.includes('_副本')) {
+      // 如果是复制的数据，确保各字段正确设置
+      console.log('检测到复制数据，正在填充表单...')
+    }
   },
   {
     // fix: 去掉深度监听只有对象引用发生改变的时候才执行,解决改一动多的问题
@@ -340,3 +380,53 @@ watch(
 )
 
 </script>
+
+<style scoped lang="scss">
+.form-section {
+  margin-bottom: 24px;
+  padding: 16px;
+  background: linear-gradient(135deg, #f8f9ff 0%, #f0f4ff 100%);
+  border-radius: 8px;
+  border: 1px solid rgba(102, 126, 234, 0.1);
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #2c3e50;
+
+  .section-icon {
+    margin-right: 8px;
+    color: #667eea;
+    font-size: 16px;
+  }
+}
+
+.image-form-item {
+  :deep(.el-form-item__content) {
+    display: block;
+  }
+}
+
+.image-upload-container {
+  .upload-tip {
+    display: flex;
+    align-items: center;
+    margin-top: 12px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+    border-radius: 6px;
+    color: #555;
+    font-size: 12px;
+    border: 1px solid rgba(102, 126, 234, 0.2);
+
+    .tip-icon {
+      margin-right: 6px;
+      color: #667eea;
+    }
+  }
+}
+</style>

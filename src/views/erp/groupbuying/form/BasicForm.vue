@@ -137,12 +137,15 @@
   )
 
   /** 表单校验 */
-  const emit = defineEmits(['update:activeName'])
+  const emit = defineEmits(['update:activeName', 'update:formData'])
   const validate = async () => {
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      Object.assign(props.propFormData, formData)
+      
+      // 通过emit事件将数据传递给父组件，而不是直接修改props
+      const updatedData = { ...formData }
+      emit('update:formData', updatedData)
     } catch (e) {
       message.error('【基础机制】不完善，请填写相关信息')
       emit('update:activeName', 'basic')

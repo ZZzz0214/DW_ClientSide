@@ -34,10 +34,38 @@
             clearable
             class="!w-240px"
           >
-            <el-option label="未开始" :value="0" />
-            <el-option label="进行中" :value="1" />
-            <el-option label="已完成" :value="2" />
+            <el-option
+              v-for="dict in getIntDictOptions(DICT_TYPE.ERP_NOTEBOOK_STATUS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
           </el-select>
+        </el-form-item>
+        <el-form-item label="任务人员" prop="taskPerson">
+          <el-select
+            v-model="queryParams.taskPerson"
+            placeholder="请选择任务人员"
+            clearable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.SYSTEM_USER_LIST)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="创建人员" prop="creator">
+          <el-input
+            v-model="queryParams.creator"
+            placeholder="请输入创建人员"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
         </el-form-item>
         <el-form-item label="创建时间" prop="createTime">
           <el-date-picker
@@ -100,6 +128,29 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" />
+        <el-table-column label="图片" align="center" prop="images" :show-overflow-tooltip="false">
+          <template #default="scope">
+            <div v-if="getImageUrls(scope.row.images).length > 0" class="relative">
+              <el-image
+                :src="getImageUrls(scope.row.images)[0]"
+                :preview-src-list="getImageUrls(scope.row.images)"
+                class="w-12 h-12 rounded"
+                fit="cover"
+                :preview-teleported="true"
+              />
+              <div
+                v-if="getImageUrls(scope.row.images).length > 1"
+                class="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-green-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-white z-10"
+                style="font-size: 10px; font-weight: bold;"
+              >
+                {{ getImageUrls(scope.row.images).length }}
+              </div>
+            </div>
+            <div v-else class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+              <Icon icon="ep:picture" class="text-gray-400" />
+            </div>
+          </template>
+        </el-table-column>
         <el-table-column label="任务名称" align="center" prop="taskName" />
 <!--        <el-table-column label="任务状态" align="center" prop="taskStatus"/>-->
         <el-table-column label="任务状态" align="center"  prop="taskStatus">
@@ -112,8 +163,14 @@
             <dict-tag :type="DICT_TYPE.SYSTEM_USER_LIST" :value="scope.row.taskPerson" />
           </template>
         </el-table-column>
-<!--        <el-table-column label="任务人员" align="center" prop="taskPerson" />-->
         <el-table-column label="备注信息" align="center" prop="remark" />
+        <el-table-column
+          label="创建人员"
+          align="center"
+          prop="creator"
+          :show-overflow-tooltip="false"
+
+        />
         <el-table-column
           label="创建时间"
           align="center"
@@ -160,7 +217,7 @@
   import { dateFormatter } from '@/utils/formatTime'
   import download from '@/utils/download'
   import { NotebookApi, NotebookVO } from '@/api/erp/notebook'
-  import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
+  import { getIntDictOptions, getStrDictOptions, DICT_TYPE } from '@/utils/dict'
   import NotebookImportForm from './form/NotebookImportForm.vue'
 
   /** ERP 记事本列表 */
@@ -180,6 +237,7 @@
     taskName: undefined,
     taskStatus: undefined,
     taskPerson: undefined,
+    creator: undefined,
     createTime: undefined
   })
   const queryFormRef = ref() // 搜索的表单
@@ -274,4 +332,10 @@
       await getList()
     }
   })
+
+  /** 获取图片URLs */
+  const getImageUrls = (images: string | undefined): string[] => {
+    if (!images) return []
+    return images.split(',').map(img => img.trim()).filter(img => img)
+  }
   </script>

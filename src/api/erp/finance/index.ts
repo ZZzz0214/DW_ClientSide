@@ -32,8 +32,12 @@ export interface ErpFinancePageReqVO {
   category?: string
   account?: string
   status?: number
+  auditStatus?: number
+  creator?: string
+  auditor?: string
   orderDate?: string[]
   createTime?: string[]
+  auditTime?: string[]
 }
 
 // ERP 财务金额 VO
@@ -46,6 +50,7 @@ export interface ErpFinanceAmountVO {
   operationType?: number // 操作类型（1：充值，2：消费）
   beforeBalance?: number // 操作前余额
   afterBalance?: number // 操作后余额
+  orderDate?: string // 订单日期
   remark?: string
   auditStatus?: number
   auditor?: string
@@ -78,7 +83,20 @@ export interface ErpFinanceAmountPageReqVO {
   pageNo?: number
   pageSize?: number
   no?: string
+  channelType?: string
+  operationType?: number
+  wechatRecharge?: number
+  alipayRecharge?: number
+  bankCardRecharge?: number
+  wechatBalance?: number
+  alipayBalance?: number
+  bankCardBalance?: number
+  orderDate?: string[]
+  auditStatus?: number
+  creator?: string
+  auditor?: string
   createTime?: string[]
+  auditTime?: string[]
 }
 
 // ========== 财务记录 API ==========
@@ -200,10 +218,10 @@ export const recharge = async (channelType: string, amount: number) => {
 }
 
 // 充值操作（带图片和备注）
-export const rechargeWithImages = async (channelType: string, amount: number, carouselImages?: string, remark?: string) => {
+export const rechargeWithImages = async (channelType: string, amount: number, carouselImages?: string, remark?: string, orderDate?: string) => {
   return await request.post({ 
     url: `/erp/finance-amount/recharge-with-images`, 
-    data: { channelType, amount, carouselImages, remark }
+    data: { channelType, amount, carouselImages, remark, orderDate }
   })
 }
 

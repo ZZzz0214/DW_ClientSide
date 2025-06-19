@@ -17,6 +17,123 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="品牌名称" prop="brandName">
+        <el-select
+          v-model="queryParams.brandName"
+          placeholder="请选择品牌名称"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+        >
+          <el-option
+            v-for="dict in filteredBrandOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="产品名称" prop="productName">
+        <el-input
+          v-model="queryParams.productName"
+          placeholder="请输入产品名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品规格" prop="productSpec">
+        <el-input
+          v-model="queryParams.productSpec"
+          placeholder="请输入产品规格"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="客户名称" prop="customerName">
+        <el-input
+          v-model="queryParams.customerName"
+          placeholder="请输入客户名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品裸价" prop="nakedPrice">
+        <el-input
+          v-model="queryParams.nakedPrice"
+          placeholder="请输入产品裸价"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="快递费用" prop="expressFee">
+        <el-input
+          v-model="queryParams.expressFee"
+          placeholder="请输入快递费用"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="代发价格" prop="dropshippingPrice">
+        <el-input
+          v-model="queryParams.dropshippingPrice"
+          placeholder="请输入代发价格"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="寄样日期" prop="sampleSendDate">
+        <el-date-picker
+          v-model="queryParams.sampleSendDate"
+          type="daterange"
+          value-format="YYYY-MM-DD"
+          class="!w-240px"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
+      <el-form-item label="开团日期" prop="groupStartDate">
+        <el-date-picker
+          v-model="queryParams.groupStartDate"
+          type="daterange"
+          value-format="YYYY-MM-DD"
+          class="!w-240px"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
+      <el-form-item label="货盘状态" prop="status">
+        <el-select
+          v-model="queryParams.status"
+          placeholder="请选择货盘状态"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_STATUS)"
+        >
+          <el-option
+            v-for="dict in filteredPrivateStatusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="创建人员" prop="creator">
+        <el-input
+          v-model="queryParams.creator"
+          placeholder="请输入创建人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -138,7 +255,7 @@ import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ErpPrivateBroadcastingReviewApi, ErpPrivateBroadcastingReviewRespVO } from '@/api/erp/privateBroadcastingReview'
 import PrivateBroadcastingReviewImportForm from './form/PrivateBroadcastingReviewImportForm.vue'
-import { DICT_TYPE } from '@/utils/dict'
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 /** ERP 私播复盘列表 */
 defineOptions({ name: 'ErpPrivateBroadcastingReview' })
 
@@ -153,10 +270,46 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   no: undefined,
+  brandName: undefined,
+  productName: undefined,
+  productSpec: undefined,
+  customerName: undefined,
+  nakedPrice: undefined,
+  expressFee: undefined,
+  dropshippingPrice: undefined,
+  sampleSendDate: undefined,
+  groupStartDate: undefined,
+  status: undefined,
+  creator: undefined,
   createTime: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+// 字典选项
+const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
+const filteredPrivateStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_STATUS))
+
+// 字典过滤方法
+const filterDictOptions = (value, dictType) => {
+  const allOptions = getStrDictOptions(dictType)
+  if (!value) {
+    if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+      filteredBrandOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRIVATE_STATUS) {
+      filteredPrivateStatusOptions.value = allOptions
+    }
+    return
+  }
+  const filtered = allOptions.filter(item =>
+    item.label.toLowerCase().includes(value.toLowerCase())
+  )
+  if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+    filteredBrandOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRIVATE_STATUS) {
+    filteredPrivateStatusOptions.value = filtered
+  }
+}
 
 /** 查询列表 */
 const getList = async () => {
@@ -179,6 +332,9 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  // 重置字典过滤选项
+  filteredBrandOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)
+  filteredPrivateStatusOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRIVATE_STATUS)
   handleQuery()
 }
 

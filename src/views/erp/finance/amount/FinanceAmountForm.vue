@@ -100,6 +100,23 @@
         </el-col>
       </el-row>
 
+      <el-row :gutter="20">
+        <el-col :span="12">
+          <el-form-item label="订单日期" prop="orderDate">
+            <el-date-picker
+              v-model="formData.orderDate"
+              type="date"
+              placeholder="请选择订单日期"
+              value-format="YYYY-MM-DD"
+              class="!w-100%"
+            />
+          </el-form-item>
+        </el-col>
+        <el-col :span="12">
+          <!-- 占位空间 -->
+        </el-col>
+      </el-row>
+
       <el-form-item label="备注信息" prop="remark">
         <el-input
           v-model="formData.remark"
@@ -180,6 +197,7 @@ const formData = ref({
   operationType: 1, // 默认为充值
   beforeBalance: 0,
   afterBalance: 0,
+  orderDate: undefined,
   remark: undefined
 })
 const formRules = reactive({
@@ -232,6 +250,12 @@ const open = async (type: string, id?: number) => {
   dialogTitle.value = t('action.' + type)
   formType.value = type
   resetForm()
+  
+  // 如果是新增，设置默认订单日期为今天
+  if (type === 'create') {
+    formData.value.orderDate = new Date().toISOString().split('T')[0]
+  }
+  
   // 修改时，设置数据
   if (id) {
     formLoading.value = true
@@ -239,7 +263,8 @@ const open = async (type: string, id?: number) => {
       const data = await ErpFinanceApi.getFinanceAmount(id)
       formData.value = {
         ...data,
-        carouselImages: data.carouselImages ? (Array.isArray(data.carouselImages) ? data.carouselImages : data.carouselImages.split(',').filter(img => img.trim())) : []
+        carouselImages: data.carouselImages ? (Array.isArray(data.carouselImages) ? data.carouselImages : data.carouselImages.split(',').filter(img => img.trim())) : [],
+        orderDate: data.orderDate // 确保订单日期字段被正确设置
       }
     } finally {
       formLoading.value = false
@@ -286,6 +311,7 @@ const resetForm = () => {
     operationType: 1, // 默认为充值
     beforeBalance: 0,
     afterBalance: 0,
+    orderDate: undefined,
     remark: undefined
   }
   formRef.value?.resetFields()

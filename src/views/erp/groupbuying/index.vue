@@ -19,13 +19,21 @@
           />
         </el-form-item>
         <el-form-item label="品牌名称" prop="brandName">
-          <el-input
+          <el-select
             v-model="queryParams.brandName"
-            placeholder="请输入品牌名称"
+            placeholder="请选择品牌名称"
             clearable
-            @keyup.enter="handleQuery"
             class="!w-240px"
-          />
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+          >
+            <el-option
+              v-for="dict in filteredBrandOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="产品名称" prop="productName">
           <el-input
@@ -35,6 +43,69 @@
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
+        </el-form-item>
+        <el-form-item label="产品规格" prop="productSpec">
+          <el-input
+            v-model="queryParams.productSpec"
+            placeholder="请输入产品规格"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="保质日期" prop="shelfLife">
+          <el-date-picker
+            v-model="queryParams.shelfLife"
+            type="daterange"
+            value-format="YYYY-MM-DD"
+            class="!w-240px"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+          />
+        </el-form-item>
+        <el-form-item label="供团价格" prop="supplyGroupPrice">
+          <el-input
+            v-model="queryParams.supplyGroupPrice"
+            placeholder="请输入供团价格"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="帮卖佣金" prop="sellingCommission">
+          <el-input
+            v-model="queryParams.sellingCommission"
+            placeholder="请输入帮卖佣金"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="开团价格" prop="groupPrice">
+          <el-input
+            v-model="queryParams.groupPrice"
+            placeholder="请输入开团价格"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="货盘状态" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            placeholder="请选择货盘状态"
+            clearable
+            class="!w-240px"
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_STATUS)"
+          >
+            <el-option
+              v-for="dict in filteredStatusOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="创建人员" prop="creator">
           <el-input
@@ -128,7 +199,18 @@
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
-        <el-table-column label="产品图片" align="center" prop="productImage" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品图片" align="center" prop="productImage" :show-overflow-tooltip="false">
+          <template #default="scope">
+            <el-image
+              v-if="getFirstImage(scope.row.productImage)"
+              :src="getFirstImage(scope.row.productImage)"
+              :preview-src-list="getAllImages(scope.row.productImage)"
+              style="width: 60px; height: 60px; border-radius: 4px;"
+              fit="cover"
+            />
+            <span v-else class="no-image-text">暂无图片</span>
+          </template>
+        </el-table-column>
         <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
         <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false">
@@ -181,7 +263,7 @@
   import download from '@/utils/download'
   import { GroupBuyingApi, GroupBuyingVO } from '@/api/erp/groupbuying'
   import GroupBuyingImportForm from './form/GroupBuyingImportForm.vue'
-  import { DICT_TYPE } from '@/utils/dict'
+  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 
   /** ERP 团购货盘列表 */
   defineOptions({ name: 'ErpGroupBuying' })
@@ -199,10 +281,42 @@
     no: undefined,
     productName: undefined,
     brandName: undefined,
+    productSpec: undefined,
+    shelfLife: undefined,
+    supplyGroupPrice: undefined,
+    sellingCommission: undefined,
+    groupPrice: undefined,
+    status: undefined,
+    creator: undefined,
     createTime: undefined
   })
   const queryFormRef = ref() // 搜索的表单
   const exportLoading = ref(false) // 导出的加载中
+
+  // 字典选项
+  const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
+  const filteredStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS))
+
+  // 字典过滤方法
+  const filterDictOptions = (value, dictType) => {
+    const allOptions = getStrDictOptions(dictType)
+    if (!value) {
+      if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+        filteredBrandOptions.value = allOptions
+      } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+        filteredStatusOptions.value = allOptions
+      }
+      return
+    }
+    const filtered = allOptions.filter(item =>
+      item.label.toLowerCase().includes(value.toLowerCase())
+    )
+    if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+      filteredBrandOptions.value = filtered
+    } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+      filteredStatusOptions.value = filtered
+    }
+  }
 
   /** 查询列表 */
   const getList = async () => {
@@ -225,6 +339,9 @@
   /** 重置按钮操作 */
   const resetQuery = () => {
     queryFormRef.value.resetFields()
+    // 重置字典过滤选项
+    filteredBrandOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)
+    filteredStatusOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS)
     handleQuery()
   }
 
@@ -280,6 +397,19 @@
     importFormRef.value.open()
   }
 
+  /** 获取第一张图片 */
+  const getFirstImage = (productImage: string) => {
+    if (!productImage) return ''
+    const images = productImage.split(',').filter(img => img.trim())
+    return images.length > 0 ? images[0].trim() : ''
+  }
+
+  /** 获取所有图片列表 */
+  const getAllImages = (productImage: string) => {
+    if (!productImage) return []
+    return productImage.split(',').filter(img => img.trim()).map(img => img.trim())
+  }
+
   /** 初始化 **/
   onMounted(() => {
     getList()
@@ -294,3 +424,19 @@
     }
   });
   </script>
+
+<style lang="scss" scoped>
+.no-image-text {
+  color: #999;
+  font-size: 12px;
+  display: inline-block;
+  padding: 20px 10px;
+  background-color: #f5f5f5;
+  border-radius: 4px;
+  width: 60px;
+  height: 60px;
+  line-height: 20px;
+  text-align: center;
+  box-sizing: border-box;
+}
+</style>

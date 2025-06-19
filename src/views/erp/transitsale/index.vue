@@ -30,7 +30,7 @@
         <el-form-item label="产品名称" prop="productName">
           <el-input
             v-model="queryParams.productName"
-            placeholder="请输入组品编号"
+            placeholder="请输入产品名称"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
@@ -39,25 +39,54 @@
         <el-form-item label="产品简称" prop="productShortName">
           <el-input
             v-model="queryParams.productShortName"
-            placeholder="请输入组品编号"
+            placeholder="请输入产品简称"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
         <el-form-item label="中转人员" prop="transitPerson">
-          <el-input
+          <el-select
             v-model="queryParams.transitPerson"
-            placeholder="请输入中转人员"
+            placeholder="请选择中转人员"
             clearable
-            @keyup.enter="handleQuery"
+            filterable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.ERP_TRANSIT_PERSON)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="代发单价" prop="distributionPrice">
+          <el-input-number
+            v-model="queryParams.distributionPrice"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入代发单价"
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="批发单价" prop="wholesalePrice">
+          <el-input-number
+            v-model="queryParams.wholesalePrice"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入批发单价"
+            class="!w-240px"
+          />
+        </el-form-item>
+
         <el-form-item label="创建人员" prop="creator">
           <el-input
             v-model="queryParams.creator"
-            placeholder="请输入组品编号"
+            placeholder="请输入创建人员"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
@@ -127,14 +156,14 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <!-- 编号 -->
-        <el-table-column label="编号" align="center" prop="no" />
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
 
         <!-- 组品编号 -->
-        <el-table-column label="组品编号" align="center" prop="groupProductNo" />
+        <el-table-column label="组品编号" align="center" prop="groupProductNo" :show-overflow-tooltip="false"/>
 
         <!-- 中转人员 -->
-        <el-table-column label="产品名称" align="center" prop="productName" />
-        <el-table-column label="产品简称" align="center" prop="productShortName" />
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品简称" align="center" prop="productShortName" :show-overflow-tooltip="false"/>
         <el-table-column
           label="中转人员"
           align="center"
@@ -212,7 +241,7 @@
   import { dateFormatter } from '@/utils/formatTime'
   import TransitSaleForm from './TransitSaleForm.vue'
   import TransitSaleImportForm from './form/TransitSaleImportForm.vue'
-  import { DICT_TYPE } from '@/utils/dict'
+  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
   /** ERP 中转销售表 */
   defineOptions({ name: 'ErpTransitSale' })
 
@@ -227,7 +256,12 @@
     pageSize: 10,
     no: undefined,
     groupProductId: undefined,
+    productName: undefined,
+    productShortName: undefined,
     transitPerson: undefined,
+    distributionPrice: undefined,
+    wholesalePrice: undefined,
+    creator: undefined,
     createTime: undefined
   })
   const queryFormRef = ref() // 搜索的表单

@@ -86,7 +86,7 @@ defineOptions({ name: 'ErpProductAdd' })
 const { t } = useI18n() // 国际化
 const message = useMessage() // 消息弹窗
 const { push, currentRoute } = useRouter() // 路由
-const { params, name } = useRoute() // 查询参数
+const { params, name, query } = useRoute() // 查询参数
 const { delView } = useTagsViewStore() // 视图操作
 
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
@@ -194,6 +194,28 @@ const getDetail = async () => {
   if ('ErpProductDetail' === name) {
     isDetail.value = true;
   }
+  
+  // 检查是否是复制操作
+  const route = useRoute();
+  if (route.query.copyData) {
+    try {
+      const copyData = JSON.parse(route.query.copyData as string);
+      formData.value = {
+        ...copyData,
+        id: undefined, // 确保ID为空，作为新增
+        no: undefined, // 确保编号为空，让后端重新生成
+        name: copyData.name + '_副本', // 在名称后添加副本标识
+        createTime: undefined,
+        updateTime: undefined
+      };
+      message.success('已复制产品数据，请修改相关信息后保存');
+      return;
+    } catch (error) {
+      message.error('复制数据解析失败');
+    }
+  }
+  
+  // 正常的编辑/详情逻辑
   const id = params.id as unknown as number;
   if (id) {
     formLoading.value = true;

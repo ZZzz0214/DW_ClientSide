@@ -3,20 +3,17 @@ import request from '@/config/axios'
 // ERP 客户 VO
 export interface CustomerVO {
   id: number // 客户编号
+  no: string // 客户业务编号
   name: string // 客户名称
-  contact: string // 联系人
-  mobile: string // 手机号码
+  receiverName: string // 收件姓名
   telephone: string // 联系电话
-  email: string // 电子邮箱
-  fax: string // 传真
-  remark: string // 备注
-  status: number // 开启状态
-  sort: number // 排序
-  taxNo: string // 纳税人识别号
-  taxPercent: number // 税率
-  bankName: string // 开户行
-  bankAccount: string // 开户账号
-  bankAddress: string // 开户地址
+  address: string // 详细地址
+  wechatAccount: string // 微信账号
+  alipayAccount: string // 支付宝号
+  bankAccount: string // 银行账号
+  remark: string // 备注信息
+  creator: string // 创建人员
+  createTime: Date // 创建时间
 }
 
 // ERP 客户 API
@@ -24,11 +21,6 @@ export const CustomerApi = {
   // 查询客户分页
   getCustomerPage: async (params: any) => {
     return await request.get({ url: `/erp/customer/page`, params })
-  },
-
-  // 查询客户精简列表
-  getCustomerSimpleList: async () => {
-    return await request.get({ url: `/erp/customer/simple-list` })
   },
 
   // 查询客户详情
@@ -54,6 +46,16 @@ export const CustomerApi = {
   // 导出客户 Excel
   exportCustomer: async (params) => {
     return await request.download({ url: `/erp/customer/export-excel`, params })
+  },
+
+  // 获取导入模板
+  importTemplate: async () => {
+    return await request.download({ url: `/erp/customer/get-import-template` })
+  },
+
+  // 导入客户
+  importCustomer: async (data: FormData) => {
+    return await request.upload({ url: `/erp/customer/import`, data })
   },
 
   // 搜索结果

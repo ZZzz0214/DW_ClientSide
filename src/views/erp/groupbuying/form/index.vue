@@ -7,6 +7,7 @@
             v-model:activeName="activeName"
             :is-detail="isDetail"
             :propFormData="formData"
+            @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
         <el-tab-pane label="核心机制" name="core">
@@ -15,6 +16,7 @@
             v-model:activeName="activeName"
             :is-detail="isDetail"
             :propFormData="formData"
+            @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
         <el-tab-pane label="基础机制" name="basic">
@@ -23,6 +25,7 @@
             v-model:activeName="activeName"
             :is-detail="isDetail"
             :propFormData="formData"
+            @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
         <el-tab-pane label="数据信息" name="data">
@@ -31,6 +34,7 @@
             v-model:activeName="activeName"
             :is-detail="isDetail"
             :propFormData="formData"
+            @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
         <el-tab-pane label="发货信息" name="shipping">
@@ -39,6 +43,7 @@
             v-model:activeName="activeName"
             :is-detail="isDetail"
             :propFormData="formData"
+            @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
       </el-tabs>
@@ -121,11 +126,23 @@
       formLoading.value = true
       try {
         const res = await GroupBuyingApi.GroupBuyingApi.getGroupBuying(id)
+        
+        // 处理产品图片：将逗号分隔的字符串转换为数组
+        if (res.productImage && typeof res.productImage === 'string') {
+          res.productImage = res.productImage.split(',').filter(img => img.trim())
+        }
+        
         formData.value = res
       } finally {
         formLoading.value = false
       }
     }
+  }
+  
+  /** 处理基础信息表单数据更新 */
+  const handleInfoFormUpdate = (updatedData) => {
+    // 将子组件的数据合并到formData中
+    Object.assign(formData.value, updatedData)
   }
   
   /** 提交按钮 */
@@ -141,6 +158,12 @@
   
       // 提交数据
       const data = cloneDeep(unref(formData.value))
+      
+      // 处理产品图片：如果是数组，转换为逗号分隔的字符串
+      if (Array.isArray(data.productImage)) {
+        data.productImage = data.productImage.join(',')
+      }
+      
       const id = params.id as unknown as number
   
       if (!id) {

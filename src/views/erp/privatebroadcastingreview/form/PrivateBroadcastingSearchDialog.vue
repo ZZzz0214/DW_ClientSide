@@ -17,12 +17,12 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="品牌名称">
-              <el-select v-model="queryParams.brandId" placeholder="请选择品牌" clearable>
+              <el-select v-model="queryParams.brandName" placeholder="请选择品牌" clearable>
                 <el-option
                   v-for="dict in brandOptions"
                   :key="dict.value"
                   :label="dict.label"
-                  :value="Number(dict.value)"
+                  :value="dict.value"
                 />
               </el-select>
             </el-form-item>
@@ -72,9 +72,9 @@
           </template>
         </el-table-column>
 
-        <el-table-column label="品牌名称" prop="brandId" width="120">
+        <el-table-column label="品牌名称" prop="brandName" width="120">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandId" />
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
         <el-table-column label="产品名称" prop="productName" min-width="200">
@@ -170,7 +170,7 @@ const queryParams = reactive({
   no: '',
   productName: '',
   productSpec: '',
-  brandId: undefined,
+  brandName: undefined,
   privateStatus: undefined
 })
 
@@ -202,7 +202,7 @@ const resetQuery = () => {
     no: '',
     productName: '',
     productSpec: '',
-    brandId: undefined,
+    brandName: undefined,
     privateStatus: undefined,
     pageNo: 1,
     pageSize: 10

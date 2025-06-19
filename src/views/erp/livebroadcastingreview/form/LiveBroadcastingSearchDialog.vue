@@ -12,7 +12,7 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="品牌名称">
-              <el-select v-model="searchForm.brandId" placeholder="请选择品牌名称" clearable>
+              <el-select v-model="searchForm.brandName" placeholder="请选择品牌名称" clearable>
                 <el-option
                   v-for="dict in brandOptions"
                   :key="dict.value"
@@ -70,9 +70,9 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="品牌名称" prop="brandId" width="120">
+        <el-table-column label="品牌名称" prop="brandName" width="120">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandId" />
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
         <el-table-column label="产品名称" prop="productName" min-width="200">
@@ -149,7 +149,7 @@ const props = defineProps({
 
 const searchForm = reactive({
   no: '',
-  brandId: '',
+  brandName: '',
   productName: '',
   productSpec: '',
   liveStatus: '',
@@ -195,7 +195,7 @@ const handleQuery = () => {
 const resetQuery = () => {
   Object.assign(searchForm, {
     no: '',
-    brandId: '',
+    brandName: '',
     productName: '',
     productSpec: '',
     liveStatus: '',

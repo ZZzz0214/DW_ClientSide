@@ -36,6 +36,19 @@
         </div>
       </el-form-item>
 
+      <el-form-item label="订单日期" prop="orderDate">
+        <el-date-picker
+          v-model="formData.orderDate"
+          type="date"
+          placeholder="请选择订单日期"
+          value-format="YYYY-MM-DD"
+          class="!w-100%"
+        />
+        <div class="mt-2 text-gray-500 text-sm">
+          选择此次充值的订单日期，默认为今天
+        </div>
+      </el-form-item>
+
       <!-- 快捷金额选择 -->
       <el-form-item label="快捷选择">
         <div class="grid grid-cols-3 gap-2">
@@ -98,6 +111,7 @@ const formLoading = ref(false) // 表单的加载中
 const formData = ref({
   channelType: '',
   amount: undefined,
+  orderDate: undefined,
   carouselImages: [],
   remark: ''
 })
@@ -146,6 +160,8 @@ const open = async (channelType: string) => {
   dialogTitle.value = `${channelType}充值`
   resetForm()
   formData.value.channelType = channelType
+  // 设置默认订单日期为今天
+  formData.value.orderDate = new Date().toISOString().split('T')[0]
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
@@ -177,7 +193,8 @@ const submitForm = async () => {
       formData.value.channelType,
       formData.value.amount,
       formData.value.carouselImages.join(','),
-      formData.value.remark
+      formData.value.remark,
+      formData.value.orderDate
     )
     message.success(`${formData.value.channelType}充值成功！`)
     dialogVisible.value = false
@@ -195,6 +212,7 @@ const resetForm = () => {
   formData.value = {
     channelType: '',
     amount: undefined,
+    orderDate: undefined,
     carouselImages: [],
     remark: ''
   }

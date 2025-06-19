@@ -88,6 +88,28 @@ const getDetail = async () => {
   if ('ErpComboDetail' === name) {
     isDetail.value = true;
   }
+  
+  // 检查是否是复制操作
+  const route = useRoute();
+  if (route.query.copyData) {
+    try {
+      const copyData = JSON.parse(route.query.copyData as string);
+      formData.value = {
+        ...copyData,
+        id: undefined, // 确保ID为空，作为新增
+        no: undefined, // 确保编号为空，让后端重新生成
+        name: copyData.name || copyData.name + '_副本', // 确保名称有副本标识
+        createTime: undefined,
+        updateTime: undefined
+      };
+      message.success('已复制组品数据，请修改相关信息后保存');
+      return;
+    } catch (error) {
+      message.error('复制数据解析失败');
+    }
+  }
+  
+  // 正常的编辑/详情逻辑
   const id = params.id as unknown as number;
   if (id) {
     formLoading.value = true;

@@ -55,16 +55,15 @@
         />
       </el-form-item>
 
-
-
       <el-form-item label="发货编码" prop="shippingCode">
-    <el-input
-      v-model="formData.shippingCode"
-      placeholder="自动填充"
-      readonly
-      class="w-80"
-    />
-  </el-form-item>
+        <el-input
+          v-model="formData.shippingCode"
+          placeholder="自动填充"
+          readonly
+          class="w-80"
+        />
+      </el-form-item>
+      
       <el-form-item label="产品名称" prop="name">
         <el-input
           v-model="formData.name"
@@ -92,14 +91,42 @@
           class="w-80"
         />
       </el-form-item>
+
+      <!-- 备注信息 -->
+      <el-form-item label="备注信息" prop="remark">
+        <el-input
+          v-model="formData.remark"
+          type="textarea"
+          placeholder="请输入备注信息"
+          class="w-80"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+        />
+      </el-form-item>
+
+      <!-- 状态信息 -->
+      <el-form-item label="状态信息" prop="status">
+        <el-select
+          v-model="formData.status"
+          placeholder="请选择状态信息"
+          clearable
+          filterable
+          class="w-80"
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.ERP_DROPSHIP_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
 
     <ComboSearchDialog
       ref="comboSearchDialog"
-    v-model:visible="comboSearchDialogVisible"
-    @combo-selected="handleComboSelected"
-
-  />
+      v-model:visible="comboSearchDialogVisible"
+      @combo-selected="handleComboSelected"
+    />
   </template>
 
   <script lang="ts" setup>
@@ -108,6 +135,7 @@
   import { propTypes } from '@/utils/propTypes'
   import type { DropshipAssistVO } from '@/api/erp/dropship'
   import ComboSearchDialog from './ComboSearchDialog.vue'
+  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 
   defineOptions({ name: 'ErpDropshipAssistInfoForm' })
 
@@ -130,6 +158,8 @@
     comboProductNo: '', // 组品编号
     productSpec: '',
     productQuantity: 0,
+    remark: '', // 备注信息
+    status: '', // 状态信息
     name: '', // 新增的属性
     shippingCode: '' // 新增的属性
   })
@@ -166,18 +196,18 @@
     }
   }
 
-const comboSearchDialogVisible = ref(false);
+  const comboSearchDialogVisible = ref(false);
   const comboSearchDialog = ref();
-const openComboSearch = () => {
-  comboSearchDialog.value?.open();
-};
+  const openComboSearch = () => {
+    comboSearchDialog.value?.open();
+  };
 
-const handleComboSelected = (combo: any) => {
-  formData.comboProductId = combo.id;
-  formData.comboProductNo = combo.no; // 显示组品编号
-  formData.shippingCode = combo.shippingCode;
-  formData.name = combo.name; // 如果产品名称需要填充
-};
+  const handleComboSelected = (combo: any) => {
+    formData.comboProductId = combo.id;
+    formData.comboProductNo = combo.no; // 显示组品编号
+    formData.shippingCode = combo.shippingCode;
+    formData.name = combo.name; // 如果产品名称需要填充
+  };
 
   defineExpose({ validate })
   </script>

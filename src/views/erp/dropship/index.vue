@@ -18,24 +18,6 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="组品编号" prop="comboProductId">
-          <el-input
-            v-model="queryParams.comboProductId"
-            placeholder="请输入组品编号"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="发货编码" prop="comboProductId">
-          <el-input
-            v-model="queryParams.comboProductId"
-            placeholder="请输入发货编码"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
         <el-form-item label="原表商品" prop="originalProduct">
           <el-input
             v-model="queryParams.originalProduct"
@@ -45,43 +27,76 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="原表规格" prop="originalProduct">
+        <el-form-item label="原表规格" prop="originalSpec">
           <el-input
-            v-model="queryParams.originalProduct"
+            v-model="queryParams.originalSpec"
             placeholder="请输入原表规格"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="产品名称" prop="originalProduct">
+        <el-form-item label="组品编号" prop="comboProductId">
           <el-input
-            v-model="queryParams.originalProduct"
+            v-model="queryParams.comboProductId"
+            placeholder="请输入组品编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="发货编码" prop="shippingCode">
+          <el-input
+            v-model="queryParams.shippingCode"
+            placeholder="请输入发货编码"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="产品名称" prop="productName">
+          <el-input
+            v-model="queryParams.productName"
             placeholder="请输入产品名称"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="产品规格" prop="originalProduct">
+        <el-form-item label="产品规格" prop="productSpec">
           <el-input
-            v-model="queryParams.originalProduct"
+            v-model="queryParams.productSpec"
             placeholder="请输入产品规格"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="创建人员" prop="originalProduct">
+        <el-form-item label="状态信息" prop="status">
+          <el-select
+            v-model="queryParams.status"
+            placeholder="请选择状态信息"
+            clearable
+            filterable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.ERP_DROPSHIP_STATUS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="创建人员" prop="creator">
           <el-input
-            v-model="queryParams.originalProduct"
+            v-model="queryParams.creator"
             placeholder="请输入创建人员"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-
         <el-form-item label="创建时间" prop="createTime">
           <el-date-picker
             v-model="queryParams.createTime"
@@ -164,6 +179,17 @@
         <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
         <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
+        <el-table-column label="备注信息" align="center" prop="remark" :show-overflow-tooltip="false"/>
+        <el-table-column
+          label="状态信息"
+          align="center"
+          prop="status"
+          :show-overflow-tooltip="false"
+        >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_DROPSHIP_STATUS" :value="scope.row.status" />
+          </template>
+        </el-table-column>
         <el-table-column
           label="创建人员"
           align="center"
@@ -216,6 +242,7 @@
   import download from '@/utils/download'
   import { DropshipAssistApi, DropshipAssistVO } from '@/api/erp/dropship'
   import DropshipImportForm from './form/DropshipImportForm.vue'
+  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 
   /** ERP 代发辅助列表 */
   defineOptions({ name: 'ErpDropshipAssist' })
@@ -232,7 +259,13 @@
     pageSize: 10,
     no: undefined,
     originalProduct: undefined,
+    originalSpec: undefined,
     comboProductId: undefined,
+    shippingCode: undefined,
+    productName: undefined,
+    productSpec: undefined,
+    status: undefined,
+    creator: undefined,
     createTime: undefined
   })
   const queryFormRef = ref() // 搜索的表单

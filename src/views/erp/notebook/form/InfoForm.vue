@@ -6,6 +6,22 @@
       :rules="rules"
       label-width="120px"
     >
+      <!-- 图片上传 -->
+      <el-form-item label="图片上传" prop="images">
+        <div class="image-upload-container">
+          <UploadImgs
+            v-model="formData.images"
+            :disabled="isDetail"
+            :limit="5"
+            :is-show-tip="false"
+          />
+          <div class="upload-tip">
+            <Icon icon="ep:info-filled" class="tip-icon" />
+            最多可上传5张图片，限制5M，列表显示第一张
+          </div>
+        </div>
+      </el-form-item>
+
       <!-- 编号 -->
 
       <!-- 轮播图片 -->
@@ -110,7 +126,7 @@
   const message = useMessage()
   const formRef = ref()
   const formData = reactive<NotebookVO>({
-    carouselImage: '', // 轮播图片
+    images: [], // 图片列表
     taskName: '',// 任务名称
     taskStatus: 0,// 任务状态
     taskPerson: undefined,// 任务人员
@@ -130,6 +146,15 @@
     (data) => {
       if (!data) return
       copyValueToTarget(formData, data)
+      
+      // 处理图片数据：如果是字符串，转换为数组
+      if (data.images && typeof data.images === 'string') {
+        formData.images = data.images.split(',').filter(img => img.trim())
+      } else if (Array.isArray(data.images)) {
+        formData.images = [...data.images]
+      } else {
+        formData.images = []
+      }
     },
     { immediate: true }
   )
@@ -150,3 +175,24 @@
 
   defineExpose({ validate })
   </script>
+
+  <style lang="scss" scoped>
+  .image-upload-container {
+    .upload-tip {
+      display: flex;
+      align-items: center;
+      margin-top: 8px;
+      padding: 8px 12px;
+      background-color: #f0f9ff;
+      border: 1px solid #e1f5fe;
+      border-radius: 4px;
+      font-size: 12px;
+      color: #0288d1;
+      
+      .tip-icon {
+        margin-right: 4px;
+        font-size: 14px;
+      }
+    }
+  }
+  </style>

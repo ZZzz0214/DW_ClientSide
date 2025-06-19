@@ -8,16 +8,16 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="名称" prop="name">
+      <el-form-item label="采购人员" prop="purchaserName">
         <el-input
-          v-model="queryParams.name"
+          v-model="queryParams.purchaserName"
           placeholder="请输入名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="contactPhone">
+      <el-form-item label="联系电话" prop="contactPhone">
         <el-input
           v-model="queryParams.contactPhone"
           placeholder="请输入手机号码"

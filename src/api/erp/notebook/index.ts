@@ -4,11 +4,12 @@ import request from '@/config/axios'
 export interface NotebookVO {
   id?: number // 记事本编号
   no?: string // 编号
-  carouselImage?: string // 轮播图片
+  images?: string // 图片列表
   taskName?: string // 任务名称
   taskStatus?: number // 任务状态
   taskPerson?: string // 任务人员
   remark?: string // 备注信息
+  creator?: string // 创建人员
   createTime?: Date // 创建时间
 }
 
@@ -16,7 +17,7 @@ export interface NotebookVO {
 export interface NotebookSaveReqVO {
   id?: number // 记事本编号
   no: string // 编号
-  carouselImage?: string // 轮播图片
+  images?: string // 图片列表
   taskName: string // 任务名称
   taskStatus: number // 任务状态
   taskPerson: string // 任务人员
@@ -29,6 +30,7 @@ export interface NotebookPageReqVO {
   taskName?: string // 任务名称
   taskStatus?: number // 任务状态
   taskPerson?: string // 任务人员
+  creator?: string // 创建人员
   createTime?: Date[] // 创建时间
 }
 

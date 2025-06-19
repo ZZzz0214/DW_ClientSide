@@ -4,7 +4,7 @@ import request from '@/config/axios'
 export interface GroupBuyingVO {
   id?: number // 团购货盘编号
   no?: string // 编号
-  productImage?: string // 产品图片
+  productImage?: string | string[] // 产品图片（多张，逗号分隔或数组）
   brandName?: string // 品牌名称
   productName?: string // 产品名称
   productSpec?: string // 产品规格
@@ -37,7 +37,7 @@ export interface GroupBuyingVO {
 export interface GroupBuyingSaveReqVO {
   id?: number // 团购货盘编号
   no: string // 编号
-  productImage?: string // 产品图片
+  productImage?: string | string[] // 产品图片（多张，逗号分隔或数组）
   brandName?: string // 品牌名称
   productName: string // 产品名称
   productSpec?: string // 产品规格

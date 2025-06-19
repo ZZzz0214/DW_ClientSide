@@ -18,6 +18,78 @@
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="物流公司" prop="logisticsCompany">
+          <el-input
+            v-model="queryParams.logisticsCompany"
+            placeholder="请输入物流公司"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="物流单号" prop="logisticsNo">
+          <el-input
+            v-model="queryParams.logisticsNo"
+            placeholder="请输入物流单号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="收件姓名" prop="receiverName">
+          <el-input
+            v-model="queryParams.receiverName"
+            placeholder="请输入收件姓名"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="联系电话" prop="contactPhone">
+          <el-input
+            v-model="queryParams.contactPhone"
+            placeholder="请输入联系电话"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="组品编号" prop="comboProductId">
+          <el-input
+            v-model="queryParams.comboProductId"
+            placeholder="请输入组品编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="发货编码" prop="shippingCode">
+          <el-input
+            v-model="queryParams.shippingCode"
+            placeholder="请输入发货编码"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="产品名称" prop="productName">
+          <el-input
+            v-model="queryParams.productName"
+            placeholder="请输入产品名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="产品规格" prop="productSpec">
+          <el-input
+            v-model="queryParams.productSpec"
+            placeholder="请输入产品规格"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
           <el-input
             v-model="queryParams.customerName"
@@ -34,10 +106,22 @@
             clearable
             class="!w-240px"
           >
-            <el-option label="待发货" :value="1" />
-            <el-option label="已发货" :value="2" />
-            <el-option label="已签收" :value="3" />
+            <el-option
+              v-for="dict in getIntDictOptions(DICT_TYPE.ERP_SAMPLE_STATUS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
           </el-select>
+        </el-form-item>
+        <el-form-item label="创建人员" prop="creator">
+          <el-input
+            v-model="queryParams.creator"
+            placeholder="请输入创建人员"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
         </el-form-item>
         <el-form-item label="创建时间" prop="createTime">
           <el-date-picker
@@ -97,26 +181,29 @@
         :stripe="true"
         :show-overflow-tooltip="true"
         @selection-change="handleSelectionChange"
+        :row-style="{height: '80px'}"
+        :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="物流公司" align="center" prop="logisticsCompany" />
-        <el-table-column label="物流单号" align="center" prop="logisticsNo" />
-        <el-table-column label="收件姓名" align="center" prop="receiverName" />
-        <el-table-column label="联系电话" align="center" prop="contactPhone" />
-        <el-table-column label="详细地址" align="center" prop="address" />
-        <el-table-column label="备注信息" align="center" prop="remark" />
-        <el-table-column label="组品编号" align="center" prop="comboProductId" />
-        <el-table-column label="发货编码" align="center" prop="shippingCode" />
-        <el-table-column label="产品名称" align="center" prop="comboProductName" />
-        <el-table-column label="产品规格" align="center" prop="productSpec" />
-        <el-table-column label="产品数量" align="center" prop="productQuantity" />
-        <el-table-column label="客户名称" align="center" prop="customerName" />
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="物流公司" align="center" prop="logisticsCompany" :show-overflow-tooltip="false"/>
+        <el-table-column label="物流单号" align="center" prop="logisticsNo" :show-overflow-tooltip="false"/>
+        <el-table-column label="收件姓名" align="center" prop="receiverName" :show-overflow-tooltip="false"/>
+        <el-table-column label="联系电话" align="center" prop="contactPhone" :show-overflow-tooltip="false"/>
+        <el-table-column label="详细地址" align="center" prop="address" :show-overflow-tooltip="false"/>
+        <el-table-column label="备注信息" align="center" prop="remark" :show-overflow-tooltip="false"/>
+        <el-table-column label="组品编号" align="center" prop="comboProductId" :show-overflow-tooltip="false"/>
+        <el-table-column label="发货编码" align="center" prop="shippingCode" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="comboProductName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
+        <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
         <el-table-column label="样品状态" align="center" prop="sampleStatus">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_SAMPLE_STATUS" :value="scope.row.sampleStatus" />
           </template>
         </el-table-column>
+        <el-table-column label="创建人员" align="center" prop="creator" />
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
         <el-table-column label="操作" align="center" width="200">
           <template #default="scope">
@@ -157,7 +244,7 @@
   import { dateFormatter } from '@/utils/formatTime'
   import download from '@/utils/download'
   import { SampleApi, SampleVO } from '@/api/erp/sample'
-  import { DICT_TYPE } from '@/utils/dict'
+  import { DICT_TYPE, getIntDictOptions } from '@/utils/dict'
   import SampleImportForm from './form/SampleImportForm.vue'
 
   /** ERP 样品列表 */
@@ -174,8 +261,17 @@
     pageNo: 1,
     pageSize: 10,
     no: undefined,
+    logisticsCompany: undefined,
+    logisticsNo: undefined,
+    receiverName: undefined,
+    contactPhone: undefined,
+    comboProductId: undefined,
+    shippingCode: undefined,
+    productName: undefined,
+    productSpec: undefined,
     customerName: undefined,
     sampleStatus: undefined,
+    creator: undefined,
     createTime: undefined
   })
   const queryFormRef = ref() // 搜索的表单

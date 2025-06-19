@@ -1,165 +1,148 @@
 <template>
-  <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" :disabled="isDetail">
-    <!-- 现货数量 -->
-    <el-form-item label="现货数量" prop="totalQuantity">
-      <el-input-number
-        v-model="formData.totalQuantity"
-        :min="0"
-        placeholder="请输入现货数量"
-        class="w-80!"
-      />
-    </el-form-item>
-
-    <!-- 包材数量 -->
-    <el-form-item label="包材数量" prop="packagingMaterialQuantity">
-      <el-input-number
-        v-model="formData.packagingMaterialQuantity"
-        :min="0"
-        placeholder="请输入包材数量"
-        class="w-80!"
-      />
-    </el-form-item>
-
-    <!-- 返单时效 -->
-    <el-form-item label="返单时效" prop="orderReplenishmentLeadTime">
-        <div style="display: flex; align-items: center;">
-        <el-input
-          v-model="formData.orderReplenishmentLeadTime"
-          placeholder="请输入返单时效数值"
-          class="w-80!"
-        />
-        <span style="margin-left: 25px;">天</span>
-        </div>
-<!--      <el-col :span="2">-->
-<!--        <el-select-->
-<!--          v-model="formData.orderReplenishmentLeadTimeUnit"-->
-<!--          placeholder="请选择单位"-->
-<!--          class="w-80"-->
-<!--        >-->
-<!--          <el-option label="天" value="天" />-->
-<!--        </el-select>-->
-<!--      </el-col>-->
-    </el-form-item>
-
-    <!-- 品长宽高 -->
-    <el-form-item label="品长宽高" prop="productLength">
-      <div style="display: flex; align-items: center;">
-        <el-input
-          v-model="formData.productLength"
-          placeholder="品长宽高"
-          class="w-80!"
-        />
-        <span style="margin-left: 25px;">cm</span>
+  <div class="description-form-container">
+    <!-- 标题区域 -->
+    <div class="form-header">
+      <div class="header-icon">
+        <Icon icon="ep:box" class="text-2xl" />
       </div>
-<!--      <el-col :span="3">-->
-<!--        <el-input-->
-<!--          v-model="formData.productWidth"-->
-<!--          placeholder="宽"-->
-<!--          class="w-80"-->
-<!--        />-->
-<!--      </el-col>-->
-<!--      <el-col :span="3">-->
-<!--        <el-input-->
-<!--          v-model="formData.productHeight"-->
-<!--          placeholder="高"-->
-<!--          class="w-80"-->
-<!--        />-->
-<!--      </el-col>-->
-<!--      <el-col :span="2">-->
-<!--        <el-select-->
-<!--          v-model="formData.productDimensionsUnit"-->
-<!--          placeholder="请选择单位"-->
-<!--          class="w-80"-->
-<!--        >-->
-<!--          <el-option label="mm" value="mm" />-->
-<!--          <el-option label="cm" value="cm" />-->
-<!--          <el-option label="m" value="m" />-->
-<!--        </el-select>-->
-<!--      </el-col>-->
-    </el-form-item>
-    <el-form-item label="产品重量" prop="weight">
-        <div style="display: flex; align-items: center;">
-          <el-input-number
-            v-model="formData.weight"
-            placeholder="请输入产品重量数值"
-            :min="0"
-            class="w-80!"
-          />
-          <span style="margin-left: 25px;">g</span>
+      <div class="header-text">
+        <h3 class="header-title">库存箱规</h3>
+        <p class="header-subtitle">设置产品的库存和包装规格信息</p>
+      </div>
+    </div>
+
+    <!-- 表单内容区域 -->
+    <div class="form-content">
+      <el-form ref="formRef" :model="formData" :rules="rules" label-width="120px" :disabled="isDetail" class="beautiful-form">
+        <!-- 库存信息 -->
+        <div class="form-section">
+          <div class="section-title">
+            <Icon icon="ep:goods" class="section-icon" />
+            <span>库存信息</span>
+          </div>
+          <div class="form-grid">
+            <!-- 现货数量 -->
+            <el-form-item label="现货数量" prop="totalQuantity" class="grid-item">
+              <div class="input-with-unit">
+                <el-input-number
+                  v-model="formData.totalQuantity"
+                  :min="0"
+                  placeholder="请输入现货数量"
+                  class="beautiful-number-input"
+                />
+                <span class="unit-label">件</span>
+              </div>
+            </el-form-item>
+
+            <!-- 包材数量 -->
+            <el-form-item label="包材数量" prop="packagingMaterialQuantity" class="grid-item">
+              <div class="input-with-unit">
+                <el-input-number
+                  v-model="formData.packagingMaterialQuantity"
+                  :min="0"
+                  placeholder="请输入包材数量"
+                  class="beautiful-number-input"
+                />
+                <span class="unit-label">件</span>
+              </div>
+            </el-form-item>
+
+            <!-- 返单时效 -->
+            <el-form-item label="返单时效" prop="orderReplenishmentLeadTime" class="grid-item">
+              <div class="input-with-unit">
+                <el-input
+                  v-model="formData.orderReplenishmentLeadTime"
+                  placeholder="请输入返单时效数值"
+                  class="beautiful-input"
+                />
+                <span class="unit-label">天</span>
+              </div>
+            </el-form-item>
+          </div>
         </div>
 
-    </el-form-item>
-    <el-form-item label="箱规数量" prop="productCartonSpec">
-      <div style="display: flex; align-items: center;">
-        <el-input
-          v-model="formData.productCartonSpec"
-          placeholder="箱规数量"
-          class="w-80!"
-        />
-        <span style="margin-left: 25px;">个</span>
-      </div>
-    </el-form-item>
-    <!-- 箱长宽高 -->
-    <el-form-item label="箱长宽高" prop="cartonLength">
-      <div style="display: flex; align-items: center;">
-        <el-input
-          v-model="formData.cartonLength"
-          placeholder="箱长宽高"
-          class="w-80!"
-        />
-      <span style="margin-left: 25px;">cm</span>
-      </div>
-<!--      <el-col :span="3">-->
-<!--        <el-input-->
-<!--          v-model="formData.cartonWidth"-->
-<!--          placeholder="宽"-->
-<!--          class="w-80"-->
-<!--        />-->
-<!--      </el-col>-->
-<!--      <el-col :span="3">-->
-<!--        <el-input-->
-<!--          v-model="formData.cartonHeight"-->
-<!--          placeholder="高"-->
-<!--          class="w-80"-->
-<!--        />-->
-<!--      </el-col>-->
-<!--      <el-col :span="2">-->
-<!--        <el-select-->
-<!--          v-model="formData.cartonDimensionsUnit"-->
-<!--          placeholder="请选择单位"-->
-<!--          class="w-80"-->
-<!--        >-->
-<!--          <el-option label="mm" value="mm" />-->
-<!--          <el-option label="cm" value="cm" />-->
-<!--          <el-option label="m" value="m" />-->
-<!--        </el-select>-->
-<!--      </el-col>-->
-    </el-form-item>
+        <!-- 产品规格 -->
+        <div class="form-section">
+          <div class="section-title">
+            <Icon icon="ep:scale-to-original" class="section-icon" />
+            <span>产品规格</span>
+          </div>
+          <div class="form-grid">
+            <!-- 品长宽高 -->
+            <el-form-item label="品长宽高" prop="productLength" class="grid-item">
+              <div class="input-with-unit">
+                <el-input
+                  v-model="formData.productLength"
+                  placeholder="品长宽高"
+                  class="beautiful-input"
+                />
+                <span class="unit-label">cm</span>
+              </div>
+            </el-form-item>
 
-    <!-- 箱规重量 -->
-    <el-form-item label="箱规重量" prop="cartonWeight">
-
-        <div style="display: flex; align-items: center;">
-        <el-input-number
-          v-model="formData.cartonWeight"
-          :min="0"
-          placeholder="请输入箱规重量数值"
-          class="w-80!"
-        />
-          <span style="margin-left: 25px;">g</span>
+            <!-- 产品重量 -->
+            <el-form-item label="产品重量" prop="weight" class="grid-item">
+              <div class="input-with-unit">
+                <el-input-number
+                  v-model="formData.weight"
+                  placeholder="请输入产品重量数值"
+                  :min="0"
+                  class="beautiful-number-input"
+                />
+                <span class="unit-label">g</span>
+              </div>
+            </el-form-item>
+          </div>
         </div>
-<!--      <el-col :span="2">-->
-<!--        <el-select-->
-<!--          v-model="formData.cartonWeightUnit"-->
-<!--          placeholder="请选择单位"-->
-<!--          class="w-80"-->
-<!--        >-->
-<!--          <el-option label="g" value="g" />-->
-<!--          <el-option label="kg" value="kg" />-->
-<!--        </el-select>-->
-<!--      </el-col>-->
-    </el-form-item>
-  </el-form>
+
+        <!-- 包装规格 -->
+        <div class="form-section">
+          <div class="section-title">
+            <Icon icon="ep:present" class="section-icon" />
+            <span>包装规格</span>
+          </div>
+          <div class="form-grid">
+            <!-- 箱规数量 -->
+            <el-form-item label="箱规数量" prop="productCartonSpec" class="grid-item">
+              <div class="input-with-unit">
+                <el-input
+                  v-model="formData.productCartonSpec"
+                  placeholder="箱规数量"
+                  class="beautiful-input"
+                />
+                <span class="unit-label">个</span>
+              </div>
+            </el-form-item>
+
+            <!-- 箱长宽高 -->
+            <el-form-item label="箱长宽高" prop="cartonLength" class="grid-item">
+              <div class="input-with-unit">
+                <el-input
+                  v-model="formData.cartonLength"
+                  placeholder="箱长宽高"
+                  class="beautiful-input"
+                />
+                <span class="unit-label">cm</span>
+              </div>
+            </el-form-item>
+
+            <!-- 箱规重量 -->
+            <el-form-item label="箱规重量" prop="cartonWeight" class="grid-item">
+              <div class="input-with-unit">
+                <el-input-number
+                  v-model="formData.cartonWeight"
+                  :min="0"
+                  placeholder="请输入箱规重量数值"
+                  class="beautiful-number-input"
+                />
+                <span class="unit-label">g</span>
+              </div>
+            </el-form-item>
+          </div>
+        </div>
+      </el-form>
+    </div>
+  </div>
 </template>
 
 <script lang="ts" setup>
@@ -243,3 +226,170 @@ const validate = async () => {
 };
 defineExpose({ validate });
 </script>
+
+<style scoped lang="scss">
+.description-form-container {
+  background: linear-gradient(135deg, #a8e6cf 0%, #dcedc1 100%);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: linear-gradient(135deg, #c3f0ca 0%, #faf3e0 100%);
+  border-radius: 12px;
+  color: #2c3e50;
+  box-shadow: 0 4px 20px rgba(168, 230, 207, 0.3);
+}
+
+.header-icon {
+  margin-right: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  color: #52c41a;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.form-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.form-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: linear-gradient(135deg, #f6ffed 0%, #f0f9ff 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(82, 196, 26, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #a8e6cf 0%, #dcedc1 100%);
+  }
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+
+  .section-icon {
+    margin-right: 8px;
+    color: #52c41a;
+    font-size: 18px;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.grid-item {
+  margin-bottom: 0 !important;
+}
+
+.beautiful-form {
+  :deep(.el-form-item__label) {
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 14px;
+  }
+}
+
+.beautiful-input {
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
+      border-color: #52c41a;
+    }
+
+    &.is-focus {
+      box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+      border-color: #52c41a;
+    }
+  }
+
+  :deep(.el-input__inner) {
+    font-size: 14px;
+  }
+}
+
+.beautiful-number-input {
+  width: 100%;
+  
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(82, 196, 26, 0.2);
+      border-color: #52c41a;
+    }
+
+    &.is-focus {
+      box-shadow: 0 4px 12px rgba(82, 196, 26, 0.3);
+      border-color: #52c41a;
+    }
+  }
+}
+
+.input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+
+  .unit-label {
+    color: white;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #52c41a 0%, #73d13d 100%);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(82, 196, 26, 0.3);
+    min-width: 40px;
+    text-align: center;
+  }
+}
+</style>

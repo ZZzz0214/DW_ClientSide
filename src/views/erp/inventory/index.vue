@@ -18,10 +18,85 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="单品ID" prop="productId">
+        <el-form-item label="产品编号" prop="productNo">
           <el-input
-            v-model="queryParams.productId"
-            placeholder="请输入单品ID"
+            v-model="queryParams.productNo"
+            placeholder="请输入产品编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="产品名称" prop="productName">
+          <el-input
+            v-model="queryParams.productName"
+            placeholder="请输入产品名称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="产品简称" prop="productShortName">
+          <el-input
+            v-model="queryParams.productShortName"
+            placeholder="请输入产品简称"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="品牌名称" prop="brand">
+          <el-select
+            v-model="queryParams.brand"
+            placeholder="请选择品牌名称"
+            clearable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="产品品类" prop="category">
+          <el-select
+            v-model="queryParams.category"
+            placeholder="请选择产品品类"
+            clearable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getStrDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="现货库存" prop="spotInventory">
+          <el-input-number
+            v-model="queryParams.spotInventory"
+            placeholder="请输入现货库存"
+            clearable
+            class="!w-240px"
+            :min="0"
+          />
+        </el-form-item>
+        <el-form-item label="剩余库存" prop="remainingInventory">
+          <el-input-number
+            v-model="queryParams.remainingInventory"
+            placeholder="请输入剩余库存"
+            clearable
+            class="!w-240px"
+            :min="0"
+          />
+        </el-form-item>
+        <el-form-item label="创建人员" prop="creator">
+          <el-input
+            v-model="queryParams.creator"
+            placeholder="请输入创建人员"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
@@ -88,8 +163,7 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="产品编号" align="center" prop="productId" />
-<!--        <el-table-column label="产品图片" align="center" prop="productImage" />-->
+        <el-table-column label="产品编号" align="center" prop="productNo" />
         <el-table-column label="产品名称" align="center" prop="productName" />
         <el-table-column label="产品简称" align="center" prop="productShortName" />
         <el-table-column
@@ -113,6 +187,13 @@
         <el-table-column label="现货库存" align="center" prop="spotInventory" />
         <el-table-column label="剩余库存" align="center" prop="remainingInventory" />
         <el-table-column label="备注信息" align="center" prop="remark" />
+        <el-table-column
+          label="创建人员"
+          align="center"
+          prop="creator"
+          :show-overflow-tooltip="false"
+
+        />
         <el-table-column
           label="创建时间"
           align="center"
@@ -160,7 +241,7 @@
   import download from '@/utils/download'
   import { InventoryApi, InventoryVO } from '@/api/erp/inventory'
   import InventoryImportForm from './form/InventoryImportForm.vue'
-  import { DICT_TYPE } from '@/utils/dict'
+  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 
   /** ERP 库存列表 */
   defineOptions({ name: 'ErpInventory' })
@@ -176,7 +257,14 @@
     pageNo: 1,
     pageSize: 10,
     no: undefined,
-    productId: undefined,
+    productNo: undefined,
+    productName: undefined,
+    productShortName: undefined,
+    brand: undefined,
+    category: undefined,
+    spotInventory: undefined,
+    remainingInventory: undefined,
+    creator: undefined,
     createTime: undefined
   })
   const queryFormRef = ref() // 搜索的表单

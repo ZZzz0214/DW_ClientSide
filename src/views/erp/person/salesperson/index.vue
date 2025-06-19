@@ -8,7 +8,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="名称" prop="salespersonName">
+      <el-form-item label="销售人员" prop="salespersonName">
         <el-input
           v-model="queryParams.salespersonName"
           placeholder="请输入销售人员姓名"
@@ -17,7 +17,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="contactPhone">
+      <el-form-item label="联系电话" prop="contactPhone">
         <el-input
           v-model="queryParams.contactPhone"
           placeholder="请输入手机号码"

@@ -21,7 +21,7 @@
       <!-- 品牌名称 -->
       <el-form-item label="品牌名称" prop="brandName">
         <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-          <dict-tag v-if="formData.brandName != null && formData.brandName != undefined" :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="Number(formData.brandName)" />
+          <dict-tag v-if="formData.brandName" :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="formData.brandName" />
           <span v-else style="color: #c0c4cc;">自动填充</span>
         </div>
       </el-form-item>
@@ -101,7 +101,7 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
-  import { DICT_TYPE } from '@/utils/dict'
+  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
   import PrivateBroadcastingSearchDialog from './PrivateBroadcastingSearchDialog.vue'
 
   defineOptions({ name: 'ErpPrivateBroadcastingReviewInfoForm' })
@@ -119,12 +119,12 @@
   const formData = reactive({
     privateBroadcastingId: undefined,
     privateBroadcastingNo: '',
-    brandName: undefined,
+    brandName: '',
     productName: '',
     productSpec: '',
     productSku: '',
     livePrice: undefined,
-    privateStatus: undefined,
+    privateStatus: '',
     remark: ''
   })
 
@@ -152,12 +152,25 @@
 
   const handlePrivateBroadcastingSelected = (privateBroadcasting: any) => {
     console.log("选中的私播货盘表数据:", privateBroadcasting)
+    console.log("brandName值:", privateBroadcasting.brandName, "类型:", typeof privateBroadcasting.brandName)
     console.log("brandId值:", privateBroadcasting.brandId, "类型:", typeof privateBroadcasting.brandId)
+    
+    // 从私播货盘数据中提取品牌名称
+    // 如果后端返回的是brandName，直接使用；如果是brandId，需要转换
+    let brandNameValue = ''
+    if (privateBroadcasting.brandName) {
+      brandNameValue = privateBroadcasting.brandName
+    } else if (privateBroadcasting.brandId) {
+      // 如果只有brandId，从字典中查找对应的label作为brandName
+      const brandOptions = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)
+      const brandOption = brandOptions.find(option => option.value === String(privateBroadcasting.brandId))
+      brandNameValue = brandOption ? brandOption.value : String(privateBroadcasting.brandId)
+    }
     
     // 先更新本地 formData
     formData.privateBroadcastingId = privateBroadcasting.id
     formData.privateBroadcastingNo = privateBroadcasting.no
-    formData.brandName = privateBroadcasting.brandId
+    formData.brandName = brandNameValue
     formData.productName = privateBroadcasting.productName
     formData.productSpec = privateBroadcasting.productSpec
     formData.productSku = privateBroadcasting.productSku
@@ -168,7 +181,7 @@
     Object.assign(props.propFormData, {
       privateBroadcastingId: privateBroadcasting.id,
       privateBroadcastingNo: privateBroadcasting.no,
-      brandName: privateBroadcasting.brandId,
+      brandName: brandNameValue,
       productName: privateBroadcasting.productName,
       productSpec: privateBroadcasting.productSpec,
       productSku: privateBroadcasting.productSku,

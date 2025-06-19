@@ -29,10 +29,10 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="收支类型" prop="incomeExpense">
+      <el-form-item label="收入支出" prop="incomeExpense">
         <el-select
           v-model="queryParams.incomeExpense"
-          placeholder="请选择收支类型"
+          placeholder="请选择收入支出"
           clearable
           class="!w-240px"
         >
@@ -52,6 +52,23 @@
               </span>
             </div>
           </el-option>
+        </el-select>
+      </el-form-item>
+
+      <el-form-item label="收付类目" prop="category">
+        <el-select
+          v-model="queryParams.category"
+          placeholder="请选择收付类目"
+          clearable
+          class="!w-240px"
+          filterable
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.ERP_FINANCE_CATEGORY)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item label="收付账号" prop="account">
@@ -91,6 +108,39 @@
           </el-option>
         </el-select>
       </el-form-item>
+      <el-form-item label="审核状态" prop="auditStatus">
+        <el-select
+          v-model="queryParams.auditStatus"
+          placeholder="请选择审核状态"
+          clearable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.ERP_AUDIT_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="创建人员" prop="creator">
+        <el-input
+          v-model="queryParams.creator"
+          placeholder="请输入创建人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="审核人员" prop="auditor">
+        <el-input
+          v-model="queryParams.auditor"
+          placeholder="请输入审核人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="下单日期" prop="orderDate">
         <el-date-picker
           v-model="queryParams.orderDate"
@@ -101,22 +151,27 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="收付类目" prop="category">
-        <el-select
-          v-model="queryParams.category"
-          placeholder="请选择收付类目"
-          clearable
+      <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           class="!w-240px"
-          filterable
-        >
-          <el-option
-            v-for="dict in getStrDictOptions(DICT_TYPE.ERP_FINANCE_CATEGORY)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+        />
       </el-form-item>
+      <el-form-item label="审核时间" prop="auditTime">
+        <el-date-picker
+          v-model="queryParams.auditTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          class="!w-240px"
+        />
+      </el-form-item>
+
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -190,7 +245,7 @@
       :cell-style="{padding: '8px 0'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column label="编号" align="center" prop="no" min-width="140" />
+      <el-table-column label="编号" align="center" prop="no" min-width="140"  :show-overflow-tooltip="false"/>
       <el-table-column label="凭证图片" align="center" prop="carouselImages" width="100">
         <template #default="scope">
           <div v-if="getImageUrls(scope.row.carouselImages).length > 0" class="relative">
@@ -213,6 +268,7 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column label="账单名称" align="center" prop="billName" min-width="120" />
       <el-table-column label="收付金额" align="center" prop="amount" width="120">
         <template #default="scope">
           <span class="font-semibold">
@@ -263,6 +319,14 @@
         label="创建时间"
         align="center"
         prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
+      <el-table-column label="审核人员" align="center" prop="auditor" width="100" />
+      <el-table-column
+        label="审核时间"
+        align="center"
+        prop="auditTime"
         :formatter="dateFormatter"
         width="180px"
       />
@@ -363,8 +427,12 @@ const queryParams = reactive({
   category: undefined,
   account: undefined,
   status: undefined,
+  auditStatus: undefined,
+  creator: undefined,
+  auditor: undefined,
   orderDate: [],
-  createTime: []
+  createTime: [],
+  auditTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

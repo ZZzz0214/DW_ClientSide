@@ -39,31 +39,55 @@
         />
       </el-form-item>
       <el-form-item label="品牌名称" prop="brand">
-        <el-input
+        <el-select
           v-model="queryParams.brand"
-          placeholder="请输入品牌名称"
+          placeholder="请选择品牌名称"
           clearable
-          @keyup.enter="handleQuery"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in filteredBrandOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="产品品类" prop="categoryId">
-        <el-input
+        <el-select
           v-model="queryParams.categoryId"
-          placeholder="请输入产品品类"
+          placeholder="请选择产品品类"
           clearable
-          @keyup.enter="handleQuery"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_CATEGORY)"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in filteredCategoryOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="Number(dict.value)"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="产品状态" prop="status">
-        <el-input
+        <el-select
           v-model="queryParams.status"
-          placeholder="请输入产品状态"
+          placeholder="请选择产品状态"
           clearable
-          @keyup.enter="handleQuery"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_STATUS)"
           class="!w-240px"
-        />
+        >
+          <el-option
+            v-for="dict in filteredStatusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="Number(dict.value)"
+          />
+        </el-select>
       </el-form-item>
       <el-form-item label="采购人员" prop="purchaser">
         <el-input
@@ -125,6 +149,15 @@
         >
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleCopyAdd"
+          :disabled="!selectedRows.length"
+          v-hasPermi="['erp:product:create']"
+        >
+          <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+        </el-button>
 
         <el-button
           type="warning"
@@ -158,7 +191,10 @@
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true"
     :row-style="{height: '80px'}"
-    :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}">
+    :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
+    @selection-change="handleSelectionChange"
+    ref="tableRef">
+      <el-table-column type="selection" width="50" align="center" />
       <el-table-column label="产品编号" align="center" prop="no" :show-overflow-tooltip="false"/>
       <el-table-column label="产品图片" align="center" prop="image" width="100" :show-overflow-tooltip="false">
         <template #default="scope">
@@ -172,7 +208,8 @@
             />
             <div 
               v-if="getImageUrls(scope.row.image).length > 1" 
-              class="absolute -top-1 -right-1 bg-blue-500 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center"
+              class="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-green-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-white z-10"
+              style="font-size: 10px; font-weight: bold;"
             >
               {{ getImageUrls(scope.row.image).length }}
             </div>
@@ -276,7 +313,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="200">
+      <el-table-column label="操作" align="center" width="240">
         <template #default="scope">
           <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
           <el-button
@@ -286,6 +323,14 @@
             v-hasPermi="['erp:product:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="success"
+            @click="handleQuickCopy(scope.row)"
+            v-hasPermi="['erp:product:create']"
+          >
+            复制
           </el-button>
           <el-button
             link
@@ -315,7 +360,7 @@ import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { ProductCategoryApi, ProductCategoryVO } from '@/api/erp/product/category'
-import { DICT_TYPE } from '@/utils/dict'
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 import { defaultProps, handleTree } from '@/utils/tree'
 import ProductImportForm from './form/ProductImportForm.vue'
 
@@ -330,15 +375,30 @@ const { push } = useRouter() // 路由跳转
 const loading = ref(true) // 列表的加载中
 const list = ref<ProductVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
+const selectedRows = ref<ProductVO[]>([]) // 选中的行数据
+const tableRef = ref() // 表格引用
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   name: undefined,
-  categoryId: undefined
+  productShortName: undefined,
+  shippingCode: undefined,
+  brand: undefined,
+  categoryId: undefined,
+  status: undefined,
+  purchaser: undefined,
+  supplier: undefined,
+  creator: undefined,
+  createTime: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const categoryList = ref<ProductCategoryVO[]>([]) // 产品分类列表
+
+// 字典选项
+const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
+const filteredCategoryOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY))
+const filteredStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS))
 
 /** 查询列表 */
 const getList = async () => {
@@ -431,6 +491,62 @@ const handleImport = () => {
   importFormRef.value.open()
 }
 
+/** 选择变化处理 */
+const handleSelectionChange = (selection: ProductVO[]) => {
+  selectedRows.value = selection
+}
+
+/** 复制新增按钮操作 */
+const handleCopyAdd = () => {
+  if (selectedRows.value.length === 0) {
+    message.warning('请选择要复制的产品')
+    return
+  }
+  
+  if (selectedRows.value.length > 1) {
+    message.warning('只能选择一个产品进行复制')
+    return
+  }
+  
+  const selectedProduct = selectedRows.value[0]
+  // 跳转到新增页面，并传递复制的数据
+  push({ 
+    name: 'ErpProductAdd', 
+    query: { 
+      copyFrom: selectedProduct.id,
+      copyData: JSON.stringify({
+        ...selectedProduct,
+        id: undefined, // 清除ID，作为新增
+        no: undefined, // 清除编号，让后端重新生成
+        createTime: undefined, // 清除创建时间
+        updateTime: undefined // 清除更新时间
+      })
+    }
+  })
+  
+  message.success(`已复制产品"${selectedProduct.name}"的数据，请修改后保存`)
+}
+
+/** 快速复制单个产品 */
+const handleQuickCopy = (product: ProductVO) => {
+  // 跳转到新增页面，并传递复制的数据
+  push({ 
+    name: 'ErpProductAdd', 
+    query: { 
+      copyFrom: product.id,
+      copyData: JSON.stringify({
+        ...product,
+        id: undefined, // 清除ID，作为新增
+        no: undefined, // 清除编号，让后端重新生成
+        createTime: undefined, // 清除创建时间
+        updateTime: undefined // 清除更新时间
+      })
+    }
+  })
+  
+  message.success(`已复制产品"${product.name}"的数据，请修改后保存`)
+}
+
 /** 初始化 **/
 const route = useRoute(); // 获取当前路由信息
 
@@ -459,5 +575,30 @@ onUpdated(async () => {
 const getImageUrls = (images: string | undefined): string[] => {
   if (!images) return []
   return images.split(',').map(img => img.trim()).filter(img => img)
+}
+
+/** 字典选项过滤方法 */
+const filterDictOptions = (value, dictType) => {
+  const allOptions = getStrDictOptions(dictType)
+  if (!value) {
+    if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+      filteredBrandOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRODUCT_CATEGORY) {
+      filteredCategoryOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+      filteredStatusOptions.value = allOptions
+    }
+    return
+  }
+  const filtered = allOptions.filter(item =>
+    item.label.toLowerCase().includes(value.toLowerCase())
+  )
+  if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+    filteredBrandOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRODUCT_CATEGORY) {
+    filteredCategoryOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+    filteredStatusOptions.value = filtered
+  }
 }
 </script>

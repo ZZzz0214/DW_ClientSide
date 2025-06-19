@@ -16,25 +16,19 @@
 <!--      </el-form-item>-->
 <!--  -->
       <!-- 产品图片 -->
-<!--      <el-form-item label="产品图片" prop="productImage">-->
-<!--        <el-upload-->
-<!--          class="avatar-uploader"-->
-<!--          action=""-->
-<!--          :show-file-list="false"-->
-<!--          :auto-upload="false"-->
-<!--          :on-change="handleImageChange"-->
-<!--        >-->
-<!--          <img v-if="formData.productImage" :src="formData.productImage" class="avatar" />-->
-<!--          <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>-->
-<!--        </el-upload>-->
-<!--      </el-form-item>-->
-
       <el-form-item label="产品图片" prop="productImage">
-        <el-input
-          v-model="formData.productImage"
-          placeholder="请输入产品图片"
-          class="w-80"
-        />
+        <div class="image-upload-container">
+          <UploadImgs
+            v-model="formData.productImage"
+            :disabled="isDetail"
+            :limit="5"
+            :is-show-tip="false"
+          />
+          <div class="upload-tip">
+            <Icon icon="ep:info-filled" class="tip-icon" />
+            最多可上传5张图片，列表显示第一张
+          </div>
+        </div>
       </el-form-item>
       <!-- 品牌名称 -->
       <el-form-item label="品牌名称" prop="brandName">
@@ -155,6 +149,7 @@
   import { propTypes } from '@/utils/propTypes'
   import type { GroupBuyingVO } from '@/api/erp/groupbuying'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
   defineOptions({ name: 'ErpGroupBuyingInfoForm' })
 
   const props = defineProps({
@@ -169,7 +164,7 @@ import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
   const formRef = ref()
   const formData = reactive({
     no: '',
-    productImage: '',
+    productImage: [],
     brandName: '',
     productName: '',
     productSpec: '',
@@ -196,18 +191,39 @@ import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
     () => props.propFormData,
     (data) => {
       if (!data) return
+      
+      // 复制数据
       copyValueToTarget(formData, data)
+      
+      // 处理产品图片：如果是字符串，转换为数组
+      if (data.productImage && typeof data.productImage === 'string') {
+        formData.productImage = data.productImage.split(',').filter(img => img.trim())
+      } else if (Array.isArray(data.productImage)) {
+        formData.productImage = [...data.productImage]
+      } else {
+        formData.productImage = []
+      }
     },
     { immediate: true }
   )
 
   /** 表单校验 */
-  const emit = defineEmits(['update:activeName'])
+  const emit = defineEmits(['update:activeName', 'update:formData'])
   const validate = async () => {
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      Object.assign(props.propFormData, formData)
+      
+      // 通过emit事件将数据传递给父组件，而不是直接修改props
+      const updatedData = { ...formData }
+      
+      // 确保productImage是数组格式
+      if (Array.isArray(formData.productImage)) {
+        updatedData.productImage = [...formData.productImage]
+      }
+      
+      // 通过emit将数据传递给父组件
+      emit('update:formData', updatedData)
     } catch (e) {
       message.error('【基础信息】不完善，请填写相关信息')
       emit('update:activeName', 'info')
@@ -254,3 +270,24 @@ const filterDictOptions = (value, dictType) => {
 
   defineExpose({ validate })
   </script>
+
+<style lang="scss" scoped>
+.image-upload-container {
+  .upload-tip {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #f0f9ff;
+    border: 1px solid #bae6fd;
+    border-radius: 6px;
+    font-size: 12px;
+    color: #0369a1;
+
+    .tip-icon {
+      margin-right: 6px;
+      color: #0ea5e9;
+    }
+  }
+}
+</style>

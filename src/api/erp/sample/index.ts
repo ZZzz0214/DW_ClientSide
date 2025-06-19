@@ -18,6 +18,7 @@ export interface SampleVO {
   sampleStatus?: number // 样品状态
   reference?: string // 参考
   remark?: string // 备注信息
+  creator?: string // 创建人员
   createTime?: Date // 创建时间
 }
 
@@ -44,8 +45,17 @@ export interface SampleSaveReqVO {
 // ERP 样品分页 Request VO
 export interface SamplePageReqVO {
   no?: string // 编号
+  logisticsCompany?: string // 物流公司
+  logisticsNo?: string // 物流单号
+  receiverName?: string // 收件姓名
+  contactPhone?: string // 联系电话
+  comboProductId?: string // 组品编号
+  shippingCode?: string // 发货编码
+  productName?: string // 产品名称
+  productSpec?: string // 产品规格
   customerName?: string // 客户名称
   sampleStatus?: number // 样品状态
+  creator?: string // 创建人员
   createTime?: Date[] // 创建时间
 }
 

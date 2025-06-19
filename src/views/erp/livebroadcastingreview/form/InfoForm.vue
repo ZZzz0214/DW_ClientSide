@@ -17,9 +17,9 @@
       </el-form-item>
 
       <!-- 品牌名称 -->
-      <el-form-item label="品牌名称" prop="brandId">
+      <el-form-item label="品牌名称" prop="brandName">
         <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-          <dict-tag v-if="formData.brandId !== undefined && formData.brandId !== null" :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="formData.brandId" />
+          <dict-tag v-if="formData.brandName" :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="formData.brandName" />
           <span v-else style="color: #c0c4cc;">自动填充</span>
         </div>
       </el-form-item>
@@ -114,7 +114,6 @@
     liveBroadcastingId: undefined as number | undefined,
     liveBroadcastingNo: '', // 货盘编号（用于显示）
     productName: '',
-    brandId: undefined as number | undefined, // 品牌ID（用于字典显示）
     brandName: '', // 品牌名称
     productSpec: '',
     productSku: '',
@@ -166,14 +165,13 @@
     formData.liveBroadcastingNo = liveBroadcasting.no || ''
     // 自动填充货盘相关信息
     formData.productName = liveBroadcasting.productName || ''
-    formData.brandId = liveBroadcasting.brandId // 使用brandId用于字典显示
     formData.brandName = liveBroadcasting.brandName || '' // 保留brandName
     formData.productSpec = liveBroadcasting.productSpec || ''
     formData.productSku = liveBroadcasting.productSku || ''
     formData.liveStatus = liveBroadcasting.liveStatus // 使用liveStatus
     // 自动填充直播价格（不可变更）
     formData.livePrice = liveBroadcasting.livePrice || 0
-    console.log("Updated form data:", { brandId: formData.brandId, liveStatus: formData.liveStatus, livePrice: formData.livePrice })
+    console.log("Updated form data:", { brandName: formData.brandName, liveStatus: formData.liveStatus, livePrice: formData.livePrice })
   }
 
   defineExpose({ validate })

@@ -44,7 +44,7 @@
   const formData = ref<NotebookApi.NotebookVO>({
     id: undefined,
     no: '',
-    carouselImage: '',
+    images: '',
     taskName: '',
     taskStatus: 0,
     taskPerson: '',
@@ -77,6 +77,12 @@
 
       // 提交数据
       const data = cloneDeep(unref(formData.value))
+      
+      // 处理图片数据：将数组转换为字符串
+      if (Array.isArray(data.images)) {
+        data.images = data.images.join(',')
+      }
+      
       const id = params.id as unknown as number
 
       if (!id) {

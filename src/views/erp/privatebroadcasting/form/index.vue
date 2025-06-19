@@ -7,6 +7,7 @@
           v-model:activeName="activeName"
           :is-detail="isDetail"
           :propFormData="formData"
+          @update:formData="handleInfoFormUpdate"
         />
       </el-tab-pane>
       <el-tab-pane label="价格机制" name="price">
@@ -15,6 +16,7 @@
           v-model:activeName="activeName"
           :is-detail="isDetail"
           :propFormData="formData"
+          @update:formData="handlePriceFormUpdate"
         />
       </el-tab-pane>
       <el-tab-pane label="数据信息" name="data">
@@ -23,6 +25,7 @@
           v-model:activeName="activeName"
           :is-detail="isDetail"
           :propFormData="formData"
+          @update:formData="handleDataFormUpdate"
         />
       </el-tab-pane>
       <el-tab-pane label="发货信息" name="shipping">
@@ -31,6 +34,7 @@
           v-model:activeName="activeName"
           :is-detail="isDetail"
           :propFormData="formData"
+          @update:formData="handleShippingFormUpdate"
         />
       </el-tab-pane>
     </el-tabs>
@@ -73,8 +77,8 @@ const shippingRef = ref() // 发货信息 Ref
 // 表单数据
 const formData = ref<ErpPrivateBroadcastingApi.ErpPrivateBroadcastingRespVO>({
   no: '',
-  productImage: '',
-  brandId: undefined,
+  productImage: [],
+  brandName: '',
   productName: '',
   productSpec: '',
   productSku: '',
@@ -82,7 +86,7 @@ const formData = ref<ErpPrivateBroadcastingApi.ErpPrivateBroadcastingRespVO>({
   shelfLife: '',
   productStock: undefined,
   remark: '',
-  privateStatus: undefined, // 货盘状态
+  privateStatus: '', // 货盘状态
   livePrice: undefined,
   productNakedPrice: undefined,
   expressFee: undefined,
@@ -107,11 +111,14 @@ const getDetail = async () => {
     try {
       const res = await ErpPrivateBroadcastingApi.ErpPrivateBroadcastingApi.getPrivateBroadcasting(id)
 
+      // 处理产品图片：将逗号分隔的字符串转换为数组
+      if (res.productImage && typeof res.productImage === 'string') {
+        res.productImage = res.productImage.split(',').filter(img => img.trim())
+      }
+
       // 确保数字类型字段正确转换
       formData.value = {
         ...res,
-        brandId: res.brandId != null ? Number(res.brandId) : undefined,
-        privateStatus: res.privateStatus != null ? Number(res.privateStatus) : undefined,
         marketPrice: res.marketPrice != null ? Number(res.marketPrice) : undefined,
         productStock: res.productStock != null ? Number(res.productStock) : undefined,
         livePrice: res.livePrice != null ? Number(res.livePrice) : undefined,
@@ -127,6 +134,12 @@ const getDetail = async () => {
     formLoading.value = true
     try {
       const res = await ErpPrivateBroadcastingApi.ErpPrivateBroadcastingApi.getPrivateBroadcasting(copyId)
+      
+      // 处理产品图片：将逗号分隔的字符串转换为数组
+      if (res.productImage && typeof res.productImage === 'string') {
+        res.productImage = res.productImage.split(',').filter(img => img.trim())
+      }
+      
       // 复制数据，但重置关键字段
       formData.value = {
         ...res,
@@ -134,8 +147,7 @@ const getDetail = async () => {
         no: '',
         createTime: undefined,
         updateTime: undefined,
-        privateStatus: 10, // 重置为未审核状态
-        brandId: res.brandId != null ? Number(res.brandId) : undefined,
+        privateStatus: '未设置', // 重置为未设置状态
         marketPrice: res.marketPrice != null ? Number(res.marketPrice) : undefined,
         productStock: res.productStock != null ? Number(res.productStock) : undefined,
         livePrice: res.livePrice != null ? Number(res.livePrice) : undefined,
@@ -147,6 +159,26 @@ const getDetail = async () => {
       formLoading.value = false
     }
   }
+}
+
+/** 处理基础信息表单数据更新 */
+const handleInfoFormUpdate = (updatedData) => {
+  Object.assign(formData.value, updatedData)
+}
+
+/** 处理价格机制表单数据更新 */
+const handlePriceFormUpdate = (updatedData) => {
+  Object.assign(formData.value, updatedData)
+}
+
+/** 处理数据信息表单数据更新 */
+const handleDataFormUpdate = (updatedData) => {
+  Object.assign(formData.value, updatedData)
+}
+
+/** 处理发货信息表单数据更新 */
+const handleShippingFormUpdate = (updatedData) => {
+  Object.assign(formData.value, updatedData)
 }
 
 /** 提交按钮 */
@@ -166,6 +198,12 @@ const submitForm = async () => {
 
     // 提交数据
     const data = cloneDeep(unref(formData.value))
+    
+    // 处理产品图片：如果是数组，转换为逗号分隔的字符串
+    if (Array.isArray(data.productImage)) {
+      data.productImage = data.productImage.join(',')
+    }
+    
     const id = params.id as unknown as number
 
     if (!id) {

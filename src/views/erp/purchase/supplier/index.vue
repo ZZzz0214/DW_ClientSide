@@ -1,5 +1,4 @@
 <template>
-  <doc-alert title="【采购】采购订单、入库、退货" url="https://doc.iocoder.cn/erp/purchase/" />
 
   <ContentWrap>
     <!-- 搜索工作栏 -->
@@ -10,7 +9,7 @@
       :inline="true"
       label-width="68px"
     >
-      <el-form-item label="名称" prop="name">
+      <el-form-item label="供应商名" prop="name">
         <el-input
           v-model="queryParams.name"
           placeholder="请输入名称"
@@ -19,15 +18,17 @@
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="手机号码" prop="mobile">
+
+      <el-form-item label="收件姓名" prop="mobile">
         <el-input
           v-model="queryParams.mobile"
-          placeholder="请输入手机号码"
+          placeholder="收件姓名"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
+
       <el-form-item label="联系电话" prop="telephone">
         <el-input
           v-model="queryParams.telephone"
@@ -37,6 +38,8 @@
           class="!w-240px"
         />
       </el-form-item>
+
+
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>

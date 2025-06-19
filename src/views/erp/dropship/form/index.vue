@@ -48,7 +48,9 @@
     originalQuantity: 0,
     comboProductId: '',
     productSpec: '',
-    productQuantity: 0
+    productQuantity: 0,
+    remark: '',
+    status: ''
   })
 
   /** 获得详情 */

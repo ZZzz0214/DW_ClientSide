@@ -28,87 +28,91 @@
           />
         </el-form-item>
         <el-form-item label="客户职位" prop="customerPosition">
-          <el-input
+          <el-select
             v-model="queryParams.customerPosition"
-            placeholder="请输入客户职位"
+            placeholder="请选择客户职位"
             clearable
-            @keyup.enter="handleQuery"
             class="!w-240px"
-          />
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_CUSTOMER_POSITION)"
+          >
+            <el-option
+              v-for="dict in filteredCustomerPositionOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
-        <el-form-item label="客户微信" prop="customerWechat">
-          <el-input
-            v-model="queryParams.customerWechat"
-            placeholder="请输入客户微信"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-
         <el-form-item label="平台名称" prop="platformName">
-          <el-input
+          <el-select
             v-model="queryParams.platformName"
-            placeholder="请输入平台名称"
+            placeholder="请选择平台名称"
             clearable
-            @keyup.enter="handleQuery"
             class="!w-240px"
-          />
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PLATFORM_NAME)"
+          >
+            <el-option
+              v-for="dict in filteredPlatformNameOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="客户属性" prop="customerAttribute">
-          <el-input
+          <el-select
             v-model="queryParams.customerAttribute"
-            placeholder="请输入客户属性"
+            placeholder="请选择客户属性"
             clearable
-            @keyup.enter="handleQuery"
             class="!w-240px"
-          />
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_CUSTOMER_ATTRIBUTE)"
+          >
+            <el-option
+              v-for="dict in filteredCustomerAttributeOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="客户城市" prop="customerCity">
-          <el-input
+          <el-select
             v-model="queryParams.customerCity"
-            placeholder="请输入客户城市"
+            placeholder="请选择客户城市"
+            clearable
+            class="!w-240px"
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_CUSTOMER_CITY)"
+          >
+            <el-option
+              v-for="dict in filteredCustomerCityOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+        <el-form-item label="创建人员" prop="creator">
+          <el-input
+            v-model="queryParams.creator"
+            placeholder="请输入创建人员"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
           />
         </el-form-item>
-
-        <el-form-item label="客户区县" prop="customerDistrict">
-          <el-input
-            v-model="queryParams.customerDistrict"
-            placeholder="请输入客户区县"
-            clearable
-            @keyup.enter="handleQuery"
+        <el-form-item label="创建时间" prop="createTime">
+          <el-date-picker
+            v-model="queryParams.createTime"
+            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
             class="!w-240px"
-          />
-        </el-form-item>
-
-        <el-form-item label="用户画像" prop="userPortrait">
-          <el-input
-            v-model="queryParams.userPortrait"
-            placeholder="请输入用户画像"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="招商类目" prop="recruitmentCategory">
-          <el-input
-            v-model="queryParams.recruitmentCategory"
-            placeholder="请输入招商类目"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
-          />
-        </el-form-item>
-        <el-form-item label="选品标准" prop="selectionCriteria">
-          <el-input
-            v-model="queryParams.selectionCriteria"
-            placeholder="请输入平台名称"
-            clearable
-            @keyup.enter="handleQuery"
-            class="!w-240px"
+            end-placeholder="结束日期"
+            start-placeholder="开始日期"
+            type="daterange"
+            value-format="YYYY-MM-DD HH:mm:ss"
           />
         </el-form-item>
 
@@ -165,38 +169,26 @@
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
         <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
-<!--        <el-table-column label="客户职位" align="center" prop="customerPosition" />-->
         <el-table-column label="客户职位" align="center" prop="customerPosition">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_POSITION" :value="scope.row.customerPosition" />
           </template>
         </el-table-column>
-        <el-table-column label="客户微信" align="center" prop="customerWechat" :show-overflow-tooltip="false"/>
-<!--        <el-table-column label="平台名称" align="center" prop="platformName" />-->
         <el-table-column label="平台名称" align="center" prop="platformName">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_PLATFORM_NAME" :value="scope.row.platformName" />
           </template>
         </el-table-column>
-<!--        <el-table-column label="客户属性" align="center" prop="customerAttribute" />-->
         <el-table-column label="客户属性" align="center" prop="customerAttribute">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_ATTRIBUTE" :value="scope.row.customerAttribute" />
           </template>
         </el-table-column>
-<!--        <el-table-column label="客户城市" align="center" prop="customerCity" />-->
         <el-table-column label="客户城市" align="center" prop="customerCity">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_CITY" :value="scope.row.customerCity" />
           </template>
         </el-table-column>
-<!--        <el-table-column label="客户区县" align="center" prop="customerDistrict" />-->
-        <el-table-column label="客户区县" align="center" prop="customerDistrict">
-          <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_CUSTOMER_DISTRICT" :value="scope.row.customerDistrict" />
-          </template>
-        </el-table-column>
-        <el-table-column label="选品标准" align="center" prop="selectionCriteria" :show-overflow-tooltip="false"/>
         <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
         <el-table-column label="操作" align="center" width="200">
@@ -235,7 +227,7 @@
 
   <script setup lang="ts">
   import { dateFormatter } from '@/utils/formatTime'
-  import { DICT_TYPE } from '@/utils/dict'
+  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
   import download from '@/utils/download'
   import { GroupBuyingInfoApi, GroupBuyingInfoVO } from '@/api/erp/groupbuyinginfo'
   import GroupBuyingInfoImportForm from './form/GroupBuyingInfoImportForm.vue'
@@ -255,11 +247,50 @@
     pageSize: 10,
     no: undefined,
     customerName: undefined,
+    customerPosition: undefined,
     platformName: undefined,
-    customerCity: undefined
+    customerAttribute: undefined,
+    customerCity: undefined,
+    creator: undefined,
+    createTime: undefined
   })
   const queryFormRef = ref() // 搜索的表单
   const exportLoading = ref(false) // 导出的加载中
+
+  // 字典选项
+  const filteredCustomerPositionOptions = ref(getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_POSITION))
+  const filteredPlatformNameOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PLATFORM_NAME))
+  const filteredCustomerAttributeOptions = ref(getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_ATTRIBUTE))
+  const filteredCustomerCityOptions = ref(getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_CITY))
+
+  // 字典过滤方法
+  const filterDictOptions = (value, dictType) => {
+    const allOptions = getStrDictOptions(dictType)
+    if (!value) {
+      if (dictType === DICT_TYPE.ERP_CUSTOMER_POSITION) {
+        filteredCustomerPositionOptions.value = allOptions
+      } else if (dictType === DICT_TYPE.ERP_PLATFORM_NAME) {
+        filteredPlatformNameOptions.value = allOptions
+      } else if (dictType === DICT_TYPE.ERP_CUSTOMER_ATTRIBUTE) {
+        filteredCustomerAttributeOptions.value = allOptions
+      } else if (dictType === DICT_TYPE.ERP_CUSTOMER_CITY) {
+        filteredCustomerCityOptions.value = allOptions
+      }
+      return
+    }
+    const filtered = allOptions.filter(item =>
+      item.label.toLowerCase().includes(value.toLowerCase())
+    )
+    if (dictType === DICT_TYPE.ERP_CUSTOMER_POSITION) {
+      filteredCustomerPositionOptions.value = filtered
+    } else if (dictType === DICT_TYPE.ERP_PLATFORM_NAME) {
+      filteredPlatformNameOptions.value = filtered
+    } else if (dictType === DICT_TYPE.ERP_CUSTOMER_ATTRIBUTE) {
+      filteredCustomerAttributeOptions.value = filtered
+    } else if (dictType === DICT_TYPE.ERP_CUSTOMER_CITY) {
+      filteredCustomerCityOptions.value = filtered
+    }
+  }
 
   /** 查询列表 */
   const getList = async () => {
@@ -282,6 +313,11 @@
   /** 重置按钮操作 */
   const resetQuery = () => {
     queryFormRef.value.resetFields()
+    // 重置字典过滤选项
+    filteredCustomerPositionOptions.value = getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_POSITION)
+    filteredPlatformNameOptions.value = getStrDictOptions(DICT_TYPE.ERP_PLATFORM_NAME)
+    filteredCustomerAttributeOptions.value = getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_ATTRIBUTE)
+    filteredCustomerCityOptions.value = getStrDictOptions(DICT_TYPE.ERP_CUSTOMER_CITY)
     handleQuery()
   }
 

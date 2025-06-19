@@ -26,6 +26,100 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="客户职位" prop="customerPosition">
+        <el-select
+          v-model="queryParams.customerPosition"
+          placeholder="请选择客户职位"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_CUSTOMER_POSITION)"
+        >
+          <el-option
+            v-for="dict in filteredCustomerPositionOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="平台名称" prop="platformName">
+        <el-select
+          v-model="queryParams.platformName"
+          placeholder="请选择平台名称"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_PLATFORM_NAME)"
+        >
+          <el-option
+            v-for="dict in filteredPlatformNameOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="客户属性" prop="customerAttribute">
+        <el-select
+          v-model="queryParams.customerAttribute"
+          placeholder="请选择客户属性"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_CUSTOMER_ATTRIBUTE)"
+        >
+          <el-option
+            v-for="dict in filteredCustomerAttributeOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="客户城市" prop="customerCity">
+        <el-select
+          v-model="queryParams.customerCity"
+          placeholder="请选择客户城市"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_CUSTOMER_CITY)"
+        >
+          <el-option
+            v-for="dict in filteredCustomerCityOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+<!--      <el-form-item label="客户区县" prop="customerDistrict">-->
+<!--        <el-select-->
+<!--          v-model="queryParams.customerDistrict"-->
+<!--          placeholder="请选择客户区县"-->
+<!--          clearable-->
+<!--          class="!w-240px"-->
+<!--          filterable-->
+<!--          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_CUSTOMER_DISTRICT)"-->
+<!--        >-->
+<!--          <el-option-->
+<!--            v-for="dict in filteredCustomerDistrictOptions"-->
+<!--            :key="dict.value"-->
+<!--            :label="dict.label"-->
+<!--            :value="dict.value"-->
+<!--          />-->
+<!--        </el-select>-->
+<!--      </el-form-item>-->
+      <el-form-item label="创建人员" prop="creator">
+        <el-input
+          v-model="queryParams.creator"
+          placeholder="请输入创建人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -109,15 +203,16 @@
           <dict-tag :type="DICT_TYPE.ERP_PRIVATE_CUSTOMER_CITY" :value="scope.row.customerCity" />
         </template>
       </el-table-column>
-      <el-table-column label="客户区县" align="center" prop="customerDistrict">
-        <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_PRIVATE_CUSTOMER_DISTRICT" :value="scope.row.customerDistrict" />
-        </template>
-      </el-table-column>
-      <el-table-column label="用户画像" align="center" prop="userPortrait" />
-      <el-table-column label="招商类目" align="center" prop="recruitmentCategory" />
-      <el-table-column label="选品标准" align="center" prop="selectionCriteria" />
-      <el-table-column label="备注信息" align="center" prop="remark" />
+<!--      <el-table-column label="客户区县" align="center" prop="customerDistrict">-->
+<!--        <template #default="scope">-->
+<!--          <dict-tag :type="DICT_TYPE.ERP_PRIVATE_CUSTOMER_DISTRICT" :value="scope.row.customerDistrict" />-->
+<!--        </template>-->
+<!--      </el-table-column>-->
+<!--      <el-table-column label="用户画像" align="center" prop="userPortrait" />-->
+<!--      <el-table-column label="招商类目" align="center" prop="recruitmentCategory" />-->
+<!--      <el-table-column label="选品标准" align="center" prop="selectionCriteria" />-->
+<!--      <el-table-column label="备注信息" align="center" prop="remark" />-->
+      <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
       <el-table-column
         label="创建时间"
         align="center"
@@ -163,7 +258,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ErpPrivateBroadcastingInfoApi, ErpPrivateBroadcastingInfoRespVO } from '@/api/erp/privateBroadcastingInfo'
 import PrivateBroadcastingInfoImportForm from './form/PrivateBroadcastingInfoImportForm.vue'
-import { DICT_TYPE } from '@/utils/dict'
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 
 /** ERP 私播信息列表 */
 defineOptions({ name: 'ErpPrivateBroadcastingInfo' })
@@ -180,11 +275,57 @@ const queryParams = reactive({
   pageSize: 10,
   no: undefined,
   customerName: undefined,
+  customerPosition: undefined,
+  platformName: undefined,
+  customerAttribute: undefined,
+  customerCity: undefined,
+  customerDistrict: undefined,
+  creator: undefined,
   createTime: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const selectionList = ref<ErpPrivateBroadcastingInfoRespVO[]>([]) // 选中列表
+
+// 字典选项
+const filteredCustomerPositionOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_CUSTOMER_POSITION))
+const filteredPlatformNameOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_PLATFORM_NAME))
+const filteredCustomerAttributeOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_CUSTOMER_ATTRIBUTE))
+const filteredCustomerCityOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_CUSTOMER_CITY))
+const filteredCustomerDistrictOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_CUSTOMER_DISTRICT))
+
+// 字典过滤方法
+const filterDictOptions = (value, dictType) => {
+  const allOptions = getStrDictOptions(dictType)
+  if (!value) {
+    if (dictType === DICT_TYPE.ERP_PRIVATE_CUSTOMER_POSITION) {
+      filteredCustomerPositionOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRIVATE_PLATFORM_NAME) {
+      filteredPlatformNameOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRIVATE_CUSTOMER_ATTRIBUTE) {
+      filteredCustomerAttributeOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRIVATE_CUSTOMER_CITY) {
+      filteredCustomerCityOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRIVATE_CUSTOMER_DISTRICT) {
+      filteredCustomerDistrictOptions.value = allOptions
+    }
+    return
+  }
+  const filtered = allOptions.filter(item =>
+    item.label.toLowerCase().includes(value.toLowerCase())
+  )
+  if (dictType === DICT_TYPE.ERP_PRIVATE_CUSTOMER_POSITION) {
+    filteredCustomerPositionOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRIVATE_PLATFORM_NAME) {
+    filteredPlatformNameOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRIVATE_CUSTOMER_ATTRIBUTE) {
+    filteredCustomerAttributeOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRIVATE_CUSTOMER_CITY) {
+    filteredCustomerCityOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRIVATE_CUSTOMER_DISTRICT) {
+    filteredCustomerDistrictOptions.value = filtered
+  }
+}
 
 /** 查询列表 */
 const getList = async () => {
@@ -207,6 +348,12 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  // 重置字典过滤选项
+  filteredCustomerPositionOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRIVATE_CUSTOMER_POSITION)
+  filteredPlatformNameOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRIVATE_PLATFORM_NAME)
+  filteredCustomerAttributeOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRIVATE_CUSTOMER_ATTRIBUTE)
+  filteredCustomerCityOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRIVATE_CUSTOMER_CITY)
+  filteredCustomerDistrictOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRIVATE_CUSTOMER_DISTRICT)
   handleQuery()
 }
 

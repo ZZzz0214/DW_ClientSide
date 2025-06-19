@@ -61,108 +61,123 @@
 <!--  <ProductPropertyAddForm ref="attributesAddFormRef" :propertyList="propertyList" />-->
 <!--</template>-->
 <template>
-  <el-form
-    ref="formRef"
-    v-loading="formLoading"
-    :disabled="isDetail"
-    :model="formData"
-    :rules="rules"
-    label-width="160px"
-  >
-    <!-- 采购人员 -->
-<!--    <el-form-item label="采购人员" prop="purchaser">-->
-<!--      <el-input-->
-<!--        v-model="formData.purchaser"-->
-<!--        placeholder="请输入采购人员信息"-->
-<!--        @focus="openPurchaserSearch"-->
-<!--        readonly-->
-<!--        class="w-80"-->
-<!--      />-->
-<!--    </el-form-item>-->
-
-    <!-- 供应商名 -->
-    <el-form-item label="供应商名" prop="supplier">
-      <el-input
-        v-model="formData.supplier"
-        placeholder="请输入供应商名"
-        class="w-80"
-        @click="openSupplierSearch"
-        readonly
-      />
-    </el-form-item>
-
-    <!-- 采购单价 -->
-    <el-form-item label="采购单价" prop="purchasePrice">
-      <div style="display: flex; align-items: center;">
-      <el-input-number
-        v-model="formData.purchasePrice"
-        :min="0"
-        placeholder="请输入采购单价"
-        style="width: 200px"
-      />
-        <span style="margin-left: 25px;">元</span>
+  <div class="price-form-container">
+    <!-- 标题区域 -->
+    <div class="form-header">
+      <div class="header-icon">
+        <Icon icon="ep:money" class="text-2xl" />
       </div>
-    </el-form-item>
-
-    <!-- 批发单价 -->
-    <el-form-item label="批发单价" prop="wholesalePrice">
-      <div style="display: flex; align-items: center;">
-      <el-input-number
-        v-model="formData.wholesalePrice"
-        :min="0"
-        placeholder="请输入批发单价"
-        style="width: 200px"
-      />
-        <span style="margin-left: 25px;">元</span>
+      <div class="header-text">
+        <h3 class="header-title">价格信息</h3>
+        <p class="header-subtitle">设置产品的价格和供应商信息</p>
       </div>
-    </el-form-item>
+    </div>
 
-    <!-- 备注信息 -->
-    <el-form-item label="备注信息" prop="remark">
-      <el-input
-        v-model="formData.remark"
-        placeholder="请输入备注信息"
-        class="w-80"
-      />
-    </el-form-item>
+    <!-- 表单内容区域 -->
+    <div class="form-content">
+      <el-form
+        ref="formRef"
+        v-loading="formLoading"
+        :disabled="isDetail"
+        :model="formData"
+        :rules="rules"
+        label-width="160px"
+        class="beautiful-form"
+      >
+        <!-- 供应商信息 -->
+        <div class="form-section">
+          <div class="section-title">
+            <Icon icon="ep:office-building" class="section-icon" />
+            <span>供应商信息</span>
+          </div>
+          <!-- 供应商名 -->
+          <el-form-item label="供应商名" prop="supplier">
+            <el-input
+              v-model="formData.supplier"
+              placeholder="请输入供应商名"
+              class="beautiful-input clickable-input"
+              @click="openSupplierSearch"
+              readonly
+              prefix-icon="ep:office-building"
+              suffix-icon="ep:search"
+            />
+          </el-form-item>
+        </div>
 
-    <!-- 对外最低采购单价 -->
-    <el-form-item label="对外最低出货单价" prop="minPurchasePrice">
-      <div style="display: flex; align-items: center;">
-      <el-input-number
-        v-model="formData.minPurchasePrice"
-        :min="0"
-        placeholder="对外最低出货单价"
-        style="width: 200px"
-      />
-        <span style="margin-left: 25px;">元</span>
-      </div>
-    </el-form-item>
+        <!-- 价格设置 -->
+        <div class="form-section">
+          <div class="section-title">
+            <Icon icon="ep:coin" class="section-icon" />
+            <span>价格设置</span>
+          </div>
+          <div class="form-grid">
+            <!-- 采购单价 -->
+            <el-form-item label="采购单价" prop="purchasePrice" class="grid-item">
+              <div class="input-with-unit">
+                <el-input-number
+                  v-model="formData.purchasePrice"
+                  :min="0"
+                  placeholder="请输入采购单价"
+                  class="beautiful-number-input"
+                />
+                <span class="unit-label">元</span>
+              </div>
+            </el-form-item>
 
-    <!-- 对外最低批发单价 -->
-<!--    <el-form-item label="对外最低批发单价" prop="minWholesalePrice">-->
-<!--      <el-input-number-->
-<!--        v-model="formData.minWholesalePrice"-->
-<!--        :min="0"-->
-<!--        placeholder="请输入对外最低批发单价"-->
-<!--        class="w-80"-->
-<!--      />-->
-<!--    </el-form-item>-->
-  </el-form>
+            <!-- 批发单价 -->
+            <el-form-item label="批发单价" prop="wholesalePrice" class="grid-item">
+              <div class="input-with-unit">
+                <el-input-number
+                  v-model="formData.wholesalePrice"
+                  :min="0"
+                  placeholder="请输入批发单价"
+                  class="beautiful-number-input"
+                />
+                <span class="unit-label">元</span>
+              </div>
+            </el-form-item>
 
-  <!-- 采购人员搜索弹窗 -->
-  <PurchaserSearchDialog
-    v-model:visible="purchaserSearchDialogVisible"
-    @purchaser-selected="handlePurchaserSelected"
-    ref="purchaserSearchDialog"
-  />
+            <!-- 对外最低出货单价 -->
+            <el-form-item label="对外最低出货单价" prop="minPurchasePrice" class="grid-item">
+              <div class="input-with-unit">
+                <el-input-number
+                  v-model="formData.minPurchasePrice"
+                  :min="0"
+                  placeholder="对外最低出货单价"
+                  class="beautiful-number-input"
+                />
+                <span class="unit-label">元</span>
+              </div>
+            </el-form-item>
+          </div>
+        </div>
 
-  <!-- 供应商搜索弹窗 -->
-  <SupplierSearchDialog
-    v-model:visible="supplierSearchDialogVisible"
-    @supplier-selected="handleSupplierSelected"
-    ref="supplierSearchDialog"
-  />
+        <!-- 备注信息 -->
+        <div class="form-section">
+          <div class="section-title">
+            <Icon icon="ep:document" class="section-icon" />
+            <span>备注信息</span>
+          </div>
+          <!-- 备注信息 -->
+          <el-form-item label="备注信息" prop="remark">
+            <el-input
+              v-model="formData.remark"
+              placeholder="请输入备注信息"
+              class="beautiful-input"
+              prefix-icon="ep:edit-pen"
+            />
+          </el-form-item>
+        </div>
+      </el-form>
+    </div>
+
+    <!-- 供应商搜索弹窗 -->
+    <SupplierSearchDialog
+      v-model:visible="supplierSearchDialogVisible"
+      @supplier-selected="handleSupplierSelected"
+      ref="supplierSearchDialog"
+    />
+  </div>
 </template>
 <script lang="ts" setup>
 import { PropType } from 'vue'
@@ -174,7 +189,6 @@ import {
   RuleConfig,
   SkuList
 } from '@/views/mall/product/spu/components/index'
-import PurchaserSearchDialog from './PurchaserSearchDialog.vue'; // 引入采购人员搜索弹窗组件
 import SupplierSearchDialog from './SupplierSearchDialog.vue'; // 引入供应商搜索弹窗组件
 // import ProductAttributes from './ProductAttributes.vue'
 // import ProductPropertyAddForm from './ProductPropertyAddForm.vue'
@@ -192,11 +206,9 @@ const props = defineProps({
   isDetail: propTypes.bool.def(false) // 是否作为详情组件
 })
 const formRef = ref() // 表单 Ref
-const purchaserSearchDialogVisible = ref(false); // 采购人员搜索弹窗的显示状态
 const supplierSearchDialogVisible = ref(false); // 供应商搜索弹窗的显示状态
 
 const formData = reactive<ProductVO>({
-  purchaser: '', // 采购人员
   supplier: '', // 供应商名
   purchasePrice: 0, // 采购单价
   wholesalePrice: 0, // 批发单价
@@ -209,14 +221,6 @@ const rules = reactive({
   purchasePrice: [{ required: true, message: '采购单价不能为空', trigger: 'blur' }],
   wholesalePrice: [{ required: true, message: '批发单价不能为空', trigger: 'blur' }],
 });
-
-const openPurchaserSearch = () => {
-  purchaserSearchDialogVisible.value = true;
-};
-
-const handlePurchaserSelected = (purchaser: any) => {
-  formData.purchaser = purchaser.purchaserName; // 填充采购人员名称
-};
 
 const openSupplierSearch = () => {
   supplierSearchDialogVisible.value = true;
@@ -248,7 +252,16 @@ const validate = async () => {
   if (!formRef.value) return;
   try {
     await unref(formRef)?.validate()
-    Object.assign(props.propFormData, formData);
+    // 只更新价格表单相关的字段，避免覆盖其他表单的数据
+    const priceData = {
+      supplier: formData.supplier,
+      purchasePrice: formData.purchasePrice,
+      wholesalePrice: formData.wholesalePrice,
+      remark: formData.remark,
+      minPurchasePrice: formData.minPurchasePrice,
+      minWholesalePrice: formData.minWholesalePrice
+    };
+    Object.assign(props.propFormData, priceData);
   } catch (e) {
     message.error('【库存价格】不完善，请填写相关信息');
     emit('update:activeName', 'price');
@@ -292,3 +305,180 @@ defineExpose({ validate })
 //   skuListRef.value.generateTableData(propertyList)
 // };
 </script>
+
+<style scoped lang="scss">
+.price-form-container {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: linear-gradient(135deg, #ff9a9e 0%, #fecfef 100%);
+  border-radius: 12px;
+  color: #2c3e50;
+  box-shadow: 0 4px 20px rgba(255, 154, 158, 0.3);
+}
+
+.header-icon {
+  margin-right: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  color: #f5576c;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.form-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.form-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: linear-gradient(135deg, #fff5f5 0%, #fef7ff 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(245, 87, 108, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #f093fb 0%, #f5576c 100%);
+  }
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+
+  .section-icon {
+    margin-right: 8px;
+    color: #f5576c;
+    font-size: 18px;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.grid-item {
+  margin-bottom: 0 !important;
+}
+
+.beautiful-form {
+  :deep(.el-form-item__label) {
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 14px;
+  }
+}
+
+.beautiful-input {
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(245, 87, 108, 0.2);
+      border-color: #f5576c;
+    }
+
+    &.is-focus {
+      box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+      border-color: #f5576c;
+    }
+  }
+
+  :deep(.el-input__inner) {
+    font-size: 14px;
+  }
+}
+
+.clickable-input {
+  :deep(.el-input__wrapper) {
+    cursor: pointer;
+    
+    &:hover {
+      background: linear-gradient(135deg, #fff8f8 0%, #fef5ff 100%);
+    }
+  }
+}
+
+.beautiful-number-input {
+  width: 100%;
+  
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(245, 87, 108, 0.2);
+      border-color: #f5576c;
+    }
+
+    &.is-focus {
+      box-shadow: 0 4px 12px rgba(245, 87, 108, 0.3);
+      border-color: #f5576c;
+    }
+  }
+}
+
+.input-with-unit {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  width: 100%;
+
+  .unit-label {
+    color: white;
+    font-weight: 500;
+    font-size: 14px;
+    padding: 8px 12px;
+    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+    border-radius: 6px;
+    box-shadow: 0 2px 8px rgba(245, 87, 108, 0.3);
+    min-width: 40px;
+    text-align: center;
+  }
+}
+</style>

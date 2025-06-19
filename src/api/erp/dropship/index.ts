@@ -13,7 +13,10 @@ export interface DropshipAssistVO {
   productShortName?: string // 产品简称
   productSpec?: string // 产品规格
   productQuantity?: number // 产品数量
-  createTime?: Date ,// 创建时间
+  remark?: string // 备注信息
+  status?: string // 状态信息
+  creator?: string // 创建人员
+  createTime?: Date // 创建时间
   comboProductNo?: string // 组品编号
   name?: string // 组品名称
 }
@@ -28,13 +31,21 @@ export interface DropshipAssistSaveReqVO {
   comboProductId?: string // 组品编号
   productSpec?: string // 产品规格
   productQuantity?: number // 产品数量
+  remark?: string // 备注信息
+  status?: string // 状态信息
 }
 
 // ERP 代发辅助分页 Request VO
 export interface DropshipAssistPageReqVO {
   no?: string // 编号
   originalProduct?: string // 原表商品
+  originalSpec?: string // 原表规格
   comboProductId?: string // 组品编号
+  shippingCode?: string // 发货编码
+  productName?: string // 产品名称
+  productSpec?: string // 产品规格
+  status?: string // 状态信息
+  creator?: string // 创建人员
   createTime?: Date[] // 创建时间
 }
 
@@ -73,12 +84,9 @@ export const DropshipAssistApi = {
   // 导出代发辅助 Excel
   exportDropshipAssist: async (params: DropshipAssistPageReqVO) => {
     return await request.download({ url: `/erp/dropship-assist/export-excel`, params })
-  }
-  ,
+  },
 
   importDropshipTemplate: async () => {
     return await request.download({ url: `/erp/dropship-assist/get-import-template` });
-  },
-
-
+  }
 }

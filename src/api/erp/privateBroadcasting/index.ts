@@ -4,8 +4,8 @@ import request from '@/config/axios'
 export interface ErpPrivateBroadcastingRespVO {
   id?: number // 私播货盘编号
   no?: string // 编号
-  productImage?: string // 产品图片
-  brandId?: number // 品牌ID
+  productImage?: string | string[] // 产品图片（多张，逗号分隔）
+  brandName?: string // 品牌名称
   productName?: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
@@ -22,6 +22,7 @@ export interface ErpPrivateBroadcastingRespVO {
   shippingTime?: string // 发货时效
   shippingArea?: string // 发货地区
   remark?: string // 备注信息
+  privateStatus?: string // 私播货盘状态
   createTime?: Date // 创建时间
 }
 
@@ -29,8 +30,8 @@ export interface ErpPrivateBroadcastingRespVO {
 export interface ErpPrivateBroadcastingSaveReqVO {
   id?: number // 私播货盘编号
   no: string // 编号
-  productImage?: string // 产品图片
-  brandId?: number // 品牌ID
+  productImage?: string // 产品图片（多张，逗号分隔）
+  brandName?: string // 品牌名称
   productName: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
@@ -47,6 +48,7 @@ export interface ErpPrivateBroadcastingSaveReqVO {
   shippingTime?: string // 发货时效
   shippingArea?: string // 发货地区
   remark?: string // 备注信息
+  privateStatus?: string // 私播货盘状态
 }
 
 // ERP 私播货盘分页 Request VO

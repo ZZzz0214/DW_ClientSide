@@ -17,6 +17,113 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="品牌名称" prop="brandName">
+        <el-select
+          v-model="queryParams.brandName"
+          placeholder="请选择品牌名称"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+        >
+          <el-option
+            v-for="dict in filteredBrandOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="产品名称" prop="productName">
+        <el-input
+          v-model="queryParams.productName"
+          placeholder="请输入产品名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品规格" prop="productSpec">
+        <el-input
+          v-model="queryParams.productSpec"
+          placeholder="请输入产品规格"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="保质日期" prop="shelfLife">
+        <el-date-picker
+          v-model="queryParams.shelfLife"
+          type="daterange"
+          value-format="YYYY-MM-DD"
+          class="!w-240px"
+          start-placeholder="开始日期"
+          end-placeholder="结束日期"
+        />
+      </el-form-item>
+      <el-form-item label="直播价格" prop="livePrice">
+        <el-input
+          v-model="queryParams.livePrice"
+          placeholder="请输入直播价格"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="产品裸价" prop="nakedPrice">
+        <el-input
+          v-model="queryParams.nakedPrice"
+          placeholder="请输入产品裸价"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="快递费用" prop="expressFee">
+        <el-input
+          v-model="queryParams.expressFee"
+          placeholder="请输入快递费用"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="代发价格" prop="dropshippingPrice">
+        <el-input
+          v-model="queryParams.dropshippingPrice"
+          placeholder="请输入代发价格"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="货盘状态" prop="privateStatus">
+        <el-select
+          v-model="queryParams.privateStatus"
+          placeholder="请选择货盘状态"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_STATUS)"
+        >
+          <el-option
+            v-for="dict in filteredPrivateStatusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="创建人员" prop="creator">
+        <el-input
+          v-model="queryParams.creator"
+          placeholder="请输入创建人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="创建时间" prop="createTime">
         <el-date-picker
           v-model="queryParams.createTime"
@@ -87,18 +194,32 @@
     >
       <el-table-column width="30" label="选择" type="selection" />
       <el-table-column label="编号" align="center" prop="no" />
-      <el-table-column label="产品图片" align="center" prop="productImage">
+      <el-table-column label="产品图片" align="center" prop="productImage" :show-overflow-tooltip="false">
         <template #default="scope">
-          <el-image
-            :src="scope.row.productImage"
-            style="width: 50px; height: 50px"
-            :preview-src-list="[scope.row.productImage]"
-          />
+          <div v-if="getImageUrls(scope.row.productImage).length > 0" class="relative">
+            <el-image
+              :src="getImageUrls(scope.row.productImage)[0]"
+              :preview-src-list="getImageUrls(scope.row.productImage)"
+              class="w-12 h-12 rounded"
+              fit="cover"
+              :preview-teleported="true"
+            />
+            <div 
+              v-if="getImageUrls(scope.row.productImage).length > 1" 
+              class="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-green-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-white z-10"
+              style="font-size: 10px; font-weight: bold;"
+            >
+              {{ getImageUrls(scope.row.productImage).length }}
+            </div>
+          </div>
+          <div v-else class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
+            <Icon icon="ep:picture" class="text-gray-400" />
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="品牌名称" align="center" prop="brandId">
+      <el-table-column label="品牌名称" align="center" prop="brandName">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandId" />
+          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
         </template>
       </el-table-column>
       <el-table-column label="产品名称" align="center" prop="productName" />
@@ -160,7 +281,7 @@
 <script setup lang="ts">
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { DICT_TYPE } from '@/utils/dict'
+import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 import { ErpPrivateBroadcastingApi, ErpPrivateBroadcastingRespVO } from '@/api/erp/privateBroadcasting'
 import PrivateBroadcastingImportForm from './form/PrivateBroadcastingImportForm.vue'
 
@@ -178,10 +299,45 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   no: undefined,
+  brandName: undefined,
+  productName: undefined,
+  productSpec: undefined,
+  shelfLife: undefined,
+  livePrice: undefined,
+  nakedPrice: undefined,
+  expressFee: undefined,
+  dropshippingPrice: undefined,
+  privateStatus: undefined,
+  creator: undefined,
   createTime: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+
+// 字典选项
+const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
+const filteredPrivateStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_STATUS))
+
+// 字典过滤方法
+const filterDictOptions = (value, dictType) => {
+  const allOptions = getStrDictOptions(dictType)
+  if (!value) {
+    if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+      filteredBrandOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRIVATE_STATUS) {
+      filteredPrivateStatusOptions.value = allOptions
+    }
+    return
+  }
+  const filtered = allOptions.filter(item =>
+    item.label.toLowerCase().includes(value.toLowerCase())
+  )
+  if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
+    filteredBrandOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRIVATE_STATUS) {
+    filteredPrivateStatusOptions.value = filtered
+  }
+}
 
 /** 查询列表 */
 const getList = async () => {
@@ -204,6 +360,9 @@ const handleQuery = () => {
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
+  // 重置字典过滤选项
+  filteredBrandOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)
+  filteredPrivateStatusOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRIVATE_STATUS)
   handleQuery()
 }
 
@@ -274,4 +433,10 @@ onUpdated(async () => {
     await getList() // 刷新数据
   }
 })
+
+/** 获取图片URLs */
+const getImageUrls = (images: string | undefined): string[] => {
+  if (!images) return []
+  return images.split(',').map(img => img.trim()).filter(img => img)
+}
 </script>

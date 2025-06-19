@@ -1,16 +1,24 @@
 <template>
   <el-form ref="formRef" :model="formData" label-width="120px" :rules="rules">
-<!--    <el-form-item label="编号" prop="no">-->
-<!--      <el-input v-model="formData.no" placeholder="请输入编号" :disabled="isDetail" />-->
-<!--    </el-form-item>-->
     <el-form-item label="产品图片" prop="productImage">
-      <el-input v-model="formData.productImage" placeholder="请输入产品图片链接" :disabled="isDetail" />
+      <div class="image-upload-container">
+        <UploadImgs
+          v-model="formData.productImage"
+          :disabled="isDetail"
+          :limit="5"
+          :is-show-tip="false"
+        />
+        <div class="upload-tip">
+          <Icon icon="ep:info-filled" class="tip-icon" />
+          最多可上传5张图片，列表显示第一张
+        </div>
+      </div>
     </el-form-item>
 
     <!-- 品牌名称 -->
-    <el-form-item label="品牌名称" prop="brandId">
+    <el-form-item label="品牌名称" prop="brandName">
       <el-select
-        v-model="formData.brandId"
+        v-model="formData.brandName"
         placeholder="请选择品牌名称"
         class="!w-240px"
         :disabled="isDetail"
@@ -21,7 +29,7 @@
           v-for="dict in filteredBrandOptions"
           :key="dict.value"
           :label="dict.label"
-          :value="Number(dict.value)"
+          :value="dict.value"
         />
       </el-select>
     </el-form-item>
@@ -67,7 +75,7 @@
           v-for="dict in filteredPrivateStatusOptions"
           :key="dict.value"
           :label="dict.label"
-          :value="Number(dict.value)"
+          :value="dict.value"
         />
       </el-select>
     </el-form-item>
@@ -76,28 +84,70 @@
 
 <script lang="ts" setup>
 import { ElForm } from 'element-plus'
-import { ref, watch, defineExpose } from 'vue'
+import { reactive, watch, defineExpose, defineEmits } from 'vue'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import { copyValueToTarget } from '@/utils'
 
 const props = defineProps({
   isDetail: Boolean,
   propFormData: Object
 })
-const formData = ref(props.propFormData)
+
+const emit = defineEmits(['update:formData'])
+
+const formData = reactive({
+  no: '',
+  productImage: [],
+  brandName: '',
+  productName: '',
+  productSpec: '',
+  productSku: '',
+  marketPrice: undefined,
+  shelfLife: '',
+  productStock: undefined,
+  remark: '',
+  privateStatus: ''
+})
+
 const rules = {
-  // no: [{ required: true, message: '编号不能为空', trigger: 'blur' }], // 编号由系统生成，不需要校验
   productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
   productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
   marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
-  brandId: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
+  brandName: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
   privateStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
 }
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 
-watch(() => props.propFormData, (newValue) => {
-  formData.value = newValue
-}, { deep: true })
+// 将传进来的值赋值给 formData
+watch(
+  () => props.propFormData,
+  (data) => {
+    if (!data) return
+    
+    // 复制数据
+    copyValueToTarget(formData, data)
+    
+    // 处理产品图片：如果是字符串，转换为数组
+    if (data.productImage && typeof data.productImage === 'string') {
+      formData.productImage = data.productImage.split(',').filter(img => img.trim())
+    } else if (Array.isArray(data.productImage)) {
+      formData.productImage = [...data.productImage]
+    } else {
+      formData.productImage = []
+    }
+  },
+  { immediate: true }
+)
+
+// 监听formData变化，实时同步到父组件
+watch(
+  formData,
+  (newData) => {
+    emit('update:formData', { ...newData })
+  },
+  { deep: true }
+)
 
 // 字典选项
 const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
@@ -125,6 +175,34 @@ const filterDictOptions = (value, dictType) => {
 }
 
 defineExpose({
-  validate: () => formRef.value?.validate()
+  validate: async () => {
+    const valid = await formRef.value?.validate()
+    if (valid) {
+      // 确保数据正确传递
+      emit('update:formData', { ...formData })
+    }
+    return valid
+  }
 })
 </script>
+
+<style lang="scss" scoped>
+.image-upload-container {
+  .upload-tip {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #f0f9ff;
+    border: 1px solid #e1f5fe;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #0288d1;
+
+    .tip-icon {
+      margin-right: 4px;
+      color: #0288d1;
+    }
+  }
+}
+</style>

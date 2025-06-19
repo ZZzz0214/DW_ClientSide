@@ -14,6 +14,7 @@ export interface InventoryVO {
   spotInventory?: number // 现货库存
   remainingInventory?: number // 剩余库存
   remark?: string // 备注信息
+  creator?: string // 创建人员
   createTime?: Date // 创建时间
 }
 
@@ -36,6 +37,14 @@ export interface InventorySaveReqVO {
 export interface InventoryPageReqVO {
   no?: string // 库存编号
   productId?: number // 单品ID
+  productNo?: string // 产品编号
+  productName?: string // 产品名称
+  productShortName?: string // 产品简称
+  brand?: string // 品牌名称
+  category?: string // 产品品类
+  spotInventory?: number // 现货库存
+  remainingInventory?: number // 剩余库存
+  creator?: string // 创建人员
   createTime?: Date[] // 创建时间
 }
 

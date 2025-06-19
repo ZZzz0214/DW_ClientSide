@@ -1,17 +1,6 @@
 <template>
   <div>
     <!-- 功能说明提示 -->
-    <ContentWrap>
-      <el-alert
-        title="财务金额管理"
-        description="此页面用于充值操作和余额查看。余额 = 充值记录 + 财务记录收支。只有充值记录会在下方列表显示，财务记录不会显示但会影响余额计算。"
-        type="success"
-        :closable="false"
-        show-icon
-        class="mb-4"
-      />
-    </ContentWrap>
-
     <!-- 余额概览卡片 -->
     <ContentWrap>
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
@@ -111,20 +100,23 @@
 
     <!-- 搜索和操作栏 -->
     <ContentWrap>
+
+
       <el-form
         class="-mb-15px"
         :model="queryParams"
         ref="queryFormRef"
         :inline="true"
-        label-width="80px"
+        label-width="90px"
       >
-        <el-form-item label="编号" prop="no">
+        <el-form-item label="编号" prop="no" >
           <el-input
             v-model="queryParams.no"
             placeholder="请输入编号"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
+
           />
         </el-form-item>
         <el-form-item label="渠道类型" prop="channelType">
@@ -150,17 +142,134 @@
             <el-option label="消费" :value="2" />
           </el-select>
         </el-form-item>
+        <el-form-item label="微信充值" prop="wechatRecharge">
+          <el-input-number
+            v-model="queryParams.wechatRecharge"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="查找微信充值指定金额的记录"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="支付宝充值" prop="alipayRecharge">
+          <el-input-number
+            v-model="queryParams.alipayRecharge"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="查找支付宝充值指定金额的记录"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="银行卡充值" prop="bankCardRecharge">
+          <el-input-number
+            v-model="queryParams.bankCardRecharge"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="查找银行卡充值指定金额的记录"
+            class="!w-240px"
+          />
+        </el-form-item>
+<!--        <el-form-item label="微信余额" prop="wechatBalance">-->
+<!--          <el-input-number-->
+<!--            v-model="queryParams.wechatBalance"-->
+<!--            :min="0"-->
+<!--            :precision="2"-->
+<!--            controls-position="right"-->
+<!--            placeholder="查找微信余额为指定金额的记录"-->
+<!--            class="!w-240px"-->
+<!--          />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="支付宝余额" prop="alipayBalance">-->
+<!--          <el-input-number-->
+<!--            v-model="queryParams.alipayBalance"-->
+<!--            :min="0"-->
+<!--            :precision="2"-->
+<!--            controls-position="right"-->
+<!--            placeholder="查找支付宝余额为指定金额的记录"-->
+<!--            class="!w-240px"-->
+<!--          />-->
+<!--        </el-form-item>-->
+<!--        <el-form-item label="银行卡余额" prop="bankCardBalance">-->
+<!--          <el-input-number-->
+<!--            v-model="queryParams.bankCardBalance"-->
+<!--            :min="0"-->
+<!--            :precision="2"-->
+<!--            controls-position="right"-->
+<!--            placeholder="查找银行卡余额为指定金额的记录"-->
+<!--            class="!w-240px"-->
+<!--          />-->
+<!--        </el-form-item>-->
+        <el-form-item label="下单日期" prop="orderDate">
+          <el-date-picker
+            v-model="queryParams.orderDate"
+            value-format="YYYY-MM-DD"
+            type="daterange"
+            start-placeholder="开始日期"
+            end-placeholder="结束日期"
+            class="!w-240px"
+          />
+        </el-form-item>
+        <el-form-item label="审核状态" prop="auditStatus">
+          <el-select
+            v-model="queryParams.auditStatus"
+            placeholder="请选择审核状态"
+            clearable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getIntDictOptions(DICT_TYPE.ERP_AUDIT_STATUS)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
+
+        <el-form-item label="创建人员" prop="creator">
+          <el-input
+            v-model="queryParams.creator"
+            placeholder="创建人员"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="创建时间" prop="createTime">
           <el-date-picker
             v-model="queryParams.createTime"
             value-format="YYYY-MM-DD HH:mm:ss"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
-            :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+            type="datetimerange"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             class="!w-240px"
           />
         </el-form-item>
+
+        <el-form-item label="审核人员" prop="auditor">
+          <el-input
+            v-model="queryParams.auditor"
+            placeholder="审核人员"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
+
+        <el-form-item label="审核时间" prop="auditTime">
+          <el-date-picker
+            v-model="queryParams.auditTime"
+            value-format="YYYY-MM-DD HH:mm:ss"
+            type="datetimerange"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
+            class="!w-240px"
+          />
+        </el-form-item>
+
+
         <el-form-item>
           <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
           <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -231,7 +340,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" min-width="140" />
+        <el-table-column label="编号" align="center" prop="no" min-width="140" :show-overflow-tooltip="false"/>
         <el-table-column label="凭证图片" align="center" prop="carouselImages" width="100">
           <template #default="scope">
             <div v-if="getImageList(scope.row.carouselImages).length > 0" class="relative">
@@ -278,30 +387,30 @@
             <span v-else class="text-gray-400">-</span>
           </template>
         </el-table-column>
-        <el-table-column label="微信余额" align="center" width="110">
-          <template #default="scope">
-            <span v-if="scope.row.channelType === '微信'" class="text-green-600 font-medium">
-              {{ formatFinanceAmount(scope.row.afterBalance || 0) }}
-            </span>
-            <span v-else class="text-gray-400">-</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="支付宝余额" align="center" width="120">
-          <template #default="scope">
-            <span v-if="scope.row.channelType === '支付宝'" class="text-blue-600 font-medium">
-              {{ formatFinanceAmount(scope.row.afterBalance || 0) }}
-            </span>
-            <span v-else class="text-gray-400">-</span>
-          </template>
-        </el-table-column>
-        <el-table-column label="银行卡余额" align="center" width="120">
-          <template #default="scope">
-            <span v-if="scope.row.channelType === '银行卡'" class="text-orange-600 font-medium">
-              {{ formatFinanceAmount(scope.row.afterBalance || 0) }}
-            </span>
-            <span v-else class="text-gray-400">-</span>
-          </template>
-        </el-table-column>
+<!--        <el-table-column label="微信余额" align="center" width="110">-->
+<!--          <template #default="scope">-->
+<!--            <span v-if="scope.row.channelType === '微信'" class="text-green-600 font-medium">-->
+<!--              {{ formatFinanceAmount(scope.row.afterBalance || 0) }}-->
+<!--            </span>-->
+<!--            <span v-else class="text-gray-400">-</span>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="支付宝余额" align="center" width="120">-->
+<!--          <template #default="scope">-->
+<!--            <span v-if="scope.row.channelType === '支付宝'" class="text-blue-600 font-medium">-->
+<!--              {{ formatFinanceAmount(scope.row.afterBalance || 0) }}-->
+<!--            </span>-->
+<!--            <span v-else class="text-gray-400">-</span>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
+<!--        <el-table-column label="银行卡余额" align="center" width="120">-->
+<!--          <template #default="scope">-->
+<!--            <span v-if="scope.row.channelType === '银行卡'" class="text-orange-600 font-medium">-->
+<!--              {{ formatFinanceAmount(scope.row.afterBalance || 0) }}-->
+<!--            </span>-->
+<!--            <span v-else class="text-gray-400">-</span>-->
+<!--          </template>-->
+<!--        </el-table-column>-->
         <el-table-column label="下单日期" align="center" prop="orderDate" :formatter="dateFormatter" width="120px" />
         <el-table-column label="审核状态" align="center" prop="auditStatus" width="100">
           <template #default="scope">
@@ -418,7 +527,18 @@ const queryParams = reactive({
   no: undefined,
   channelType: undefined,
   operationType: undefined,
-  createTime: []
+  wechatRecharge: undefined,
+  alipayRecharge: undefined,
+  bankCardRecharge: undefined,
+  wechatBalance: undefined,
+  alipayBalance: undefined,
+  bankCardBalance: undefined,
+  orderDate: [],
+  auditStatus: undefined,
+  creator: undefined,
+  auditor: undefined,
+  createTime: [],
+  auditTime: []
 })
 const queryFormRef = ref() // 搜索的表单
 
@@ -620,5 +740,18 @@ const importFormRef = ref()
 
 :deep(.el-card__body) {
   padding: 20px;
+}
+
+/* 优化搜索表单标签显示 */
+:deep(.el-form--inline .el-form-item__label) {
+  white-space: nowrap;
+  min-width: 90px;
+  text-align: right;
+  padding-right: 12px;
+}
+
+:deep(.el-form--inline .el-form-item) {
+  margin-right: 24px;
+  margin-bottom: 15px;
 }
 </style>

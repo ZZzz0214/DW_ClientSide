@@ -12,15 +12,15 @@
       <el-form-item label="编号" prop="no">
         <el-input
           v-model="queryParams.no"
-          placeholder="请输入名称"
+          placeholder="请输入编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="组品编号" prop="groupProductId">
+      <el-form-item label="组品编号" prop="groupProductNo">
         <el-input
-          v-model="queryParams.groupProductId"
+          v-model="queryParams.groupProductNo"
           placeholder="请输入组品编号"
           clearable
           @keyup.enter="handleQuery"
@@ -30,7 +30,7 @@
       <el-form-item label="产品名称" prop="productName">
         <el-input
           v-model="queryParams.productName"
-          placeholder="请输入组品编号"
+          placeholder="请输入产品名称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -39,7 +39,7 @@
       <el-form-item label="产品简称" prop="productShortName">
         <el-input
           v-model="queryParams.productShortName"
-          placeholder="请输入组品编号"
+          placeholder="请输入产品简称"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -48,16 +48,36 @@
       <el-form-item label="客户名称" prop="customerName">
         <el-input
           v-model="queryParams.customerName"
-          placeholder="请输入组品编号"
+          placeholder="请输入客户名称"
           clearable
           @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="代发单价" prop="distributionPrice">
+        <el-input-number
+          v-model="queryParams.distributionPrice"
+          :min="0"
+          :precision="2"
+          controls-position="right"
+          placeholder="请输入代发单价"
+          class="!w-240px"
+        />
+      </el-form-item>
+      <el-form-item label="批发单价" prop="wholesalePrice">
+        <el-input-number
+          v-model="queryParams.wholesalePrice"
+          :min="0"
+          :precision="2"
+          controls-position="right"
+          placeholder="请输入批发单价"
           class="!w-240px"
         />
       </el-form-item>
       <el-form-item label="创建人员" prop="creator">
         <el-input
           v-model="queryParams.creator"
-          placeholder="请输入组品编号"
+          placeholder="请输入创建人员"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
@@ -133,14 +153,14 @@
     >
       <el-table-column width="30" label="选择" type="selection" />
       <!-- 编号 -->
-      <el-table-column label="编号" align="center" prop="no" />
+      <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
 
       <!-- 组品编号 -->
-      <el-table-column label="组品编号" align="center" prop="groupProductNo" />
+      <el-table-column label="组品编号" align="center" prop="groupProductNo" :show-overflow-tooltip="false"/>
 
       <!-- 组品简称 -->
-      <el-table-column label="产品名称" align="center" prop="productName" />
-      <el-table-column label="产品简称" align="center" prop="productShortName" />
+      <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品简称" align="center" prop="productShortName" :show-overflow-tooltip="false"/>
       <el-table-column label="客户名称" align="center" prop="customerName" />
 
       <!-- 代发单价 -->
@@ -242,8 +262,15 @@ const total = ref(0) // 列表的总页数
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  name: undefined,
-  groupProductId: undefined,
+  no: undefined,
+  groupProductNo: undefined,
+  productName: undefined,
+  productShortName: undefined,
+  customerName: undefined,
+  distributionPrice: undefined,
+  wholesalePrice: undefined,
+  creator: undefined,
+  createTime: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

@@ -1,53 +1,83 @@
 <!-- 商品发布 - 合格证信息 -->
 <template>
-  <el-form
-    ref="formRef"
-    v-loading="formLoading"
-    :disabled="isDetail"
-    :model="formData"
-    :rules="rules"
-    label-width="120px"
-  >
-    <!-- 条形编号 -->
-    <el-form-item label="条形编号" prop="barCode">
-      <el-input
-        v-model="formData.barCode"
-        placeholder="请输入条形编号"
-        class="w-80"
-        :disabled="isDetail"
-      />
-    </el-form-item>
+  <div class="sku-form-container">
+    <!-- 标题区域 -->
+    <div class="form-header">
+      <div class="header-icon">
+        <Icon icon="ep:medal" class="text-2xl" />
+      </div>
+      <div class="header-text">
+        <h3 class="header-title">合格证信息</h3>
+        <p class="header-subtitle">填写产品的合格证相关信息</p>
+      </div>
+    </div>
 
-    <!-- 备案编号 -->
-    <el-form-item label="备案编号" prop="productRecord">
-      <el-input
-        v-model="formData.productRecord"
-        placeholder="请输入备案编号"
-        class="w-80"
+    <!-- 表单内容区域 -->
+    <div class="form-content">
+      <el-form
+        ref="formRef"
+        v-loading="formLoading"
         :disabled="isDetail"
-      />
-    </el-form-item>
+        :model="formData"
+        :rules="rules"
+        label-width="120px"
+        class="beautiful-form"
+      >
+        <!-- 编号信息 -->
+        <div class="form-section">
+          <div class="section-title">
+            <Icon icon="ep:collection-tag" class="section-icon" />
+            <span>编号信息</span>
+          </div>
+          <div class="form-grid">
+            <!-- 条形编号 -->
+            <el-form-item label="条形编号" prop="barCode" class="grid-item">
+              <el-input
+                v-model="formData.barCode"
+                placeholder="请输入条形编号"
+                class="beautiful-input"
+                :disabled="isDetail"
+                prefix-icon="ep:price-tag"
+              />
+            </el-form-item>
 
-    <!-- 执行编号 -->
-    <el-form-item label="执行编号" prop="executionCode">
-      <el-input
-        v-model="formData.executionCode"
-        placeholder="请输入执行编号"
-        class="w-80"
-        :disabled="isDetail"
-      />
-    </el-form-item>
+            <!-- 备案编号 -->
+            <el-form-item label="备案编号" prop="productRecord" class="grid-item">
+              <el-input
+                v-model="formData.productRecord"
+                placeholder="请输入备案编号"
+                class="beautiful-input"
+                :disabled="isDetail"
+                prefix-icon="ep:document-checked"
+              />
+            </el-form-item>
 
-    <!-- 商标编号 -->
-    <el-form-item label="商标编号" prop="trademarkCode">
-      <el-input
-        v-model="formData.trademarkCode"
-        placeholder="请输入商标编号"
-        class="w-80"
-        :disabled="isDetail"
-      />
-    </el-form-item>
-  </el-form>
+            <!-- 执行编号 -->
+            <el-form-item label="执行编号" prop="executionCode" class="grid-item">
+              <el-input
+                v-model="formData.executionCode"
+                placeholder="请输入执行编号"
+                class="beautiful-input"
+                :disabled="isDetail"
+                prefix-icon="ep:operation"
+              />
+            </el-form-item>
+
+            <!-- 商标编号 -->
+            <el-form-item label="商标编号" prop="trademarkCode" class="grid-item">
+              <el-input
+                v-model="formData.trademarkCode"
+                placeholder="请输入商标编号"
+                class="beautiful-input"
+                :disabled="isDetail"
+                prefix-icon="ep:stamp"
+              />
+            </el-form-item>
+          </div>
+        </div>
+      </el-form>
+    </div>
+  </div>
 </template>
 <script lang="ts" setup>
 import { PropType } from 'vue'
@@ -194,3 +224,130 @@ defineExpose({ validate })
 //   skuListRef.value.generateTableData(propertyList)
 // }
 </script>
+
+<style scoped lang="scss">
+.sku-form-container {
+  background: linear-gradient(135deg, #fa709a 0%, #fee140 100%);
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.form-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 32px;
+  padding: 20px;
+  background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
+  border-radius: 12px;
+  color: #2c3e50;
+  box-shadow: 0 4px 20px rgba(250, 112, 154, 0.3);
+}
+
+.header-icon {
+  margin-right: 16px;
+  padding: 12px;
+  background: rgba(255, 255, 255, 0.8);
+  border-radius: 50%;
+  backdrop-filter: blur(10px);
+  color: #fa709a;
+}
+
+.header-title {
+  margin: 0;
+  font-size: 24px;
+  font-weight: 600;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.header-subtitle {
+  margin: 4px 0 0 0;
+  font-size: 14px;
+  opacity: 0.8;
+}
+
+.form-content {
+  background: white;
+  border-radius: 12px;
+  padding: 24px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+}
+
+.form-section {
+  margin-bottom: 32px;
+  padding: 20px;
+  background: linear-gradient(135deg, #fff8f0 0%, #fef3e2 100%);
+  border-radius: 12px;
+  border: 1px solid rgba(250, 112, 154, 0.1);
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background: linear-gradient(90deg, #fa709a 0%, #fee140 100%);
+  }
+}
+
+.section-title {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #2c3e50;
+
+  .section-icon {
+    margin-right: 8px;
+    color: #fa709a;
+    font-size: 18px;
+  }
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+.grid-item {
+  margin-bottom: 0 !important;
+}
+
+.beautiful-form {
+  :deep(.el-form-item__label) {
+    font-weight: 500;
+    color: #2c3e50;
+    font-size: 14px;
+  }
+}
+
+.beautiful-input {
+  :deep(.el-input__wrapper) {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    border: 1px solid #e1e8ed;
+    transition: all 0.3s ease;
+
+    &:hover {
+      box-shadow: 0 4px 12px rgba(250, 112, 154, 0.2);
+      border-color: #fa709a;
+    }
+
+    &.is-focus {
+      box-shadow: 0 4px 12px rgba(250, 112, 154, 0.3);
+      border-color: #fa709a;
+    }
+  }
+
+  :deep(.el-input__inner) {
+    font-size: 14px;
+  }
+}
+</style>

@@ -18,7 +18,18 @@
 
       <!-- 产品图片 -->
       <el-form-item label="产品图片" prop="productImage">
-        <UploadImg v-model="formData.productImage" :limit="1" />
+        <div class="image-upload-container">
+          <UploadImgs
+            v-model="formData.productImage"
+            :disabled="isDetail"
+            :limit="5"
+            :is-show-tip="false"
+          />
+          <div class="upload-tip">
+            <Icon icon="ep:info-filled" class="tip-icon" />
+            最多可上传5张图片，列表显示第一张
+          </div>
+        </div>
       </el-form-item>
 
       <!-- 品牌名称 -->
@@ -231,6 +242,14 @@
     (data) => {
       if (!data) return
       copyValueToTarget(formData, data)
+      
+      // 处理产品图片：将逗号分隔的字符串转换为数组
+      if (data.productImage && typeof data.productImage === 'string') {
+        formData.productImage = data.productImage.split(',').filter(img => img.trim())
+      } else if (Array.isArray(data.productImage)) {
+        formData.productImage = [...data.productImage]
+      }
+      
       // 确保数值类型字段正确转换
       if (data.brandId !== undefined && data.brandId !== null) {
         formData.brandId = Number(data.brandId)
@@ -243,12 +262,22 @@
   )
 
   /** 表单校验 */
-  const emit = defineEmits(['update:activeName'])
+  const emit = defineEmits(['update:activeName', 'update:formData'])
   const validate = async () => {
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      Object.assign(props.propFormData, formData)
+      
+      // 通过emit事件将数据传递给父组件，而不是直接修改props
+      const updatedData = { ...formData }
+      
+      // 确保productImage是数组格式
+      if (Array.isArray(formData.productImage)) {
+        updatedData.productImage = [...formData.productImage]
+      }
+      
+      // 通过emit将数据传递给父组件
+      emit('update:formData', updatedData)
     } catch (e) {
       message.error('【基础信息】不完善，请填写相关信息')
       emit('update:activeName', 'info')
@@ -258,3 +287,24 @@
 
   defineExpose({ validate })
   </script>
+
+<style lang="scss" scoped>
+.image-upload-container {
+  .upload-tip {
+    display: flex;
+    align-items: center;
+    margin-top: 8px;
+    padding: 8px 12px;
+    background-color: #f0f9ff;
+    border: 1px solid #e1f5fe;
+    border-radius: 4px;
+    font-size: 12px;
+    color: #0288d1;
+
+    .tip-icon {
+      margin-right: 4px;
+      color: #0288d1;
+    }
+  }
+}
+</style>
