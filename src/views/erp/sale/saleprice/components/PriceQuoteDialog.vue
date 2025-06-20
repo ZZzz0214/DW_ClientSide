@@ -183,6 +183,100 @@
           class="!w-full"
         />
       </el-form-item>
+      
+      <!-- 运费设置区域 -->
+      <el-divider>运费设置</el-divider>
+      <el-form-item label="运费类型" required>
+        <el-radio-group v-model="batchPriceForm.shippingFeeType">
+          <el-radio :label="0">固定运费</el-radio>
+          <el-radio :label="1">按件计费</el-radio>
+          <el-radio :label="2">按重计费</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      
+      <!-- 固定运费 -->
+      <el-form-item 
+        v-if="batchPriceForm.shippingFeeType === 0" 
+        label="固定运费" 
+        required
+      >
+        <el-input-number
+          v-model="batchPriceForm.fixedShippingFee"
+          :min="0"
+          :precision="2"
+          controls-position="right"
+          placeholder="请输入固定运费"
+          class="!w-full"
+        />
+      </el-form-item>
+      
+      <!-- 按件计费 -->
+      <template v-if="batchPriceForm.shippingFeeType === 1">
+        <el-form-item label="续件数量" required>
+          <el-input-number
+            v-model="batchPriceForm.additionalItemQuantity"
+            :min="1"
+            controls-position="right"
+            placeholder="请输入续件数量"
+            class="!w-full"
+          />
+        </el-form-item>
+        <el-form-item label="续件价格" required>
+          <el-input-number
+            v-model="batchPriceForm.additionalItemPrice"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入续件价格"
+            class="!w-full"
+          />
+        </el-form-item>
+      </template>
+      
+      <!-- 按重计费 -->
+      <template v-if="batchPriceForm.shippingFeeType === 2">
+        <el-form-item label="首重重量(kg)" required>
+          <el-input-number
+            v-model="batchPriceForm.firstWeight"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入首重重量"
+            class="!w-full"
+          />
+        </el-form-item>
+        <el-form-item label="首重价格" required>
+          <el-input-number
+            v-model="batchPriceForm.firstWeightPrice"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入首重价格"
+            class="!w-full"
+          />
+        </el-form-item>
+        <el-form-item label="续重重量(kg)" required>
+          <el-input-number
+            v-model="batchPriceForm.additionalWeight"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入续重重量"
+            class="!w-full"
+          />
+        </el-form-item>
+        <el-form-item label="续重价格" required>
+          <el-input-number
+            v-model="batchPriceForm.additionalWeightPrice"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入续重价格"
+            class="!w-full"
+          />
+        </el-form-item>
+      </template>
+      
       <el-form-item label="影响记录">
         <div class="text-sm text-gray-600">
           将为 {{ selectionList.length }} 个组品客户组合设置价格
@@ -269,6 +363,99 @@
           class="!w-full"
         />
       </el-form-item>
+      
+      <!-- 运费设置区域 -->
+      <el-divider>运费设置</el-divider>
+      <el-form-item label="运费类型" required>
+        <el-radio-group v-model="singlePriceForm.shippingFeeType">
+          <el-radio :label="0">固定运费</el-radio>
+          <el-radio :label="1">按件计费</el-radio>
+          <el-radio :label="2">按重计费</el-radio>
+        </el-radio-group>
+      </el-form-item>
+      
+      <!-- 固定运费 -->
+      <el-form-item 
+        v-if="singlePriceForm.shippingFeeType === 0" 
+        label="固定运费" 
+        required
+      >
+        <el-input-number
+          v-model="singlePriceForm.fixedShippingFee"
+          :min="0"
+          :precision="2"
+          controls-position="right"
+          placeholder="请输入固定运费"
+          class="!w-full"
+        />
+      </el-form-item>
+      
+      <!-- 按件计费 -->
+      <template v-if="singlePriceForm.shippingFeeType === 1">
+        <el-form-item label="续件数量" required>
+          <el-input-number
+            v-model="singlePriceForm.additionalItemQuantity"
+            :min="1"
+            controls-position="right"
+            placeholder="请输入续件数量"
+            class="!w-full"
+          />
+        </el-form-item>
+        <el-form-item label="续件价格" required>
+          <el-input-number
+            v-model="singlePriceForm.additionalItemPrice"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入续件价格"
+            class="!w-full"
+          />
+        </el-form-item>
+      </template>
+      
+      <!-- 按重计费 -->
+      <template v-if="singlePriceForm.shippingFeeType === 2">
+        <el-form-item label="首重重量(kg)" required>
+          <el-input-number
+            v-model="singlePriceForm.firstWeight"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入首重重量"
+            class="!w-full"
+          />
+        </el-form-item>
+        <el-form-item label="首重价格" required>
+          <el-input-number
+            v-model="singlePriceForm.firstWeightPrice"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入首重价格"
+            class="!w-full"
+          />
+        </el-form-item>
+        <el-form-item label="续重重量(kg)" required>
+          <el-input-number
+            v-model="singlePriceForm.additionalWeight"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入续重重量"
+            class="!w-full"
+          />
+        </el-form-item>
+        <el-form-item label="续重价格" required>
+          <el-input-number
+            v-model="singlePriceForm.additionalWeightPrice"
+            :min="0"
+            :precision="2"
+            controls-position="right"
+            placeholder="请输入续重价格"
+            class="!w-full"
+          />
+        </el-form-item>
+      </template>
     </el-form>
 
     <template #footer>
@@ -311,7 +498,15 @@ const batchPriceForm = reactive({
   comboProductNo: '',
   customerName: '',
   distributionPrice: undefined,
-  wholesalePrice: undefined
+  wholesalePrice: undefined,
+  shippingFeeType: 0,
+  fixedShippingFee: undefined,
+  additionalItemQuantity: undefined,
+  additionalItemPrice: undefined,
+  firstWeight: undefined,
+  firstWeightPrice: undefined,
+  additionalWeight: undefined,
+  additionalWeightPrice: undefined
 })
 
 // 单个设置价格弹窗状态
@@ -324,7 +519,15 @@ const singlePriceForm = reactive({
   distributionPrice: undefined,
   wholesalePrice: undefined,
   distributionInfo: null,
-  wholesaleInfo: null
+  wholesaleInfo: null,
+  shippingFeeType: 0,
+  fixedShippingFee: undefined,
+  additionalItemQuantity: undefined,
+  additionalItemPrice: undefined,
+  firstWeight: undefined,
+  firstWeightPrice: undefined,
+  additionalWeight: undefined,
+  additionalWeightPrice: undefined
 })
 
 // 格式化日期范围
@@ -414,6 +617,14 @@ const closeBatchPriceDialog = () => {
   batchPriceForm.customerName = ''
   batchPriceForm.distributionPrice = undefined
   batchPriceForm.wholesalePrice = undefined
+  batchPriceForm.shippingFeeType = 0
+  batchPriceForm.fixedShippingFee = undefined
+  batchPriceForm.additionalItemQuantity = undefined
+  batchPriceForm.additionalItemPrice = undefined
+  batchPriceForm.firstWeight = undefined
+  batchPriceForm.firstWeightPrice = undefined
+  batchPriceForm.additionalWeight = undefined
+  batchPriceForm.additionalWeightPrice = undefined
 }
 
 // 批量设置价格
@@ -421,6 +632,25 @@ const handleBatchSetPrice = async () => {
   if (!batchPriceForm.distributionPrice && !batchPriceForm.wholesalePrice) {
     message.warning('请至少输入一个价格')
     return
+  }
+
+  // 验证运费设置
+  if (batchPriceForm.shippingFeeType === 0 && !batchPriceForm.fixedShippingFee) {
+    message.warning('固定运费类型需要设置固定运费金额')
+    return
+  }
+  if (batchPriceForm.shippingFeeType === 1) {
+    if (!batchPriceForm.additionalItemQuantity || !batchPriceForm.additionalItemPrice) {
+      message.warning('按件计费需要设置续件数量和续件价格')
+      return
+    }
+  }
+  if (batchPriceForm.shippingFeeType === 2) {
+    if (!batchPriceForm.firstWeight || !batchPriceForm.firstWeightPrice || 
+        !batchPriceForm.additionalWeight || !batchPriceForm.additionalWeightPrice) {
+      message.warning('按重计费需要设置首重重量、首重价格、续重重量和续重价格')
+      return
+    }
   }
 
   batchSetLoading.value = true
@@ -431,7 +661,15 @@ const handleBatchSetPrice = async () => {
       groupProductId: firstItem.comboProductId,
       customerName: firstItem.customerName,
       distributionPrice: batchPriceForm.distributionPrice,
-      wholesalePrice: batchPriceForm.wholesalePrice
+      wholesalePrice: batchPriceForm.wholesalePrice,
+      shippingFeeType: batchPriceForm.shippingFeeType,
+      fixedShippingFee: batchPriceForm.fixedShippingFee,
+      additionalItemQuantity: batchPriceForm.additionalItemQuantity,
+      additionalItemPrice: batchPriceForm.additionalItemPrice,
+      firstWeight: batchPriceForm.firstWeight,
+      firstWeightPrice: batchPriceForm.firstWeightPrice,
+      additionalWeight: batchPriceForm.additionalWeight,
+      additionalWeightPrice: batchPriceForm.additionalWeightPrice
     }
 
     await SalePriceApi.batchSetCombinedPrices([reqData])
@@ -468,6 +706,14 @@ const closeSinglePriceDialog = () => {
   singlePriceForm.wholesalePrice = undefined
   singlePriceForm.distributionInfo = null
   singlePriceForm.wholesaleInfo = null
+  singlePriceForm.shippingFeeType = 0
+  singlePriceForm.fixedShippingFee = undefined
+  singlePriceForm.additionalItemQuantity = undefined
+  singlePriceForm.additionalItemPrice = undefined
+  singlePriceForm.firstWeight = undefined
+  singlePriceForm.firstWeightPrice = undefined
+  singlePriceForm.additionalWeight = undefined
+  singlePriceForm.additionalWeightPrice = undefined
 }
 
 // 单个设置价格
@@ -477,13 +723,40 @@ const handleSingleSetPrice = async () => {
     return
   }
 
+  // 验证运费设置
+  if (singlePriceForm.shippingFeeType === 0 && !singlePriceForm.fixedShippingFee) {
+    message.warning('固定运费类型需要设置固定运费金额')
+    return
+  }
+  if (singlePriceForm.shippingFeeType === 1) {
+    if (!singlePriceForm.additionalItemQuantity || !singlePriceForm.additionalItemPrice) {
+      message.warning('按件计费需要设置续件数量和续件价格')
+      return
+    }
+  }
+  if (singlePriceForm.shippingFeeType === 2) {
+    if (!singlePriceForm.firstWeight || !singlePriceForm.firstWeightPrice || 
+        !singlePriceForm.additionalWeight || !singlePriceForm.additionalWeightPrice) {
+      message.warning('按重计费需要设置首重重量、首重价格、续重重量和续重价格')
+      return
+    }
+  }
+
   singleSetLoading.value = true
   try {
     const reqData = {
       groupProductId: singlePriceForm.comboProductId,
       customerName: singlePriceForm.customerName,
       distributionPrice: singlePriceForm.distributionPrice,
-      wholesalePrice: singlePriceForm.wholesalePrice
+      wholesalePrice: singlePriceForm.wholesalePrice,
+      shippingFeeType: singlePriceForm.shippingFeeType,
+      fixedShippingFee: singlePriceForm.fixedShippingFee,
+      additionalItemQuantity: singlePriceForm.additionalItemQuantity,
+      additionalItemPrice: singlePriceForm.additionalItemPrice,
+      firstWeight: singlePriceForm.firstWeight,
+      firstWeightPrice: singlePriceForm.firstWeightPrice,
+      additionalWeight: singlePriceForm.additionalWeight,
+      additionalWeightPrice: singlePriceForm.additionalWeightPrice
     }
 
     await SalePriceApi.batchSetCombinedPrices([reqData])

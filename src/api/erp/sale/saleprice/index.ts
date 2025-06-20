@@ -97,6 +97,14 @@ export interface CombinedPriceSetReqVO {
   customerName: string; // 客户名称
   distributionPrice?: number; // 代发单价
   wholesalePrice?: number; // 批发单价
+  shippingFeeType: number; // 运费类型（0：固定运费，1：按件计费，2：按重计费）
+  fixedShippingFee?: number; // 固定运费
+  additionalItemQuantity?: number; // 续件数量
+  additionalItemPrice?: number; // 续件价格
+  firstWeight?: number; // 首重重量
+  firstWeightPrice?: number; // 首重价格
+  additionalWeight?: number; // 续重重量
+  additionalWeightPrice?: number; // 续重价格
 }
 
 // // 销售价格表分页请求VO
