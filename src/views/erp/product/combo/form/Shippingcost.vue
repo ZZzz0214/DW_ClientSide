@@ -180,7 +180,18 @@ watch(
     if (!data) {
       return
     }
+    console.log('Shippingcost 接收到的数据:', data)
     copyValueToTarget(formData, data)
+    console.log('运费数据已复制:', {
+      shippingFeeType: formData.shippingFeeType,
+      fixedShippingFee: formData.fixedShippingFee,
+      additionalItemQuantity: formData.additionalItemQuantity,
+      additionalItemPrice: formData.additionalItemPrice,
+      firstWeight: formData.firstWeight,
+      firstWeightPrice: formData.firstWeightPrice,
+      additionalWeight: formData.additionalWeight,
+      additionalWeightPrice: formData.additionalWeightPrice
+    })
   },
   {
     immediate: true

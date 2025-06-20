@@ -115,6 +115,15 @@
           >
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
+          <el-button
+            type="info"
+            plain
+            @click="handleCopyCreate"
+            v-hasPermi="['erp:transit-sale:create']"
+            :disabled="selectionList.length !== 1"
+          >
+            <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+          </el-button>
 
           <el-button
             type="warning"
@@ -193,7 +202,7 @@
           width="180px"
         />
 
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column label="操作" align="center" width="240">
           <template #default="scope">
             <el-button
               link
@@ -209,6 +218,14 @@
               v-hasPermi="['erp:transit-sale:update']"
             >
               编辑
+            </el-button>
+            <el-button
+              link
+              type="info"
+              @click="openForm('copy', scope.row.id)"
+              v-hasPermi="['erp:transit-sale:create']"
+            >
+              复制
             </el-button>
             <el-button
               link
@@ -295,6 +312,16 @@
   const formRef = ref()
   const openForm = (type: string, id?: number) => {
     formRef.value.open(type, id)
+  }
+
+  /** 复制新增操作 */
+  const handleCopyCreate = () => {
+    if (selectionList.value.length !== 1) {
+      message.warning('请选择一条数据进行复制')
+      return
+    }
+    const selectedItem = selectionList.value[0]
+    formRef.value.open('copy', selectedItem.id)
   }
 
   /** 删除按钮操作 */

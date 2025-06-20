@@ -280,11 +280,12 @@ const handleAdd = () => {
 const handleProductSelected = (selectedProducts: any[]) => {
   selectedProducts.forEach(product => {
     formData.value.items.push({
+      productId: product.id || '', // 修复：使用 productId 字段映射到 product.id
       name: product.name || '', // 确保 productName 有默认值
       purchasePrice: product.purchasePrice || 0, // 确保 productPrice 有默认值
       wholesalePrice:product.wholesalePrice || 0, //确保 wholesalePrice 有默认值
       weight: product.weight || 0, // 确保 weight 有默认值
-      id: product.id || '', // 确保 productId 有默认值
+      id: product.id || '', // 保留 id 字段用于前端显示
       no: product.no || '', // 确保 productId 有默认值
       productShortName: product.productShortName || '', // 确保 productId 有默认值
       count: 1, // 默认数量为1
@@ -353,6 +354,9 @@ watch(
   () => props.propFormData,
   (data) => {
     if (!data) return
+    
+    console.log('InfoForm 接收到的数据:', data)
+    
     // fix：三个表单组件监听赋值必须使用 copyValueToTarget 使用 formData.value = data 会监听非常多次
     copyValueToTarget(formData.value, data)
     
@@ -367,10 +371,25 @@ watch(
       formData.value.image = []
     }
     
+    // 确保产品清单数据被正确复制
+    if (data.items && Array.isArray(data.items)) {
+      formData.value.items = [...data.items]
+      console.log('产品清单数据已复制:', formData.value.items)
+    }
+    
+    // 确保备注信息被正确复制
+    if (data.remark !== undefined) {
+      formData.value.remark = data.remark
+      console.log('备注信息已复制:', formData.value.remark)
+    }
+    
     // 处理复制数据时的特殊逻辑
     if (data.name && data.name.includes('_副本')) {
       // 如果是复制的数据，确保各字段正确设置
-      console.log('检测到复制数据，正在填充表单...')
+      console.log('检测到复制数据，正在填充表单...', {
+        items: formData.value.items,
+        remark: formData.value.remark
+      })
     }
   },
   {

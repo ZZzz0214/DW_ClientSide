@@ -399,7 +399,7 @@ const handleSelectionChange = (selection: ComboVO[]) => {
 }
 
 /** 复制新增按钮操作 */
-const handleCopyAdd = () => {
+const handleCopyAdd = async () => {
   if (selectedRows.value.length === 0) {
     message.warning('请选择要复制的组品')
     return
@@ -411,44 +411,61 @@ const handleCopyAdd = () => {
   }
   
   const selectedCombo = selectedRows.value[0]
-  // 跳转到新增页面，并传递复制的数据
-  push({ 
-    name: 'ErpComboAdd', 
-    query: { 
-      copyFrom: selectedCombo.id,
-      copyData: JSON.stringify({
-        ...selectedCombo,
-        id: undefined, // 清除ID，作为新增
-        no: undefined, // 清除编号，让后端重新生成
-        name: selectedCombo.name + '_副本', // 在名称后添加副本标识
-        createTime: undefined, // 清除创建时间
-        updateTime: undefined // 清除更新时间
-      })
-    }
-  })
   
-  message.success(`已复制组品"${selectedCombo.name}"的数据，请修改后保存`)
+  try {
+    // 通过API获取完整的组品数据
+    const fullComboData = await ComboApi.getCombo(selectedCombo.id)
+    
+    // 跳转到新增页面，并传递完整的复制数据
+    push({ 
+      name: 'ErpComboAdd', 
+      query: { 
+        copyFrom: selectedCombo.id,
+        copyData: JSON.stringify({
+          ...fullComboData,
+          id: undefined, // 清除ID，作为新增
+          no: undefined, // 清除编号，让后端重新生成
+          name: fullComboData.name + '_副本', // 在名称后添加副本标识
+          createTime: undefined, // 清除创建时间
+          updateTime: undefined // 清除更新时间
+        })
+      }
+    })
+    
+    message.success(`已复制组品"${selectedCombo.name}"的数据，请修改后保存`)
+  } catch (error) {
+    console.error('获取组品详情失败:', error)
+    message.error('获取组品详情失败，请重试')
+  }
 }
 
 /** 快速复制单个组品 */
-const handleQuickCopy = (combo: ComboVO) => {
-  // 跳转到新增页面，并传递复制的数据
-  push({ 
-    name: 'ErpComboAdd', 
-    query: { 
-      copyFrom: combo.id,
-      copyData: JSON.stringify({
-        ...combo,
-        id: undefined, // 清除ID，作为新增
-        no: undefined, // 清除编号，让后端重新生成
-        name: combo.name + '_副本', // 在名称后添加副本标识
-        createTime: undefined, // 清除创建时间
-        updateTime: undefined // 清除更新时间
-      })
-    }
-  })
-  
-  message.success(`已复制组品"${combo.name}"的数据，请修改后保存`)
+const handleQuickCopy = async (combo: ComboVO) => {
+  try {
+    // 通过API获取完整的组品数据
+    const fullComboData = await ComboApi.getCombo(combo.id)
+    
+    // 跳转到新增页面，并传递完整的复制数据
+    push({ 
+      name: 'ErpComboAdd', 
+      query: { 
+        copyFrom: combo.id,
+        copyData: JSON.stringify({
+          ...fullComboData,
+          id: undefined, // 清除ID，作为新增
+          no: undefined, // 清除编号，让后端重新生成
+          name: fullComboData.name + '_副本', // 在名称后添加副本标识
+          createTime: undefined, // 清除创建时间
+          updateTime: undefined // 清除更新时间
+        })
+      }
+    })
+    
+    message.success(`已复制组品"${combo.name}"的数据，请修改后保存`)
+  } catch (error) {
+    console.error('获取组品详情失败:', error)
+    message.error('获取组品详情失败，请重试')
+  }
 }
 
 /** 获取图片URLs */

@@ -64,9 +64,18 @@
         />
       </el-form-item>
       
-      <el-form-item label="产品名称" prop="name">
+      <el-form-item label="产品名称" prop="productName">
         <el-input
-          v-model="formData.name"
+          v-model="formData.productName"
+          placeholder="自动填充"
+          readonly
+          class="w-80"
+        />
+      </el-form-item>
+
+      <el-form-item label="产品简称" prop="productShortName">
+        <el-input
+          v-model="formData.productShortName"
           placeholder="自动填充"
           readonly
           class="w-80"
@@ -160,14 +169,18 @@
     productQuantity: 0,
     remark: '', // 备注信息
     status: '', // 状态信息
-    name: '', // 新增的属性
-    shippingCode: '' // 新增的属性
+    name: '', // 组品名称
+    shippingCode: '', // 发货编码
+    productName: '', // 产品名称
+    productShortName: '' // 产品简称
   })
 
   const rules = reactive({
     no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
     originalProduct: [{ required: true, message: '原表商品不能为空', trigger: 'blur' }],
+    originalSpec: [{ required: true, message: '原表规格不能为空', trigger: 'blur' }],
     originalQuantity: [{ required: true, message: '原表数量不能为空', trigger: 'blur' }],
+    productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
     productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
     comboProductNo: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }]
   })
@@ -179,7 +192,7 @@
       if (!data) return
       copyValueToTarget(formData, data)
     },
-    { immediate: true }
+    { immediate: true, deep: true }
   )
 
   /** 表单校验 */
@@ -206,7 +219,9 @@
     formData.comboProductId = combo.id;
     formData.comboProductNo = combo.no; // 显示组品编号
     formData.shippingCode = combo.shippingCode;
-    formData.name = combo.name; // 如果产品名称需要填充
+    formData.name = combo.name; // 组品名称
+    formData.productName = combo.name; // 产品名称
+    formData.productShortName = combo.shortName; // 产品简称
   };
 
   defineExpose({ validate })

@@ -122,7 +122,7 @@
           <el-button
             type="info"
             plain
-            @click="openForm('copy', selectionList[0]?.id)"
+            @click="handleCopyCreate"
             v-hasPermi="['erp:dropship:create']"
             :disabled="selectionList.length !== 1"
           >
@@ -203,7 +203,7 @@
           :formatter="dateFormatter"
           width="180px"
         />
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column label="操作" align="center" width="240">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
             <el-button
@@ -213,6 +213,14 @@
               v-hasPermi="['erp:dropship:update']"
             >
               编辑
+            </el-button>
+            <el-button
+              link
+              type="info"
+              @click="openForm('copy', scope.row.id)"
+              v-hasPermi="['erp:dropship:create']"
+            >
+              复制
             </el-button>
             <el-button
               link
@@ -299,7 +307,7 @@
     if (type === 'create') {
       push({ name: 'ErpDropshipAssistAdd' })
     } else if (type === 'copy' && typeof id === 'number') {
-      push({ name: 'ErpDropshipAssistAdd', params: { copyId: id } })
+      push({ name: 'ErpDropshipAssistAdd', query: { copyId: id } })
     } else if (type === 'update' && typeof id === 'number') {
       push({ name: 'ErpDropshipAssistEdit', params: { id } })
     } else {
@@ -310,6 +318,16 @@
   /** 查看详情 */
   const openDetail = (id: number) => {
     push({ name: 'ErpDropshipAssistDetail', params: { id } })
+  }
+
+  /** 复制新增操作 */
+  const handleCopyCreate = () => {
+    if (selectionList.value.length !== 1) {
+      message.warning('请选择一条数据进行复制')
+      return
+    }
+    const selectedItem = selectionList.value[0]
+    openForm('copy', selectedItem.id)
   }
 
   /** 选中操作 */

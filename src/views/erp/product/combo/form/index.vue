@@ -74,6 +74,7 @@ const formData = ref<ProductComboApi.ComboVO>({
   totalQuantity: 0, // 产品数量（必填）
   status: 0, // 产品状态（必填）
   items: [], // 关联的单品列表（必填）
+  remark: '', // 备注信息
   shippingFeeType: undefined, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
   fixedShippingFee: undefined, // 固定运费，单位：元
   additionalItemQuantity: undefined, // 续件数量
@@ -81,6 +82,7 @@ const formData = ref<ProductComboApi.ComboVO>({
   firstWeight: undefined, // 首重重量，单位：kg
   firstWeightPrice: undefined, // 首重价格，单位：元
   additionalWeight: undefined, // 续重重量，单位：kg
+  additionalWeightPrice: undefined // 续重价格，单位：元
 });
 
 /** 获得详情 */
@@ -94,17 +96,33 @@ const getDetail = async () => {
   if (route.query.copyData) {
     try {
       const copyData = JSON.parse(route.query.copyData as string);
+      // 确保复制所有字段，包括备注信息和产品清单
       formData.value = {
-        ...copyData,
+        ...formData.value, // 保留默认值
+        ...copyData, // 覆盖复制的数据
         id: undefined, // 确保ID为空，作为新增
         no: undefined, // 确保编号为空，让后端重新生成
         name: copyData.name || copyData.name + '_副本', // 确保名称有副本标识
         createTime: undefined,
-        updateTime: undefined
+        updateTime: undefined,
+        // 确保这些字段被正确复制
+        remark: copyData.remark || '', // 备注信息
+        items: copyData.items || [], // 产品清单
+        shippingFeeType: copyData.shippingFeeType !== undefined ? copyData.shippingFeeType : 0,
+        fixedShippingFee: copyData.fixedShippingFee,
+        additionalItemQuantity: copyData.additionalItemQuantity,
+        additionalItemPrice: copyData.additionalItemPrice,
+        firstWeight: copyData.firstWeight,
+        firstWeightPrice: copyData.firstWeightPrice,
+        additionalWeight: copyData.additionalWeight,
+        additionalWeightPrice: copyData.additionalWeightPrice
       };
+      
+      console.log('复制的数据:', formData.value);
       message.success('已复制组品数据，请修改相关信息后保存');
       return;
     } catch (error) {
+      console.error('复制数据解析失败:', error);
       message.error('复制数据解析失败');
     }
   }

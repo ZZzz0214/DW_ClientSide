@@ -11,7 +11,7 @@
           <!-- 组品编号 -->
           <el-col :span="12">
             <el-form-item label="组品编号" prop="no">
-              <el-input disabled v-model="formData.no" placeholder="自动获取" />
+              <el-input disabled :value="formType === 'copy' ? '' : formData.no" placeholder="自动获取" />
             </el-form-item>
           </el-col>
 
@@ -214,7 +214,7 @@
   /** 打开弹窗 */
   const open = async (type: string, id?: number) => {
     dialogVisible.value = true;
-    dialogTitle.value = t('action.' + type);
+    dialogTitle.value = type === 'copy' ? '复制新增' : t('action.' + type);
     formType.value = type;
     resetForm();
     // 修改时，设置数据
@@ -222,12 +222,23 @@
       formLoading.value = true;
       try {
         const data = await TransitSaleApi.getTransitSale(id);
-        formData.value = data;
+        
+        if (type === 'copy') {
+          // 复制模式：清除ID和编号，保留其他数据
+          formData.value = {
+            ...data,
+            id: undefined,
+            no: undefined, // 清除编号，让系统自动生成新的
+          };
+        } else {
+          formData.value = data;
+        }
+        
         formData.value.groupProductId = data.groupProductId;
         console.log("888888888888888888888888");
         console.log(data);
-        // 如果是详情模式，将数据重新组装到 items 和 saleItems
-        if (type === 'detail' || type === 'update') {
+        // 如果是详情模式、更新模式或复制模式，将数据重新组装到 items 和 saleItems
+        if (type === 'detail' || type === 'update' || type === 'copy') {
           formData.value.cost = [
             {
               shippingFeeType: data.shippingFeeType,
@@ -280,7 +291,7 @@
     formLoading.value = true;
     try {
       const data = formData.value as unknown as TransitSaleVO;
-      if (formType.value === 'create') {
+      if (formType.value === 'create' || formType.value === 'copy') {
         await TransitSaleApi.createTransitSale(data);
         message.success(t('common.createSuccess'));
       } else {
