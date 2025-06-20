@@ -134,6 +134,6 @@ const handleExceed = (): void => {
 /** 下载模板操作 */
 const importTemplate = async () => {
   const res = await ErpWholesaleApi.importWholesaleTemplate()
-  download.excel(res, '批发订单导入模版.xls')
+  download.excel(res, '批发订单导入模版.xlsx')
 }
 </script>

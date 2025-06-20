@@ -43,6 +43,7 @@ import { ref, reactive, watch, defineProps, defineEmits } from 'vue';
 import { ElMessage } from 'element-plus';
 import { CustomerApi } from '@/api/erp/sale/customer';
 import { SalePriceApi } from '@/api/erp/sale/saleprice';
+import { ComboApi } from '@/api/erp/product/combo';
 
 const props = defineProps({
   visible: {
@@ -50,7 +51,7 @@ const props = defineProps({
     default: false,
   },
   comboProductId: {
-    type: String,
+    type: [String, Number],
     default: null,
   },
 });
@@ -77,9 +78,6 @@ const handleSearch = async () => {
       name: searchForm.name,
     };
     const response = await CustomerApi.searchCustomer(params);
-    console.log("123333333");
-    console.log(response);
-    console.log(props.comboProductId);
     if (Array.isArray(response)) {
       customerList.value = response;
     } else {
@@ -104,65 +102,151 @@ const confirmSelection = async () => {
     return;
   }
 
-// 调用 SalePriceApi.searchSalePrice 方法
+  // 确保组品ID是数字类型
+  const groupProductId = Number(props.comboProductId);
+  if (!groupProductId || isNaN(groupProductId)) {
+    ElMessage.error('组品ID无效，请先选择组品');
+    return;
+  }
+
+  // 根据组品编号和客户名称查询销售价格表
   const searchParams = {
-    groupProductId: props.comboProductId,
+    groupProductId: groupProductId,
     customerName: selectedCustomer.value.name,
   };
+  
   try {
-    const salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
-    console.log('zzzzzzzzzzzzzzzzzzzzzzzzzzzzz')
-    console.log(salePriceResult)
-    console.log(salePriceResult[0].fixedShippingFee)
-    if (salePriceResult.length > 0) {
-      // 如果搜索到出货单价，返回对应数据
-      emit('customer-selected',  [
+    // 方案1：首先尝试标准搜索接口
+    let salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
+    
+    // 方案2：如果标准搜索失败，尝试分页查询
+    if (!salePriceResult || salePriceResult.length === 0) {
+      try {
+        const pageParams = {
+          pageNo: 1,
+          pageSize: 10,
+          groupProductId: searchParams.groupProductId,
+          customerName: searchParams.customerName,
+        };
+        const pageResult = await SalePriceApi.getSalePricePage(pageParams);
+        
+        if (pageResult && pageResult.list && pageResult.list.length > 0) {
+          salePriceResult = pageResult.list;
+        }
+      } catch (pageError) {
+        // 分页查询失败，继续尝试其他方案
+      }
+    }
+    
+    // 方案3：如果仍然没有结果，尝试模糊查询
+    if (!salePriceResult || salePriceResult.length === 0) {
+      try {
+        const fuzzyParams = {
+          pageNo: 1,
+          pageSize: 50,
+          groupProductId: searchParams.groupProductId,
+          // 去掉客户名称，只按组品查询
+        };
+        const fuzzyResult = await SalePriceApi.getSalePricePage(fuzzyParams);
+        
+        if (fuzzyResult && fuzzyResult.list && fuzzyResult.list.length > 0) {
+          // 在结果中查找匹配的客户名称
+          const matchedRecords = fuzzyResult.list.filter(item => 
+            item.customerName === searchParams.customerName ||
+            item.customerName?.trim() === searchParams.customerName?.trim()
+          );
+          
+          if (matchedRecords.length > 0) {
+            salePriceResult = matchedRecords;
+          }
+        }
+      } catch (fuzzyError) {
+        // 模糊查询失败，使用默认值
+      }
+    }
+    
+    if (salePriceResult && salePriceResult.length > 0) {
+      const priceData = salePriceResult[0];
+      
+      // 获取组品信息以获取重量
+      let comboWeight = 0;
+      try {
+        const comboInfo = await ComboApi.getCombo(groupProductId);
+        
+        if (comboInfo) {
+          if (comboInfo.weight !== undefined && comboInfo.weight !== null) {
+            comboWeight = Number(comboInfo.weight) || 0;
+          }
+        }
+      } catch (error) {
+        console.error('获取组品重量失败:', error);
+      }
+      
+      // 返回包含完整运费信息和代发价格的数据
+      emit('customer-selected', [
         {
           customerName: selectedCustomer.value.name,
-          salePrice: salePriceResult[0].distributionPrice,
-          shippingFeeType: salePriceResult[0].shippingFeeType,
-          fixedShippingFee: salePriceResult[0].fixedShippingFee,
-          additionalItemQuantity: salePriceResult[0].additionalItemQuantity, //按件数量
-          additionalItemPrice: salePriceResult[0].additionalItemPrice, //按件费用
-          weight: salePriceResult[0].weight,
-          firstWeight: salePriceResult[0].firstWeight,
-          firstWeightPrice: salePriceResult[0].firstWeightPrice,
-          additionalWeight: salePriceResult[0].additionalWeight,
-          additionalWeightPrice: salePriceResult[0].additionalWeightPrice
+          salePrice: priceData.distributionPrice || 0, // 使用代发价格作为出货单价
+          shippingFeeType: priceData.shippingFeeType,
+          fixedShippingFee: priceData.fixedShippingFee,
+          additionalItemQuantity: priceData.additionalItemQuantity, //按件数量
+          additionalItemPrice: priceData.additionalItemPrice, //按件费用
+          weight: comboWeight, // 使用从组品信息获取的重量
+          firstWeight: priceData.firstWeight,
+          firstWeightPrice: priceData.firstWeightPrice,
+          additionalWeight: priceData.additionalWeight,
+          additionalWeightPrice: priceData.additionalWeightPrice
         },
       ]);
     } else {
-      // 如果没有搜索到，返回客户名称，出货单价为 null
-      emit('customer-selected',  [
+      ElMessage.warning(`未找到组品ID: ${groupProductId} 和客户: ${selectedCustomer.value.name} 的销售价格配置。
+      
+请检查：
+1. 销售价格表中是否存在该记录
+2. 组品ID是否正确（当前: ${groupProductId}）
+3. 客户名称是否完全匹配（当前: "${selectedCustomer.value.name}"）
+4. 数据是否被删除或状态异常`);
+      
+      // 如果没有搜索到销售价格表数据，返回客户名称，价格和运费信息为默认值
+      emit('customer-selected', [
         {
           customerName: selectedCustomer.value.name,
-          salePrice: null,
-          shippingFeeType: null,
-          fixedShippingFee: null,
-          additionalItemQuantity: null, //按件数量
-          additionalItemPrice: null, //按件费用
-          weight: null,
-          firstWeight: null,
-          firstWeightPrice: null,
-          additionalWeight: null,
-          additionalWeightPrice: null
+          salePrice: 0, // 默认价格为0
+          shippingFeeType: 0, // 默认固定运费
+          fixedShippingFee: 0, // 默认运费为0
+          additionalItemQuantity: 1, //按件数量
+          additionalItemPrice: 0, //按件费用
+          weight: 0,
+          firstWeight: 1,
+          firstWeightPrice: 0,
+          additionalWeight: 1,
+          additionalWeightPrice: 0
         },
       ]);
     }
   } catch (error) {
+    console.error('查询销售价格表失败:', error);
+    console.error('错误详情:', {
+      message: error.message,
+      stack: error.stack,
+      searchParams: searchParams
+    });
+    ElMessage.error('查询销售价格表失败: ' + (error.message || '未知错误'));
+    
+    // 出错时返回默认数据
     emit('customer-selected', [
       {
         customerName: selectedCustomer.value.name,
-        salePrice: null,
-        shippingFeeType: null,
-        fixedShippingFee: null,
-        additionalItemQuantity: null, //按件数量
-        additionalItemPrice: null, //按件费用
-        weight: null,
-        firstWeight: null,
-        firstWeightPrice: null,
-        additionalWeight: null,
-        additionalWeightPrice: null
+        salePrice: 0,
+        shippingFeeType: 0,
+        fixedShippingFee: 0,
+        additionalItemQuantity: 1,
+        additionalItemPrice: 0,
+        weight: 0,
+        firstWeight: 1,
+        firstWeightPrice: 0,
+        additionalWeight: 1,
+        additionalWeightPrice: 0
       },
     ]);
   }

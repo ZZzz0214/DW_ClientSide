@@ -113,13 +113,7 @@ const props = defineProps<{
 }>()
 
 const formLoading = ref(false) // 表单的加载中
-//const formData = ref([])
-const formData = ref({
-  // ...其他字段
-  purchaseAuditStatus: 0, // 采购审核状态
-  saleAuditStatus: 0, // 销售审核状态
-  // ...其他字段
-})
+const formData = ref([]) // 🔥 修复：应该是数组，不是对象
 const formRules = reactive({
   count: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }]
 })
@@ -131,30 +125,79 @@ const selectProductRef = ref(); // 定义 ref 引用
 const emit = defineEmits(['productIdChanged']);
 // 计算运费的方法
 const calculateShippingFee = (item) => {
+  console.log('🔥 计算采购运费 - 开始', {
+    count: item?.count,
+    shippingFeeType: item?.shippingFeeType,
+    fixedShippingFee: item?.fixedShippingFee,
+    additionalItemQuantity: item?.additionalItemQuantity,
+    additionalItemPrice: item?.additionalItemPrice,
+    weight: item?.weight
+  });
+
   if (!item || !item.count || item.count === 0) {
     if (item) item.shippingFee = 0; // 设置为0而不是null
+    console.log('🔥 计算采购运费 - 数量为0，运费设为0');
     return;
   }
 
+  // 确保必要的字段都存在
+  if (item.shippingFeeType === undefined || item.shippingFeeType === null) {
+    console.log('🔥 计算采购运费 - 缺少运费类型，跳过计算');
+    return;
+  }
+
+  let newShippingFee = 0;
+
   if (item.shippingFeeType === 0) {
     // 固定运费
-    item.shippingFee = item.fixedShippingFee;
+    newShippingFee = Number(item.fixedShippingFee) || 0;
+    console.log('🔥 计算采购运费 - 固定运费:', newShippingFee);
   } else if (item.shippingFeeType === 1) {
     // 按件运费
-    if (item.count <= item.additionalItemQuantity) {
-      item.shippingFee = item.additionalItemPrice;
+    const additionalItemQuantity = Number(item.additionalItemQuantity) || 1;
+    const additionalItemPrice = Number(item.additionalItemPrice) || 0;
+    
+    if (item.count <= additionalItemQuantity) {
+      newShippingFee = additionalItemPrice;
     } else {
-      item.shippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
+      const additionalUnits = Math.ceil((item.count - additionalItemQuantity) / additionalItemQuantity);
+      newShippingFee = additionalItemPrice + additionalUnits * additionalItemPrice;
     }
+    console.log('🔥 计算采购运费 - 按件计费:', {
+      count: item.count,
+      additionalItemQuantity,
+      additionalItemPrice,
+      newShippingFee
+    });
   } else if (item.shippingFeeType === 2) {
     // 按重量
-    const totalWeight = item.count * item.weight;
-    if (totalWeight <= item.firstWeight) {
-      item.shippingFee = item.firstWeightPrice;
+    const weight = Number(item.weight) || 0;
+    const totalWeight = item.count * weight;
+    const firstWeight = Number(item.firstWeight) || 0;
+    const firstWeightPrice = Number(item.firstWeightPrice) || 0;
+    const additionalWeight = Number(item.additionalWeight) || 1;
+    const additionalWeightPrice = Number(item.additionalWeightPrice) || 0;
+    
+    if (totalWeight <= firstWeight) {
+      newShippingFee = firstWeightPrice;
     } else {
-      item.shippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+      const additionalUnits = Math.ceil((totalWeight - firstWeight) / additionalWeight);
+      newShippingFee = firstWeightPrice + additionalUnits * additionalWeightPrice;
     }
+    console.log('🔥 计算采购运费 - 按重量计费:', {
+      count: item.count,
+      weight,
+      totalWeight,
+      firstWeight,
+      firstWeightPrice,
+      additionalWeight,
+      additionalWeightPrice,
+      newShippingFee
+    });
   }
+
+  item.shippingFee = Number(newShippingFee.toFixed(2));
+  console.log('🔥 计算采购运费 - 最终结果:', item.shippingFee);
 };
 
 // 更新合计的方法
@@ -181,10 +224,17 @@ watch(
 )
 
 // 监听父组件传递的产品数量变化
-watch(() => props.ssb, (newVal) => {
-  if (!formData.value) return;
-  formData.value.forEach((item) => {
+watch(() => props.ssb, (newVal, oldVal) => {
+  console.log('🔥 监听产品数量变化:', { newVal, oldVal, formDataLength: formData.value?.length });
+  
+  if (!formData.value || !Array.isArray(formData.value)) {
+    console.log('🔥 formData 不是数组或为空');
+    return;
+  }
+  
+  formData.value.forEach((item, index) => {
     if (item) {
+      console.log(`🔥 更新第${index}个项目的数量:`, item.count, '->', newVal);
       item.count = newVal; // 更新子组件中的产品数量
       calculateShippingFee(item); // 重新计算运费
       updateTotalPrice(item); // 重新计算合计
@@ -194,9 +244,11 @@ watch(() => props.ssb, (newVal) => {
 
 // 监听子组件中采购其他费用的变化
 watch(() => formData.value, (newVal) => {
-  if (!newVal) return;
-  newVal.forEach((item) => {
+  if (!newVal || !Array.isArray(newVal)) return;
+  
+  newVal.forEach((item, index) => {
     if (item) {
+      console.log(`🔥 监听到第${index}个项目数据变化，重新计算运费`);
       calculateShippingFee(item); // 重新计算运费
       updateTotalPrice(item); // 重新计算合计
     }

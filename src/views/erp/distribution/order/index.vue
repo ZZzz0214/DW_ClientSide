@@ -308,11 +308,38 @@
         <el-button
           type="success"
           plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['erp:distribution:export']"
+          @click="handleBasicExport"
+          :loading="basicExportLoading"
+          v-hasPermi="['erp:distribution:importBasic']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" /> 基础导出
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handlePurchaseExport"
+          :loading="purchaseExportLoading"
+          v-hasPermi="['erp:distribution:importPurchase']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 采购导出
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleSaleExport"
+          :loading="saleExportLoading"
+          v-hasPermi="['erp:distribution:importSale']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 出货导出
+        </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleShipExport"
+          :loading="shipExportLoading"
+          v-hasPermi="['erp:distribution:importShip']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 发货导出
         </el-button>
 
         <el-button
@@ -507,6 +534,10 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const basicExportLoading = ref(false) // 基础导出的加载中
+const purchaseExportLoading = ref(false) // 采购导出的加载中
+const saleExportLoading = ref(false) // 出货导出的加载中
+const shipExportLoading = ref(false) // 发货导出的加载中
 
 /** 查询列表 */
 const getList = async () => {
@@ -516,9 +547,6 @@ const getList = async () => {
 
     list.value = data.list
     total.value = data.total
-
-    console.log("代发222222222222222---")
-    console.log(data)
   } finally {
     loading.value = false
   }
@@ -548,14 +576,10 @@ const handleCopyCreate = () => {
     message.warning('请选择一条数据进行复制')
     return
   }
-  // 添加调试信息，查看选中的数据
-  console.log('选中的数据：', selectionList.value[0])
   // 获取完整数据，确保所有字段都有
   ErpDistributionApi.getErpDistribution(selectionList.value[0].id).then(data => {
-    console.log('获取完整数据：', data)
     formRef.value.open('create', undefined, data)
   }).catch(error => {
-    console.error('获取数据失败', error)
     message.error('获取数据失败，请重试')
   })
 }
@@ -599,6 +623,66 @@ const handleExport = async () => {
   } catch {
   } finally {
     exportLoading.value = false
+  }
+}
+
+/** 基础导出按钮操作 */
+const handleBasicExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    basicExportLoading.value = true
+    const data = await ErpDistributionApi.exportBasicExcel(queryParams)
+    download.excel(data, '代发基础信息.xlsx')
+  } catch {
+  } finally {
+    basicExportLoading.value = false
+  }
+}
+
+/** 采购导出按钮操作 */
+const handlePurchaseExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    purchaseExportLoading.value = true
+    const data = await ErpDistributionApi.exportPurchaseExcel(queryParams)
+    download.excel(data, '代发采购信息.xlsx')
+  } catch {
+  } finally {
+    purchaseExportLoading.value = false
+  }
+}
+
+/** 出货导出按钮操作 */
+const handleSaleExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    saleExportLoading.value = true
+    const data = await ErpDistributionApi.exportSaleExcel(queryParams)
+    download.excel(data, '代发出货信息.xlsx')
+  } catch {
+  } finally {
+    saleExportLoading.value = false
+  }
+}
+
+/** 发货导出按钮操作 */
+const handleShipExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    shipExportLoading.value = true
+    const data = await ErpDistributionApi.exportShipExcel(queryParams)
+    download.excel(data, '代发发货信息.xlsx')
+  } catch {
+  } finally {
+    shipExportLoading.value = false
   }
 }
 

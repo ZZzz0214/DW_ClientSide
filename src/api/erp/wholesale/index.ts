@@ -76,8 +76,28 @@ export const ErpWholesaleApi = {
     });
   },
 
-  // // 导出批发列表 Excel
-  exportErpWholesale: async (params: any) => {
-    return await request.download({ url: `/erp/wholesale/export-excel`, params });
+  // 导出批发基础列表 Excel
+  exportBasicWholesale: async (params: any) => {
+    return await request.download({ url: `/erp/wholesale/export-basic`, params });
+  },
+
+  // 导出批发采购列表 Excel
+  exportPurchaseWholesale: async (params: any) => {
+    return await request.download({ url: `/erp/wholesale/export-purchase`, params });
+  },
+
+  // 导出批发出货列表 Excel
+  exportSaleWholesale: async (params: any) => {
+    return await request.download({ url: `/erp/wholesale/export-sale`, params });
+  },
+
+  // 导出批发发货列表 Excel
+  exportShipWholesale: async (params: any) => {
+    return await request.download({ url: `/erp/wholesale/export-ship`, params });
+  },
+
+
+  importWholesaleTemplate: async () => {
+    return await request.download({ url: `/erp/wholesale/get-import-template` });
   },
 };

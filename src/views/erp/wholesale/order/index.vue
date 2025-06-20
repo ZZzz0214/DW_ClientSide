@@ -232,14 +232,45 @@
         >
           <Icon icon="ep:upload" class="mr-5px" /> 导入
         </el-button>
+        <!-- 基础导出按钮 -->
         <el-button
           type="success"
           plain
-          @click="handleExport"
-          :loading="exportLoading"
-          v-hasPermi="['erp:wholesale:export']"
+          @click="handleBasicExport"
+          :loading="basicExportLoading"
+          v-hasPermi="['erp:wholesale:importBasic']"
         >
-          <Icon icon="ep:download" class="mr-5px" /> 导出
+          <Icon icon="ep:download" class="mr-5px" /> 基础导出
+        </el-button>
+        <!-- 采购导出按钮 -->
+        <el-button
+          type="success"
+          plain
+          @click="handlePurchaseExport"
+          :loading="purchaseExportLoading"
+          v-hasPermi="['erp:wholesale:importPurchase']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 采购导出
+        </el-button>
+        <!-- 出货导出按钮 -->
+        <el-button
+          type="success"
+          plain
+          @click="handleSaleExport"
+          :loading="saleExportLoading"
+          v-hasPermi="['erp:wholesale:importSale']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 出货导出
+        </el-button>
+        <!-- 发货导出按钮 -->
+        <el-button
+          type="success"
+          plain
+          @click="handleShipExport"
+          :loading="shipExportLoading"
+          v-hasPermi="['erp:wholesale:importShip']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 发货导出
         </el-button>
         <el-button
           type="danger"
@@ -389,7 +420,10 @@ const queryParams = reactive({
   saleAuditStatus: undefined
 })
 const queryFormRef = ref() // 搜索的表单
-const exportLoading = ref(false) // 导出的加载中
+const basicExportLoading = ref(false) // 基础导出的加载中
+const purchaseExportLoading = ref(false) // 采购导出的加载中
+const saleExportLoading = ref(false) // 出货导出的加载中
+const shipExportLoading = ref(false) // 发货导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
 const supplierList = ref<SupplierVO[]>([]) // 供应商列表
 const userList = ref<UserVO[]>([]) // 用户列表
@@ -457,18 +491,63 @@ const handleDelete = async (ids: number[]) => {
   } catch {}
 }
 
-/** 导出按钮操作 */
-const handleExport = async () => {
+/** 基础导出按钮操作 */
+const handleBasicExport = async () => {
   try {
     // 导出的二次确认
     await message.exportConfirm()
     // 发起导出
-    exportLoading.value = true
-    const data = await ErpWholesaleApi.exportErpWholesale(queryParams)
-    download.excel(data, '批发订单.xlsx')
+    basicExportLoading.value = true
+    const data = await ErpWholesaleApi.exportBasicWholesale(queryParams)
+    download.excel(data, '批发基础订单.xlsx')
   } catch {
   } finally {
-    exportLoading.value = false
+    basicExportLoading.value = false
+  }
+}
+
+/** 采购导出按钮操作 */
+const handlePurchaseExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    purchaseExportLoading.value = true
+    const data = await ErpWholesaleApi.exportPurchaseWholesale(queryParams)
+    download.excel(data, '批发采购订单.xlsx')
+  } catch {
+  } finally {
+    purchaseExportLoading.value = false
+  }
+}
+
+/** 出货导出按钮操作 */
+const handleSaleExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    saleExportLoading.value = true
+    const data = await ErpWholesaleApi.exportSaleWholesale(queryParams)
+    download.excel(data, '批发出货订单.xlsx')
+  } catch {
+  } finally {
+    saleExportLoading.value = false
+  }
+}
+
+/** 发货导出按钮操作 */
+const handleShipExport = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    shipExportLoading.value = true
+    const data = await ErpWholesaleApi.exportShipWholesale(queryParams)
+    download.excel(data, '批发发货订单.xlsx')
+  } catch {
+  } finally {
+    shipExportLoading.value = false
   }
 }
 

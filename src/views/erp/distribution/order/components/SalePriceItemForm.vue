@@ -40,15 +40,6 @@
 
       <el-table-column label="出货运费" min-width="80">
         <template #default="{ row }">
-<!--          <el-form-item class="mb-0px!">-->
-<!--            <el-input-number-->
-<!--              v-model="row.saleShippingFee"-->
-<!--              controls-position="right"-->
-<!--              :min="0"-->
-<!--              :precision="2"-->
-<!--              disabled-->
-<!--            />-->
-<!--          </el-form-item>-->
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.saleShippingFee" />
           </el-form-item>
@@ -131,6 +122,7 @@ import { ref, onMounted, watch } from 'vue';
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
 import SalespersonSearchDialog from './SalespersonSearchDialog.vue'; // 引入销售人员搜索弹窗组件
 import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
+import { ComboApi } from '@/api/erp/product/combo';
 const message = useMessage() // 消息弹窗
 // const props = defineProps<{
 //   items: any[];
@@ -143,6 +135,8 @@ const props = defineProps<{
   disabled: false
   ssb: number
   saleAuditStatus: number // 新增接收审核状态
+  mode?: string // 添加mode属性，支持'detail'、'edit'、'create'
+  comboProductId?: number // 组品ID
 }>()
 
 const formLoading = ref(false);
@@ -162,11 +156,17 @@ const selectCustomRef = ref();
 const salepriceList = ref<SalePriceVO[]>([]); // 销售价格表列表
 const salespersonSearchDialogVisible = ref(false); // 销售人员搜索弹窗的显示状态
 
-const comboProductId = ref(null);
+const comboProductId = ref(props.comboProductId || null);
 const tableKey = ref(0); // 定义一个响应式的 key
+const isInitialLoad = ref(true); // 标记是否为初始加载
 const setComboProductId = (id) => {
   comboProductId.value = id;
 };
+
+// 监听props中的comboProductId变化
+watch(() => props.comboProductId, (newVal) => {
+  comboProductId.value = newVal;
+}, { immediate: true });
 
 const openSalespersonSearch = (row) => {
   salespersonSearchDialogVisible.value = true;
@@ -183,41 +183,66 @@ const handleSalespersonSelected = (salesperson: any) => {
 };
 //计算出货运费的方法
 const calculateSaleShippingFee = (item) => {
-  if (!item || !item.count || item.count === 0) {
-    if (item) item.saleShippingFee = 0; // 设置为0而不是null
-    return;
-  }
-
-  if (!item.salePrice && item.salePrice !== 0) {
+  if (!item) return;
+  
+  // 确保数量是有效的数字
+  const count = Number(item.count) || 0;
+  
+  if (count === 0) {
     item.saleShippingFee = 0;
     return;
   }
-
-    if (item.shippingFeeType === 0) {
-      // 固定运费
-      item.saleShippingFee = item.fixedShippingFee;
-    } else if (item.shippingFeeType === 1) {
-      // 按件运费
-      if (item.count <= item.additionalItemQuantity) {
-        item.saleShippingFee = item.additionalItemPrice;
-      } else {
-        item.saleShippingFee = item.additionalItemPrice + Math.ceil((item.count - item.additionalItemQuantity) / item.additionalItemQuantity) * item.additionalItemPrice;
-      }
-    } else if (item.shippingFeeType === 2) {
-      // 按重量
-      const totalWeight = item.count * item.weight;
-      if (totalWeight <= item.firstWeight) {
-        item.saleShippingFee = item.firstWeightPrice;
-      } else {
-        item.saleShippingFee = item.firstWeightPrice + Math.ceil((totalWeight - item.firstWeight) / item.additionalWeight) * item.additionalWeightPrice;
+  
+  // 检查运费类型是否有效
+  if (item.shippingFeeType === undefined || item.shippingFeeType === null) {
+    item.saleShippingFee = 0;
+    return;
+  }
+  
+  // 确保运费类型是数字
+  const shippingFeeType = Number(item.shippingFeeType);
+  
+  if (isNaN(shippingFeeType)) {
+    item.saleShippingFee = 0;
+    return;
+  }
+  
+  let calculatedFee = 0;
+  
+  if (shippingFeeType === 0) {
+    // 固定运费
+    calculatedFee = Number(item.fixedShippingFee) || 0;
+  } else if (shippingFeeType === 1) {
+    // 按件运费 - 修正计算逻辑，与后端保持一致
+    const additionalItemQuantity = Number(item.additionalItemQuantity) || 1;
+    const additionalItemPrice = Number(item.additionalItemPrice) || 0;
+    
+    // 使用与后端一致的计算逻辑：Math.ceil(数量 / 续件数量) * 续件价格
+    const additionalUnits = Math.ceil(count / additionalItemQuantity);
+    calculatedFee = additionalUnits * additionalItemPrice;
+  } else if (shippingFeeType === 2) {
+    // 按重量
+    const weight = Number(item.weight) || 0;
+    const firstWeight = Number(item.firstWeight) || 1;
+    const firstWeightPrice = Number(item.firstWeightPrice) || 0;
+    const additionalWeight = Number(item.additionalWeight) || 1;
+    const additionalWeightPrice = Number(item.additionalWeightPrice) || 0;
+    
+    const totalWeight = count * weight;
+    
+    if (totalWeight <= firstWeight) {
+      calculatedFee = firstWeightPrice;
+    } else {
+      const additionalWeightCount = Math.ceil((totalWeight - firstWeight) / additionalWeight);
+      calculatedFee = firstWeightPrice + additionalWeightCount * additionalWeightPrice;
     }
-  } else {
-    // 如果没有指定运费类型，默认为0
-    item.saleShippingFee = 0;
   }
+  
+  // 确保运费是数字并四舍五入到2位小数
+  item.saleShippingFee = Number(Number(calculatedFee).toFixed(2));
 };
 
-// 更新出货总额的方法
+// 更新出货总额的方法：产品数量×出货单价+出货运费+出货杂费
 const updateTotalSaleAmount = (item) => {
   if (!item) return;
   
@@ -226,8 +251,15 @@ const updateTotalSaleAmount = (item) => {
   const shippingFee = Number(item.saleShippingFee) || 0;
   const otherFees = Number(item.saleOtherFees) || 0;
 
-  item.totalSaleAmount = price * count + shippingFee + otherFees;
-  item.totalSaleAmount = Number(item.totalSaleAmount.toFixed(2));
+  // 计算公式：产品数量×出货单价+出货运费+出货杂费
+  const totalAmount = price * count + shippingFee + otherFees;
+  item.totalSaleAmount = Number(totalAmount.toFixed(2));
+};
+
+// 重新计算运费并更新总额的方法（完整重新计算）
+const recalculateShippingAndTotal = (item) => {
+  calculateSaleShippingFee(item); // 重新计算运费
+  updateTotalSaleAmount(item); // 重新计算总额
 };
 
 // 初始化设置出库项
@@ -235,41 +267,87 @@ watch(
   () => props.items,
   (val) => {
     formData.value = val || [];
+    
+    // 在详情模式下，确保显示原始数据，不重新计算
+    if (props.mode === 'detail') {
+      return;
+    }
+    
+    // 在编辑模式下，如果有运费信息但没有计算过，则重新计算
+    if (props.mode === 'update' && formData.value.length > 0) {
+      const item = formData.value[0];
+      if (item.shippingFeeType !== undefined && item.shippingFeeType !== null && 
+          item.count > 0 && item.salePrice > 0) {
+        // 确保使用正确的计算逻辑
+        calculateSaleShippingFee(item);
+        updateTotalSaleAmount(item);
+      }
+    }
   },
   { immediate: true }
 );
 
 // 监听父组件传递的产品数量变化
-watch(() => props.ssb, (newVal) => {
-  if (!formData.value) return;
-  formData.value.forEach((item) => {
+watch(() => props.ssb, (newVal, oldVal) => {
+  if (!formData.value || !formData.value.length) return;
+  // 在详情模式下跳过运费重新计算
+  if (props.mode === 'detail') return;
+  // 如果数量没有实际变化，跳过处理
+  if (newVal === oldVal) return;
+  
+  formData.value.forEach((item, index) => {
     if (item) {
-      item.count = newVal; // 更新子组件中的产品数量
-      calculateSaleShippingFee(item); // 重新计算出货运费
-      updateTotalSaleAmount(item); // 重新计算出货总额
+      const currentCount = item.count;
+      
+      // 只有当数量确实需要更新时才处理
+      if (currentCount !== newVal) {
+        // 更新数量
+        item.count = newVal;
+        
+        // 检查是否有运费配置信息
+        if (item.shippingFeeType !== undefined && item.shippingFeeType !== null) {
+          // 直接使用现有的运费配置重新计算，避免重复获取
+          calculateSaleShippingFee(item);
+          updateTotalSaleAmount(item);
+        } else {
+          // 如果没有运费配置，只更新总额
+          updateTotalSaleAmount(item);
+        }
+      }
     }
   });
-}, { immediate: true });
+});
 
-// 监听子组件中出货其他费用的变化
-watch(() => formData.value, (newVal) => {
-  if (!newVal) return;
-  newVal.forEach((item) => {
-    if (item) {
-      calculateSaleShippingFee(item); // 重新计算出货运费
-      updateTotalSaleAmount(item); // 重新计算出货总额
+// 监听出货杂费变化，只在杂费变化时重新计算总额
+watch(() => formData.value?.map(item => item?.saleOtherFees), (newVals, oldVals) => {
+  if (!formData.value || !newVals || !oldVals) return;
+  // 在详情模式下跳过重新计算
+  if (props.mode === 'detail') return;
+  
+  // 检查杂费是否真的发生了变化
+  const hasChanged = newVals.some((newVal, index) => newVal !== oldVals[index]);
+  if (!hasChanged) return;
+  
+  formData.value.forEach((item, index) => {
+    if (item && newVals[index] !== oldVals[index]) {
+      // 只重新计算总额，不重新计算运费
+      updateTotalSaleAmount(item);
     }
   });
-}, { deep: true });
+}, { deep: false });
 
 // 添加按钮操作
 const handleAdd = () => {
-  // selectProductRef.value.open(comboProductId.value);
-
   if (formData.value.length >= 1) {
     message.warning('只能添加一条出货信息');
     return;
   }
+  
+  if (!comboProductId.value) {
+    message.warning('请先选择采购产品');
+    return;
+  }
+  
   selectCustomRef.value.open();
 };
 
@@ -284,31 +362,50 @@ const handleProductSelected = (selectedProducts: any[]) => {
     message.warning('只能添加一条出货信息');
     return;
   }
+  
   selectedProducts.forEach(product => {
-    console.log(product)
-    formData.value.push({
+    // 确定出货单价
+    let salePrice = 0;
+    if (product.salePrice !== undefined && product.salePrice !== null) {
+      salePrice = Number(product.salePrice);
+    } else if (product.distributionPrice !== undefined && product.distributionPrice !== null) {
+      salePrice = Number(product.distributionPrice);
+    }
+    
+    // 创建新的销售项
+    const newSaleItem = {
       salesperson: undefined, //销售人员
       customerName: product.customerName, //客户名称
-      salePrice: product.salePrice, //出货单价
-      saleShippingFee: 0, //出货运费
+      salePrice: salePrice, //出货单价（使用代发价格）
+      saleShippingFee: 0, //出货运费（将被重新计算）
       saleOtherFees: 0, //销售杂费
-      totalSaleAmount: 1, //销售总额
-      saleRemark:'', //出货备注
+      totalSaleAmount: 0, //销售总额（将被重新计算）
+      saleRemark: '', //出货备注
+      transferPerson: '', //中转人员
 
-      count: props.ssb, //数量
-      // 假设这些运费相关的字段已经存在于 product 对象中
-      shippingFeeType: product.shippingFeeType,
-      fixedShippingFee: product.fixedShippingFee,
-      additionalItemQuantity: product.additionalItemQuantity, //按件数量
-      additionalItemPrice: product.additionalItemPrice, //按件费用
-      weight: product.weight,
-      firstWeight: product.firstWeight,
-      firstWeightPrice: product.firstWeightPrice,
-      additionalWeight: product.additionalWeight,
-      additionalWeightPrice: product.additionalWeightPrice
-    });
+      count: props.ssb || 0, //数量
+      // 运费相关的字段
+      shippingFeeType: product.shippingFeeType !== undefined ? Number(product.shippingFeeType) : 0,
+      fixedShippingFee: product.fixedShippingFee !== undefined ? Number(product.fixedShippingFee) : 0,
+      additionalItemQuantity: product.additionalItemQuantity !== undefined ? Number(product.additionalItemQuantity) : 1, //按件数量
+      additionalItemPrice: product.additionalItemPrice !== undefined ? Number(product.additionalItemPrice) : 0, //按件费用
+      weight: product.weight !== undefined ? Number(product.weight) : 0,
+      firstWeight: product.firstWeight !== undefined ? Number(product.firstWeight) : 1,
+      firstWeightPrice: product.firstWeightPrice !== undefined ? Number(product.firstWeightPrice) : 0,
+      additionalWeight: product.additionalWeight !== undefined ? Number(product.additionalWeight) : 1,
+      additionalWeightPrice: product.additionalWeightPrice !== undefined ? Number(product.additionalWeightPrice) : 0
+    };
+    
+    // 添加到表单数据
+    formData.value.push(newSaleItem);
+    
+    // 立即计算运费和总额
+    calculateSaleShippingFee(newSaleItem);
+    updateTotalSaleAmount(newSaleItem);
   });
-  console.log('nnnnnnnnnnnnnnnnnnnnnnnnnnnnn')
+  
+  // 强制重新渲染表格
+  tableKey.value++;
 };
 
 // 表单校验
@@ -318,20 +415,86 @@ const validate = () => {
 
 // 重新计算运费
 const recalculateShipping = () => {
-  console.log('重新计算运费被调用')
-  formData.value?.forEach((item) => {
-    console.log('计算运费前的item:', item)
-    calculateSaleShippingFee(item); // 重新计算出货运费
+  // 在详情模式下跳过运费重新计算
+  if (props.mode === 'detail') {
+    return;
+  }
+  
+  formData.value?.forEach((item, index) => {
+    if (item.shippingFeeType !== undefined && item.shippingFeeType !== null) {
+      calculateSaleShippingFee(item); // 重新计算出货运费
+    }
     updateTotalSaleAmount(item); // 重新计算出货总额
-    console.log('计算运费后的item:', item)
   });
   tableKey.value++; // 强制重新渲染表格
 };
 
+// 获取销售价格表运费信息的方法
+const getSaleShippingInfo = async (groupProductId, customerName) => {
+  try {
+    const searchParams = {
+      groupProductId: groupProductId,
+      customerName: customerName,
+    };
+    const salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
+    
+    if (salePriceResult && salePriceResult.length > 0) {
+      // 获取组品重量信息
+      let comboWeight = 0;
+      try {
+        const comboInfo = await ComboApi.getCombo(groupProductId);
+        
+        if (comboInfo) {
+          if (comboInfo.weight !== undefined && comboInfo.weight !== null) {
+            comboWeight = Number(comboInfo.weight) || 0;
+          }
+        }
+      } catch (error) {
+        console.error('获取组品重量失败:', error);
+      }
+      
+      return {
+        shippingFeeType: salePriceResult[0].shippingFeeType,
+        fixedShippingFee: salePriceResult[0].fixedShippingFee,
+        additionalItemQuantity: salePriceResult[0].additionalItemQuantity,
+        additionalItemPrice: salePriceResult[0].additionalItemPrice,
+        weight: comboWeight, // 使用从组品信息获取的重量
+        firstWeight: salePriceResult[0].firstWeight,
+        firstWeightPrice: salePriceResult[0].firstWeightPrice,
+        additionalWeight: salePriceResult[0].additionalWeight,
+        additionalWeightPrice: salePriceResult[0].additionalWeightPrice
+      };
+    }
+  } catch (error) {
+    console.error('获取销售价格表运费信息失败:', error);
+  }
+  return null;
+};
+
+// 更新运费信息的方法
+const updateShippingInfo = (newShippingInfo) => {
+  if (formData.value && formData.value.length > 0) {
+    const item = formData.value[0];
+    
+    // 更新运费相关字段
+    Object.assign(item, newShippingInfo);
+    
+    // 重新计算运费和总额
+    calculateSaleShippingFee(item);
+    updateTotalSaleAmount(item);
+    
+    // 强制重新渲染
+    tableKey.value++;
+  }
+};
+
+
+
 defineExpose({
   setComboProductId,
   validate,
-  recalculateShipping
+  recalculateShipping,
+  updateShippingInfo
 });
 
 // 初始化
