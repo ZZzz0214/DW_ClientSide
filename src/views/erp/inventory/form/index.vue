@@ -60,7 +60,6 @@ const formData = ref<InventoryApi.InventoryVO>({
   brand: '',
   category: '',
   spotInventory: 0,
-  remainingInventory: 0,
   remark: '',
 })
 

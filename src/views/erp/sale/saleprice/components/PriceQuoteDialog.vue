@@ -67,7 +67,7 @@
               </div>
             </template>
           </el-table-column>
-          
+
           <el-table-column label="产品名称" prop="productName" min-width="200" fixed="left" :show-overflow-tooltip="false">
             <template #default="scope">
               <div class="product-name-cell">

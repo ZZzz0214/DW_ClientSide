@@ -75,17 +75,21 @@
       />
     </el-form-item>
 
-    <!-- 剩余库存 -->
-    <el-form-item label="剩余库存" prop="remainingInventory">
-      <el-input-number
-        v-model="formData.remainingInventory"
-        :min="0"
-        placeholder="请输入剩余库存"
-        class="w-80"
-      />
-    </el-form-item>
-
-    <!-- 备注 -->
+          <!-- 剩余库存 - 仅在详情页面显示 -->
+      <el-form-item v-if="isDetail" label="剩余库存" prop="remainingInventory">
+        <el-input-number
+          v-model="formData.remainingInventory"
+          :precision="0"
+          placeholder="系统自动计算"
+          class="!w-1/1"
+          disabled
+        />
+        <div class="text-xs text-gray-500 mt-1">
+          剩余库存 = 现货库存 - (代发订单中该产品的总数量 + 批发订单中该产品的总数量)
+        </div>
+      </el-form-item>
+  
+      <!-- 备注 -->
     <el-form-item label="备注" prop="remark">
       <el-input
         v-model="formData.remark"
@@ -127,14 +131,18 @@ const selectProductRef = ref()
 const brandDisplayValue = computed(() => {
   if (!formData.brand) return ''
   const brandOptions = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)
-  const brandOption = brandOptions.find(option => option.value === formData.brand)
+  // 将数值转换为字符串进行匹配，因为字典值通常是字符串
+  const brandValue = String(formData.brand)
+  const brandOption = brandOptions.find(option => option.value === brandValue)
   return brandOption ? brandOption.label : formData.brand
 })
 
 const categoryDisplayValue = computed(() => {
   if (!formData.category) return ''
   const categoryOptions = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)
-  const categoryOption = categoryOptions.find(option => option.value === formData.category)
+  // 将数值转换为字符串进行匹配，因为字典值通常是字符串
+  const categoryValue = String(formData.category)
+  const categoryOption = categoryOptions.find(option => option.value === categoryValue)
   return categoryOption ? categoryOption.label : formData.category
 })
 
@@ -146,15 +154,14 @@ const formData = reactive<InventoryVO>({
   brand: '',
   category: '',
   spotInventory: 0,
-  remainingInventory: 0,
   remark: ''
 })
 
 const rules = reactive({
   productId: [{ required: true, message: '产品编号不能为空', trigger: 'blur' }],
   productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-  spotInventory: [{ required: true, message: '现货库存不能为空', trigger: 'blur' }],
-  remainingInventory: [{ required: true, message: '剩余库存不能为空', trigger: 'blur' }]
+  spotInventory: [{ required: true, message: '现货库存不能为空', trigger: 'blur' }]
+  // 剩余库存为系统自动计算，无需验证
 })
 
 /** 打开产品选择弹窗 */
@@ -166,13 +173,12 @@ const openProductSelect = () => {
 
 /** 处理产品选择 */
 const handleProductSelected = (product: any) => {
-  console.log('选择的产品:', product)
   formData.productId = product.id  // 保存产品ID用于后端
   formData.productNo = product.no || product.id || ''  // 保存产品编号用于显示
   formData.productName = product.name || ''
   formData.productShortName = product.productShortName || ''
   formData.brand = product.brand || ''
-  formData.category = product.categoryId || ''
+  formData.category = product.categoryId || ''  // 注意：这里使用categoryId
   
   // 同步到父组件的数据
   Object.assign(props.propFormData, formData)

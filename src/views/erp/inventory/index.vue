@@ -90,7 +90,6 @@
             placeholder="请输入剩余库存"
             clearable
             class="!w-240px"
-            :min="0"
           />
         </el-form-item>
         <el-form-item label="创建人员" prop="creator">
@@ -185,7 +184,19 @@
           </template>
         </el-table-column>
         <el-table-column label="现货库存" align="center" prop="spotInventory" />
-        <el-table-column label="剩余库存" align="center" prop="remainingInventory" />
+        <el-table-column label="剩余库存" align="center" prop="remainingInventory">
+          <template #header>
+            <span>剩余库存</span>
+            <el-tooltip content="剩余库存 = 现货库存 - (代发订单中该产品的总数量 + 批发订单中该产品的总数量)，可以为负值" placement="top">
+              <Icon icon="ep:question-filled" class="ml-1 text-gray-400" />
+            </el-tooltip>
+          </template>
+          <template #default="scope">
+            <span :class="scope.row.remainingInventory < 0 ? 'text-red-500 font-bold' : ''">
+              {{ scope.row.remainingInventory }}
+            </span>
+          </template>
+        </el-table-column>
         <el-table-column label="备注信息" align="center" prop="remark" />
         <el-table-column
           label="创建人员"
