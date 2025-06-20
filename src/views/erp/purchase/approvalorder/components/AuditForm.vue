@@ -8,6 +8,13 @@
       v-loading="formLoading"
     >
       <!-- 复用 AfterSaleForm 的不可编辑字段 -->
+
+      <el-form-item label="订单编号">
+        <el-input v-model="formData.no" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="订单号">
+        <el-input v-model="formData.orderNumber" :disabled="true" />
+      </el-form-item>
       <el-form-item label="物流公司">
         <el-input v-model="formData.logisticsCompany" :disabled="true" />
       </el-form-item>
@@ -128,7 +135,9 @@ const formData = reactive({
   auditAmount: 0, // 审核费用（对应原售后费用）
   auditTime: null as string | null, // 审核时间（对应原售后时间）
   purchaseApprovalTime: null as string | null,
-  purchaseUnapproveTime: null as string | null
+  purchaseUnapproveTime: null as string | null,
+  no:0,
+  orderNumber:0
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -158,6 +167,8 @@ const open = async (id: number) => {
     formData.shippingFee = orderDetail.shippingFee || 0
     formData.otherFees = orderDetail.otherFees || 0
     formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0
+    formData.no = orderDetail.no || 0
+    formData.orderNumber = orderDetail.orderNumber || 0
     //审核时间
     formData.purchaseApprovalTime = orderDetail.purchaseApprovalTime || null
     formData.purchaseUnapproveTime = orderDetail.purchaseUnapproveTime || null

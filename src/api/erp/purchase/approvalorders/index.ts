@@ -133,10 +133,32 @@ export const PurchaseOrderApi = {
     })
   },
 
+  // 批量更新采购审核状态
+  batchUpdatePurchaseAuditStatus: async (ids: number[], purchaseAuditStatus: number) => {
+    return await request.put({
+      url: `/erp/wholesale/batch-update-purchase-audit-status`,
+      params: {
+        ids: ids.join(','),
+        purchaseAuditStatus
+      }
+    })
+  },
+
   updateSaleOrderStatus: async (params: { id: number; saleAuditStatus: number; otherFees: number }) => {
     return await request.put({
       url: `/erp/wholesale/update-sale-audit-status`, // 更新接口路径
       params // 使用 params 传递参数
+    })
+  },
+
+  // 批量更新销售审核状态
+  batchUpdateSaleAuditStatus: async (ids: number[], saleAuditStatus: number) => {
+    return await request.put({
+      url: `/erp/wholesale/batch-update-sale-audit-status`,
+      params: {
+        ids: ids.join(','),
+        saleAuditStatus
+      }
     })
   },
   // 更新采购售后信息（新增方法）

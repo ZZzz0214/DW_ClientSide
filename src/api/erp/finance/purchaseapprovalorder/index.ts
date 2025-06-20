@@ -113,5 +113,15 @@ export const PurchaseOrderApi = {
   exportPurchaseOrder: async (params: any) => {
     return await request.download({ url: `/erp/distribution/export-reviewed-purchase-excel`, params })
   }
+,
+  batchUpdatePurchaseAuditStatus: async (ids: number[], purchaseAuditStatus: number) => {
+    return await request.put({
+      url: `/erp/distribution/batch-update-purchase-audit-status`,
+      params: {
+        ids: ids.join(','),
+        purchaseAuditStatus
+      }
+    })
+  },
 
 }

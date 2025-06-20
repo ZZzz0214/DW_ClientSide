@@ -149,6 +149,16 @@
         >
           <Icon icon="ep:delete" class="mr-5px" /> 删除
         </el-button>
+
+        <el-button
+          type="warning"
+          plain
+          @click="handleBatchAudit(10)"
+          v-hasPermi="['erp:distribution:update-purchase-audit-status']"
+          :disabled="selectionList.length === 0"
+        >
+          <Icon icon="ep:close" class="mr-5px" /> 批量反审核
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -353,6 +363,23 @@ const handleDelete = async (ids: number[]) => {
     selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
   } catch {}
 }
+
+/** 批量审核操作 */
+const handleBatchAudit = async (purchaseAuditStatus: number) => {
+  try {
+    const ids = selectionList.value.map(item => item.id)
+    const statusText = purchaseAuditStatus === 20 ? '审核' : '反审核'
+    await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
+
+    await PurchaseOrderApi.batchUpdatePurchaseAuditStatus(ids, purchaseAuditStatus)
+    message.success(`${statusText}成功`)
+
+    // 刷新列表并清空选择
+    await getList()
+    selectionList.value = []
+  } catch {}
+}
+
 
 /** 审批/反审批操作 */
 // const handleUpdateStatus = async (id: number, status: number) => {

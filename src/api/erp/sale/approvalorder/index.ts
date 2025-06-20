@@ -134,5 +134,16 @@ export const SaleOrderApi = {
     return await request.download({
       url: `/erp/distribution/sale/get-import-template`
     })
+  },
+
+  // 批量更新销售审核状态
+  batchUpdateSaleAuditStatus: async (ids: number[], saleAuditStatus: number) => {
+    return await request.put({
+      url: `/erp/distribution/batch-update-sale-audit-status`,
+      params: {
+        ids: ids.join(','),
+        saleAuditStatus
+      }
+    })
   }
 }

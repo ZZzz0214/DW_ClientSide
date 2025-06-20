@@ -7,8 +7,12 @@
       label-width="120px"
       v-loading="formLoading"
     >
-
-
+      <el-form-item label="订单编号">
+        <el-input v-model="formData.no" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流单号">
+        <el-input v-model="formData.logisticsNumber" :disabled="true" />
+      </el-form-item>
     <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
     </el-form-item>
@@ -118,6 +122,10 @@ const formData = reactive({
   auditAmount: 0,
   auditTime: null as string | null,
 
+  no:0,
+  logisticsNumber:0,
+
+
   purchaseApprovalTime: null as string | null,
   purchaseUnapproveTime: null as string | null
 })
@@ -146,6 +154,8 @@ const open = async (id: number) => {
     formData.logisticsFee = orderDetail.logisticsFee || 0  // 原 shippingFee 改为 logisticsFee
     formData.truckFee = orderDetail.truckFee || 0         // 新增货拉拉费用字段
     formData.otherFees = orderDetail.otherFees || 0
+    formData.no = orderDetail.no || 0
+    formData.logisticsNumber = orderDetail.logisticsNumber || 0
     formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0
     // 填充时间数据
     formData.purchaseApprovalTime = orderDetail.purchaseApprovalTime || null

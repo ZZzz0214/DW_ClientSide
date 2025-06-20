@@ -122,6 +122,28 @@ export const PurchaseOrderApi = {
       params // 使用 params 传递参数
     })
   },
+
+  // 批量更新采购审核状态
+  batchUpdatePurchaseAuditStatus: async (ids: number[], purchaseAuditStatus: number) => {
+    return await request.put({
+      url: `/erp/distribution/batch-update-purchase-audit-status`,
+      params: {
+        ids: ids.join(','),
+        purchaseAuditStatus
+      }
+    })
+  },
+
+  // 批量更新销售审核状态
+  batchUpdateSaleAuditStatus: async (ids: number[], saleAuditStatus: number) => {
+    return await request.put({
+      url: `/erp/distribution/batch-update-sale-audit-status`,
+      params: {
+        ids: ids.join(','),
+        saleAuditStatus
+      }
+    })
+  },
   // 删除采购订单
   // deletePurchaseOrder: async (ids: number[]) => {
   //   return await request.delete({

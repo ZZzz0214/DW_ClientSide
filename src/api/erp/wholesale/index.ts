@@ -96,6 +96,16 @@ export const ErpWholesaleApi = {
     return await request.download({ url: `/erp/wholesale/export-ship`, params });
   },
 
+  // 获得批发采购审核导入模板
+  importPurchaseAuditTemplate: async () => {
+    return await request.download({ url: `/erp/wholesale/get-purchase-audit-import-template` });
+  },
+
+  // 获得批发销售审核导入模板
+  importSaleAuditTemplate: async () => {
+    return await request.download({ url: `/erp/wholesale/get-sale-audit-import-template` });
+  },
+
 
   importWholesaleTemplate: async () => {
     return await request.download({ url: `/erp/wholesale/get-import-template` });

@@ -141,6 +141,15 @@
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
         <el-button
+          type="warning"
+          plain
+          @click="handleBatchAudit(10)"
+          v-hasPermi="['erp:distribution:update-sale-audit-status']"
+          :disabled="selectionList.length === 0"
+        >
+          <Icon icon="ep:close" class="mr-5px" /> 批量反审核
+        </el-button>
+        <el-button
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
@@ -397,6 +406,23 @@ const selectionList = ref<SaleOrderVO[]>([])
 const handleSelectionChange = (rows: SaleOrderVO[]) => {
   selectionList.value = rows
 }
+
+/** 批量审核操作 */
+const handleBatchAudit = async (saleAuditStatus: number) => {
+  try {
+    const ids = selectionList.value.map(item => item.id!)
+    const statusText = saleAuditStatus === 20 ? '审核' : '反审核'
+    await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
+
+    await SaleOrderApi.batchUpdateSaleAuditStatus(ids, saleAuditStatus)
+    message.success(`${statusText}成功`)
+
+    // 刷新列表并清空选择
+    await getList()
+    selectionList.value = []
+  } catch {}
+}
+
 
 /** 初始化 **/
 onMounted(async () => {

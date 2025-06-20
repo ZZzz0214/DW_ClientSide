@@ -7,6 +7,13 @@
       label-width="120px"
       v-loading="formLoading"
     >
+
+      <el-form-item label="订单编号">
+        <el-input v-model="formData.no" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流单号">
+        <el-input v-model="formData.logisticsNumber" :disabled="true" />
+      </el-form-item>
    <!-- 产品名称 -->
    <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
@@ -120,7 +127,9 @@ const formData = reactive({
   totalSaleAmount: 0,
   auditTime: null,
   saleApprovalTime: null as string | null,
-  saleUnapproveTime: null as string | null
+  saleUnapproveTime: null as string | null,
+  no:0,
+  logisticsNumber:0,
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -148,6 +157,8 @@ const open = async (id: number) => {
     formData.saleLogisticsFee = orderDetail.saleLogisticsFee || 0
     formData.saleOtherFees = orderDetail.saleOtherFees || 0
     formData.totalSaleAmount = orderDetail.totalSaleAmount || 0
+    formData.no = orderDetail.no || 0
+    formData.logisticsNumber = orderDetail.logisticsNumber || 0
     formData.auditTime = dayjs().format('YYYY-MM-DD HH:mm:ss') // 默认当前时间
         // 填充时间数据
     formData.saleApprovalTime = orderDetail.saleApprovalTime || null

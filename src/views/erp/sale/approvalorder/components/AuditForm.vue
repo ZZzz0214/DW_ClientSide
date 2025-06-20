@@ -7,6 +7,12 @@
       label-width="120px"
       v-loading="formLoading"
     >
+      <el-form-item label="订单编号">
+        <el-input v-model="formData.no" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="订单号">
+        <el-input v-model="formData.orderNumber" :disabled="true" />
+      </el-form-item>
       <!-- 产品名称 -->
       <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
@@ -121,9 +127,10 @@ const formData = reactive({
   saleShippingFee: 0,
   saleOtherFees: 0,
   totalSaleAmount: 0,
-
   saleApprovalTime: null as string | null,
-  saleUnapproveTime: null as string | null
+  saleUnapproveTime: null as string | null,
+  no:0,
+  orderNumber:0
 })
 
 // 审核验证规则
@@ -151,6 +158,8 @@ const open = async (id: number) => {
     formData.saleShippingFee = orderDetail.saleShippingFee || 0
     formData.saleOtherFees = orderDetail.saleOtherFees || 0
     formData.totalSaleAmount = orderDetail.totalSaleAmount || 0
+    formData.no = orderDetail.no || 0
+    formData.orderNumber = orderDetail.orderNumber || 0
 
         // 填充销售时间数据
     formData.saleApprovalTime = orderDetail.saleApprovalTime || null

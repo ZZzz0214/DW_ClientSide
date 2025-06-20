@@ -141,6 +141,15 @@
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
         <el-button
+          type="warning"
+          plain
+          @click="handleBatchAudit(10)"
+          v-hasPermi="['erp:wholesale:update-status']"
+          :disabled="selectionList.length === 0"
+        >
+          <Icon icon="ep:close" class="mr-5px" /> 批量反审核
+        </el-button>
+        <el-button
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
@@ -421,6 +430,21 @@ const handleAfterSaleWithDetails = (id: number, operationType: 'afterSale' | 'an
   afterSaleFormRef.value.open(id, operationType)  // 传递操作类型给弹窗
 }
 
+/** 批量审核操作 */
+const handleBatchAudit = async (purchaseAuditStatus: number) => {
+  try {
+    const ids = selectionList.value.map(item => item.id)
+    const statusText = purchaseAuditStatus === 20 ? '审核' : '反审核'
+    await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
+
+    await PurchaseOrderApi.batchUpdatePurchaseAuditStatus(ids, purchaseAuditStatus)
+    message.success(`${statusText}成功`)
+
+    // 刷新列表并清空选择
+    await getList()
+    selectionList.value = []
+  } catch {}
+}
 
 /** 导出按钮操作 */
 const handleExport = async () => {

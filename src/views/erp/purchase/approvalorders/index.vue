@@ -141,6 +141,14 @@
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
         <el-button
+          type="warning"
+          plain
+          @click="handleImport"
+          v-hasPermi="['erp:wholesale:import-purchase-audit']"
+        >
+          <Icon icon="ep:upload" class="mr-5px" /> 导入
+        </el-button>
+        <el-button
           type="danger"
           plain
           @click="handleDelete(selectionList.map((item) => item.id))"
@@ -149,6 +157,24 @@
         >
           <Icon icon="ep:delete" class="mr-5px" /> 删除
         </el-button>
+        <el-button
+          type="primary"
+          plain
+          @click="handleBatchAudit(20)"
+          v-hasPermi="['erp:wholesale:update-status']"
+          :disabled="selectionList.length === 0"
+        >
+          <Icon icon="ep:check" class="mr-5px" /> 批量审核
+        </el-button>
+<!--        <el-button-->
+<!--          type="warning"-->
+<!--          plain-->
+<!--          @click="handleBatchAudit(10)"-->
+<!--          v-hasPermi="['erp:wholesale:update-status']"-->
+<!--          :disabled="selectionList.length === 0"-->
+<!--        >-->
+<!--          <Icon icon="ep:close" class="mr-5px" /> 批量反审核-->
+<!--        </el-button>-->
       </el-form-item>
         <el-form-item>
                 <!-- 新增四个合计字段显示框 -->
@@ -190,7 +216,7 @@
       <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" :show-overflow-tooltip="false"/>
       <el-table-column label="备注信息" align="center" prop="remark" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" :show-overflow-tooltip="false"/>
+      <el-table-column label="组品编号" align="center" prop="comboProductNo" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="产品名称" align="center" prop="productName" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" :show-overflow-tooltip="false"/>
@@ -297,6 +323,9 @@
   <PurchaseOrderForm ref="formRef" @success="getList" />
   <AfterSaleForm ref="afterSaleFormRef" @success="getList" />
   <AuditForm ref="auditFormRef" @success="getList" />
+
+  <!-- 导入表单 -->
+  <ImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -306,6 +335,7 @@ import { PurchaseOrderApi, PurchaseOrderVO } from '@/api/erp/purchase/approvalor
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 import AfterSaleForm from './components/AfterSaleForm.vue'
 import AuditForm from './components/AuditForm.vue'
+import ImportForm from './components/ImportForm.vue'
 import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
@@ -435,6 +465,28 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** 导入按钮操作 */
+const importFormRef = ref()
+const handleImport = () => {
+  importFormRef.value.open()
+}
+
+/** 批量审核操作 */
+const handleBatchAudit = async (purchaseAuditStatus: number) => {
+  try {
+    const ids = selectionList.value.map(item => item.id)
+    const statusText = purchaseAuditStatus === 20 ? '审核' : '反审核'
+    await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
+
+    await PurchaseOrderApi.batchUpdatePurchaseAuditStatus(ids, purchaseAuditStatus)
+    message.success(`${statusText}成功`)
+
+    // 刷新列表并清空选择
+    await getList()
+    selectionList.value = []
+  } catch {}
 }
 
 /** 选中操作 */
