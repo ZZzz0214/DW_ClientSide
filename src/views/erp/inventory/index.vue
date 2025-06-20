@@ -161,17 +161,21 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
-        <el-table-column label="产品编号" align="center" prop="productNo" />
-        <el-table-column label="产品名称" align="center" prop="productName" />
-        <el-table-column label="产品简称" align="center" prop="productShortName" />
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品编号" align="center" prop="productNo" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品简称" align="center" prop="productShortName" :show-overflow-tooltip="false"/>
         <el-table-column
           label="品牌名称"
           align="center"
           prop="brand"
+          :show-overflow-tooltip="false"
+          min-width="120"
         >
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brand" />
+            <div style="white-space: pre-wrap; word-break: break-word; line-height: 1.4;">
+              <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brand" />
+            </div>
           </template>
         </el-table-column>
         <el-table-column
@@ -187,7 +191,7 @@
         <el-table-column label="剩余库存" align="center" prop="remainingInventory">
           <template #header>
             <span>剩余库存</span>
-            <el-tooltip content="剩余库存 = 现货库存 - (代发订单中该产品的总数量 + 批发订单中该产品的总数量)，可以为负值" placement="top">
+            <el-tooltip content="剩余库存 = 现货库存 - (该库存创建时间之后的代发订单中该产品的总数量 + 该库存创建时间之后的批发订单中该产品的总数量)，可以为负值" placement="top">
               <Icon icon="ep:question-filled" class="ml-1 text-gray-400" />
             </el-tooltip>
           </template>
@@ -197,7 +201,7 @@
             </span>
           </template>
         </el-table-column>
-        <el-table-column label="备注信息" align="center" prop="remark" />
+        <el-table-column label="备注信息" align="center" prop="remark" :show-overflow-tooltip="false"/>
         <el-table-column
           label="创建人员"
           align="center"

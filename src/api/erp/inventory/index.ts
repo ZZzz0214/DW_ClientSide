@@ -96,5 +96,10 @@ export const InventoryApi = {
   //   formData.append('file', file)
   //   formData.append('updateSupport', String(updateSupport))
   //   return await request.post({ url: `/erp/inventory/import`, data: formData })
-  // }
+  // },
+
+  // 检查产品是否已有库存记录
+  checkProductExists: async (productId: number) => {
+    return await request.get({ url: `/erp/inventory/check-product-exists?productId=` + productId })
+  }
 }

@@ -110,6 +110,7 @@ import { PropType } from 'vue'
 import { copyValueToTarget } from '@/utils'
 import { propTypes } from '@/utils/propTypes'
 import type { InventoryVO } from '@/api/erp/inventory'
+import { InventoryApi } from '@/api/erp/inventory'
 import SelectProduct from './SelectProduct.vue'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 
@@ -172,16 +173,30 @@ const openProductSelect = () => {
 }
 
 /** 处理产品选择 */
-const handleProductSelected = (product: any) => {
-  formData.productId = product.id  // 保存产品ID用于后端
-  formData.productNo = product.no || product.id || ''  // 保存产品编号用于显示
-  formData.productName = product.name || ''
-  formData.productShortName = product.productShortName || ''
-  formData.brand = product.brand || ''
-  formData.category = product.categoryId || ''  // 注意：这里使用categoryId
-  
-  // 同步到父组件的数据
-  Object.assign(props.propFormData, formData)
+const handleProductSelected = async (product: any) => {
+  try {
+    // 检查产品是否已有库存记录（仅在新增时检查）
+    if (!props.propFormData?.id) {
+      const exists = await InventoryApi.checkProductExists(product.id)
+      if (exists) {
+        message.error('该产品已存在库存记录，不能重复添加')
+        return
+      }
+    }
+    
+    formData.productId = product.id  // 保存产品ID用于后端
+    formData.productNo = product.no || product.id || ''  // 保存产品编号用于显示
+    formData.productName = product.name || ''
+    formData.productShortName = product.productShortName || ''
+    formData.brand = product.brand || ''
+    formData.category = product.categoryId || ''  // 注意：这里使用categoryId
+    
+    // 同步到父组件的数据
+    Object.assign(props.propFormData, formData)
+  } catch (error) {
+    console.error('检查产品库存记录失败:', error)
+    message.error('检查产品库存记录失败，请重试')
+  }
 }
 
 /** 将传进来的值赋值给 formData */
