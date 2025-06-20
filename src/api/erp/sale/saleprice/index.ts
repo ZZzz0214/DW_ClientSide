@@ -19,6 +19,86 @@ export interface SalePriceVO {
   tenantId?: number; // 租户编号
 }
 
+// 代发缺失价格VO
+export interface DistributionMissingPriceVO {
+  comboProductId: number; // 组品ID
+  comboProductNo: string; // 组品编号
+  productName: string; // 产品名称
+  customerName: string; // 客户名称
+  distributionPrice?: number; // 当前代发单价
+  orderCount: number; // 订单数量
+  totalProductQuantity: number; // 总产品数量
+  orderNumbers: string[]; // 相关订单编号列表
+  orderIds: number[]; // 相关订单ID列表
+  earliestCreateTime: string; // 最早创建时间
+  latestCreateTime: string; // 最晚创建时间
+}
+
+// 批发缺失价格VO
+export interface WholesaleMissingPriceVO {
+  comboProductId: number; // 组品ID
+  comboProductNo: string; // 组品编号
+  productName: string; // 产品名称
+  customerName: string; // 客户名称
+  wholesalePrice?: number; // 当前批发单价
+  orderCount: number; // 订单数量
+  totalProductQuantity: number; // 总产品数量
+  orderNumbers: string[]; // 相关订单编号列表
+  orderIds: number[]; // 相关订单ID列表
+  earliestCreateTime: string; // 最早创建时间
+  latestCreateTime: string; // 最晚创建时间
+}
+
+// 代发价格设置请求VO
+export interface DistributionPriceSetReqVO {
+  orderIds: number[]; // 订单ID列表
+  groupProductId: number; // 组品ID
+  customerName: string; // 客户名称
+  distributionPrice: number; // 代发单价
+}
+
+// 批发价格设置请求VO
+export interface WholesalePriceSetReqVO {
+  orderIds: number[]; // 订单ID列表
+  groupProductId: number; // 组品ID
+  customerName: string; // 客户名称
+  wholesalePrice: number; // 批发单价
+}
+
+// 统一缺失价格VO
+export interface CombinedMissingPriceVO {
+  comboProductId: number; // 组品ID
+  comboProductNo: string; // 组品编号
+  productName: string; // 产品名称
+  customerName: string; // 客户名称
+  currentDistributionPrice?: number; // 当前代发单价
+  currentWholesalePrice?: number; // 当前批发单价
+  distributionInfo?: {
+    orderCount: number; // 订单数量
+    totalProductQuantity: number; // 总产品数量
+    orderNumbers: string[]; // 相关订单编号列表
+    orderIds: number[]; // 相关订单ID列表
+    earliestCreateTime: string; // 最早创建时间
+    latestCreateTime: string; // 最晚创建时间
+  };
+  wholesaleInfo?: {
+    orderCount: number; // 订单数量
+    totalProductQuantity: number; // 总产品数量
+    orderNumbers: string[]; // 相关订单编号列表
+    orderIds: number[]; // 相关订单ID列表
+    earliestCreateTime: string; // 最早创建时间
+    latestCreateTime: string; // 最晚创建时间
+  };
+}
+
+// 统一价格设置请求VO
+export interface CombinedPriceSetReqVO {
+  groupProductId: number; // 组品ID
+  customerName: string; // 客户名称
+  distributionPrice?: number; // 代发单价
+  wholesalePrice?: number; // 批发单价
+}
+
 // // 销售价格表分页请求VO
 // export interface SalePricePageReqVO {
 //   id?: number; // 编号
@@ -124,5 +204,35 @@ export const SalePriceApi = {
   // 获取缺失价格的销售记录
   getMissingPrices: async (params: any) => {
     return await request.get({ url: `/erp/saleprice/missing-prices`, params });
+  },
+
+  // 获取代发缺失价格记录
+  getDistributionMissingPrices: async (params: any) => {
+    return await request.get({ url: `/erp/saleprice/distribution-missing-prices`, params });
+  },
+
+  // 获取批发缺失价格记录
+  getWholesaleMissingPrices: async (params: any) => {
+    return await request.get({ url: `/erp/saleprice/wholesale-missing-prices`, params });
+  },
+
+  // 批量设置代发价格
+  batchSetDistributionPrices: async (data: DistributionPriceSetReqVO[]) => {
+    return await request.post({ url: `/erp/saleprice/batch-set-distribution-prices`, data });
+  },
+
+  // 批量设置批发价格
+  batchSetWholesalePrices: async (data: WholesalePriceSetReqVO[]) => {
+    return await request.post({ url: `/erp/saleprice/batch-set-wholesale-prices`, data });
+  },
+
+  // 获取统一缺失价格记录（代发+批发）
+  getCombinedMissingPrices: async (params: any) => {
+    return await request.get({ url: `/erp/saleprice/combined-missing-prices`, params });
+  },
+
+  // 批量设置统一价格（代发+批发）
+  batchSetCombinedPrices: async (data: any[]) => {
+    return await request.post({ url: `/erp/saleprice/batch-set-combined-prices`, data });
   }
 };

@@ -114,6 +114,13 @@
           <Icon icon="ep:plus" class="mr-5px" /> 整理
         </el-button>
         <el-button
+          type="success"
+          plain
+          @click="openPriceQuoteDialog"
+        >
+          <Icon icon="ep:price-tag" class="mr-5px" /> 报价
+        </el-button>
+        <el-button
         type="warning"
         plain
         @click="handleImport"
@@ -235,6 +242,9 @@
   <!-- 整理组件 -->
   <SalePriceOrganize ref="organizeRef" />
 
+  <!-- 报价弹窗 -->
+  <PriceQuoteDialog ref="priceQuoteDialogRef" />
+
   <!-- 表单弹窗：添加/修改 -->
   <SalePriceForm ref="formRef" @success="getList" />
   <SalePriceImportForm ref="importFormRef" @success="getList" />
@@ -245,6 +255,7 @@ import download from '@/utils/download'
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice'
 import { ref } from 'vue';
 import SalePriceOrganize from './components/SalePriceOrganize.vue';
+import PriceQuoteDialog from './components/PriceQuoteDialog.vue';
 import SalePriceForm from './SalePriceForm.vue'
 import {SaleOrderApi} from "@/api/erp/sale/orders";
 import {dateFormatter} from "@/utils/formatTime";
@@ -276,9 +287,16 @@ const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
 const organizeRef = ref(null); // 引用子组件
+const priceQuoteDialogRef = ref(null); // 报价弹窗引用
+
 // 打开整理弹窗
 const openOrganize = () => {
   organizeRef.value.open();
+};
+
+// 打开报价弹窗
+const openPriceQuoteDialog = () => {
+  priceQuoteDialogRef.value.open();
 };
 
 /** 查询列表 */
