@@ -145,5 +145,16 @@ export const SaleOrderApi = {
         saleAuditStatus
       }
     })
+  },
+
+  // 批量更新销售售后状态
+  batchUpdateSaleAfterSales: async (ids: number[], saleAfterSalesStatus: number) => {
+    return await request.put({
+      url: `/erp/distribution/batch-update-sale-after-sales`,
+      params: {
+        ids: ids.join(','),
+        saleAfterSalesStatus
+      }
+    })
   }
 }

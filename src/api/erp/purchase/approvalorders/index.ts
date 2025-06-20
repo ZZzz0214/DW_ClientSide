@@ -201,5 +201,27 @@ export const PurchaseOrderApi = {
   ,
   exportPurchaseOrder4: async (params: any) => {
     return await request.download({ url: `/erp/wholesale/sale/export-unapproved`, params })
+  },
+
+  // 批量更新采购售后状态
+  batchUpdatePurchaseAfterSales: async (ids: number[], purchaseAfterSalesStatus: number) => {
+    return await request.put({
+      url: `/erp/wholesale/batch-update-purchase-after-sales`,
+      params: {
+        ids: ids.join(','),
+        purchaseAfterSalesStatus
+      }
+    })
+  },
+
+  // 批量更新销售售后状态
+  batchUpdateSaleAfterSales: async (ids: number[], saleAfterSalesStatus: number) => {
+    return await request.put({
+      url: `/erp/wholesale/batch-update-sale-after-sales`,
+      params: {
+        ids: ids.join(','),
+        saleAfterSalesStatus
+      }
+    })
   }
 }

@@ -193,5 +193,27 @@ export const PurchaseOrderApi = {
     return await request.download({
       url: `/erp/distribution/purchase/get-import-template`
     })
+  },
+
+  // 批量更新采购售后状态
+  batchUpdatePurchaseAfterSales: async (ids: number[], purchaseAfterSalesStatus: number) => {
+    return await request.put({
+      url: `/erp/distribution/batch-update-purchase-after-sales`,
+      params: {
+        ids: ids.join(','),
+        purchaseAfterSalesStatus
+      }
+    })
+  },
+
+  // 批量更新销售售后状态
+  batchUpdateSaleAfterSales: async (ids: number[], saleAfterSalesStatus: number) => {
+    return await request.put({
+      url: `/erp/distribution/batch-update-sale-after-sales`,
+      params: {
+        ids: ids.join(','),
+        saleAfterSalesStatus
+      }
+    })
   }
 }

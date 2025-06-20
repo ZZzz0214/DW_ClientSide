@@ -166,6 +166,24 @@
         >
           <Icon icon="ep:check" class="mr-5px" /> 批量审核
         </el-button>
+        <el-button
+          type="warning"
+          plain
+          @click="handleBatchAfterSales(40)"
+          v-hasPermi="['erp:wholesale:update-after-sales']"
+          :disabled="selectionList.length === 0"
+        >
+          <Icon icon="ep:service" class="mr-5px" /> 批量售后
+        </el-button>
+        <el-button
+          type="info"
+          plain
+          @click="handleBatchAfterSales(30)"
+          v-hasPermi="['erp:wholesale:update-after-sales']"
+          :disabled="selectionList.length === 0"
+        >
+          <Icon icon="ep:refresh-left" class="mr-5px" /> 批量反售后
+        </el-button>
 <!--        <el-button-->
 <!--          type="warning"-->
 <!--          plain-->
@@ -176,23 +194,34 @@
 <!--          <Icon icon="ep:close" class="mr-5px" /> 批量反审核-->
 <!--        </el-button>-->
       </el-form-item>
-        <el-form-item>
-                <!-- 新增四个合计字段显示框 -->
-        <el-form-item label="批发出货单价合计" style="margin-left: 20px;" label-width="140px">
-          <el-input v-model="totalSalePrice" disabled class="!w-120px" placeholder="无数据" />
-        </el-form-item>
-        <el-form-item label="批发货拉拉费合计" style="margin-left: 20px;" label-width="140px">
-          <el-input v-model="totalSaleTruckFee" disabled class="!w-120px" placeholder="无数据" />
-        </el-form-item>
-        <el-form-item label="批发出货物流费用合计" style="margin-left: 20px;" label-width="160px">
-          <el-input v-model="totalSaleLogisticsFee" disabled class="!w-120px" placeholder="无数据" />
-        </el-form-item>
-        <el-form-item label="批发出货杂费合计" style="margin-left: 20px;" label-width="140px">
-          <el-input v-model="totalSaleOtherFees" disabled class="!w-120px" placeholder="无数据" />
-        </el-form-item>
-          <el-form-item label="批发出货总额合计" style="margin-left: 20px;" label-width="140px">
-            <el-input v-model="totalSaleAmount" disabled class="!w-120px" placeholder="无数据" />
-          </el-form-item>
+      <!-- 合计字段统一行 -->
+      <el-form-item class="summary-row">
+        <div class="summary-container">
+          <div class="summary-item">
+            <span class="summary-label">批发出货单价合计：</span>
+            <el-input v-model="totalSalePrice" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">批发货拉拉费合计：</span>
+            <el-input v-model="totalSaleTruckFee" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">批发出货物流费用合计：</span>
+            <el-input v-model="totalSaleLogisticsFee" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">批发出货杂费合计：</span>
+            <el-input v-model="totalSaleOtherFees" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">批发出货总额合计：</span>
+            <el-input v-model="totalSaleAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">售后审核费用合计：</span>
+            <el-input v-model="totalSaleAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+        </div>
       </el-form-item>
 
     </el-form>
@@ -354,6 +383,7 @@ const totalSaleTruckFee = ref<string>('')
 const totalSaleLogisticsFee = ref<string>('')
 const totalSaleOtherFees = ref<string>('')
 const totalSaleAmount = ref<string>('')
+const totalSaleAfterSalesAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -387,6 +417,7 @@ const getList = async () => {
     totalSaleLogisticsFee.value = data.totalSaleLogisticsFee?.toFixed(2) || ''
     totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
     totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
+    totalSaleAfterSalesAmount.value = data.totalSaleAfterSalesAmount?.toFixed(2) || ''
 
     list.value = data.pageResult.list
     total.value = data.pageResult.total
@@ -492,6 +523,22 @@ const handleBatchAudit = async (saleAuditStatus: number) => {
   } catch {}
 }
 
+/** 批量售后操作 */
+const handleBatchAfterSales = async (saleAfterSalesStatus: number) => {
+  try {
+    const ids = selectionList.value.map(item => item.id)
+    const statusText = saleAfterSalesStatus === 40 ? '售后' : '反售后'
+    await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
+
+    await PurchaseOrderApi.batchUpdateSaleAfterSales(ids, saleAfterSalesStatus)
+    message.success(`${statusText}成功`)
+
+    // 刷新列表并清空选择
+    await getList()
+    selectionList.value = []
+  } catch {}
+}
+
 /** 选中操作 */
 const selectionList = ref<PurchaseOrderVO[]>([])
 const handleSelectionChange = (rows: PurchaseOrderVO[]) => {
@@ -507,3 +554,45 @@ onMounted(async () => {
   userList.value = await UserApi.getSimpleUserList()
 })
 </script>
+
+<style scoped>
+.summary-row {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.summary-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: #606266;
+  margin-right: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.summary-input {
+  width: 120px;
+}
+
+.summary-input :deep(.el-input__inner) {
+  font-weight: 500;
+  color: #409eff;
+  text-align: right;
+}
+</style>
