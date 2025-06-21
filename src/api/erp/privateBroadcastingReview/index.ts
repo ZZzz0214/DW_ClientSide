@@ -22,9 +22,7 @@ export interface ErpPrivateBroadcastingReviewRespVO {
   sampleSendDate?: string // 寄样日期
   groupStartDate?: string // 开团日期
   groupSales?: number // 开团销量
-  reGroupDate?: string // 复团日期
   repeatGroupDate?: string // 复团日期
-  reGroupSales?: number // 复团销量
   repeatGroupSales?: number // 复团销量
   remark?: string // 备注信息
   createTime?: Date // 创建时间
@@ -52,9 +50,7 @@ export interface ErpPrivateBroadcastingReviewSaveReqVO {
   sampleSendDate?: string // 寄样日期
   groupStartDate?: string // 开团日期
   groupSales?: number // 开团销量
-  reGroupDate?: string // 复团日期
   repeatGroupDate?: string // 复团日期
-  reGroupSales?: number // 复团销量
   repeatGroupSales?: number // 复团销量
   remark?: string // 备注信息
 }
@@ -66,7 +62,58 @@ export interface ErpPrivateBroadcastingReviewPageReqVO {
   createTime?: Date[] // 创建时间范围
 }
 
-// ERP 私播复盘 API
+// 查询私播复盘分页
+export const getPrivateBroadcastingReviewPage = async (params: ErpPrivateBroadcastingReviewPageReqVO) => {
+  return await request.get({ url: `/erp/private-broadcasting-review/page`, params })
+}
+
+// 查询私播复盘详情
+export const getPrivateBroadcastingReview = async (id: number) => {
+  return await request.get({ url: `/erp/private-broadcasting-review/get?id=${id}` })
+}
+
+// 新增私播复盘
+export const createPrivateBroadcastingReview = async (data: ErpPrivateBroadcastingReviewSaveReqVO) => {
+  return await request.post({ url: `/erp/private-broadcasting-review/create`, data })
+}
+
+// 修改私播复盘
+export const updatePrivateBroadcastingReview = async (data: ErpPrivateBroadcastingReviewSaveReqVO) => {
+  return await request.put({ url: `/erp/private-broadcasting-review/update`, data })
+}
+
+// 删除私播复盘
+export const deletePrivateBroadcastingReview = async (ids: number[]) => {
+  if (ids.length === 1) {
+    // 单个删除
+    return await request.delete({ url: `/erp/private-broadcasting-review/delete`, params: { id: ids[0] } })
+  } else {
+    // 批量删除
+    return await request.delete({ url: `/erp/private-broadcasting-review/batch-delete`, params: { ids: ids.join(',') } })
+  }
+}
+
+// 根据ID列表获取私播复盘列表
+export const getPrivateBroadcastingReviewListByIds = async (ids: number[]) => {
+  return await request.get({ url: `/erp/private-broadcasting-review/list-by-ids`, params: { ids } })
+}
+
+// 导出私播复盘
+export const exportPrivateBroadcastingReview = async (params: ErpPrivateBroadcastingReviewPageReqVO) => {
+  return await request.download({ url: `/erp/private-broadcasting-review/export-excel`, params })
+}
+
+// 下载私播复盘导入模版
+export const importPrivateBroadcastingReviewTemplate = async () => {
+  return await request.download({ url: `/erp/private-broadcasting-review/get-import-template` })
+}
+
+// 导入私播复盘
+export const importPrivateBroadcastingReview = async (params: any) => {
+  return await request.upload({ url: `/erp/private-broadcasting-review/import`, ...params })
+}
+
+// ERP 私播复盘 API (保持向后兼容)
 export const ErpPrivateBroadcastingReviewApi = {
   // 查询私播复盘分页
   getPrivateBroadcastingReviewPage: async (params: ErpPrivateBroadcastingReviewPageReqVO) => {
@@ -90,7 +137,13 @@ export const ErpPrivateBroadcastingReviewApi = {
 
   // 删除私播复盘
   deletePrivateBroadcastingReview: async (ids: number[]) => {
-    return await request.delete({ url: `/erp/private-broadcasting-review/delete`, params: { ids: ids.join(',') } })
+    if (ids.length === 1) {
+      // 单个删除
+      return await request.delete({ url: `/erp/private-broadcasting-review/delete`, params: { id: ids[0] } })
+    } else {
+      // 批量删除
+      return await request.delete({ url: `/erp/private-broadcasting-review/batch-delete`, params: { ids: ids.join(',') } })
+    }
   },
 
   // 根据ID列表获取私播复盘列表

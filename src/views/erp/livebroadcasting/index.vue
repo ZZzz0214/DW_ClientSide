@@ -166,6 +166,15 @@
           >
             <Icon icon="ep:delete" class="mr-5px" /> 删除
           </el-button>
+          <el-button
+            type="info"
+            plain
+            @click="handleCopy"
+            :disabled="selectionList.length !== 1"
+            v-hasPermi="['erp:livebroadcasting:create']"
+          >
+            <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
+          </el-button>
         </el-form-item>
       </el-form>
     </ContentWrap>
@@ -220,7 +229,7 @@
           </template>
         </el-table-column>
         <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" />
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column label="操作" align="center" width="240">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
             <el-button
@@ -230,6 +239,14 @@
               v-hasPermi="['erp:livebroadcasting:update']"
             >
               编辑
+            </el-button>
+            <el-button
+              link
+              type="info"
+              @click="handleCopyRow(scope.row)"
+              v-hasPermi="['erp:livebroadcasting:create']"
+            >
+              复制
             </el-button>
             <el-button
               link
@@ -345,6 +362,8 @@
 
   const openForm = (type: string, id?: number) => {
     if (type === 'create') {
+      // 清除可能存在的复制数据
+      sessionStorage.removeItem('copyLiveBroadcastingData')
       push({ name: 'ErpLiveBroadcastingAdd' })
     } else if (type === 'update' && typeof id === 'number') {
       push({ name: 'ErpLiveBroadcastingEdit', params: { id } })
@@ -412,5 +431,39 @@
   const getImageUrls = (images: string | undefined): string[] => {
     if (!images) return []
     return images.split(',').map(img => img.trim()).filter(img => img)
+  }
+
+  /** 复制新增按钮操作 */
+  const handleCopy = () => {
+    if (selectionList.value.length !== 1) {
+      message.warning('请选择一条数据进行复制')
+      return
+    }
+    const copyData = selectionList.value[0]
+    openFormWithCopyData(copyData)
+  }
+
+  /** 操作列复制按钮操作 */
+  const handleCopyRow = (row: LiveBroadcastingVO) => {
+    openFormWithCopyData(row)
+  }
+
+  /** 打开表单页面并传递复制数据 */
+  const openFormWithCopyData = (copyData: LiveBroadcastingVO) => {
+    // 清除不需要复制的字段
+    const cleanCopyData = {
+      ...copyData,
+      id: undefined,
+      no: '', // 编号需要重新生成
+      createTime: undefined,
+      updateTime: undefined,
+      creator: undefined,
+      updater: undefined
+    }
+    
+    // 将复制数据存储到 sessionStorage
+    sessionStorage.setItem('copyLiveBroadcastingData', JSON.stringify(cleanCopyData))
+    
+    push({ name: 'ErpLiveBroadcastingAdd', query: { copy: 'true' } })
   }
   </script>

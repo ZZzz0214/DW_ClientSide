@@ -40,7 +40,7 @@
   <script lang="ts" setup>
   import { cloneDeep } from 'lodash-es'
   import { useTagsViewStore } from '@/store/modules/tagsView'
-  import * as LiveBroadcastingReviewApi from '@/api/erp/livebroadcastingreview'
+  import { LiveBroadcastingReviewApi } from '@/api/erp/livebroadcastingreview'
   import InfoForm from './InfoForm.vue'
   import PriceForm from './PriceForm.vue'
   import ProgressForm from './ProgressForm.vue'
@@ -50,7 +50,7 @@
   const { t } = useI18n() // 国际化
   const message = useMessage() // 消息弹窗
   const { push, currentRoute } = useRouter() // 路由
-  const { params, name } = useRoute() // 查询参数
+  const { params, name, query } = useRoute() // 查询参数
   const { delView } = useTagsViewStore() // 视图操作
 
   const formLoading = ref(false) // 表单的加载中
@@ -73,7 +73,7 @@
     remark: '',
     customerName: '', // 客户名称（用于显示）
     livePrice: 0,
-    status: undefined, // 货盘状态
+    liveStatus: undefined, // 货盘状态
     livePlatform: '', // 直播平台
     liveCommission: 0, // 直播佣金
     publicCommission: 0, // 公开佣金
@@ -90,12 +90,29 @@
     if ('ErpLiveBroadcastingReviewDetail' === name) {
       isDetail.value = true
     }
+    
+    // 检查是否是复制操作
+    if (query.copy === 'true') {
+      const copyDataStr = localStorage.getItem('copyLiveBroadcastingReviewData')
+      if (copyDataStr) {
+        try {
+          const copyData = JSON.parse(copyDataStr)
+          formData.value = { ...formData.value, ...copyData }
+          localStorage.removeItem('copyLiveBroadcastingReviewData') // 使用后清除
+          message.success('已自动填充复制的数据')
+          return
+        } catch (error) {
+          console.error('解析复制数据失败:', error)
+        }
+      }
+    }
+    
     const id = params.id as unknown as number
     if (id) {
       formLoading.value = true
       try {
-        const res = await LiveBroadcastingReviewApi.LiveBroadcastingReviewApi.getLiveBroadcastingReview(id)
-        console.log("数据是"+res.li)
+        const res = await LiveBroadcastingReviewApi.getLiveBroadcastingReview(id)
+        console.log("获取到的数据:", res)
         formData.value = res
       } finally {
         formLoading.value = false
@@ -117,10 +134,10 @@
       const id = params.id as unknown as number
 
       if (!id) {
-        await LiveBroadcastingReviewApi.LiveBroadcastingReviewApi.createLiveBroadcastingReview(data)
+        await LiveBroadcastingReviewApi.createLiveBroadcastingReview(data)
         message.success(t('common.createSuccess'))
       } else {
-        await LiveBroadcastingReviewApi.LiveBroadcastingReviewApi.updateLiveBroadcastingReview(data)
+        await LiveBroadcastingReviewApi.updateLiveBroadcastingReview(data)
         message.success(t('common.updateSuccess'))
       }
 

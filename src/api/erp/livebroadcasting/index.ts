@@ -5,7 +5,6 @@ export interface LiveBroadcastingVO {
   id?: number // 直播货盘编号
   no?: string // 编号
   productImage?: string // 产品图片
-  brandId?: number // 品牌ID
   brandName?: string // 品牌名称
   productName?: string // 产品名称
   productSpec?: string // 产品规格
@@ -31,7 +30,6 @@ export interface LiveBroadcastingSaveReqVO {
   id?: number // 直播货盘ID
   no: string // 编号
   productImage?: string // 产品图片
-  brandId: number // 品牌ID
   brandName?: string // 品牌名称
   productName: string // 产品名称
   productSpec?: string // 产品规格
@@ -54,7 +52,6 @@ export interface LiveBroadcastingSaveReqVO {
 // ERP 直播货盘分页 Request VO
 export interface LiveBroadcastingPageReqVO {
   no?: string // 编号
-  brandId?: number // 品牌ID
   brandName?: string // 品牌名称
   productName?: string // 产品名称
   createTime?: Date[] // 创建时间

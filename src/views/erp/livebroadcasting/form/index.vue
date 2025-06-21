@@ -53,7 +53,7 @@
   const { t } = useI18n() // 国际化
   const message = useMessage() // 消息弹窗
   const { push, currentRoute } = useRouter() // 路由
-  const { params, name } = useRoute() // 查询参数
+  const { params, name, query } = useRoute() // 查询参数
   const { delView } = useTagsViewStore() // 视图操作
 
   const formLoading = ref(false) // 表单的加载中
@@ -67,6 +67,7 @@
   const formData = ref<LiveBroadcastingApi.LiveBroadcastingVO>({
     no: '',
     productImage: '',
+    brandName: '',
     productName: '',
     productSpec: '',
     productSku: '',
@@ -75,8 +76,6 @@
     productStock: 0,
     coreSellingPoint: '',
     remark: '',
-    brandId: undefined,
-    brandName: '',
     liveStatus: undefined,
     livePrice: 0,
     liveCommission: 0,
@@ -103,9 +102,32 @@
           res.productImage = res.productImage.split(',').filter(img => img.trim())
         }
         
+
+        
         formData.value = res
       } finally {
         formLoading.value = false
+      }
+    } else if (query.copy === 'true') {
+      // 处理复制数据
+      const copyDataStr = sessionStorage.getItem('copyLiveBroadcastingData')
+      if (copyDataStr) {
+        try {
+          const copyData = JSON.parse(copyDataStr)
+          
+          // 处理产品图片：将逗号分隔的字符串转换为数组
+          if (copyData.productImage && typeof copyData.productImage === 'string') {
+            copyData.productImage = copyData.productImage.split(',').filter(img => img.trim())
+          }
+          
+
+          
+          formData.value = { ...formData.value, ...copyData }
+          // 清除 sessionStorage 中的数据
+          sessionStorage.removeItem('copyLiveBroadcastingData')
+        } catch (error) {
+          console.error('解析复制数据失败:', error)
+        }
       }
     }
   }

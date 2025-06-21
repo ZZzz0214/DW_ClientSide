@@ -119,11 +119,16 @@ const rules = {
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 
+// 内部更新标记，避免循环更新
+const isInternalUpdate = ref(false)
+
 // 将传进来的值赋值给 formData
 watch(
   () => props.propFormData,
   (data) => {
-    if (!data) return
+    if (!data || isInternalUpdate.value) return
+    
+    isInternalUpdate.value = true
     
     // 复制数据
     copyValueToTarget(formData, data)
@@ -136,6 +141,15 @@ watch(
     } else {
       formData.productImage = []
     }
+    
+    // 确保货盘状态正确赋值
+    if (data.privateStatus !== undefined) {
+      formData.privateStatus = data.privateStatus
+    }
+    
+    nextTick(() => {
+      isInternalUpdate.value = false
+    })
   },
   { immediate: true }
 )
@@ -144,7 +158,9 @@ watch(
 watch(
   formData,
   (newData) => {
-    emit('update:formData', { ...newData })
+    if (!isInternalUpdate.value) {
+      emit('update:formData', { ...newData })
+    }
   },
   { deep: true }
 )

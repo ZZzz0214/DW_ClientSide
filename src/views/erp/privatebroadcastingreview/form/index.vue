@@ -83,8 +83,8 @@
     sampleSendDate: '',
     groupStartDate: '',
     groupSales: 0,
-    reGroupDate: '',
-    reGroupSales: 0
+    repeatGroupDate: '',
+    repeatGroupSales: 0
   })
 
   /** 获得详情 */
@@ -98,9 +98,11 @@
     if (id) {
       formLoading.value = true
       try {
-        const res = await PrivateBroadcastingReviewApi.ErpPrivateBroadcastingReviewApi.getPrivateBroadcastingReview(id)
-        console.log(formData.value)
+        const res = await PrivateBroadcastingReviewApi.getPrivateBroadcastingReview(id)
         formData.value = res
+      } catch (error) {
+        console.error('获取详情失败:', error)
+        message.error('获取详情失败')
       } finally {
         formLoading.value = false
       }
@@ -108,7 +110,7 @@
       // 复制模式
       formLoading.value = true
       try {
-        const res = await PrivateBroadcastingReviewApi.ErpPrivateBroadcastingReviewApi.getPrivateBroadcastingReview(copyId)
+        const res = await PrivateBroadcastingReviewApi.getPrivateBroadcastingReview(copyId)
         // 复制数据，但重置关键字段
         formData.value = {
           ...res,
@@ -117,6 +119,9 @@
           createTime: undefined,
           updateTime: undefined
         }
+      } catch (error) {
+        console.error('获取复制数据失败:', error)
+        message.error('获取复制数据失败')
       } finally {
         formLoading.value = false
       }
@@ -137,10 +142,10 @@
       const id = params.id as unknown as number
 
       if (!id) {
-        await PrivateBroadcastingReviewApi.ErpPrivateBroadcastingReviewApi.createPrivateBroadcastingReview(data)
+        await PrivateBroadcastingReviewApi.createPrivateBroadcastingReview(data)
         message.success(t('common.createSuccess'))
       } else {
-        await PrivateBroadcastingReviewApi.ErpPrivateBroadcastingReviewApi.updatePrivateBroadcastingReview(data)
+        await PrivateBroadcastingReviewApi.updatePrivateBroadcastingReview(data)
         message.success(t('common.updateSuccess'))
       }
 

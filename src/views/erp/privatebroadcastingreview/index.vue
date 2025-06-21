@@ -215,7 +215,7 @@
       <el-table-column label="客户名称" align="center" prop="customerName" />
       <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
       <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" />
-      <el-table-column label="操作" align="center" width="200">
+      <el-table-column label="操作" align="center" width="260">
         <template #default="scope">
           <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
           <el-button
@@ -225,6 +225,14 @@
             v-hasPermi="['erp:private-broadcasting-review:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="info"
+            @click="openForm('copy', scope.row.id)"
+            v-hasPermi="['erp:private-broadcasting-review:create']"
+          >
+            复制
           </el-button>
           <el-button
             link
@@ -253,7 +261,8 @@
 <script setup lang="ts">
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { ErpPrivateBroadcastingReviewApi, ErpPrivateBroadcastingReviewRespVO } from '@/api/erp/privateBroadcastingReview'
+import * as ErpPrivateBroadcastingReviewApi from '@/api/erp/privateBroadcastingReview'
+import { ErpPrivateBroadcastingReviewRespVO } from '@/api/erp/privateBroadcastingReview'
 import PrivateBroadcastingReviewImportForm from './form/PrivateBroadcastingReviewImportForm.vue'
 import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
 /** ERP 私播复盘列表 */
@@ -369,7 +378,10 @@ const handleDelete = async (ids: number[]) => {
     message.success(t('common.delSuccess'))
     await getList()
     selectionList.value = selectionList.value.filter((item) => !ids.includes(item.id))
-  } catch {}
+  } catch (error) {
+    console.error('删除失败:', error)
+    message.error('删除失败，请检查数据')
+  }
 }
 
 /** 导出按钮操作 */

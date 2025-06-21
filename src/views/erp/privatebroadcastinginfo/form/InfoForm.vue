@@ -275,6 +275,12 @@ watch(
   (data) => {
     if (!data) return
     copyValueToTarget(formData, data)
+    
+    // 如果是复制操作，清除不应该复制的字段
+    if (data.id === undefined && data.no === '') {
+      formData.id = undefined
+      formData.no = ''
+    }
   },
   { immediate: true }
 )

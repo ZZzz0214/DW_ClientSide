@@ -183,6 +183,15 @@
           >
             <Icon icon="ep:delete" class="mr-5px" /> 删除
           </el-button>
+          <el-button
+            type="warning"
+            plain
+            @click="handleCopy(selectionList.map((item) => item.id))"
+            v-hasPermi="['erp:livebroadcastingreview:create']"
+            :disabled="selectionList.length === 0"
+          >
+            <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
+          </el-button>
         </el-form-item>
       </el-form>
     </ContentWrap>
@@ -216,7 +225,7 @@
         <el-table-column label="客户名称" align="center" prop="customerName" />
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
         <el-table-column label="开播日期" align="center" prop="liveStartDate" :formatter="dateFormatter2" />
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column label="操作" align="center" width="260">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
             <el-button
@@ -226,6 +235,14 @@
               v-hasPermi="['erp:livebroadcastingreview:update']"
             >
               编辑
+            </el-button>
+            <el-button
+              link
+              type="warning"
+              @click="handleCopy([scope.row.id])"
+              v-hasPermi="['erp:livebroadcastingreview:create']"
+            >
+              复制
             </el-button>
             <el-button
               link
@@ -391,6 +408,37 @@
 
   const handleImport = () => {
     importFormRef.value.open()
+  }
+
+  /** 复制新增操作 */
+  const handleCopy = async (ids: number[]) => {
+    if (ids.length === 0) {
+      message.warning('请选择要复制的数据')
+      return
+    }
+    
+    try {
+      // 获取第一条数据作为模板
+      const sourceData = await LiveBroadcastingReviewApi.copyLiveBroadcastingReview(ids[0])
+      
+      // 将数据存储到 localStorage，供新增页面使用
+      const copyData = {
+        ...sourceData,
+        id: undefined, // 清除ID，作为新增
+        no: '', // 清除编号，让后端自动生成
+        createTime: undefined, // 清除创建时间
+        updateTime: undefined // 清除更新时间
+      }
+      
+      localStorage.setItem('copyLiveBroadcastingReviewData', JSON.stringify(copyData))
+      
+      // 跳转到新增页面
+      push({ name: 'ErpLiveBroadcastingReviewAdd', query: { copy: 'true' } })
+      
+      message.success('已复制数据，请完善信息后保存')
+    } catch (error) {
+      message.error('复制失败，请重试')
+    }
   }
 
   /** 初始化 **/

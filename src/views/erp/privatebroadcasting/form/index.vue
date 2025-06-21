@@ -53,6 +53,7 @@
 import { cloneDeep } from 'lodash-es'
 import { useTagsViewStore } from '@/store/modules/tagsView'
 import * as ErpPrivateBroadcastingApi from '@/api/erp/privateBroadcasting'
+import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import InfoForm from './InfoForm.vue'
 import PriceForm from './PriceForm.vue'
 import DataForm from './DataForm.vue'
@@ -147,7 +148,7 @@ const getDetail = async () => {
         no: '',
         createTime: undefined,
         updateTime: undefined,
-        privateStatus: '未设置', // 重置为未设置状态
+        // privateStatus 保持原有值，不重置
         marketPrice: res.marketPrice != null ? Number(res.marketPrice) : undefined,
         productStock: res.productStock != null ? Number(res.productStock) : undefined,
         livePrice: res.livePrice != null ? Number(res.livePrice) : undefined,

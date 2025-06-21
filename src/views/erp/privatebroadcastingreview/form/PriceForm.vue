@@ -92,13 +92,33 @@
     productNakedPrice: [{ required: true, message: '产品裸价不能为空', trigger: 'blur' }]
   })
 
+  // 内部更新标记，避免循环更新
+  const isInternalUpdate = ref(false)
+
   watch(
     () => props.propFormData,
     (data) => {
-      if (!data) return
+      if (!data || isInternalUpdate.value) return
+      
+      isInternalUpdate.value = true
       copyValueToTarget(formData, data)
+      
+      nextTick(() => {
+        isInternalUpdate.value = false
+      })
     },
     { immediate: true }
+  )
+
+  // 监听formData变化，实时同步到父组件
+  watch(
+    formData,
+    (newData) => {
+      if (!isInternalUpdate.value) {
+        Object.assign(props.propFormData, newData)
+      }
+    },
+    { deep: true }
   )
 
   // 客户选择弹窗

@@ -168,6 +168,15 @@
         >
           <Icon icon="ep:delete" class="mr-5px" /> 删除
         </el-button>
+        <el-button
+          type="info"
+          plain
+          @click="handleCopy"
+          :disabled="selectionList.length !== 1"
+          v-hasPermi="['erp:private-broadcasting-info:create']"
+        >
+          <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -220,7 +229,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="200">
+      <el-table-column label="操作" align="center" width="240">
         <template #default="scope">
           <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
           <el-button
@@ -230,6 +239,14 @@
             v-hasPermi="['erp:private-broadcasting-info:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="info"
+            @click="handleCopyRow(scope.row)"
+            v-hasPermi="['erp:private-broadcasting-info:create']"
+          >
+            复制
           </el-button>
           <el-button
             link
@@ -393,9 +410,45 @@ const handleImport = () => {
   importFormRef.value.open()
 }
 
+/** 复制新增按钮操作 */
+const handleCopy = () => {
+  if (selectionList.value.length !== 1) {
+    message.warning('请选择一条数据进行复制')
+    return
+  }
+  const copyData = selectionList.value[0]
+  openFormWithCopyData(copyData)
+}
+
+/** 操作列复制按钮操作 */
+const handleCopyRow = (row: ErpPrivateBroadcastingInfoRespVO) => {
+  openFormWithCopyData(row)
+}
+
+/** 打开表单页面并传递复制数据 */
+const openFormWithCopyData = (copyData: ErpPrivateBroadcastingInfoRespVO) => {
+  // 清除不需要复制的字段
+  const cleanCopyData = {
+    ...copyData,
+    id: undefined,
+    no: '', // 编号需要重新生成
+    createTime: undefined,
+    updateTime: undefined,
+    creator: undefined,
+    updater: undefined
+  }
+  
+  // 将复制数据存储到 sessionStorage
+  sessionStorage.setItem('copyPrivateBroadcastingInfoData', JSON.stringify(cleanCopyData))
+  
+  push({ name: 'ErpPrivateBroadcastingInfoAdd', query: { copy: 'true' } })
+}
+
 /** 打开表单页面 */
 const openForm = (type: string, id?: number) => {
   if (type === 'create') {
+    // 清除可能存在的复制数据
+    sessionStorage.removeItem('copyPrivateBroadcastingInfoData')
     push({ name: 'ErpPrivateBroadcastingInfoAdd' })
   } else if (type === 'update' && typeof id === 'number') {
     push({ name: 'ErpPrivateBroadcastingInfoEdit', params: { id } })

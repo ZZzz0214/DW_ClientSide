@@ -33,14 +33,14 @@
       </el-form-item>
 
       <!-- 品牌名称 -->
-      <el-form-item label="品牌名称" prop="brandId">
+      <el-form-item label="品牌名称" prop="brandName">
         <div v-if="isDetail" class="w-240px" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-          <dict-tag v-if="formData.brandId !== undefined && formData.brandId !== null" :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="formData.brandId" />
+          <dict-tag v-if="formData.brandName" :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="formData.brandName" />
           <span v-else style="color: #c0c4cc;">未设置</span>
         </div>
         <el-select
           v-else
-          v-model="formData.brandId"
+          v-model="formData.brandName"
           placeholder="请选择品牌名称"
           class="w-240px"
           filterable
@@ -50,7 +50,7 @@
             v-for="dict in filteredBrandOptions"
             :key="dict.value"
             :label="dict.label"
-            :value="Number(dict.value)"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -184,7 +184,6 @@
     no: '',
     productImage: '',
     brandName: '',
-    brandId: undefined,
     productName: '',
     productSpec: '',
     productSku: '',
@@ -203,7 +202,7 @@
   const rules = reactive({
     no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
     productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-    brandId: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
+    brandName: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
     marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
     productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
     liveStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
@@ -250,10 +249,13 @@
         formData.productImage = [...data.productImage]
       }
       
-      // 确保数值类型字段正确转换
-      if (data.brandId !== undefined && data.brandId !== null) {
-        formData.brandId = Number(data.brandId)
+      // 如果是复制操作，清除不应该复制的字段
+      if (data.id === undefined && data.no === '') {
+        formData.id = undefined
+        formData.no = ''
       }
+      
+      // 确保数值类型字段正确转换
       if (data.liveStatus !== undefined && data.liveStatus !== null) {
         formData.liveStatus = Number(data.liveStatus)
       }

@@ -243,7 +243,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" width="200">
+      <el-table-column label="操作" align="center" width="260">
         <template #default="scope">
           <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
           <el-button
@@ -253,6 +253,14 @@
             v-hasPermi="['erp:private-broadcasting:update']"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="info"
+            @click="openForm('copy', scope.row.id)"
+            v-hasPermi="['erp:private-broadcasting:create']"
+          >
+            复制
           </el-button>
           <el-button
             link

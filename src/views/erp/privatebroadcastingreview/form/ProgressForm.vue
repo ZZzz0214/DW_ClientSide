@@ -39,7 +39,7 @@
       </el-form-item>
 
       <!-- 复团日期 -->
-      <el-form-item label="复团日期" prop="reGroupDate">
+      <el-form-item label="复团日期" prop="repeatGroupDate">
         <el-date-picker
           v-model="formData.repeatGroupDate"
           type="date"
@@ -50,7 +50,7 @@
       </el-form-item>
 
       <!-- 复团销量 -->
-      <el-form-item label="复团销量" prop="reGroupSales">
+      <el-form-item label="复团销量" prop="repeatGroupSales">
         <el-input-number
           v-model="formData.repeatGroupSales"
           :min="0"
@@ -91,13 +91,33 @@
     groupStartDate: [{ required: true, message: '开团日期不能为空', trigger: 'change' }]
   })
 
+  // 内部更新标记，避免循环更新
+  const isInternalUpdate = ref(false)
+
   watch(
     () => props.propFormData,
     (data) => {
-      if (!data) return
+      if (!data || isInternalUpdate.value) return
+      
+      isInternalUpdate.value = true
       copyValueToTarget(formData, data)
+      
+      nextTick(() => {
+        isInternalUpdate.value = false
+      })
     },
     { immediate: true }
+  )
+
+  // 监听formData变化，实时同步到父组件
+  watch(
+    formData,
+    (newData) => {
+      if (!isInternalUpdate.value) {
+        Object.assign(props.propFormData, newData)
+      }
+    },
+    { deep: true }
   )
 
   const emit = defineEmits(['update:activeName'])

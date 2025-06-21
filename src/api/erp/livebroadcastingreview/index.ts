@@ -79,12 +79,21 @@ export const LiveBroadcastingReviewApi = {
 
   // 删除直播复盘
   deleteLiveBroadcastingReview: async (ids: number[]) => {
-    return await request.delete({ url: `/erp/live-broadcasting-review/delete`, params: { ids: ids.join(',') } })
+    if (ids.length === 1) {
+      return await request.delete({ url: `/erp/live-broadcasting-review/delete`, params: { id: ids[0] } })
+    } else {
+      return await request.delete({ url: `/erp/live-broadcasting-review/batch-delete`, params: { ids: ids.join(',') } })
+    }
   },
 
   // 根据ID列表获取直播复盘列表
   getLiveBroadcastingReviewListByIds: async (ids: number[]) => {
     return await request.get({ url: `/erp/live-broadcasting-review/list-by-ids`, params: { ids } })
+  },
+
+  // 复制直播复盘
+  copyLiveBroadcastingReview: async (id: number) => {
+    return await request.get({ url: `/erp/live-broadcasting-review/copy?id=` + id })
   },
 
   // 导出直播复盘 Excel

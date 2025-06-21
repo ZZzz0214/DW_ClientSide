@@ -1336,7 +1336,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'add', // 添加私播货盘
+        path: 'add/:copyId(\\d+)?', // 添加私播货盘，支持复制功能
         component: () => import('@/views/erp/privatebroadcasting/form/index.vue'),
         name: 'ErpPrivateBroadcastingAdd',
         meta: {
@@ -1385,7 +1385,7 @@ const remainingRouter: AppRouteRecordRaw[] = [
     },
     children: [
       {
-        path: 'add',
+        path: 'add/:copyId(\\d+)?',
         component: () => import('@/views/erp/privatebroadcastingreview/form/index.vue'),
         name: 'ErpPrivateBroadcastingReviewAdd',
         meta: {
