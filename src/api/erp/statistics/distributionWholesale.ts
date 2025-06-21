@@ -31,7 +31,8 @@ export interface DetailStatistics {
   monthlyTrends: MonthlyTrend[]
   productDistributions: ProductDistribution[]
   profitAnalysis: ProfitAnalysis
-  recentOrders: OrderDetail[]
+  // 移除最近订单明细，根据需求不再需要
+  // recentOrders: OrderDetail[]
 }
 
 // 月度趋势
@@ -94,9 +95,12 @@ export const getCategoryList = (statisticsType: string, keyword?: string): Promi
 }
 
 // 获得人员详细统计
-export const getDetailStatistics = (data: DistributionWholesaleStatisticsReqVO & { categoryName: string }): Promise<DetailStatistics> => {
+export const getDetailStatistics = (reqVO: DistributionWholesaleStatisticsReqVO, categoryName: string): Promise<DetailStatistics> => {
   return request.get({
     url: '/erp/statistics/distribution-wholesale/get-detail',
-    params: data
+    params: {
+      ...reqVO,
+      categoryName
+    }
   })
 } 

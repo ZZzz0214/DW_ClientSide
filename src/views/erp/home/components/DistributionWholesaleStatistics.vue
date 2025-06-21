@@ -354,7 +354,7 @@
               <div class="chart-container">
                 <h4 class="chart-title">
                   <Icon icon="ep:trend-charts" />
-                  月度趋势分析
+                  {{ getTrendChartTitle() }}
                 </h4>
                 <Echart :height="300" :options="trendChartOptions" />
               </div>
@@ -378,7 +378,7 @@
               <div class="chart-container">
                 <h4 class="chart-title">
                   <Icon icon="ep:histogram" />
-                  产品销售分布 (Top 10)
+                  {{ getProductChartTitle() }}
                 </h4>
                 <Echart :height="350" :options="productChartOptions" />
               </div>
@@ -386,47 +386,7 @@
           </el-row>
         </div>
 
-        <!-- 最近订单明细 -->
-        <div class="detail-section">
-          <h4 class="section-title">
-            <Icon icon="ep:list" />
-            最近订单明细
-          </h4>
-          <el-table :data="detailData.recentOrders" class="recent-orders-table">
-            <el-table-column prop="orderNo" label="订单号" width="180" />
-            <el-table-column prop="orderType" label="类型" width="80" align="center">
-              <template #default="{ row }">
-                <el-tag :type="row.orderType === '代发' ? 'primary' : 'success'">
-                  {{ row.orderType }}
-                </el-tag>
-              </template>
-            </el-table-column>
-            <el-table-column prop="productName" label="产品名称" min-width="150" />
-            <el-table-column prop="quantity" label="数量" width="80" align="center" />
-            <el-table-column prop="purchaseAmount" label="采购金额" width="120" align="right">
-              <template #default="{ row }">
-                ￥{{ formatAmount(row.purchaseAmount) }}
-              </template>
-            </el-table-column>
-            <el-table-column prop="saleAmount" label="销售金额" width="120" align="right">
-              <template #default="{ row }">
-                ￥{{ formatAmount(row.saleAmount) }}
-              </template>
-            </el-table-column>
-            <el-table-column label="利润" width="120" align="right">
-              <template #default="{ row }">
-                <span :class="['profit-cell', (row.saleAmount - row.purchaseAmount) >= 0 ? 'profit' : 'loss']">
-                  ￥{{ formatAmount(row.saleAmount - row.purchaseAmount) }}
-                </span>
-              </template>
-            </el-table-column>
-            <el-table-column prop="createTime" label="创建时间" width="160" align="center">
-              <template #default="{ row }">
-                {{ formatDate(row.createTime) }}
-              </template>
-            </el-table-column>
-          </el-table>
-        </div>
+
       </div>
     </el-dialog>
   </div>
@@ -528,13 +488,17 @@ const trendChartOptions = computed(() => {
   const distributionAmounts = detailData.value.monthlyTrends.map(item => item.distributionAmount)
   const wholesaleAmounts = detailData.value.monthlyTrends.map(item => item.wholesaleAmount)
   
+  // 根据统计类型确定图例标签
+  const isPurchaseType = queryParams.statisticsType === 'purchaser' || queryParams.statisticsType === 'supplier'
+  const amountType = isPurchaseType ? '采购金额' : '销售金额'
+  
   return {
     tooltip: {
       trigger: 'axis',
       axisPointer: { type: 'cross' }
     },
     legend: {
-      data: ['代发金额', '批发金额']
+      data: [`代发${amountType}`, `批发${amountType}`]
     },
     xAxis: {
       type: 'category',
@@ -548,14 +512,14 @@ const trendChartOptions = computed(() => {
     },
     series: [
       {
-        name: '代发金额',
+        name: `代发${amountType}`,
         type: 'line',
         data: distributionAmounts,
         smooth: true,
         itemStyle: { color: '#409EFF' }
       },
       {
-        name: '批发金额',
+        name: `批发${amountType}`,
         type: 'line',
         data: wholesaleAmounts,
         smooth: true,
@@ -568,34 +532,144 @@ const trendChartOptions = computed(() => {
 const profitChartOptions = computed(() => {
   if (!detailData.value?.profitAnalysis) return {}
   
-  return {
-    tooltip: {
-      trigger: 'item',
-      formatter: '{a} <br/>{b}: ￥{c} ({d}%)'
-    },
-    legend: {
-      orient: 'vertical',
-      left: 'left'
-    },
-    series: [
-      {
-        name: '利润分析',
-        type: 'pie',
-        radius: '60%',
-        data: [
-          { 
-            value: detailData.value.profitAnalysis.distributionProfit, 
-            name: '代发利润',
-            itemStyle: { color: '#409EFF' }
-          },
-          { 
-            value: detailData.value.profitAnalysis.wholesaleProfit, 
-            name: '批发利润',
-            itemStyle: { color: '#67C23A' }
+  const distributionProfit = detailData.value.profitAnalysis.distributionProfit || 0
+  const wholesaleProfit = detailData.value.profitAnalysis.wholesaleProfit || 0
+  
+  // 检查是否都是负值或零值
+  if (distributionProfit <= 0 && wholesaleProfit <= 0) {
+    // 使用绝对值来显示亏损分布
+    const distributionLoss = Math.abs(distributionProfit)
+    const wholesaleLoss = Math.abs(wholesaleProfit)
+    
+    if (distributionLoss === 0 && wholesaleLoss === 0) {
+      // 如果都是0，显示提示信息
+      return {
+        title: {
+          text: '暂无利润数据',
+          left: 'center',
+          top: 'middle',
+          textStyle: {
+            color: '#999',
+            fontSize: 16
           }
-        ]
+        },
+        series: []
       }
-    ]
+    }
+    
+    return {
+      title: {
+        text: '亏损分布',
+        left: 'center',
+        top: '10%',
+        textStyle: {
+          color: '#F56C6C',
+          fontSize: 14,
+          fontWeight: 'bold'
+        }
+      },
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) => {
+          return `${params.seriesName}<br/>${params.name}: -￥${formatAmount(params.value)} (${params.percent}%)`
+        }
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left',
+        top: '30%'
+      },
+      series: [
+        {
+          name: '亏损分析',
+          type: 'pie',
+          radius: '50%',
+          center: ['50%', '60%'],
+          data: [
+            { 
+              value: distributionLoss, 
+              name: '代发亏损',
+              itemStyle: { color: '#FFB6C1' } // 浅红色
+            },
+            { 
+              value: wholesaleLoss, 
+              name: '批发亏损',
+              itemStyle: { color: '#FFA07A' } // 浅橙色
+            }
+          ].filter(item => item.value > 0) // 只显示有亏损的项
+        }
+      ]
+    }
+  } else {
+    // 正常的利润分布（包含正负混合的情况）
+    const chartData = []
+    
+    if (distributionProfit > 0) {
+      chartData.push({
+        value: distributionProfit,
+        name: '代发利润',
+        itemStyle: { color: '#409EFF' }
+      })
+    } else if (distributionProfit < 0) {
+      chartData.push({
+        value: Math.abs(distributionProfit),
+        name: '代发亏损',
+        itemStyle: { color: '#FFB6C1' }
+      })
+    }
+    
+    if (wholesaleProfit > 0) {
+      chartData.push({
+        value: wholesaleProfit,
+        name: '批发利润',
+        itemStyle: { color: '#67C23A' }
+      })
+    } else if (wholesaleProfit < 0) {
+      chartData.push({
+        value: Math.abs(wholesaleProfit),
+        name: '批发亏损',
+        itemStyle: { color: '#FFA07A' }
+      })
+    }
+    
+    if (chartData.length === 0) {
+      return {
+        title: {
+          text: '暂无利润数据',
+          left: 'center',
+          top: 'middle',
+          textStyle: {
+            color: '#999',
+            fontSize: 16
+          }
+        },
+        series: []
+      }
+    }
+    
+    return {
+      tooltip: {
+        trigger: 'item',
+        formatter: (params: any) => {
+          const value = params.name.includes('亏损') ? -params.value : params.value
+          const sign = value >= 0 ? '' : '-'
+          const absValue = Math.abs(value)
+          return `${params.seriesName}<br/>${params.name}: ${sign}￥${formatAmount(absValue)} (${params.percent}%)`
+        }
+      },
+      legend: {
+        orient: 'vertical',
+        left: 'left'
+      },
+      series: [
+        {
+          name: '利润分析',
+          type: 'pie',
+          radius: '60%',
+          data: chartData
+        }
+      ]
+    }
   }
 })
 
@@ -604,6 +678,10 @@ const productChartOptions = computed(() => {
   
   const products = detailData.value.productDistributions.map(item => item.productName)
   const amounts = detailData.value.productDistributions.map(item => item.saleAmount)
+  
+  // 根据统计类型确定金额类型标签
+  const isPurchaseType = queryParams.statisticsType === 'purchaser' || queryParams.statisticsType === 'supplier'
+  const amountType = isPurchaseType ? '采购金额' : '销售金额'
   
   return {
     tooltip: {
@@ -626,7 +704,7 @@ const productChartOptions = computed(() => {
     },
     series: [
       {
-        name: '销售金额',
+        name: amountType,
         type: 'bar',
         data: amounts,
         itemStyle: {
@@ -727,11 +805,8 @@ const handleViewDetail = async (row: StatisticsItem) => {
   detailDialogVisible.value = true
   
   try {
-    const detailParams = {
-      ...queryParams,
-      categoryName: row.categoryName
-    }
-    detailData.value = await getDetailStatistics(detailParams)
+    // 分别传递reqVO和categoryName参数
+    detailData.value = await getDetailStatistics(queryParams, row.categoryName)
   } catch (error) {
     console.error('获取详细数据失败:', error)
     ElMessage.error('获取详细数据失败')
@@ -857,6 +932,35 @@ const getProfitRate = (row: StatisticsItem) => {
 
 const getRowClassName = ({ row }: { row: StatisticsItem }) => {
   return getProfit(row) >= 0 ? 'profit-row' : 'loss-row'
+}
+
+const getTrendChartTitle = () => {
+  const isPurchaseType = queryParams.statisticsType === 'purchaser' || queryParams.statisticsType === 'supplier'
+  const amountType = isPurchaseType ? '采购金额' : '销售金额'
+  
+  // 根据选择的时间范围确定标题
+  let timeRangeText = '时间范围内'
+  if (dateRange.value && dateRange.value.length === 2) {
+    const startDate = dateRange.value[0]
+    const endDate = dateRange.value[1]
+    const daysBetween = Math.ceil((endDate.getTime() - startDate.getTime()) / (1000 * 60 * 60 * 24))
+    
+    if (daysBetween <= 31) {
+      timeRangeText = '每日'
+    } else if (daysBetween <= 365) {
+      timeRangeText = '月度'
+    } else {
+      timeRangeText = '季度'
+    }
+  }
+  
+  return `${timeRangeText}${amountType}趋势分析`
+}
+
+const getProductChartTitle = () => {
+  const isPurchaseType = queryParams.statisticsType === 'purchaser' || queryParams.statisticsType === 'supplier'
+  const amountType = isPurchaseType ? '采购' : '销售'
+  return `产品${amountType}分布 (Top 10)`
 }
 
 // 生命周期
@@ -1229,19 +1333,7 @@ onMounted(() => {
       }
     }
 
-    .recent-orders-table {
-      :deep(.profit-cell) {
-        font-weight: 600;
 
-        &.profit {
-          color: #67C23A;
-        }
-
-        &.loss {
-          color: #F56C6C;
-        }
-      }
-    }
   }
 }
 </style> 
