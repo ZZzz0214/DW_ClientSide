@@ -40,11 +40,18 @@
         <TimeSummaryChart title="采购统计" :value="purchaseTimeSummaryList" />
       </el-col>
     </el-row>
+    <!-- 代发批发统计报表 -->
+    <el-row :gutter="16" class="row">
+      <el-col :span="24">
+        <DistributionWholesaleStatistics />
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script lang="ts" setup>
 import SummaryCard from './components/SummaryCard.vue'
 import TimeSummaryChart from './components/TimeSummaryChart.vue'
+import DistributionWholesaleStatistics from './components/DistributionWholesaleStatistics.vue'
 import {
   ErpSaleSummaryRespVO,
   ErpSaleTimeSummaryRespVO,
