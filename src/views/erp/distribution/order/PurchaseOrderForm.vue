@@ -259,7 +259,7 @@ const handleProductIdChanged = (product: {id: number, no: string}) => {
     formData.value.comboProductNo = product.no; // 显示产品编号
     formData.value.shippingCode = purchaseItem.shippingCode;
     formData.value.productName = purchaseItem.productName;
-    
+
     // 立即更新销售表单的comboProductId
     if (saleFormRef.value) {
       saleFormRef.value.setComboProductId(product.id);
@@ -270,12 +270,12 @@ const handleProductIdChanged = (product: {id: number, no: string}) => {
 // 添加产品数量变化监听，实时获取运费信息并重新计算
 watch(() => formData.value.productQuantity, async (newQuantity, oldQuantity) => {
   if (!newQuantity || newQuantity === oldQuantity) return;
-  
+
   // 更新采购信息中的数量
   if (formData.value.items && formData.value.items.length > 0) {
     formData.value.items[0].count = newQuantity;
   }
-  
+
   // 销售信息的数量更新由子组件的props监听器自动处理
   // 这里不需要手动修改saleItem.count，避免与子组件的监听器冲突
 }, { immediate: false });
@@ -283,7 +283,7 @@ const switchTab = (newTabName) => {
   if (newTabName === 'sale') {
     // 确保销售表单获取到最新的组品ID
     const comboProductId = formData.value.comboProductId;
-    
+
     if (saleFormRef.value) {
       saleFormRef.value.setComboProductId(comboProductId);
     }
@@ -344,17 +344,17 @@ const handleAfterSalesStatusChange = () => {
 /** 打开弹窗 */
 const open = async (type: string, id?: number, copyData?: any) => {
   dialogVisible.value = true
-  
+
   // 复制新增时，修改标题为"复制新增"
   if (type === 'create' && copyData) {
     dialogTitle.value = '复制新增'
   } else {
   dialogTitle.value = t('action.' + type)
   }
-  
+
   formType.value = type
   resetForm()
-  
+
   // 复制新增时，设置数据
   if (type === 'create' && copyData) {
     formLoading.value = true
@@ -372,9 +372,9 @@ const open = async (type: string, id?: number, copyData?: any) => {
         orderNumber: copyData.orderNumber || '', // 保留原订单号供参考
         trackingNumber: copyData.trackingNumber || '', // 保留原物流单号供参考
       }
-      
 
-      
+
+
       // 重新组装采购信息和销售信息
       formData.value.items = [
         {
@@ -392,7 +392,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
           purchaseAuditStatus: 10, // 重置审核状态为未审核
         },
       ]
-      
+
       // 获取销售价格表的运费信息
       let saleShippingInfo = {};
       if (copyData.comboProductId && copyData.customerName) {
@@ -419,7 +419,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
           // 获取销售价格表运费信息失败，使用默认值
         }
       }
-      
+
       formData.value.saleItems = [
         {
           salesperson: copyData.salesperson,
@@ -436,7 +436,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
           ...saleShippingInfo
         },
       ]
-      
+
       // 使用setTimeout确保所有数据都已设置完毕后再触发重计算
       setTimeout(() => {
         if (saleFormRef.value) {
@@ -552,7 +552,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
               customerName: data.customerName,
             };
             const salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
-            
+
             if (salePriceResult && salePriceResult.length > 0) {
               // 获取组品重量信息
               let comboWeight = 0;
@@ -564,7 +564,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
               } catch (error) {
                 console.error('编辑模式获取组品重量失败:', error);
               }
-              
+
               saleShippingInfo = {
                 shippingFeeType: salePriceResult[0].shippingFeeType,
                 fixedShippingFee: salePriceResult[0].fixedShippingFee,
@@ -602,9 +602,9 @@ const open = async (type: string, id?: number, copyData?: any) => {
             ...saleShippingInfo
           },
         ]
-        
 
-        
+
+
         // 编辑模式下不重新计算运费，保持原有值
         // 注释掉重新计算运费的逻辑
         // setTimeout(() => {
