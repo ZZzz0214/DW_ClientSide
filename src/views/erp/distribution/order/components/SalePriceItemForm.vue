@@ -268,8 +268,20 @@ watch(
   (val) => {
     formData.value = val || [];
     
-    // 在详情模式下，确保显示原始数据，不重新计算
+    // 在详情模式下，如果总额为空则根据现有数据计算
     if (props.mode === 'detail') {
+      formData.value.forEach((item) => {
+        if (item && (!item.totalSaleAmount || item.totalSaleAmount === 0 || item.totalSaleAmount === '0')) {
+          // 使用后端返回的原始数据进行简单计算
+          const price = Number(item.salePrice) || 0;
+          const count = Number(item.count) || 0;
+          const shippingFee = Number(item.saleShippingFee) || 0;
+          const otherFees = Number(item.saleOtherFees) || 0;
+          
+          // 简单计算：单价 × 数量 + 运费 + 杂费
+          item.totalSaleAmount = Number((price * count + shippingFee + otherFees).toFixed(2));
+        }
+      });
       return;
     }
     

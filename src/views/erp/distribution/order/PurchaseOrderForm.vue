@@ -478,7 +478,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
             shippingFee: data.shippingFee,
             otherFees: data.otherFees,
             totalPurchaseAmount: data.totalPurchaseAmount,
-            count: data.count,
+            count: data.productQuantity || data.count, // 🔥 修复：使用正确的产品数量字段
             purchaseRemark: data.purchaseRemark,
             productName : data.productName,
             shippingCode : data.shippingCode,
@@ -492,7 +492,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
             saleShippingFee: data.saleShippingFee,
             saleOtherFees: data.saleOtherFees,
             totalSaleAmount: data.totalSaleAmount,
-            count: data.count,
+            count: data.productQuantity || data.count, // 🔥 修复：使用正确的产品数量字段
             transferPerson: data.transferPerson,
             saleRemark: data.saleRemark,
           },
