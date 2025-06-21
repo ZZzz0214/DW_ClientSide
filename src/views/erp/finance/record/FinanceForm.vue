@@ -271,14 +271,64 @@ const formatDate = (date: any): string => {
 }
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, copyData?: any) => {
   dialogVisible.value = true
-  dialogTitle.value = t('action.' + type)
-  formType.value = type
+  formType.value = type === 'copy' ? 'create' : type // 复制模式实际上是创建模式
+  
+  // 设置弹窗标题
+  if (type === 'copy') {
+    dialogTitle.value = '复制新增'
+  } else {
+    dialogTitle.value = t('action.' + type)
+  }
 
   // 新增模式直接重置表单并设置默认值
   if (type === 'create') {
     resetForm()
+  } else if (type === 'copy' && copyData) {
+    // 复制模式，使用传入的数据填充表单
+    resetForm()
+    
+    // 获取当前日期作为默认下单日期
+    const today = new Date().toISOString().split('T')[0]
+    
+    // 处理复制数据的日期字段
+    let orderDate = copyData.orderDate
+    if (orderDate) {
+      // 如果是数组格式，转换为字符串格式
+      if (Array.isArray(orderDate) && orderDate.length === 3) {
+        const [year, month, day] = orderDate
+        orderDate = `${year}-${String(month).padStart(2, '0')}-${String(day).padStart(2, '0')}`
+      }
+      // 如果是其他格式，尝试转换
+      else if (typeof orderDate !== 'string' || !orderDate.includes('-')) {
+        try {
+          const dateObj = new Date(orderDate)
+          if (!isNaN(dateObj.getTime())) {
+            orderDate = dateObj.toISOString().split('T')[0]
+          }
+        } catch (e) {
+          orderDate = today // 转换失败则使用当前日期
+        }
+      }
+    } else {
+      orderDate = today // 没有日期则使用当前日期
+    }
+
+    // 填充复制的数据，但排除一些不需要复制的字段
+    formData.value = {
+      id: undefined, // 不复制ID
+      no: undefined, // 不复制编号，系统自动生成
+      carouselImages: copyData.carouselImages ? (Array.isArray(copyData.carouselImages) ? copyData.carouselImages : copyData.carouselImages.split(',').filter(img => img.trim())) : [],
+      billName: copyData.billName ? `${copyData.billName} - 复制` : undefined, // 账单名称加上复制标识
+      amount: copyData.amount,
+      incomeExpense: copyData.incomeExpense,
+      category: copyData.category,
+      account: copyData.account,
+      status: 1, // 状态重置为待处理
+      remark: copyData.remark,
+      orderDate: today // 使用当前日期作为下单日期
+    }
   } else if (id) {
     // 编辑或详情模式，先重置表单再加载数据
     resetForm()

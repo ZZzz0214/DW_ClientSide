@@ -68,7 +68,7 @@ const formRules = reactive({
 const formRef = ref() // 表单 Ref
 
 /** 打开弹窗 */
-const open = async (type: string, id?: number) => {
+const open = async (type: string, id?: number, copyId?: number) => {
   dialogVisible.value = true
   dialogTitle.value = t('action.' + type)
   formType.value = type
@@ -78,6 +78,23 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true
     try {
       formData.value = await AccountApi.getAccount(id)
+    } finally {
+      formLoading.value = false
+    }
+  } else if (copyId) {
+    // 复制模式
+    formLoading.value = true
+    try {
+      const res = await AccountApi.getAccount(copyId)
+      
+      // 复制数据，但重置关键字段
+      formData.value = {
+        ...res,
+        id: undefined,
+        createTime: undefined,
+        updateTime: undefined,
+        defaultStatus: false // 重置默认状态
+      }
     } finally {
       formLoading.value = false
     }
@@ -95,6 +112,8 @@ const submitForm = async () => {
   try {
     const data = formData.value as unknown as AccountVO
     if (formType.value === 'create') {
+      // 新增时不传递 no 字段，让后端自动生成
+      delete data.no
       await AccountApi.createAccount(data)
       message.success(t('common.createSuccess'))
     } else {

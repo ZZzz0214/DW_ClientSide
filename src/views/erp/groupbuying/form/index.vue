@@ -122,7 +122,12 @@
       isDetail.value = true
     }
     const id = params.id as unknown as number
-    if (id) {
+    
+    // 检查是否是复制模式
+    const { query } = useRoute()
+    const isCopyMode = query.copy === 'true'
+    
+    if (id && !isCopyMode) {
       formLoading.value = true
       try {
         const res = await GroupBuyingApi.GroupBuyingApi.getGroupBuying(id)
@@ -135,6 +140,39 @@
         formData.value = res
       } finally {
         formLoading.value = false
+      }
+    } else if (isCopyMode) {
+      // 复制模式：从localStorage获取复制的数据
+      const copyData = localStorage.getItem('copyGroupBuyingData')
+      if (copyData) {
+        try {
+          const parsedData = JSON.parse(copyData)
+          
+          // 处理产品图片
+          if (parsedData.productImage && typeof parsedData.productImage === 'string') {
+            parsedData.productImage = parsedData.productImage.split(',').filter(img => img.trim())
+          }
+          
+          // 复制数据并重置某些字段
+          formData.value = {
+            ...parsedData,
+            id: undefined, // 清空ID
+            no: '', // 清空编号，系统自动生成
+            productName: parsedData.productName ? `${parsedData.productName} - 复制` : '', // 产品名称加复制标识
+            status: 1, // 重置状态为默认值
+            // shelfLife: undefined, // 保留原保质日期，不重置
+            createTime: undefined,
+            updateTime: undefined,
+            creator: undefined,
+            updater: undefined
+          }
+          
+          // 清除localStorage中的复制数据
+          localStorage.removeItem('copyGroupBuyingData')
+        } catch (e) {
+          console.error('解析复制数据失败:', e)
+          message.error('复制数据格式错误')
+        }
       }
     }
   }

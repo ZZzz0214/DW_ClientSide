@@ -115,6 +115,14 @@
           >
             <Icon icon="ep:delete" class="mr-5px" /> 删除
           </el-button>
+          <el-button
+            type="info"
+            plain
+            @click="handleCopy"
+            :disabled="selectionList.length !== 1"
+          >
+            <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+          </el-button>
         </el-form-item>
       </el-form>
     </ContentWrap>
@@ -337,5 +345,15 @@
   const getImageUrls = (images: string | undefined): string[] => {
     if (!images) return []
     return images.split(',').map(img => img.trim()).filter(img => img)
+  }
+
+  /** 复制新增按钮操作 */
+  const handleCopy = () => {
+    if (selectionList.value.length !== 1) {
+      message.error('请选择一条记录进行复制')
+      return
+    }
+    const selectedItem = selectionList.value[0]
+    push({ name: 'ErpNotebookAdd', query: { copyId: selectedItem.id } })
   }
   </script>

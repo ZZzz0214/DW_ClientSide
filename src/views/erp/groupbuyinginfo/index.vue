@@ -128,6 +128,15 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="primary"
+            plain
+            @click="handleCopyCreate"
+            v-hasPermi="['erp:groupbuyinginfo:create']"
+            :disabled="selectionList.length !== 1"
+          >
+            <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
+          </el-button>
+          <el-button
             type="warning"
             plain
             @click="handleImport"
@@ -191,7 +200,7 @@
         </el-table-column>
         <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column label="操作" align="center" width="240">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
             <el-button
@@ -201,6 +210,14 @@
               v-hasPermi="['erp:groupbuyinginfo:update']"
             >
               编辑
+            </el-button>
+            <el-button
+              link
+              type="success"
+              @click="handleCopyCreateSingle(scope.row)"
+              v-hasPermi="['erp:groupbuyinginfo:create']"
+            >
+              复制
             </el-button>
             <el-button
               link
@@ -371,6 +388,25 @@
 
   const handleImport = () => {
     importFormRef.value.open()
+  }
+
+  /** 复制新增操作 - 批量选择 */
+  const handleCopyCreate = () => {
+    if (selectionList.value.length !== 1) {
+      message.warning('请选择一条记录进行复制')
+      return
+    }
+    const selectedRow = selectionList.value[0]
+    // 存储复制的数据到localStorage，供表单页面使用
+    localStorage.setItem('copyGroupBuyingInfoData', JSON.stringify(selectedRow))
+    push({ name: 'ErpGroupBuyingInfoAdd', query: { copy: 'true' } })
+  }
+
+  /** 复制新增操作 - 单条记录 */
+  const handleCopyCreateSingle = (row: GroupBuyingInfoVO) => {
+    // 存储复制的数据到localStorage，供表单页面使用
+    localStorage.setItem('copyGroupBuyingInfoData', JSON.stringify(row))
+    push({ name: 'ErpGroupBuyingInfoAdd', query: { copy: 'true' } })
   }
 
   /** 初始化 **/

@@ -32,7 +32,7 @@
   const { t } = useI18n() // 国际化
   const message = useMessage() // 消息弹窗
   const { push, currentRoute } = useRouter() // 路由
-  const { params, name } = useRoute() // 查询参数
+  const { params, query, name } = useRoute() // 查询参数
   const { delView } = useTagsViewStore() // 视图操作
   
   const formLoading = ref(false) // 表单的加载中
@@ -65,11 +65,32 @@
       isDetail.value = true
     }
     const id = params.id as unknown as number
+    const copyId = query.copyId as unknown as number
+    
     if (id) {
       formLoading.value = true
       try {
         const res = await SampleApi.SampleApi.getSample(id)
         formData.value = res
+      } finally {
+        formLoading.value = false
+      }
+    } else if (copyId) {
+      // 复制模式
+      formLoading.value = true
+      try {
+        const res = await SampleApi.SampleApi.getSample(copyId)
+        
+        // 复制数据，但重置关键字段
+        formData.value = {
+          ...res,
+          id: undefined,
+          createTime: undefined,
+          updateTime: undefined
+        }
+        
+        // 确保数据更新后再触发子组件更新
+        await nextTick()
       } finally {
         formLoading.value = false
       }
@@ -88,6 +109,8 @@
       const id = params.id as unknown as number
   
       if (!id) {
+        // 新增时不传递 no 字段，让后端自动生成
+        delete data.no
         await SampleApi.SampleApi.createSample(data)
         message.success(t('common.createSuccess'))
       } else {

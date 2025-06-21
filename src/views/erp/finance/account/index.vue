@@ -60,13 +60,22 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
+        <el-button
+          type="info"
+          plain
+          @click="handleCopy"
+          :disabled="selectionList.length !== 1"
+        >
+          <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
 
   <!-- 列表 -->
   <ContentWrap>
-    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
+    <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true" @selection-change="handleSelectionChange">
+      <el-table-column width="30" label="选择" type="selection" />
       <el-table-column label="名称" align="center" prop="name" />
       <el-table-column label="编码" align="center" prop="no" />
       <el-table-column label="备注" align="center" prop="remark" />
@@ -153,6 +162,7 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const selectionList = ref<AccountVO[]>([]) // 选中列表
 
 /** 查询列表 */
 const getList = async () => {
@@ -180,8 +190,8 @@ const resetQuery = () => {
 
 /** 添加/修改操作 */
 const formRef = ref()
-const openForm = (type: string, id?: number) => {
-  formRef.value.open(type, id)
+const openForm = (type: string, id?: number, copyId?: number) => {
+  formRef.value.open(type, id, copyId)
 }
 
 /** 删除按钮操作 */
@@ -226,6 +236,21 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+
+/** 选中操作 */
+const handleSelectionChange = (rows: AccountVO[]) => {
+  selectionList.value = rows
+}
+
+/** 复制新增按钮操作 */
+const handleCopy = () => {
+  if (selectionList.value.length !== 1) {
+    message.error('请选择一条记录进行复制')
+    return
+  }
+  const selectedItem = selectionList.value[0]
+  openForm('create', undefined, selectedItem.id)
 }
 
 /** 初始化 **/

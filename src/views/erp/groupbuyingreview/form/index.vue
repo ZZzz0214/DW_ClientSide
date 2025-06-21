@@ -89,13 +89,53 @@
       isDetail.value = true
     }
     const id = params.id as unknown as number
-    if (id) {
+    
+    // 检查是否是复制模式
+    const { query } = useRoute()
+    const isCopyMode = query.copy === 'true'
+    
+    if (id && !isCopyMode) {
       formLoading.value = true
       try {
         const res = await GroupBuyingReviewApi.GroupBuyingReviewApi.getGroupBuyingReview(id)
         formData.value = res
       } finally {
         formLoading.value = false
+      }
+    } else if (isCopyMode) {
+      // 复制模式：从localStorage获取复制的数据
+      const copyData = localStorage.getItem('copyGroupBuyingReviewData')
+      if (copyData) {
+        try {
+          const parsedData = JSON.parse(copyData)
+          
+          // 复制数据并重置某些字段
+          formData.value = {
+            ...parsedData,
+            id: undefined, // 清空ID
+            no: '', // 清空编号，系统自动生成
+            groupBuyingId: parsedData.groupBuyingId, // 保留团购货盘ID
+            groupBuyingNo: parsedData.groupBuyingNo, // 保留团购货盘编号
+            customerId: parsedData.customerId, // 保留客户ID
+            customerName: parsedData.customerName, // 保留客户名称
+            // 保留进展相关字段，不重置
+            sampleSendDate: parsedData.sampleSendDate, // 保留寄样日期
+            groupStartDate: parsedData.groupStartDate, // 保留开团日期
+            groupSales: parsedData.groupSales, // 保留开团销量
+            repeatGroupDate: parsedData.repeatGroupDate, // 保留复团日期
+            repeatGroupSales: parsedData.repeatGroupSales, // 保留复团销量
+            createTime: undefined,
+            updateTime: undefined,
+            creator: undefined,
+            updater: undefined
+          }
+          
+          // 清除localStorage中的复制数据
+          localStorage.removeItem('copyGroupBuyingReviewData')
+        } catch (e) {
+          console.error('解析复制数据失败:', e)
+          message.error('复制数据格式错误')
+        }
       }
     }
   }
@@ -106,7 +146,7 @@
     try {
       // 校验各表单
       await unref(infoRef)?.validate()
-      await unref(priceRef)?.validate()
+      // await unref(priceRef)?.validate() // PriceForm已被注释，移除校验
       await unref(progressRef)?.validate()
 
       // 提交数据

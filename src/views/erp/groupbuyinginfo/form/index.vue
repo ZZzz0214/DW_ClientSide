@@ -62,13 +62,43 @@
       isDetail.value = true
     }
     const id = params.id as unknown as number
-    if (id) {
+    
+    // 检查是否是复制模式
+    const { query } = useRoute()
+    const isCopyMode = query.copy === 'true'
+    
+    if (id && !isCopyMode) {
       formLoading.value = true
       try {
         const res = await GroupBuyingInfoApi.GroupBuyingInfoApi.getGroupBuyingInfo(id)
         formData.value = res
       } finally {
         formLoading.value = false
+      }
+    } else if (isCopyMode) {
+      // 复制模式：从localStorage获取复制的数据
+      const copyData = localStorage.getItem('copyGroupBuyingInfoData')
+      if (copyData) {
+        try {
+          const parsedData = JSON.parse(copyData)
+          
+          // 复制数据并重置某些字段
+          formData.value = {
+            ...parsedData,
+            id: undefined, // 清空ID
+            no: '', // 清空编号，系统自动生成
+            createTime: undefined,
+            updateTime: undefined,
+            creator: undefined,
+            updater: undefined
+          }
+          
+          // 清除localStorage中的复制数据
+          localStorage.removeItem('copyGroupBuyingInfoData')
+        } catch (e) {
+          console.error('解析复制数据失败:', e)
+          message.error('复制数据格式错误')
+        }
       }
     }
   }

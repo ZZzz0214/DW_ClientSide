@@ -53,6 +53,15 @@
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="产品SKU" prop="productSku">
+          <el-input
+            v-model="queryParams.productSku"
+            placeholder="请输入产品SKU"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
           <el-input
             v-model="queryParams.customerName"
@@ -149,6 +158,15 @@
             <Icon icon="ep:plus" class="mr-5px" /> 新增
           </el-button>
           <el-button
+            type="primary"
+            plain
+            @click="handleCopyCreate"
+            v-hasPermi="['erp:groupbuyingreview:create']"
+            :disabled="selectionList.length !== 1"
+          >
+            <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
+          </el-button>
+          <el-button
             type="warning"
             plain
             @click="handleImport"
@@ -196,6 +214,7 @@
         </el-table-column>
         <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品SKU" align="center" prop="productSku" :show-overflow-tooltip="false"/>
         <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
         <el-table-column label="供团价格" align="center" prop="supplyGroupPrice" :show-overflow-tooltip="false"/>
         <el-table-column label="快递费用" align="center" prop="expressFee" :show-overflow-tooltip="false"/>
@@ -219,7 +238,7 @@
           :formatter="dateFormatter"
           width="180px"
         />
-        <el-table-column label="操作" align="center" width="200">
+        <el-table-column label="操作" align="center" width="240">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
             <el-button
@@ -229,6 +248,14 @@
               v-hasPermi="['erp:groupbuyingreview:update']"
             >
               编辑
+            </el-button>
+            <el-button
+              link
+              type="success"
+              @click="handleCopyCreateSingle(scope.row)"
+              v-hasPermi="['erp:groupbuyingreview:create']"
+            >
+              复制
             </el-button>
             <el-button
               link
@@ -277,6 +304,7 @@
     brandName: undefined,
     productName: undefined,
     productSpec: undefined,
+    productSku: undefined,
     customerName: undefined,
     supplyGroupPrice: undefined,
     expressFee: undefined,
@@ -391,6 +419,25 @@
 
   const handleImport = () => {
     importFormRef.value.open()
+  }
+
+  /** 复制新增操作 - 批量选择 */
+  const handleCopyCreate = () => {
+    if (selectionList.value.length !== 1) {
+      message.warning('请选择一条记录进行复制')
+      return
+    }
+    const selectedRow = selectionList.value[0]
+    // 存储复制的数据到localStorage，供表单页面使用
+    localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(selectedRow))
+    push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true' } })
+  }
+
+  /** 复制新增操作 - 单条记录 */
+  const handleCopyCreateSingle = (row: GroupBuyingReviewVO) => {
+    // 存储复制的数据到localStorage，供表单页面使用
+    localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(row))
+    push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true' } })
   }
 
   /** 初始化 **/

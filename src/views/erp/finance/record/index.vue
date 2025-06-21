@@ -184,6 +184,15 @@
           <Icon icon="ep:plus" class="mr-5px" /> 新增
         </el-button>
         <el-button
+          type="primary"
+          plain
+          @click="handleCopyCreate"
+          v-hasPermi="['erp:finance:create']"
+          :disabled="selectionList.length !== 1"
+        >
+          <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="handleBatchAudit(20)"
@@ -330,7 +339,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" fixed="right" width="200">
+      <el-table-column label="操作" align="center" fixed="right" width="240">
         <template #default="scope">
           <el-button
             link
@@ -347,6 +356,14 @@
             :disabled="scope.row.auditStatus === 20"
           >
             编辑
+          </el-button>
+          <el-button
+            link
+            type="success"
+            @click="handleCopyCreateSingle(scope.row)"
+            v-hasPermi="['erp:finance:create']"
+          >
+            复制
           </el-button>
           <el-button
             link
@@ -540,6 +557,21 @@ const handleBatchUnaudit = async () => {
     message.success('批量反审核成功')
     await getList()
   } catch {}
+}
+
+/** 复制新增操作 - 批量选择 */
+const handleCopyCreate = () => {
+  if (selectionList.value.length !== 1) {
+    message.warning('请选择一条记录进行复制')
+    return
+  }
+  const selectedRow = selectionList.value[0]
+  formRef.value.open('copy', undefined, selectedRow)
+}
+
+/** 复制新增操作 - 单条记录 */
+const handleCopyCreateSingle = (row: ErpFinanceApi.ErpFinanceVO) => {
+  formRef.value.open('copy', undefined, row)
 }
 
 /** 初始化 **/
