@@ -10,6 +10,15 @@
       :inline="true"
       label-width="68px"
     >
+      <el-form-item label="产品编号" prop="no">
+        <el-input
+          v-model="queryParams.no"
+          placeholder="请输入产品编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="产品名称" prop="name">
         <el-input
           v-model="queryParams.name"
@@ -380,6 +389,7 @@ const tableRef = ref() // 表格引用
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
+  no: undefined,
   name: undefined,
   productShortName: undefined,
   shippingCode: undefined,
