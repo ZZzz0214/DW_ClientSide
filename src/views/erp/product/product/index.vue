@@ -167,6 +167,15 @@
         >
           <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
         </el-button>
+        <el-button
+          type="danger"
+          plain
+          @click="handleBatchDelete"
+          :disabled="!selectedRows.length"
+          v-hasPermi="['erp:product:Batchdelete']"
+        >
+          <Icon icon="ep:delete" class="mr-5px" /> 批量删除
+        </el-button>
 
         <el-button
           type="warning"
@@ -215,8 +224,8 @@
               fit="cover"
               :preview-teleported="true"
             />
-            <div 
-              v-if="getImageUrls(scope.row.image).length > 1" 
+            <div
+              v-if="getImageUrls(scope.row.image).length > 1"
               class="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-green-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-white z-10"
               style="font-size: 10px; font-weight: bold;"
             >
@@ -512,17 +521,17 @@ const handleCopyAdd = () => {
     message.warning('请选择要复制的产品')
     return
   }
-  
+
   if (selectedRows.value.length > 1) {
     message.warning('只能选择一个产品进行复制')
     return
   }
-  
+
   const selectedProduct = selectedRows.value[0]
   // 跳转到新增页面，并传递复制的数据
-  push({ 
-    name: 'ErpProductAdd', 
-    query: { 
+  push({
+    name: 'ErpProductAdd',
+    query: {
       copyFrom: selectedProduct.id,
       copyData: JSON.stringify({
         ...selectedProduct,
@@ -533,16 +542,16 @@ const handleCopyAdd = () => {
       })
     }
   })
-  
+
   message.success(`已复制产品"${selectedProduct.name}"的数据，请修改后保存`)
 }
 
 /** 快速复制单个产品 */
 const handleQuickCopy = (product: ProductVO) => {
   // 跳转到新增页面，并传递复制的数据
-  push({ 
-    name: 'ErpProductAdd', 
-    query: { 
+  push({
+    name: 'ErpProductAdd',
+    query: {
       copyFrom: product.id,
       copyData: JSON.stringify({
         ...product,
@@ -553,8 +562,37 @@ const handleQuickCopy = (product: ProductVO) => {
       })
     }
   })
-  
+
   message.success(`已复制产品"${product.name}"的数据，请修改后保存`)
+}
+
+/** 批量删除按钮操作 */
+const handleBatchDelete = async () => {
+  if (selectedRows.value.length === 0) {
+    message.warning('请选择要删除的产品')
+    return
+  }
+
+  try {
+    // 删除的二次确认
+    await message.delConfirm(`确定要删除选中的 ${selectedRows.value.length} 个产品吗？`)
+
+    // 提取选中的产品ID
+    const ids = selectedRows.value.map(row => row.id)
+
+    // 发起批量删除
+    await ProductApi.deleteProducts(ids)
+    message.success(`成功删除 ${selectedRows.value.length} 个产品`)
+
+    // 清空选中状态
+    selectedRows.value = []
+    tableRef.value?.clearSelection()
+
+    // 刷新列表
+    await getList()
+  } catch (error) {
+    console.error('批量删除失败:', error)
+  }
 }
 
 /** 初始化 **/

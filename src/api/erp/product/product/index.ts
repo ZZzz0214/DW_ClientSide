@@ -114,6 +114,11 @@ export const ProductApi = {
     return await request.delete({ url: `/erp/product/delete?id=` + id })
   },
 
+  // 批量删除产品
+  deleteProducts: async (ids: number[]) => {
+    return await request.delete({ url: `/erp/product/batch-delete?ids=` + ids.join(',') })
+  },
+
   // 导出产品 Excel
   exportProduct: async (params) => {
     return await request.download({ url: `/erp/product/export-excel`, params })

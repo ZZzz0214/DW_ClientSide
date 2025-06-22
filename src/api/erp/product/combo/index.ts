@@ -74,6 +74,11 @@ export const ComboApi = {
     return await request.delete({ url: `/erp/combo/delete?id=${id}` });
   },
 
+  // 批量删除组合产品
+  deleteCombos: async (ids: number[]) => {
+    return await request.delete({ url: `/erp/combo/batch-delete?ids=${ids.join(',')}` });
+  },
+
   // 导出组合产品 Excel
   exportCombo: async (params: any) => {
     return await request.download({ url: `/erp/combo/export-excel`, params });

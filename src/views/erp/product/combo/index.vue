@@ -117,6 +117,15 @@
           <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
         </el-button>
         <el-button
+          type="danger"
+          plain
+          @click="handleBatchDelete"
+          :disabled="!selectedRows.length"
+          v-hasPermi="['erp:combo-product:Batchdelete']"
+        >
+          <Icon icon="ep:delete" class="mr-5px" /> 批量删除
+        </el-button>
+        <el-button
           type="warning"
           plain
           @click="handleImport"
@@ -285,6 +294,7 @@ const loading = ref(true) // 列表的加载中
 const list = ref<ComboVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
 const selectedRows = ref<ComboVO[]>([]) // 选中的行数据
+const tableRef = ref() // 表格引用
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -404,22 +414,22 @@ const handleCopyAdd = async () => {
     message.warning('请选择要复制的组品')
     return
   }
-  
+
   if (selectedRows.value.length > 1) {
     message.warning('只能选择一个组品进行复制')
     return
   }
-  
+
   const selectedCombo = selectedRows.value[0]
-  
+
   try {
     // 通过API获取完整的组品数据
     const fullComboData = await ComboApi.getCombo(selectedCombo.id)
-    
+
     // 跳转到新增页面，并传递完整的复制数据
-    push({ 
-      name: 'ErpComboAdd', 
-      query: { 
+    push({
+      name: 'ErpComboAdd',
+      query: {
         copyFrom: selectedCombo.id,
         copyData: JSON.stringify({
           ...fullComboData,
@@ -431,7 +441,7 @@ const handleCopyAdd = async () => {
         })
       }
     })
-    
+
     message.success(`已复制组品"${selectedCombo.name}"的数据，请修改后保存`)
   } catch (error) {
     console.error('获取组品详情失败:', error)
@@ -444,11 +454,11 @@ const handleQuickCopy = async (combo: ComboVO) => {
   try {
     // 通过API获取完整的组品数据
     const fullComboData = await ComboApi.getCombo(combo.id)
-    
+
     // 跳转到新增页面，并传递完整的复制数据
-    push({ 
-      name: 'ErpComboAdd', 
-      query: { 
+    push({
+      name: 'ErpComboAdd',
+      query: {
         copyFrom: combo.id,
         copyData: JSON.stringify({
           ...fullComboData,
@@ -460,11 +470,40 @@ const handleQuickCopy = async (combo: ComboVO) => {
         })
       }
     })
-    
+
     message.success(`已复制组品"${combo.name}"的数据，请修改后保存`)
   } catch (error) {
     console.error('获取组品详情失败:', error)
     message.error('获取组品详情失败，请重试')
+  }
+}
+
+/** 批量删除按钮操作 */
+const handleBatchDelete = async () => {
+  if (selectedRows.value.length === 0) {
+    message.warning('请选择要删除的组品')
+    return
+  }
+
+  try {
+    // 删除的二次确认
+    await message.delConfirm(`确定要删除选中的 ${selectedRows.value.length} 个组品吗？`)
+
+    // 提取选中的组品ID
+    const ids = selectedRows.value.map(row => row.id)
+
+    // 发起批量删除
+    await ComboApi.deleteCombos(ids)
+    message.success(`成功删除 ${selectedRows.value.length} 个组品`)
+
+    // 清空选中状态
+    selectedRows.value = []
+    tableRef.value?.clearSelection()
+
+    // 刷新列表
+    await getList()
+  } catch (error) {
+    console.error('批量删除失败:', error)
   }
 }
 
@@ -568,7 +607,7 @@ onUpdated(async () => {
   overflow: hidden;
   transition: all 0.3s ease;
   cursor: pointer;
-  
+
   &:hover {
     transform: scale(1.05);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
@@ -586,12 +625,12 @@ onUpdated(async () => {
 :deep(.el-table__header .el-checkbox) {
   .el-checkbox__inner {
     border-color: #667eea;
-    
+
     &:hover {
       border-color: #667eea;
     }
   }
-  
+
   &.is-checked .el-checkbox__inner {
     background-color: #667eea;
     border-color: #667eea;
@@ -604,7 +643,7 @@ onUpdated(async () => {
       border-color: #667eea;
     }
   }
-  
+
   &.is-checked .el-checkbox__inner {
     background-color: #667eea;
     border-color: #667eea;
