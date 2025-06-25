@@ -63,7 +63,7 @@
           class="w-80"
         />
       </el-form-item>
-      
+
       <el-form-item label="产品名称" prop="productName">
         <el-input
           v-model="formData.productName"
@@ -176,13 +176,13 @@
   })
 
   const rules = reactive({
-    no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
+    // no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
     originalProduct: [{ required: true, message: '原表商品不能为空', trigger: 'blur' }],
     originalSpec: [{ required: true, message: '原表规格不能为空', trigger: 'blur' }],
     originalQuantity: [{ required: true, message: '原表数量不能为空', trigger: 'blur' }],
-    productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
-    productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
-    comboProductNo: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }]
+    // productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
+    // productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
+    // comboProductNo: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }]
   })
 
   /** 将传进来的值赋值给 formData */
