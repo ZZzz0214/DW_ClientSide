@@ -132,7 +132,7 @@ const handleExceed = (): void => {
 
 /** 下载模板操作 */
 const importTemplate = async () => {
-  const res = await TransitSaleApi.importTransitSaleTemplate()
-  download.excel(res, '中转销售导入模版.xls')
+  const res = await TransitSaleApi.TransitSaleApi.importTransitSaleTemplate()
+  download.excel(res, '中转销售导入模版.xlsx')
 }
 </script>

@@ -62,5 +62,8 @@ export const TransitSaleApi = {
   // 导入中转销售
   importTransitSale: async (data: FormData) => {
     return await request.upload({ url: `/erp/transit-sale/import`, data })
-  }
+  },
+  importTransitSaleTemplate: async () => {
+    return await request.download({ url: `/erp/transit-sale/get-import-template` });
+  },
 }

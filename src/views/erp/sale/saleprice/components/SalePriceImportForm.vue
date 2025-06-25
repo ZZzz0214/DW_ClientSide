@@ -132,7 +132,7 @@ const handleExceed = (): void => {
 
 /** 下载模板操作 */
 const importTemplate = async () => {
-  const res = await SalePriceApi.importSalePriceTemplate()
-  download.excel(res, '销售价格导入模版.xls')
+  const res = await SalePriceApi.SalePriceApi.importSalePriceTemplate()
+  download.excel(res, '销售价格导入模版.xlsx')
 }
 </script>

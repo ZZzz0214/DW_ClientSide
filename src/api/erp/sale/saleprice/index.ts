@@ -247,5 +247,8 @@ export const SalePriceApi = {
   // 批量设置统一价格（代发+批发）
   batchSetCombinedPrices: async (data: any[]) => {
     return await request.post({ url: `/erp/saleprice/batch-set-combined-prices`, data });
-  }
+  },
+  importSalePriceTemplate: async () => {
+    return await request.download({ url: `/erp/saleprice/get-import-template` });
+  },
 };
