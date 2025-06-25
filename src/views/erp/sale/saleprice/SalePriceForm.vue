@@ -143,8 +143,8 @@ const formData = ref({
   groupProductId: undefined, // 组品编号
   no:undefined,
   customerName: undefined, // 客户名称
-  distributionPrice: undefined, // 代发单价，初始化为 0
-  wholesalePrice: undefined, // 批发单价，初始化为 0
+  distributionPrice: undefined, // 代发单价，不初始化为0
+  wholesalePrice: undefined, // 批发单价，不初始化为0
   comboList: [], // 子表项
   cost: [], // 子表项
   shippingFeeType: undefined, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
@@ -214,7 +214,20 @@ const open = async (type: string, id?: number) => {
     formLoading.value = true;
     try {
       const data = await SalePriceApi.getSalePrice(id);
-      formData.value = data;
+      
+      // 如果是复制模式，清除id并设置为新增模式
+      if (type === 'copy') {
+        formData.value = { ...data, id: undefined };
+        formType.value = 'create';
+        dialogTitle.value = t('action.create');
+        // 确保子表数据也被复制
+        if (data.comboList && data.comboList.length > 0) {
+          formData.value.comboList = [...data.comboList];
+        }
+      } else {
+        formData.value = data;
+      }
+      
       formData.value.groupProductId = data.groupProductId;
       console.log("888888888888888888888888");
       console.log(data);
@@ -234,7 +247,7 @@ const open = async (type: string, id?: number) => {
           },
         ];
       }
-      if (type === 'update') {
+      if (type === 'update' || type === 'copy') {
         formData.value.cost = [
           {
             shippingFeeType: data.shippingFeeType, // 运费类型
@@ -316,9 +329,10 @@ const resetForm = () => {
   formData.value = {
     id: undefined,
     groupProductId: undefined, // 组品编号
+    no: undefined,
     customerName: undefined, // 客户名称
-    distributionPrice: 0, // 代发单价，初始化为 0
-    wholesalePrice: 0, // 批发单价，初始化为 0
+    distributionPrice: undefined, // 代发单价，不初始化为0
+    wholesalePrice: undefined, // 批发单价，不初始化为0
     comboList: [], // 子表项
     cost: [], // 运费子表项
     shippingFeeType: undefined, // 运费类型（0：固定运费，1：按件计费，2：按重计费）
@@ -328,6 +342,7 @@ const resetForm = () => {
     firstWeight: undefined, // 首重重量，单位：kg
     firstWeightPrice: undefined, // 首重价格，单位：元
     additionalWeight: undefined, // 续重重量，单位：kg
+    remark: undefined, // 备注信息
   };
   formRef.value?.resetFields();
 };

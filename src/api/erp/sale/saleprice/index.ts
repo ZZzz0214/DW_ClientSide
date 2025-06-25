@@ -3,7 +3,11 @@ import request from '@/config/axios'
 // 销售价格表VO
 export interface SalePriceVO {
   id?: number; // 编号
+  no?: string; // 业务编号
   groupProductId: number; // 组品编号
+  groupProductNo?: string; // 组品编号
+  productName?: string; // 产品名称
+  productShortName?: string; // 产品简称
   customerName?: string; // 客户名称
   distributionPrice?: number; // 代发单价（单位：元）
   wholesalePrice?: number; // 批发单价（单位：元）
@@ -16,6 +20,7 @@ export interface SalePriceVO {
   firstWeightPrice?: number; // 首重价格（单位：元）
   additionalWeight?: number; // 续重重量（单位：kg）
   additionalWeightPrice?: number; // 续重价格（单位：元）
+  comboList?: any[]; // 关联的组品列表
   tenantId?: number; // 租户编号
 }
 

@@ -114,6 +114,14 @@
           <Icon icon="ep:plus" class="mr-5px" /> 整理
         </el-button>
         <el-button
+          type="info"
+          plain
+          @click="openForm('copy')"
+          :disabled="selectionList.length !== 1"
+        >
+          <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
+        </el-button>
+        <el-button
           type="success"
           plain
           @click="openPriceQuoteDialog"
@@ -210,6 +218,14 @@
             v-hasPermi="['erp:sale-price:query']"
           >
             详情
+          </el-button>
+          <el-button
+            link
+            type="info"
+            @click="openForm('copy', scope.row.id)"
+            v-hasPermi="['erp:sale-price:create']"
+          >
+            复制
           </el-button>
           <el-button
             link
@@ -327,6 +343,10 @@ const resetQuery = () => {
 /** 添加/修改操作 */
 const formRef = ref()
 const openForm = (type: string, id?: number) => {
+  // 如果是复制模式且没有传入id，则使用选中列表的第一条数据
+  if (type === 'copy' && !id && selectionList.value.length === 1) {
+    id = selectionList.value[0].id;
+  }
   formRef.value.open(type, id)
 }
 
