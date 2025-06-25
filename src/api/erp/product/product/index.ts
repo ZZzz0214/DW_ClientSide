@@ -132,4 +132,9 @@ export const ProductApi = {
   searchProducts: async (params: any) => {
     return await request.get({ url: `/erp/product/search`, params });
   }
+
+  ,
+  importProductTemplate: async () => {
+    return await request.download({ url: `/erp/product/get-import-template` });
+  },
 }

@@ -35,6 +35,7 @@
                 v-model="formData.image"
                 :disabled="isDetail"
                 :limit="5"
+                :file-size="20"
                 :is-show-tip="false"
               />
               <div class="upload-tip">

@@ -435,7 +435,7 @@ defineExpose({ validate })
 .clickable-input {
   :deep(.el-input__wrapper) {
     cursor: pointer;
-    
+
     &:hover {
       background: linear-gradient(135deg, #fff8f8 0%, #fef5ff 100%);
     }
@@ -444,7 +444,7 @@ defineExpose({ validate })
 
 .beautiful-number-input {
   width: 100%;
-  
+
   :deep(.el-input__wrapper) {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

@@ -80,6 +80,10 @@
           <Icon class="mr-5px" icon="ep:download" />
           导出
         </el-button>
+        <el-button plain @click="refreshMenu">
+          <Icon class="mr-5px" icon="ep:refresh" />
+          刷新菜单缓存
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -146,6 +150,10 @@ import { dateFormatter } from '@/utils/formatTime'
 import * as DictTypeApi from '@/api/system/dict/dict.type'
 import DictTypeForm from './DictTypeForm.vue'
 import download from '@/utils/download'
+
+import { CACHE_KEY, useCache } from '@/hooks/web/useCache'
+import {ElButton} from "element-plus";
+import {Icon} from "@/components/Icon";
 
 defineOptions({ name: 'SystemDictType' })
 
@@ -222,6 +230,18 @@ const handleExport = async () => {
   } finally {
     exportLoading.value = false
   }
+}
+const { wsCache } = useCache()
+/** 刷新菜单缓存按钮操作 */
+const refreshMenu = async () => {
+  try {
+    await message.confirm('即将更新缓存刷新浏览器！', '刷新菜单缓存')
+    // 清空，从而触发刷新
+    wsCache.delete(CACHE_KEY.USER)
+    wsCache.delete(CACHE_KEY.ROLE_ROUTERS)
+    // 刷新浏览器
+    location.reload()
+  } catch {}
 }
 
 /** 初始化 **/

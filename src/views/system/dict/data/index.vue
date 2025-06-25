@@ -56,6 +56,7 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
+
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -122,6 +123,10 @@ import download from '@/utils/download'
 import * as DictDataApi from '@/api/system/dict/dict.data'
 import * as DictTypeApi from '@/api/system/dict/dict.type'
 import DictDataForm from './DictDataForm.vue'
+//import {useCache} from "@/hooks/web/useCache";
+
+import {ElButton} from "element-plus";
+import {Icon} from "@/components/Icon";
 
 defineOptions({ name: 'SystemDictData' })
 
@@ -200,6 +205,8 @@ const handleExport = async () => {
     exportLoading.value = false
   }
 }
+
+
 
 /** 初始化 **/
 onMounted(async () => {

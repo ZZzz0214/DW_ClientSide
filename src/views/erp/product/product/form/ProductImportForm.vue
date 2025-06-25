@@ -160,6 +160,6 @@ const handleExceed = (): void => {
 /** 下载模板操作 */
 const importTemplate = async () => {
   const res = await ProductApi.importProductTemplate()
-  download.excel(res, '产品导入模版.xls')
+  download.excel(res, '产品导入模版.xlsx')
 }
 </script>
