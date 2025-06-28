@@ -39,12 +39,66 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!-- 导入结果弹窗 -->
+  <ImportResultDialog
+    v-model="resultDialogVisible"
+    :result-data="importResult"
+    @confirm="handleResultConfirm"
+    @close="handleResultClose"
+  />
 </template>
 
 <script lang="ts" setup>
 import { ProductApi } from '@/api/erp/product/product'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import download from '@/utils/download'
+import ImportResultDialog from "@/components/ImportResultDialog/index.vue";
+// 导入结果相关
+const resultDialogVisible = ref(false)
+const importResult = ref({
+  createNames: [],
+  updateNames: [],
+  failureNames: {}
+})
+
+/** 打开弹窗 */
+const open = () => {
+  dialogVisible.value = true
+  updateSupport.value = 0
+  fileList.value = []
+  resetForm()
+}
+
+const submitFormSuccess = (response: any) => {
+  if (response.code !== 0) {
+    message.error(response.msg)
+    formLoading.value = false
+    return
+  }
+
+  // 设置导入结果数据
+  importResult.value = response.data
+
+  // 显示导入结果弹窗
+  resultDialogVisible.value = true
+
+  formLoading.value = false
+  dialogVisible.value = false
+}
+
+/** 处理导入结果确认 */
+const handleResultConfirm = () => {
+  // 发送操作成功的事件
+  emits('success')
+}
+
+/** 处理导入结果关闭 */
+const handleResultClose = () => {
+  // 发送操作成功的事件
+  emits('success')
+}
+
 
 defineOptions({ name: 'ErpProductImportForm' })
 
@@ -60,12 +114,12 @@ const fileList = ref([]) // 文件列表
 const updateSupport = ref(0) // 是否更新已经存在的产品数据
 
 /** 打开弹窗 */
-const open = () => {
-  dialogVisible.value = true
-  updateSupport.value = 0
-  fileList.value = []
-  resetForm()
-}
+// const open = () => {
+//   dialogVisible.value = true
+//   updateSupport.value = 0
+//   fileList.value = []
+//   resetForm()
+// }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
 
 /** 提交表单 */
@@ -91,19 +145,19 @@ const emits = defineEmits(['success'])
 //     formLoading.value = false
 //     return
 //   }
-//   // 拼接提示语
+//   // 修改为匹配后端返回的数据结构
 //   const data = response.data
-//   let text = '导入成功数量：' + data.createProducts.length + ';'
-//   for (let product of data.createProducts) {
-//     text += '< ' + product.name + ' >'
+//   let text = '导入成功数量：' + data.createNames.length + ';'
+//   for (let name of data.createNames) {
+//     text += '< ' + name + ' >'
 //   }
-//   text += '更新成功数量：' + data.updateProducts.length + ';'
-//   for (const product of data.updateProducts) {
-//     text += '< ' + product.name + ' >'
+//   text += '更新成功数量：' + data.updateNames.length + ';'
+//   for (const name of data.updateNames) {
+//     text += '< ' + name + ' >'
 //   }
-//   text += '更新失败数量：' + Object.keys(data.failureProducts).length + ';'
-//   for (const productName in data.failureProducts) {
-//     text += '< ' + productName + ': ' + data.failureProducts[productName] + ' >'
+//   text += '更新失败数量：' + Object.keys(data.failureNames).length + ';'
+//   for (const name in data.failureNames) {
+//     text += '< ' + name + ': ' + data.failureNames[name] + ' >'
 //   }
 //   message.alert(text)
 //   formLoading.value = false
@@ -111,32 +165,7 @@ const emits = defineEmits(['success'])
 //   // 发送操作成功的事件
 //   emits('success')
 // }
-const submitFormSuccess = (response: any) => {
-  if (response.code !== 0) {
-    message.error(response.msg)
-    formLoading.value = false
-    return
-  }
-  // 修改为匹配后端返回的数据结构
-  const data = response.data
-  let text = '导入成功数量：' + data.createNames.length + ';'
-  for (let name of data.createNames) {
-    text += '< ' + name + ' >'
-  }
-  text += '更新成功数量：' + data.updateNames.length + ';'
-  for (const name of data.updateNames) {
-    text += '< ' + name + ' >'
-  }
-  text += '更新失败数量：' + Object.keys(data.failureNames).length + ';'
-  for (const name in data.failureNames) {
-    text += '< ' + name + ': ' + data.failureNames[name] + ' >'
-  }
-  message.alert(text)
-  formLoading.value = false
-  dialogVisible.value = false
-  // 发送操作成功的事件
-  emits('success')
-}
+
 
 /** 上传错误提示 */
 const submitFormError = (): void => {

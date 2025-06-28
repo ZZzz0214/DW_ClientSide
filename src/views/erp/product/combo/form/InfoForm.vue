@@ -261,7 +261,7 @@ const formData = ref<ProductComboApi.ComboVO>({
 });
 
 const formRules = reactive({
-  image: [{ required: true, message: '产品图片不能为空', trigger: 'blur' }],
+  //image: [{ required: true, message: '产品图片不能为空', trigger: 'blur' }],
   purchaser: [{ required: true, message: '采购人员不能为空', trigger: 'blur' }],
   supplier: [{ required: true, message: '供应商名不能为空', trigger: 'blur' }],
   // comboId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
@@ -333,13 +333,13 @@ const validate = async () => {
   }
   try {
     await form.validate();
-    
+
     // 处理图片数组转字符串
     const submitData = { ...formData.value }
     if (Array.isArray(submitData.image)) {
       submitData.image = submitData.image.join(',')
     }
-    
+
     // 校验通过更新数据
     Object.assign(props.propFormData, submitData);
   } catch (e) {
@@ -354,12 +354,12 @@ watch(
   () => props.propFormData,
   (data) => {
     if (!data) return
-    
+
     console.log('InfoForm 接收到的数据:', data)
-    
+
     // fix：三个表单组件监听赋值必须使用 copyValueToTarget 使用 formData.value = data 会监听非常多次
     copyValueToTarget(formData.value, data)
-    
+
     // 处理图片字符串转数组（用于编辑时回显）
     if (data.image) {
       if (typeof data.image === 'string') {
@@ -370,19 +370,19 @@ watch(
     } else {
       formData.value.image = []
     }
-    
+
     // 确保产品清单数据被正确复制
     if (data.items && Array.isArray(data.items)) {
       formData.value.items = [...data.items]
       console.log('产品清单数据已复制:', formData.value.items)
     }
-    
+
     // 确保备注信息被正确复制
     if (data.remark !== undefined) {
       formData.value.remark = data.remark
       console.log('备注信息已复制:', formData.value.remark)
     }
-    
+
     // 处理复制数据时的特殊逻辑
     if (data.name && data.name.includes('_副本')) {
       // 如果是复制的数据，确保各字段正确设置
