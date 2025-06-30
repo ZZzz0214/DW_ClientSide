@@ -287,7 +287,7 @@
       </el-table-column>
       <el-table-column label="收入支出" align="center" prop="incomeExpense" width="100">
         <template #default="scope">
-          <div class="flex items-center justify-center">
+          <div v-if="scope.row.incomeExpense !== null && scope.row.incomeExpense !== undefined" class="flex items-center justify-center">
             <Icon
               :icon="scope.row.incomeExpense === 1 ? 'ep:top' : 'ep:bottom'"
               :class="scope.row.incomeExpense === 1 ? 'mr-1 text-green-600' : 'mr-1 text-red-600'"
@@ -298,6 +298,7 @@
               <dict-tag :type="DICT_TYPE.ERP_FINANCE_INCOME_EXPENSE" :value="scope.row.incomeExpense" />
             </span>
           </div>
+          <span v-else class="text-gray-500">-</span>
         </template>
       </el-table-column>
       <el-table-column label="收付类目" align="center" prop="category" width="120">
@@ -339,7 +340,7 @@
         :formatter="dateFormatter"
         width="180px"
       />
-      <el-table-column label="操作" align="center" fixed="right" width="240">
+      <el-table-column label="操作" align="center" fixed="right" width="260">
         <template #default="scope">
           <el-button
             link
