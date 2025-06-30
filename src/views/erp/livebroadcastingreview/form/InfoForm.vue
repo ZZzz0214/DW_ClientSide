@@ -68,6 +68,7 @@
           <span v-if="formData.livePrice && formData.livePrice > 0">{{ formData.livePrice }}元</span>
           <span v-else style="color: #c0c4cc;">自动填充</span>
         </div>
+        <span style="margin-left: 25px;">元</span>
       </el-form-item>
 
       <el-form-item label="备注信息" prop="remark">
@@ -94,7 +95,7 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
-  import { DICT_TYPE } from '@/utils/dict'
+  import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
   import type { LiveBroadcastingReviewVO } from '@/api/erp/livebroadcastingreview'
   import LiveBroadcastingSearchDialog from "./LiveBroadcastingSearchDialog.vue"
 
@@ -122,9 +123,15 @@
     livePrice: 0
   })
 
+
+
   const rules = reactive({
     liveBroadcastingNo: [{ required: true, message: '请选择直播货盘', trigger: 'blur' }]
   })
+
+
+
+
 
   /** 将传进来的值赋值给 formData */
   watch(

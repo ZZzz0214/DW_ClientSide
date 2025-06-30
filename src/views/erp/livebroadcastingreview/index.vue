@@ -54,13 +54,21 @@
           />
         </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
-          <el-input
+          <el-select
             v-model="queryParams.customerName"
-            placeholder="请输入客户名称"
+            placeholder="请选择客户名称"
             clearable
-            @keyup.enter="handleQuery"
             class="!w-240px"
-          />
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)"
+          >
+            <el-option
+              v-for="dict in filteredCustomerNameOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="直播价格" prop="livePrice">
           <el-input
@@ -222,7 +230,11 @@
             <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
           </template>
         </el-table-column>
-        <el-table-column label="客户名称" align="center" prop="customerName" />
+        <el-table-column label="客户名称" align="center" prop="customerName">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="scope.row.customerName" />
+          </template>
+        </el-table-column>
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
         <el-table-column label="开播日期" align="center" prop="liveStartDate" :formatter="dateFormatter2" />
         <el-table-column label="操作" align="center" width="260">
@@ -307,8 +319,10 @@
   // 字典选项
   const brandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
   const liveStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_STATUS))
+  const customerNameOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME))
   const filteredBrandOptions = ref(brandOptions.value)
   const filteredLiveStatusOptions = ref(liveStatusOptions.value)
+  const filteredCustomerNameOptions = ref(customerNameOptions.value)
 
   // 字典过滤方法
   const filterDictOptions = (value: string, dictType: string) => {
@@ -317,6 +331,8 @@
         filteredBrandOptions.value = brandOptions.value
       } else if (dictType === DICT_TYPE.ERP_LIVE_STATUS) {
         filteredLiveStatusOptions.value = liveStatusOptions.value
+      } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
+        filteredCustomerNameOptions.value = customerNameOptions.value
       }
       return
     }
@@ -331,6 +347,8 @@
       filteredBrandOptions.value = filterOptions(brandOptions.value)
     } else if (dictType === DICT_TYPE.ERP_LIVE_STATUS) {
       filteredLiveStatusOptions.value = filterOptions(liveStatusOptions.value)
+    } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
+      filteredCustomerNameOptions.value = filterOptions(customerNameOptions.value)
     }
   }
 

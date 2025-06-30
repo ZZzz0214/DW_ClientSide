@@ -8,20 +8,32 @@
     >
       <!-- 客户名称 -->
       <el-form-item label="客户名称" prop="customerName">
-        <el-input
+        <div v-if="isDetail" class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+          <dict-tag v-if="formData.customerName" :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="formData.customerName" />
+          <span v-else style="color: #c0c4cc;">未设置</span>
+        </div>
+        <el-select
+          v-else
           v-model="formData.customerName"
-          placeholder="请选择客户"
+          placeholder="请选择客户名称"
           class="w-80"
-          @click="openCustomerSearch"
-          readonly
-        />
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)"
+        >
+          <el-option
+            v-for="dict in filteredCustomerNameOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
-  
+
       <!-- 直播平台 -->
       <el-form-item label="直播平台" prop="livePlatform">
-        <el-select 
-          v-model="formData.livePlatform" 
-          placeholder="请选择直播平台" 
+        <el-select
+          v-model="formData.livePlatform"
+          placeholder="请选择直播平台"
           class="w-80"
           filterable
           :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_PLATFORM)"
@@ -34,7 +46,7 @@
           />
         </el-select>
       </el-form-item>
-  
+
       <!-- 直播佣金 -->
       <el-form-item label="直播佣金" prop="liveCommission">
         <div style="display: flex; align-items: center;">
@@ -45,10 +57,10 @@
             placeholder="请输入直播佣金"
             class="w-80!"
           />
-          <span style="margin-left: 25px;">元</span>
+          <span style="margin-left: 25px;">%</span>
         </div>
       </el-form-item>
-  
+
       <!-- 公开佣金 -->
       <el-form-item label="公开佣金" prop="publicCommission">
         <div style="display: flex; align-items: center;">
@@ -59,10 +71,10 @@
             placeholder="请输入公开佣金"
             class="w-80!"
           />
-          <span style="margin-left: 25px;">元</span>
+          <span style="margin-left: 25px;">%</span>
         </div>
       </el-form-item>
-  
+
       <!-- 返点佣金 -->
       <el-form-item label="返点佣金" prop="rebateCommission">
         <div style="display: flex; align-items: center;">
@@ -73,30 +85,24 @@
             placeholder="请输入返点佣金"
             class="w-80!"
           />
-          <span style="margin-left: 25px;">元</span>
+          <span style="margin-left: 25px;">%</span>
         </div>
       </el-form-item>
     </el-form>
 
-    <!-- 客户搜索弹窗 -->
-    <CustomerSearchDialog
-      v-model:visible="customerSearchDialogVisible"
-      @customer-selected="handleCustomerSelected"
-      ref="customerSearchDialog"
-    />
+
   </template>
-  
+
   <script lang="ts" setup>
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
   import type { LiveBroadcastingReviewVO } from '@/api/erp/livebroadcastingreview'
-  import type { CustomerVO } from '@/api/erp/sale/customer'
-  import CustomerSearchDialog from "@/views/erp/sale/saleprice/components/CustomerSearchDialog.vue"
-  
+
+
   defineOptions({ name: 'ErpLiveBroadcastingReviewPriceForm' })
-  
+
   const props = defineProps({
     propFormData: {
       type: Object as PropType<LiveBroadcastingReviewVO>,
@@ -104,40 +110,43 @@
     },
     isDetail: propTypes.bool.def(false)
   })
-  
+
   const message = useMessage()
   const formRef = ref()
   const formData = reactive({
-    customerId: undefined as number | undefined, // 客户ID（传递给后端）
-    customerName: '', // 客户名称（用于显示）
+    customerName: '', // 客户名称
     livePlatform: '',
     liveCommission: 0,
     publicCommission: 0,
     rebateCommission: 0
   })
-  
-  // 直播平台选项
+
+  // 字典选项
   const filteredPlatformOptions = ref<any[]>([])
-  
+  const filteredCustomerNameOptions = ref<any[]>([])
+
   const rules = reactive({
-    customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+    customerName: [{ required: true, message: '客户名称不能为空', trigger: 'change' }],
     livePlatform: [{ required: true, message: '直播平台不能为空', trigger: 'blur' }],
     liveCommission: [{ required: true, message: '直播佣金不能为空', trigger: 'blur' }],
     publicCommission: [{ required: true, message: '公开佣金不能为空', trigger: 'blur' }],
-    rebateCommission: [{ required: true, message: '返点佣金不能为空', trigger: 'blur' }]
+    //rebateCommission: [{ required: true, message: '返点佣金不能为空', trigger: 'blur' }]
   })
-  
+
   // 初始化字典选项
   onMounted(() => {
     filteredPlatformOptions.value = getStrDictOptions(DICT_TYPE.ERP_LIVE_PLATFORM)
+    filteredCustomerNameOptions.value = getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)
   })
 
   // 字典选项过滤方法
   const filterDictOptions = (value, dictType) => {
-    const allOptions = getStrDictOptions(dictType)  
+    const allOptions = getStrDictOptions(dictType)
     if (!value) {
       if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
         filteredPlatformOptions.value = allOptions
+      } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
+        filteredCustomerNameOptions.value = allOptions
       }
       return
     }
@@ -146,6 +155,8 @@
     )
     if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
       filteredPlatformOptions.value = filtered
+    } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
+      filteredCustomerNameOptions.value = filtered
     }
   }
 
@@ -158,18 +169,8 @@
     },
     { immediate: true }
   )
-  
-  // 客户搜索弹窗相关
-  const customerSearchDialogVisible = ref(false)
 
-  const openCustomerSearch = () => {
-    customerSearchDialogVisible.value = true
-  }
 
-  const handleCustomerSelected = (customer: CustomerVO) => {
-    formData.customerId = customer.id // 填充客户ID（传递给后端）
-    formData.customerName = customer.name // 填充客户名称（用于显示）
-  }
 
   /** 表单校验 */
   const emit = defineEmits(['update:activeName'])
@@ -184,6 +185,6 @@
       throw e
     }
   }
-  
+
   defineExpose({ validate })
   </script>

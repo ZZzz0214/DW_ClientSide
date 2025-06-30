@@ -16,7 +16,7 @@
           value-format="x"
         />
       </el-form-item>
-  
+
       <!-- 开播日期 -->
       <el-form-item label="开播日期" prop="liveStartDate">
         <el-date-picker
@@ -27,7 +27,7 @@
           value-format="x"
         />
       </el-form-item>
-  
+
       <!-- 开播销量 -->
       <el-form-item label="开播销量" prop="liveSales">
         <el-input-number
@@ -37,7 +37,7 @@
           class="w-240px"
         />
       </el-form-item>
-  
+
       <!-- 复播日期 -->
       <el-form-item label="复播日期" prop="repeatLiveDate">
         <el-date-picker
@@ -48,7 +48,7 @@
           value-format="x"
         />
       </el-form-item>
-  
+
       <!-- 复播销量 -->
       <el-form-item label="复播销量" prop="repeatLiveSales">
         <el-input-number
@@ -60,15 +60,15 @@
       </el-form-item>
     </el-form>
   </template>
-  
+
   <script lang="ts" setup>
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { LiveBroadcastingReviewVO } from '@/api/erp/livebroadcastingreview'
-  
+
   defineOptions({ name: 'ErpLiveBroadcastingReviewProgressForm' })
-  
+
   const props = defineProps({
     propFormData: {
       type: Object as PropType<LiveBroadcastingReviewVO>,
@@ -76,7 +76,7 @@
     },
     isDetail: propTypes.bool.def(false)
   })
-  
+
   const message = useMessage()
   const formRef = ref()
   const formData = reactive<LiveBroadcastingReviewVO>({
@@ -86,12 +86,12 @@
     repeatLiveDate: '',
     repeatLiveSales: 0
   })
-  
+
   const rules = reactive({
-    sampleSendDate: [{ required: true, message: '寄样日期不能为空', trigger: 'blur' }],
-    liveStartDate: [{ required: true, message: '开播日期不能为空', trigger: 'blur' }]
+   // sampleSendDate: [{ required: true, message: '寄样日期不能为空', trigger: 'blur' }],
+    //liveStartDate: [{ required: true, message: '开播日期不能为空', trigger: 'blur' }]
   })
-  
+
   /** 将传进来的值赋值给 formData */
   watch(
     () => props.propFormData,
@@ -101,7 +101,7 @@
     },
     { immediate: true }
   )
-  
+
   /** 表单校验 */
   const emit = defineEmits(['update:activeName'])
   const validate = async () => {
@@ -115,6 +115,6 @@
       throw e
     }
   }
-  
+
   defineExpose({ validate })
   </script>

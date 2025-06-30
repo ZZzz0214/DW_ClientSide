@@ -15,8 +15,9 @@
           placeholder="请输入直播价格"
           class="w-240px"
         />
+        <span style="margin-left: 25px;">元</span>
       </el-form-item>
-  
+
       <!-- 直播佣金 -->
       <el-form-item label="直播佣金" prop="liveCommission">
         <el-input-number
@@ -26,8 +27,9 @@
           placeholder="请输入直播佣金"
           class="w-240px"
         />
+        <span style="margin-left: 25px;">%</span>
       </el-form-item>
-  
+
       <!-- 公开佣金 -->
       <el-form-item label="公开佣金" prop="publicCommission">
         <el-input-number
@@ -37,8 +39,9 @@
           placeholder="请输入公开佣金"
           class="w-240px"
         />
+        <span style="margin-left: 25px;">%</span>
       </el-form-item>
-  
+
       <!-- 返点佣金 -->
       <el-form-item label="返点佣金" prop="rebateCommission">
         <el-input-number
@@ -48,18 +51,19 @@
           placeholder="请输入返点佣金"
           class="w-240px"
         />
+        <span style="margin-left: 25px;">%</span>
       </el-form-item>
     </el-form>
   </template>
-  
+
   <script lang="ts" setup>
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { LiveBroadcastingVO } from '@/api/erp/livebroadcasting'
-  
+
   defineOptions({ name: 'ErpLiveBroadcastingPriceForm' })
-  
+
   const props = defineProps({
     propFormData: {
       type: Object as PropType<LiveBroadcastingVO>,
@@ -67,7 +71,7 @@
     },
     isDetail: propTypes.bool.def(false)
   })
-  
+
   const message = useMessage()
   const formRef = ref()
   const formData = reactive<LiveBroadcastingVO>({
@@ -76,12 +80,13 @@
     publicCommission: 0,
     rebateCommission: 0
   })
-  
+
   const rules = reactive({
     livePrice: [{ required: true, message: '直播价格不能为空', trigger: 'blur' }],
-    liveCommission: [{ required: true, message: '直播佣金不能为空', trigger: 'blur' }]
+    liveCommission: [{ required: true, message: '直播佣金不能为空', trigger: 'blur' }],
+    publicCommission: [{ required: true, message: '公开佣金不能为空', trigger: 'blur' }]
   })
-  
+
   /** 将传进来的值赋值给 formData */
   watch(
     () => props.propFormData,
@@ -91,7 +96,7 @@
     },
     { immediate: true }
   )
-  
+
   /** 表单校验 */
   const emit = defineEmits(['update:activeName'])
   const validate = async () => {
@@ -105,6 +110,6 @@
       throw e
     }
   }
-  
+
   defineExpose({ validate })
   </script>

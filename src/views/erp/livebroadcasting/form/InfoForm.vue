@@ -203,8 +203,8 @@
     no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
     productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
     brandName: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
-    marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
-    productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
+    //marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
+    //productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
     liveStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
   })
 
@@ -216,7 +216,7 @@
 
   // 字典选项过滤方法
   const filterDictOptions = (value, dictType) => {
-    const allOptions = getStrDictOptions(dictType)  
+    const allOptions = getStrDictOptions(dictType)
     if (!value) {
       if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
         filteredBrandOptions.value = allOptions
@@ -241,20 +241,20 @@
     (data) => {
       if (!data) return
       copyValueToTarget(formData, data)
-      
+
       // 处理产品图片：将逗号分隔的字符串转换为数组
       if (data.productImage && typeof data.productImage === 'string') {
         formData.productImage = data.productImage.split(',').filter(img => img.trim())
       } else if (Array.isArray(data.productImage)) {
         formData.productImage = [...data.productImage]
       }
-      
+
       // 如果是复制操作，清除不应该复制的字段
       if (data.id === undefined && data.no === '') {
         formData.id = undefined
         formData.no = ''
       }
-      
+
       // 确保数值类型字段正确转换
       if (data.liveStatus !== undefined && data.liveStatus !== null) {
         formData.liveStatus = Number(data.liveStatus)
@@ -269,15 +269,15 @@
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      
+
       // 通过emit事件将数据传递给父组件，而不是直接修改props
       const updatedData = { ...formData }
-      
+
       // 确保productImage是数组格式
       if (Array.isArray(formData.productImage)) {
         updatedData.productImage = [...formData.productImage]
       }
-      
+
       // 通过emit将数据传递给父组件
       emit('update:formData', updatedData)
     } catch (e) {

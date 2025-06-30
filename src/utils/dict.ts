@@ -282,5 +282,6 @@ export const DICT_TYPE = {
   ERP_LIVE_CUSTOMER_ATTRIBUTE: 'erp_live_customer_attribute', // 直播客户属性
   ERP_LIVE_CUSTOMER_CITY: 'erp_live_customer_city', // 直播客户城市
   ERP_LIVE_CUSTOMER_DISTRICT: 'erp_live_customer_district', // 直播客户区县
+  ERP_LIVE_CUSTOMER_NAME: 'erp_live_customer_name', // 直播客户名称
   ERP_DROPSHIP_STATUS: 'erp_dropship_status', // 直播客户区县
 } as const

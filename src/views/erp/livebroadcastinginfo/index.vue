@@ -19,13 +19,21 @@
           />
         </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
-          <el-input
+          <el-select
             v-model="queryParams.customerName"
-            placeholder="请输入客户名称"
+            placeholder="请选择客户名称"
             clearable
-            @keyup.enter="handleQuery"
             class="!w-240px"
-          />
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)"
+          >
+            <el-option
+              v-for="dict in filteredCustomerNameOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
         </el-form-item>
         <el-form-item label="客户职位" prop="customerPosition">
           <el-select
@@ -174,7 +182,11 @@
         >
           <el-table-column width="30" label="选择" type="selection" />
           <el-table-column label="编号" align="center" prop="no" />
-          <el-table-column label="客户姓名" align="center" prop="customerName" />
+          <el-table-column label="客户姓名" align="center" prop="customerName">
+            <template #default="scope">
+              <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="scope.row.customerName" />
+            </template>
+          </el-table-column>
 <!--          <el-table-column label="客户职位" align="center" prop="customerPosition" />-->
                 <el-table-column label="客户职位" align="center" prop="customerPosition">
         <template #default="scope">
@@ -288,11 +300,13 @@
   const exportLoading = ref(false) // 导出的加载中
 
   // 字典选项
+  const customerNameOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME))
   const customerPositionOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_POSITION))
   const platformNameOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_PLATFORM_NAME))
   const customerAttributeOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_ATTRIBUTE))
   const customerCityOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_CITY))
 
+  const filteredCustomerNameOptions = ref(customerNameOptions.value)
   const filteredCustomerPositionOptions = ref(customerPositionOptions.value)
   const filteredPlatformNameOptions = ref(platformNameOptions.value)
   const filteredCustomerAttributeOptions = ref(customerAttributeOptions.value)
@@ -301,7 +315,9 @@
   // 字典过滤方法
   const filterDictOptions = (value: string, dictType: string) => {
     if (!value) {
-      if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_POSITION) {
+      if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
+        filteredCustomerNameOptions.value = customerNameOptions.value
+      } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_POSITION) {
         filteredCustomerPositionOptions.value = customerPositionOptions.value
       } else if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM_NAME) {
         filteredPlatformNameOptions.value = platformNameOptions.value
@@ -319,7 +335,9 @@
       )
     }
 
-    if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_POSITION) {
+    if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
+      filteredCustomerNameOptions.value = filterOptions(customerNameOptions.value)
+    } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_POSITION) {
       filteredCustomerPositionOptions.value = filterOptions(customerPositionOptions.value)
     } else if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM_NAME) {
       filteredPlatformNameOptions.value = filterOptions(platformNameOptions.value)
