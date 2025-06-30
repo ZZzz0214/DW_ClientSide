@@ -15,6 +15,7 @@
           :precision="2"
           placeholder="请输入供团价格"
           class="w-80"
+          @change="calculateProfit"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -153,22 +154,13 @@
     }
   }
 
-// const calculateProfit = () => {
-//   if (formData.groupPrice > 0 && formData.supplyGroupPrice > 0) {
-//     formData.channelProfit = parseFloat((1 - (formData.supplyGroupPrice / formData.groupPrice)).toFixed(4))
-//   } else {
-//     formData.channelProfit = 0
-//   }
-// }
-
 const calculateProfit = () => {
   if (formData.groupPrice > 0 && formData.supplyGroupPrice > 0) {
-    formData.channelProfit = parseFloat((100 * (1 - (formData.supplyGroupPrice / formData.groupPrice))).toFixed(2))
+    formData.channelProfit = parseFloat((100 * ((formData.groupPrice - formData.supplyGroupPrice) / formData.groupPrice)).toFixed(2))
   } else {
     formData.channelProfit = 0
   }
 }
-watch(() => formData.supplyGroupPrice, calculateProfit)
 
   defineExpose({ validate })
   </script>

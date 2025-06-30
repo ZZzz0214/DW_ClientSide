@@ -130,7 +130,7 @@
           placeholder="请选择货盘状态"
           class="w-80"
           filterable
-          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_STATUS)"
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_STATUS)"
         >
           <el-option
             v-for="dict in filteredStatusOptions"
@@ -191,10 +191,10 @@ import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
     () => props.propFormData,
     (data) => {
       if (!data) return
-      
+
       // 复制数据
       copyValueToTarget(formData, data)
-      
+
       // 处理产品图片：如果是字符串，转换为数组
       if (data.productImage && typeof data.productImage === 'string') {
         formData.productImage = data.productImage.split(',').filter(img => img.trim())
@@ -213,15 +213,15 @@ import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      
+
       // 通过emit事件将数据传递给父组件，而不是直接修改props
       const updatedData = { ...formData }
-      
+
       // 确保productImage是数组格式
       if (Array.isArray(formData.productImage)) {
         updatedData.productImage = [...formData.productImage]
       }
-      
+
       // 通过emit将数据传递给父组件
       emit('update:formData', updatedData)
     } catch (e) {
@@ -242,7 +242,7 @@ import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
 
 const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
 const filteredCategoryOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY))
-const filteredStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS))
+const filteredStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_STATUS))
 
 const filterDictOptions = (value, dictType) => {
   const allOptions = getStrDictOptions(dictType)
@@ -251,7 +251,7 @@ const filterDictOptions = (value, dictType) => {
       filteredBrandOptions.value = allOptions
     } else if (dictType === DICT_TYPE.ERP_PRODUCT_CATEGORY) {
       filteredCategoryOptions.value = allOptions
-    } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+    } else if (dictType === DICT_TYPE.ERP_STATUS) {
       filteredStatusOptions.value = allOptions
     }
     return
@@ -263,7 +263,7 @@ const filterDictOptions = (value, dictType) => {
     filteredBrandOptions.value = filtered
   } else if (dictType === DICT_TYPE.ERP_PRODUCT_CATEGORY) {
     filteredCategoryOptions.value = filtered
-  } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+  } else if (dictType === DICT_TYPE.ERP_STATUS) {
     filteredStatusOptions.value = filtered
   }
 }

@@ -195,9 +195,9 @@
   const emit = defineEmits(['update:activeName'])
   const formRef = ref()
   const formData = reactive({
-    groupBuyingId: undefined as number | undefined,
+    groupBuyingId: '' as string, // 团购货盘编号（传递给后端）
     groupBuyingNo: '', // 货盘编号（用于显示）
-    customerId: undefined as number | undefined, // 客户ID（传递给后端）
+    customerId: '' as string, // 客户名称（传递给后端）
     productName: '',
     brandName: '',
     productSpec: '',
@@ -250,8 +250,8 @@ const openGroupBuyingSearch = () => {
 };
 
 const handleGroupBuyingSelected = (groupBuying: any) => {
-  // 填充货盘ID（使用真实的ID传递给后端）
-  formData.groupBuyingId = groupBuying.id;
+  // 填充货盘编号（传递给后端）
+  formData.groupBuyingId = groupBuying.no || '';
   // 填充货盘编号（用于显示）
   formData.groupBuyingNo = groupBuying.no || '';
   // 自动填充货盘相关信息
@@ -279,7 +279,7 @@ const handleGroupBuyingSelected = (groupBuying: any) => {
   };
 
   const handleCustomerSelected = (customer: CustomerVO) => {
-    formData.customerId = customer.id; // 填充客户ID（传递给后端）
+    formData.customerId = customer.name; // 填充客户名称（传递给后端）
     formData.customerName = customer.name; // 填充客户名称（用于显示）
   };
   defineExpose({ validate })

@@ -101,5 +101,10 @@ export const GroupBuyingReviewApi = {
   // 导出团购复盘 Excel
   exportGroupBuyingReview: async (params: GroupBuyingReviewPageReqVO) => {
     return await request.download({ url: `/erp/group-buying-review/export-excel`, params })
+  },
+
+  // 下载团购货盘导入模板
+  importGroupBuyingReviewTemplate: async () => {
+    return await request.download({ url: `/erp/group-buying-review/get-import-template` })
   }
 }

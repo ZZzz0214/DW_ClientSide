@@ -39,12 +39,21 @@
       <el-button @click="dialogVisible = false">取 消</el-button>
     </template>
   </Dialog>
+
+  <!-- 导入结果弹窗 -->
+  <ImportResultDialog
+    v-model="resultDialogVisible"
+    :result-data="importResult"
+    @confirm="handleResultConfirm"
+    @close="handleResultClose"
+  />
 </template>
 
 <script lang="ts" setup>
 import { GroupBuyingInfoApi } from '@/api/erp/groupbuyinginfo'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import download from '@/utils/download'
+import ImportResultDialog from "@/components/ImportResultDialog/index.vue";
 
 defineOptions({ name: 'ErpGroupBuyingInfoImportForm' })
 
@@ -59,6 +68,14 @@ const uploadHeaders = ref() // 上传 Header 头
 const fileList = ref([]) // 文件列表
 const updateSupport = ref(0) // 是否更新已经存在的团购信息数据
 
+// 导入结果相关
+const resultDialogVisible = ref(false)
+const importResult = ref({
+  createNames: [],
+  updateNames: [],
+  failureNames: {}
+})
+
 /** 打开弹窗 */
 const open = () => {
   dialogVisible.value = true
@@ -67,6 +84,24 @@ const open = () => {
   resetForm()
 }
 defineExpose({ open }) // 提供 open 方法，用于打开弹窗
+/** 文件上传成功 */
+const emits = defineEmits(['success'])
+const submitFormSuccess = (response: any) => {
+  if (response.code !== 0) {
+    message.error(response.msg)
+    formLoading.value = false
+    return
+  }
+
+  // 设置导入结果数据
+  importResult.value = response.data
+
+  // 显示导入结果弹窗
+  resultDialogVisible.value = true
+
+  formLoading.value = false
+  dialogVisible.value = false
+}
 
 /** 提交表单 */
 const submitForm = async () => {
@@ -83,33 +118,33 @@ const submitForm = async () => {
   uploadRef.value!.submit()
 }
 
-/** 文件上传成功 */
-const emits = defineEmits(['success'])
-const submitFormSuccess = (response: any) => {
-  if (response.code !== 0) {
-    message.error(response.msg)
-    formLoading.value = false
-    return
-  }
-  const data = response.data
-  let text = '导入成功数量：' + data.createNames.length + ';'
-  for (let name of data.createNames) {
-    text += '< ' + name + ' >'
-  }
-  text += '更新成功数量：' + data.updateNames.length + ';'
-  for (const name of data.updateNames) {
-    text += '< ' + name + ' >'
-  }
-  text += '更新失败数量：' + Object.keys(data.failureNames).length + ';'
-  for (const name in data.failureNames) {
-    text += '< ' + name + ': ' + data.failureNames[name] + ' >'
-  }
-  message.alert(text)
-  formLoading.value = false
-  dialogVisible.value = false
-  // 发送操作成功的事件
-  emits('success')
-}
+// /** 文件上传成功 */
+// const emits = defineEmits(['success'])
+// const submitFormSuccess = (response: any) => {
+//   if (response.code !== 0) {
+//     message.error(response.msg)
+//     formLoading.value = false
+//     return
+//   }
+//   const data = response.data
+//   let text = '导入成功数量：' + data.createNames.length + ';'
+//   for (let name of data.createNames) {
+//     text += '< ' + name + ' >'
+//   }
+//   text += '更新成功数量：' + data.updateNames.length + ';'
+//   for (const name of data.updateNames) {
+//     text += '< ' + name + ' >'
+//   }
+//   text += '更新失败数量：' + Object.keys(data.failureNames).length + ';'
+//   for (const name in data.failureNames) {
+//     text += '< ' + name + ': ' + data.failureNames[name] + ' >'
+//   }
+//   message.alert(text)
+//   formLoading.value = false
+//   dialogVisible.value = false
+//   // 发送操作成功的事件
+//   emits('success')
+// }
 
 /** 上传错误提示 */
 const submitFormError = (): void => {
@@ -135,4 +170,4 @@ const importTemplate = async () => {
   const res = await GroupBuyingInfoApi.importGroupBuyingInfoTemplate()
   download.excel(res, '团购信息导入模版.xlsx')
 }
-</script> 
+</script>

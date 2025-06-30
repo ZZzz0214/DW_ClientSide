@@ -264,6 +264,7 @@ export const DICT_TYPE = {
   ERP_PRODUCT_BRAND: 'erp_product_brand', // ERP 产品品牌
   ERP_PRODUCT_CATEGORY: 'erp_product_category', // ERP 产品品类
   ERP_PRODUCT_STATUS: 'erp_product_status', // ERP 产品状态
+  ERP_STATUS: 'status', // ERP 产品状态
   ERP_PRIVATE_STATUS: 'erp_privateStatus', // ERP 私播货盘状态
   ERP_LIVE_STATUS: 'erp_live_status', // ERP 直播货盘状态
   ERP_LIVE_PLATFORM: 'erp_live_platform', // ERP 直播平台

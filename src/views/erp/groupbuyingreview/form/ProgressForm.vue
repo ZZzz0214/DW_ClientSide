@@ -79,8 +79,8 @@
   })
 
   const rules = reactive({
-    groupStartDate: [{ required: true, message: '开团日期不能为空', trigger: 'blur' }],
-    groupSales: [{ required: true, message: '开团销量不能为空', trigger: 'blur' }]
+   // groupStartDate: [{ required: true, message: '开团日期不能为空', trigger: 'blur' }],
+    //groupSales: [{ required: true, message: '开团销量不能为空', trigger: 'blur' }]
   })
 
   /** 将传进来的值赋值给 formData */

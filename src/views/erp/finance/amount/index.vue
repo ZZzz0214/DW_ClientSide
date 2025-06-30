@@ -317,15 +317,15 @@
             <Icon icon="ep:download" />
             导出
           </el-button>
-          <el-button
-            type="info"
-            plain
-            @click="importFormRef?.open()"
-            v-hasPermi="['erp:finance-amount:import']"
-          >
-            <Icon icon="ep:upload" />
-            导入
-          </el-button>
+<!--          <el-button-->
+<!--            type="info"-->
+<!--            plain-->
+<!--            @click="importFormRef?.open()"-->
+<!--            v-hasPermi="['erp:finance-amount:import']"-->
+<!--          >-->
+<!--            <Icon icon="ep:upload" />-->
+<!--            导入-->
+<!--          </el-button>-->
         </el-form-item>
       </el-form>
     </ContentWrap>
