@@ -87,8 +87,8 @@
   })
 
   const rules = reactive({
-    sampleSendDate: [{ required: true, message: '寄样日期不能为空', trigger: 'change' }],
-    groupStartDate: [{ required: true, message: '开团日期不能为空', trigger: 'change' }]
+   // sampleSendDate: [{ required: true, message: '寄样日期不能为空', trigger: 'change' }],
+    //groupStartDate: [{ required: true, message: '开团日期不能为空', trigger: 'change' }]
   })
 
   // 内部更新标记，避免循环更新
@@ -98,10 +98,10 @@
     () => props.propFormData,
     (data) => {
       if (!data || isInternalUpdate.value) return
-      
+
       isInternalUpdate.value = true
       copyValueToTarget(formData, data)
-      
+
       nextTick(() => {
         isInternalUpdate.value = false
       })

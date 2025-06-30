@@ -111,8 +111,8 @@ const formData = reactive({
 
 const rules = {
   productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-  productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
-  marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
+ // productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
+ // marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
   brandName: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
   privateStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
 }
@@ -127,12 +127,12 @@ watch(
   () => props.propFormData,
   (data) => {
     if (!data || isInternalUpdate.value) return
-    
+
     isInternalUpdate.value = true
-    
+
     // 复制数据
     copyValueToTarget(formData, data)
-    
+
     // 处理产品图片：如果是字符串，转换为数组
     if (data.productImage && typeof data.productImage === 'string') {
       formData.productImage = data.productImage.split(',').filter(img => img.trim())
@@ -141,12 +141,12 @@ watch(
     } else {
       formData.productImage = []
     }
-    
+
     // 确保货盘状态正确赋值
     if (data.privateStatus !== undefined) {
       formData.privateStatus = data.privateStatus
     }
-    
+
     nextTick(() => {
       isInternalUpdate.value = false
     })

@@ -205,14 +205,14 @@ const formData = reactive<ErpPrivateBroadcastingInfoRespVO>({
 const rules = reactive({
   customerName: [{ required: true, message: '客户姓名不能为空', trigger: 'blur' }],
   customerPosition: [{ required: true, message: '客户职位不能为空', trigger: 'blur' }],
-  customerWechat: [{ required: true, message: '客户微信不能为空', trigger: 'blur' }],
+  //customerWechat: [{ required: true, message: '客户微信不能为空', trigger: 'blur' }],
   platformName: [{ required: true, message: '平台名称不能为空', trigger: 'blur' }],
   customerAttribute: [{ required: true, message: '客户属性不能为空', trigger: 'blur' }],
-  customerCity: [{ required: true, message: '客户城市不能为空', trigger: 'blur' }],
-  customerDistrict: [{ required: true, message: '客户区县不能为空', trigger: 'blur' }],
-  userPortrait: [{ required: true, message: '用户画像不能为空', trigger: 'blur' }],
-  recruitmentCategory: [{ required: true, message: '招商类目不能为空', trigger: 'blur' }],
-  selectionCriteria: [{ required: true, message: '选品标准不能为空', trigger: 'blur' }]
+  //customerCity: [{ required: true, message: '客户城市不能为空', trigger: 'blur' }],
+  //customerDistrict: [{ required: true, message: '客户区县不能为空', trigger: 'blur' }],
+  //userPortrait: [{ required: true, message: '用户画像不能为空', trigger: 'blur' }],
+  //recruitmentCategory: [{ required: true, message: '招商类目不能为空', trigger: 'blur' }],
+  //selectionCriteria: [{ required: true, message: '选品标准不能为空', trigger: 'blur' }]
 })
 
 // 字典选项
@@ -235,7 +235,7 @@ const filterDictOptions = (value: string, dictType: string) => {
   const filtered = value
     ? allOptions.filter(option => option.label.toLowerCase().includes(value.toLowerCase()))
     : allOptions
-  
+
   // 更新对应的过滤选项
   switch (dictType) {
     case DICT_TYPE.ERP_PRIVATE_CUSTOMER_POSITION:
@@ -275,7 +275,7 @@ watch(
   (data) => {
     if (!data) return
     copyValueToTarget(formData, data)
-    
+
     // 如果是复制操作，清除不应该复制的字段
     if (data.id === undefined && data.no === '') {
       formData.id = undefined
