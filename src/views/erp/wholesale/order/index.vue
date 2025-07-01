@@ -110,7 +110,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      
+
       <!-- 采购权限相关字段 -->
       <el-form-item label="采购人员" prop="purchaser" v-hasPermi="['erp:wholesale:importPurchase']">
         <el-input
@@ -130,7 +130,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      
+
       <!-- 销售权限相关字段 -->
       <el-form-item label="销售人员" prop="salesperson" v-hasPermi="['erp:wholesale:importSale']">
         <el-input
@@ -159,7 +159,7 @@
           class="!w-240px"
         />
       </el-form-item>
-      
+
       <el-form-item label="创建人员" prop="creator">
         <el-input
           v-model="queryParams.creator"
@@ -203,7 +203,7 @@
           />
         </el-select>
       </el-form-item>
-      
+
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
@@ -232,16 +232,16 @@
         >
           <Icon icon="ep:upload" class="mr-5px" /> 导入
         </el-button>
-        <!-- 基础导出按钮 -->
-        <el-button
-          type="success"
-          plain
-          @click="handleBasicExport"
-          :loading="basicExportLoading"
-          v-hasPermi="['erp:wholesale:importBasic']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 基础导出
-        </el-button>
+<!--        &lt;!&ndash; 基础导出按钮 &ndash;&gt;-->
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleBasicExport"-->
+<!--          :loading="basicExportLoading"-->
+<!--          v-hasPermi="['erp:wholesale:importBasic']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 基础导出-->
+<!--        </el-button>-->
         <!-- 采购导出按钮 -->
         <el-button
           type="success"
@@ -262,16 +262,16 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 出货导出
         </el-button>
-        <!-- 发货导出按钮 -->
-        <el-button
-          type="success"
-          plain
-          @click="handleShipExport"
-          :loading="shipExportLoading"
-          v-hasPermi="['erp:wholesale:importShip']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 发货导出
-        </el-button>
+<!--        &lt;!&ndash; 发货导出按钮 &ndash;&gt;-->
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleShipExport"-->
+<!--          :loading="shipExportLoading"-->
+<!--          v-hasPermi="['erp:wholesale:importShip']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 发货导出-->
+<!--        </el-button>-->
         <el-button
           type="danger"
           plain
