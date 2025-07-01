@@ -1,5 +1,5 @@
 <template>
-  <Dialog v-model="dialogVisible" title="客户导入" width="400">
+  <Dialog v-model="dialogVisible" title="供应商导入" width="400">
     <el-upload
       ref="uploadRef"
       v-model:file-list="fileList"
@@ -46,7 +46,7 @@
 </template>
 
 <script lang="ts" setup>
-import { CustomerApi } from '@/api/erp/sale/customer'
+import { SupplierApi } from '@/api/erp/purchase/supplier'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import download from '@/utils/download'
 import ImportResultDialog from "@/components/ImportResultDialog/index.vue";
@@ -94,7 +94,7 @@ const handleResultClose = () => {
   emits('success')
 }
 
-defineOptions({ name: 'ErpCustomerImportForm' })
+defineOptions({ name: 'ErpSupplierImportForm' })
 
 const message = useMessage() // 消息弹窗
 
@@ -102,7 +102,7 @@ const dialogVisible = ref(false) // 弹窗的是否展示
 const formLoading = ref(false) // 表单的加载中
 const uploadRef = ref()
 const importUrl =
-  import.meta.env.VITE_BASE_URL + import.meta.env.VITE_API_URL + '/erp/customer/import'
+  import.meta.env.VITE_BASE_URL + import.meta.env.VITE_API_URL + '/erp/supplier/import'
 const uploadHeaders = ref() // 上传 Header 头
 const fileList = ref([]) // 文件列表
 
@@ -147,7 +147,7 @@ const handleExceed = (): void => {
 
 /** 下载模板操作 */
 const importTemplate = async () => {
-  const res = await CustomerApi.importCustomerTemplate()
-  download.excel(res, '客户导入模版.xlsx')
+  const res = await SupplierApi.importSupplierTemplate()
+  download.excel(res, '供应商导入模版.xlsx')
 }
 </script> 

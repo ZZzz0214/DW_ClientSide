@@ -60,6 +60,14 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
+        <el-button
+          type="info"
+          plain
+          @click="importFormRef.open()"
+          v-hasPermi="['erp:supplier:import']"
+        >
+          <Icon icon="ep:upload" class="mr-5px" /> 导入
+        </el-button>
       </el-form-item>
     </el-form>
   </ContentWrap>
@@ -111,6 +119,9 @@
 
   <!-- 表单弹窗：添加/修改 -->
   <SupplierForm ref="formRef" @success="getList" />
+
+  <!-- 导入对话框 -->
+  <ImportForm ref="importFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -119,6 +130,7 @@ import { dateFormatter } from '@/utils/formatTime'
 import download from '@/utils/download'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 import SupplierForm from './SupplierForm.vue'
+import ImportForm from './ImportForm.vue'
 
 /** ERP 供应商 列表 */
 defineOptions({ name: 'ErpSupplier' })
@@ -138,6 +150,7 @@ const queryParams = reactive({
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
+const importFormRef = ref() // 导入表单 Ref
 
 /** 查询列表 */
 const getList = async () => {

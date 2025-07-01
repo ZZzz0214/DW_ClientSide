@@ -49,7 +49,7 @@ export const CustomerApi = {
   },
 
   // 获取导入模板
-  importTemplate: async () => {
+  importCustomerTemplate: async () => {
     return await request.download({ url: `/erp/customer/get-import-template` })
   },
 

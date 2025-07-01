@@ -60,5 +60,15 @@ export const SupplierApi = {
   // 搜索供应商人员
   searchSupplier: async (params: any) => {
     return await request.get({ url: `/erp/supplier/search`, params });
+  },
+
+  // 获取导入模板
+  importSupplierTemplate: async () => {
+    return await request.download({ url: `/erp/supplier/get-import-template` })
+  },
+
+  // 导入供应商
+  importSupplier: async (data: FormData) => {
+    return await request.upload({ url: `/erp/supplier/import`, data })
   }
 }
