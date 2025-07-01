@@ -174,6 +174,12 @@
 <!--              </el-col>-->
 <!--            </el-row>-->
     </el-form>
+    
+    <!-- 复制数据标签页 - 在表单外部，不受disabled影响 -->
+    <div v-if="formType === 'detail'">
+      <el-divider content-position="left">复制数据</el-divider>
+      <CopyDataForm :formData="formData" />
+    </div>
     <template #footer>
       <el-button @click="submitForm" type="primary" :disabled="formLoading" v-if="!disabled">
         确 定
@@ -187,6 +193,7 @@
 import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
 import PurchaseOrderItemForm from './components/PurchaseOrderItemForm.vue'
 import SalePriceItemForm from './components/SalePriceItemForm.vue'
+import CopyDataForm from './components/CopyDataForm.vue'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
 import * as UserApi from '@/api/system/user'
 import { AccountApi, AccountVO } from '@/api/erp/finance/account'
