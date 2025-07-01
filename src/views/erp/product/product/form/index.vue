@@ -57,6 +57,11 @@
           :propFormData="formData"
         />
       </el-tab-pane>
+      <el-tab-pane label="复制数据" name="copyData" v-if="isDetail" v-hasPermi="['erp:product:query']">
+        <CopyDataForm
+          :formData="formData"
+        />
+      </el-tab-pane>
 
     </el-tabs>
     <el-form>
@@ -80,6 +85,7 @@ import SkuForm from './SkuForm.vue'
 import DeliveryForm from './DeliveryForm.vue'
 import CostForm from './Shippingcost.vue'
 import PriceForm from "@/views/erp/product/product/form/PriceForm.vue";
+import CopyDataForm from './CopyDataForm.vue'
 
 defineOptions({ name: 'ErpProductAdd' })
 

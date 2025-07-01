@@ -19,6 +19,7 @@ import request from '@/config/axios'
 // }
 export interface ProductVO {
   id: number; // 产品编号
+  no?: string; // 产品编号
   name: string; // 产品名称
   image?: string; // 产品图片
   productShortName?: string; // 产品简称
