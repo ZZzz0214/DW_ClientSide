@@ -9,6 +9,9 @@
             :propFormData="formData"
           />
         </el-tab-pane>
+        <el-tab-pane label="复制数据" name="copy" v-if="isDetail">
+          <CopyDataForm :formData="formData" />
+        </el-tab-pane>
       </el-tabs>
       <el-form>
         <el-form-item style="float: right">
@@ -26,6 +29,7 @@
   import { useTagsViewStore } from '@/store/modules/tagsView'
   import * as SampleApi from '@/api/erp/sample'
   import InfoForm from './InfoForm.vue'
+  import CopyDataForm from './components/CopyDataForm.vue'
   
   defineOptions({ name: 'ErpSampleAdd' })
   

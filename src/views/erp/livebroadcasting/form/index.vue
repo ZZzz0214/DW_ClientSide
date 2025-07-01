@@ -28,6 +28,9 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
+        <el-tab-pane label="复制数据" name="copy" v-if="isDetail">
+          <CopyDataForm :formData="formData" />
+        </el-tab-pane>
       </el-tabs>
       <el-form>
         <el-form-item style="float: right">
@@ -47,6 +50,7 @@
   import InfoForm from './InfoForm.vue'
   import PriceForm from './PriceForm.vue'
   import ShippingForm from './ShippingForm.vue'
+  import CopyDataForm from './components/CopyDataForm.vue'
 
   defineOptions({ name: 'ErpLiveBroadcastingAdd' })
 
