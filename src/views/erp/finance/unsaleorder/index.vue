@@ -7,78 +7,256 @@
       :model="queryParams"
       ref="queryFormRef"
       :inline="true"
-      label-width="68px"
+      label-width="100px"
     >
-      <el-form-item label="订单单号" prop="no">
+      <el-form-item label="订单编号" prop="no">
         <el-input
           v-model="queryParams.no"
-          placeholder="请输入订单单号"
+          placeholder="请输入订单编号"
           clearable
           @keyup.enter="handleQuery"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="产品" prop="productId">
-        <el-select
-          v-model="queryParams.productId"
+
+      <el-form-item label="订单号" prop="orderNumber">
+        <el-input
+          v-model="queryParams.orderNumber"
+          placeholder="请输入订单号"
           clearable
-          filterable
-          placeholder="请选择产品"
+          @keyup.enter="handleQuery"
           class="!w-240px"
-        >
-          <el-option
-            v-for="item in productList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
+        />
       </el-form-item>
-      <el-form-item label="订单时间" prop="orderTime">
+
+      <el-form-item label="物流公司" prop="logisticsCompany">
+        <el-input
+          v-model="queryParams.logisticsCompany"
+          placeholder="请输入物流公司"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="物流单号" prop="trackingNumber">
+        <el-input
+          v-model="queryParams.trackingNumber"
+          placeholder="请输入物流单号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="收件姓名" prop="receiverName">
+        <el-input
+          v-model="queryParams.receiverName"
+          placeholder="请输入收件姓名"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="联系电话" prop="receiverPhone">
+        <el-input
+          v-model="queryParams.receiverPhone"
+          placeholder="请输入联系电话"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="详细地址" prop="receiverAddress">
+        <el-input
+          v-model="queryParams.receiverAddress"
+          placeholder="请输入详细地址"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="原表商品" prop="originalProduct">
+        <el-input
+          v-model="queryParams.originalProduct"
+          placeholder="请输入原表商品"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="原表规格" prop="originalSpecification">
+        <el-input
+          v-model="queryParams.originalSpecification"
+          placeholder="请输入原表规格"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="组品编号" prop="comboProductNo">
+        <el-input
+          v-model="queryParams.comboProductNo"
+          placeholder="请输入组品编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="发货编码" prop="shippingCode">
+        <el-input
+          v-model="queryParams.shippingCode"
+          placeholder="请输入发货编码"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="产品名称" prop="productName">
+        <el-input
+          v-model="queryParams.productName"
+          placeholder="请输入产品名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="产品规格" prop="productSpecification">
+        <el-input
+          v-model="queryParams.productSpecification"
+          placeholder="请输入产品规格"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="售后状况" prop="afterSalesStatus">
+        <el-input
+          v-model="queryParams.afterSalesStatus"
+          placeholder="请输入售后状况"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="售后时间" prop="afterSalesTime">
         <el-date-picker
-          v-model="queryParams.orderTime"
+          v-model="queryParams.afterSalesTime"
           value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
       </el-form-item>
-      <el-form-item label="客户" prop="customerId">
-        <el-select
-          v-model="queryParams.customerId"
+
+      <!-- 采购权限相关字段 -->
+      <el-form-item
+        label="采购人员"
+        prop="purchaser"
+        v-hasPermi="['erp:distribution:importPurchase']"
+      >
+        <el-input
+          v-model="queryParams.purchaser"
+          placeholder="请输入采购人员"
           clearable
-          filterable
-          placeholder="请选择供客户"
+          @keyup.enter="handleQuery"
           class="!w-240px"
-        >
-          <el-option
-            v-for="item in customerList"
-            :key="item.id"
-            :label="item.name"
-            :value="item.id"
-          />
-        </el-select>
+        />
       </el-form-item>
-      <el-form-item label="创建人" prop="creator">
-        <el-select
+
+      <el-form-item
+        label="供应商名"
+        prop="supplier"
+        v-hasPermi="['erp:distribution:importPurchase']"
+      >
+        <el-input
+          v-model="queryParams.supplier"
+          placeholder="请输入供应商名"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <!-- 销售权限相关字段 -->
+      <el-form-item
+        label="销售人员"
+        prop="salesperson"
+        v-hasPermi="['erp:distribution:importSale']"
+      >
+        <el-input
+          v-model="queryParams.salesperson"
+          placeholder="请输入销售人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item
+        label="客户名称"
+        prop="customerName"
+        v-hasPermi="['erp:distribution:importSale']"
+      >
+        <el-input
+          v-model="queryParams.customerName"
+          placeholder="请输入客户名称"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item
+        label="中转人员"
+        prop="transferPerson"
+        v-hasPermi="['erp:distribution:importSale']"
+      >
+        <el-input
+          v-model="queryParams.transferPerson"
+          placeholder="请输入中转人员"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="创建人员" prop="creator">
+        <el-input
           v-model="queryParams.creator"
+          placeholder="请输入创建人员"
           clearable
-          filterable
-          placeholder="请选择创建人"
+          @keyup.enter="handleQuery"
           class="!w-240px"
-        >
-          <el-option
-            v-for="item in userList"
-            :key="item.id"
-            :label="item.nickname"
-            :value="item.id"
-          />
-        </el-select>
+        />
       </el-form-item>
-      <el-form-item label="状态" prop="status">
-        <el-select v-model="queryParams.status" placeholder="请选择状态" clearable class="!w-240px">
+
+      <el-form-item label="创建时间" prop="createTime">
+        <el-date-picker
+          v-model="queryParams.createTime"
+          value-format="YYYY-MM-DD HH:mm:ss"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
+          :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
+          class="!w-240px"
+        />
+      </el-form-item>
+
+      <el-form-item label="采购审核状态" prop="purchaseAuditStatus"  v-hasPermi="['erp:distribution:importPurchase']">
+        <el-select v-model="queryParams.purchaseAuditStatus" placeholder="请选择采购审核状态" clearable class="!w-240px">
           <el-option
             v-for="dict in getIntDictOptions(DICT_TYPE.ERP_AUDIT_STATUS)"
             :key="dict.value"
@@ -87,37 +265,15 @@
           />
         </el-select>
       </el-form-item>
-      <el-form-item label="备注" prop="remark">
-        <el-input
-          v-model="queryParams.remark"
-          placeholder="请输入备注"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
-      </el-form-item>
-      <el-form-item label="出库数量" prop="outStatus">
-        <el-select
-          v-model="queryParams.outStatus"
-          placeholder="请选择出库数量"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="未出库" value="0" />
-          <el-option label="部分出库" value="1" />
-          <el-option label="全部出库" value="2" />
-        </el-select>
-      </el-form-item>
-      <el-form-item label="退货数量" prop="returnStatus">
-        <el-select
-          v-model="queryParams.returnStatus"
-          placeholder="请选择退货数量"
-          clearable
-          class="!w-240px"
-        >
-          <el-option label="未退货" value="0" />
-          <el-option label="部分退货" value="1" />
-          <el-option label="全部退货" value="2" />
+
+      <el-form-item label="销售审核状态" prop="saleAuditStatus" v-hasPermi="['erp:distribution:importSale']">
+        <el-select v-model="queryParams.saleAuditStatus" placeholder="请选择销售审核状态" clearable class="!w-240px">
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.ERP_AUDIT_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
         </el-select>
       </el-form-item>
       <el-form-item>
@@ -293,14 +449,29 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   no: undefined,
-  customerId: undefined,
-  productId: undefined,
-  orderTime: [],
-  status: undefined,
-  remark: undefined,
+  orderNumber: undefined,
+  logisticsCompany: undefined,
+  trackingNumber: undefined,
+  receiverName: undefined,
+  receiverPhone: undefined,
+  receiverAddress: undefined,
+  originalProduct: undefined,
+  originalSpecification: undefined,
+  comboProductNo: undefined,
+  shippingCode: undefined,
+  productName: undefined,
+  productSpecification: undefined,
+  afterSalesStatus: undefined,
+  afterSalesTime: undefined,
+  purchaser: undefined,
+  supplier: undefined,
+  salesperson: undefined,
+  customerName: undefined,
+  transferPerson: undefined,
   creator: undefined,
-  outStatus: undefined,
-  returnStatus: undefined
+  createTime: undefined,
+  purchaseAuditStatus: undefined,
+  saleAuditStatus: undefined
 })
 const totalSalePrice = ref<string>('')
 const totalSaleShippingFee = ref<string>('')

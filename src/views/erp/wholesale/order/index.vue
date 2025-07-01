@@ -103,9 +103,9 @@
         <el-date-picker
           v-model="queryParams.afterSalesTime"
           value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
@@ -173,9 +173,9 @@
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
@@ -305,7 +305,20 @@
       <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
       <el-table-column label="产品规格" align="center" prop="productSpecification" :show-overflow-tooltip="false"/>
       <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
 
+      />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
 
       <el-table-column label="审核状态" align="center" fixed="right" width="120" prop="status">
         <template #default="scope">
@@ -376,7 +389,7 @@
 
 <script setup lang="ts">
 import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
-import { dateFormatter2 } from '@/utils/formatTime'
+import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
 import { ErpWholesaleApi, ErpWholesaleVO } from '@/api/erp/wholesale'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'

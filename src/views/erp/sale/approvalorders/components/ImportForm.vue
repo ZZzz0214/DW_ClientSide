@@ -45,6 +45,7 @@
 import * as WholesaleApi from '@/api/erp/wholesale'
 import { getAccessToken, getTenantId } from '@/utils/auth'
 import download from '@/utils/download'
+import {ErpWholesaleApi} from "@/api/erp/wholesale";
 
 defineOptions({ name: 'ErpWholesaleSaleAuditImportForm' })
 
@@ -132,7 +133,7 @@ const handleExceed = (): void => {
 
 /** 下载模板操作 */
 const importTemplate = async () => {
-  const res = await WholesaleApi.importSaleAuditTemplate()
+  const res = await WholesaleApi.ErpWholesaleApi.importSaleAuditTemplate()
   download.excel(res, '批发销售审核导入模板.xlsx')
 }
 </script>
