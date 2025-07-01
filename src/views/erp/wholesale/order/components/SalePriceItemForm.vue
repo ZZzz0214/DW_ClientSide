@@ -137,10 +137,8 @@
 <script setup lang="ts">
 import { ref, onMounted, watch } from 'vue';
 import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
-import SalespersonSearchDialog from './SalespersonSearchDialog.vue';
-import CustomerSearchDialog from './CustomerSearchDialog.vue';
-import { it } from 'node:test';
-import { number } from 'vue-types';
+import SalespersonSearchDialog from '@/views/erp/distribution/order/components/SalespersonSearchDialog.vue';
+import CustomerSearchDialog from '@/views/erp/distribution/order/components/CustomerSearchDialog.vue';
 const message = useMessage() // 消息弹窗// 引入客户人员搜索弹窗组件
 
 // const props = defineProps<{
@@ -197,7 +195,7 @@ const calculateSaleShippingFee = (item) => {
     if (item) item.saleLogisticsFee = 0;
     return;
   }
-  
+
   if (!item.salePrice && item.salePrice !== 0) {
     item.saleLogisticsFee = 0;
     return;
@@ -229,7 +227,7 @@ const calculateSaleShippingFee = (item) => {
 // 更新出货总额的方法
 const updateTotalSaleAmount = (item) => {
   if (!item) return;
-  
+
   const price = Number(item.salePrice) || 0;
   const count = Number(item.count) || 0;
   const logisticsFee = Number(item.saleLogisticsFee) || 0;
