@@ -18,7 +18,12 @@
         <el-input v-model="formData.label" placeholder="请输入数据标签" />
       </el-form-item>
       <el-form-item label="数据键值" prop="value">
-        <el-input v-model="formData.value" placeholder="请输入数据键值" />
+        <el-input 
+          v-model="formData.value" 
+          placeholder="请输入数据键值（只能输入数字）" 
+          @input="handleValueInput"
+          @keypress="handleValueKeypress"
+        />
       </el-form-item>
       <el-form-item label="显示排序" prop="sort">
         <el-input-number v-model="formData.sort" :min="0" controls-position="right" />
@@ -84,7 +89,10 @@ const formData = ref({
 })
 const formRules = reactive({
   label: [{ required: true, message: '数据标签不能为空', trigger: 'blur' }],
-  value: [{ required: true, message: '数据键值不能为空', trigger: 'blur' }],
+  value: [
+    { required: true, message: '数据键值不能为空', trigger: 'blur' },
+    { pattern: /^\d+$/, message: '数据键值只能输入数字', trigger: 'blur' }
+  ],
   sort: [{ required: true, message: '数据顺序不能为空', trigger: 'blur' }],
   status: [{ required: true, message: '状态不能为空', trigger: 'change' }]
 })
@@ -179,5 +187,23 @@ const resetForm = () => {
     remark: ''
   }
   formRef.value?.resetFields()
+}
+
+const handleValueInput = (value: string) => {
+  // 只保留数字字符
+  formData.value.value = value.replace(/[^\d]/g, '')
+}
+
+const handleValueKeypress = (event: KeyboardEvent) => {
+  // 只允许数字键、退格键、删除键、方向键等
+  const allowedKeys = [
+    '0', '1', '2', '3', '4', '5', '6', '7', '8', '9',
+    'Backspace', 'Delete', 'ArrowLeft', 'ArrowRight', 'ArrowUp', 'ArrowDown',
+    'Tab', 'Enter'
+  ]
+  
+  if (!allowedKeys.includes(event.key)) {
+    event.preventDefault()
+  }
 }
 </script>
