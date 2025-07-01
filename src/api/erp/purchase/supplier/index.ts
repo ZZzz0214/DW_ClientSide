@@ -5,19 +5,13 @@ export interface SupplierVO {
   id: number // 供应商编号
   no: string // 供应商编号
   name: string // 供应商名称
-  contact: string // 联系人
-  mobile: string // 手机号码
+  receiverName: string // 收件姓名
   telephone: string // 联系电话
-  email: string // 电子邮箱
-  fax: string // 传真
-  remark: string // 备注
-  status: number // 开启状态
-  sort: number // 排序
-  taxNo: string // 纳税人识别号
-  taxPercent: number // 税率
-  bankName: string // 开户行
-  bankAccount: string // 开户账号
-  bankAddress: string // 开户地址
+  address: string // 详细地址
+  wechatAccount: string // 微信账号
+  alipayAccount: string // 支付宝号
+  bankAccount: string // 银行账号
+  remark: string // 备注信息
 }
 
 // ERP 供应商 API
