@@ -118,4 +118,8 @@ export const ErpDistributionApi = {
     return await request.download({ url: `/erp/distribution/get-import-template` });
   },
 
+  importLogisticsTemplate: async () => {
+    return await request.download({ url: `/erp/distribution/logistics/get-import-template` });
+  },
+
 };

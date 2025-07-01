@@ -305,6 +305,14 @@
         >
           <Icon icon="ep:upload" class="mr-5px" /> 导入
         </el-button>
+        <el-button
+          type="info"
+          plain
+          @click="handleLogisticsImport"
+          v-hasPermi="['erp:distribution:importLogistics']"
+        >
+          <Icon icon="ep:truck" class="mr-5px" /> 物流信息导入
+        </el-button>
 <!--        <el-button-->
 <!--          type="success"-->
 <!--          plain-->
@@ -483,6 +491,7 @@
   <!-- 表单弹窗：添加/修改 -->
   <PurchaseOrderForm ref="formRef" @success="getList" />
   <DistributionImportForm ref="importFormRef" @success="getList" />
+  <DistributionLogisticsImportForm ref="logisticsImportFormRef" @success="getList" />
 </template>
 
 <script setup lang="ts">
@@ -493,6 +502,7 @@ import { ErpDistributionApi, ErpDistributionVO } from '@/api/erp/distribution'
 import PurchaseOrderForm from './PurchaseOrderForm.vue'
 
 import DistributionImportForm from './components/DistributionImportForm.vue'
+import DistributionLogisticsImportForm from './components/DistributionLogisticsImportForm.vue'
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpdistributionOrder' })
@@ -690,6 +700,13 @@ const importFormRef = ref()
 
 const handleImport = () => {
   importFormRef.value.open()
+}
+
+// 添加物流信息导入处理方法
+const logisticsImportFormRef = ref()
+
+const handleLogisticsImport = () => {
+  logisticsImportFormRef.value.open()
 }
 
 /** 选中操作 */
