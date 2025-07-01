@@ -45,9 +45,9 @@
           <el-date-picker
             v-model="queryParams.orderTime"
             value-format="YYYY-MM-DD HH:mm:ss"
-            type="daterange"
-            start-placeholder="开始日期"
-            end-placeholder="结束日期"
+            type="datetimerange"
+            start-placeholder="开始时间"
+            end-placeholder="结束时间"
             :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
             class="!w-160px"
           />

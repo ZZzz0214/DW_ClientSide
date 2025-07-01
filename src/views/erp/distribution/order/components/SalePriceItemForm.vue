@@ -41,7 +41,11 @@
       <el-table-column label="出货运费" min-width="80">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
-            <el-input disabled v-model="row.saleShippingFee" />
+            <el-input
+              disabled
+              v-model="row.saleShippingFee"
+              :formatter="erpPriceInputFormatter"
+            />
           </el-form-item>
         </template>
       </el-table-column>
@@ -123,6 +127,7 @@ import { SalePriceApi, SalePriceVO } from '@/api/erp/sale/saleprice';
 import SalespersonSearchDialog from './SalespersonSearchDialog.vue'; // 引入销售人员搜索弹窗组件
 import CustomerSearchDialog from './CustomerSearchDialog.vue'; // 引入客户人员搜索弹窗组件
 import { ComboApi } from '@/api/erp/product/combo';
+import { erpPriceInputFormatter } from '@/utils';
 const message = useMessage() // 消息弹窗
 // const props = defineProps<{
 //   items: any[];
@@ -184,31 +189,31 @@ const handleSalespersonSelected = (salesperson: any) => {
 //计算出货运费的方法
 const calculateSaleShippingFee = (item) => {
   if (!item) return;
-  
+
   // 确保数量是有效的数字
   const count = Number(item.count) || 0;
-  
+
   if (count === 0) {
     item.saleShippingFee = 0;
     return;
   }
-  
+
   // 检查运费类型是否有效
   if (item.shippingFeeType === undefined || item.shippingFeeType === null) {
     item.saleShippingFee = 0;
     return;
   }
-  
+
   // 确保运费类型是数字
   const shippingFeeType = Number(item.shippingFeeType);
-  
+
   if (isNaN(shippingFeeType)) {
     item.saleShippingFee = 0;
     return;
   }
-  
+
   let calculatedFee = 0;
-  
+
   if (shippingFeeType === 0) {
     // 固定运费
     calculatedFee = Number(item.fixedShippingFee) || 0;
@@ -216,7 +221,7 @@ const calculateSaleShippingFee = (item) => {
     // 按件运费 - 修正计算逻辑，与后端保持一致
     const additionalItemQuantity = Number(item.additionalItemQuantity) || 1;
     const additionalItemPrice = Number(item.additionalItemPrice) || 0;
-    
+
     // 使用与后端一致的计算逻辑：Math.ceil(数量 / 续件数量) * 续件价格
     const additionalUnits = Math.ceil(count / additionalItemQuantity);
     calculatedFee = additionalUnits * additionalItemPrice;
@@ -227,17 +232,17 @@ const calculateSaleShippingFee = (item) => {
     const firstWeightPrice = Number(item.firstWeightPrice) || 0;
     const additionalWeight = Number(item.additionalWeight) || 1;
     const additionalWeightPrice = Number(item.additionalWeightPrice) || 0;
-    
+
     const totalWeight = count * weight;
-    
+
     if (totalWeight <= firstWeight) {
       calculatedFee = firstWeightPrice;
     } else {
-      const additionalWeightCount = Math.ceil((totalWeight - firstWeight) / additionalWeight);
+      const additionalWeightCount = (totalWeight - firstWeight) / additionalWeight;
       calculatedFee = firstWeightPrice + additionalWeightCount * additionalWeightPrice;
     }
   }
-  
+
   // 确保运费是数字并四舍五入到2位小数
   item.saleShippingFee = Number(Number(calculatedFee).toFixed(2));
 };
@@ -245,7 +250,7 @@ const calculateSaleShippingFee = (item) => {
 // 更新出货总额的方法：产品数量×出货单价+出货运费+出货杂费
 const updateTotalSaleAmount = (item) => {
   if (!item) return;
-  
+
   const price = Number(item.salePrice) || 0;
   const count = Number(item.count) || 0;
   const shippingFee = Number(item.saleShippingFee) || 0;
@@ -267,7 +272,7 @@ watch(
   () => props.items,
   (val) => {
     formData.value = val || [];
-    
+
     // 在详情模式下，如果总额为空则根据现有数据计算
     if (props.mode === 'detail') {
       formData.value.forEach((item) => {
@@ -277,18 +282,18 @@ watch(
           const count = Number(item.count) || 0;
           const shippingFee = Number(item.saleShippingFee) || 0;
           const otherFees = Number(item.saleOtherFees) || 0;
-          
+
           // 简单计算：单价 × 数量 + 运费 + 杂费
           item.totalSaleAmount = Number((price * count + shippingFee + otherFees).toFixed(2));
         }
       });
       return;
     }
-    
+
     // 在编辑模式下，如果有运费信息但没有计算过，则重新计算
     if (props.mode === 'update' && formData.value.length > 0) {
       const item = formData.value[0];
-      if (item.shippingFeeType !== undefined && item.shippingFeeType !== null && 
+      if (item.shippingFeeType !== undefined && item.shippingFeeType !== null &&
           item.count > 0 && item.salePrice > 0) {
         // 确保使用正确的计算逻辑
         calculateSaleShippingFee(item);
@@ -306,16 +311,16 @@ watch(() => props.ssb, (newVal, oldVal) => {
   if (props.mode === 'detail') return;
   // 如果数量没有实际变化，跳过处理
   if (newVal === oldVal) return;
-  
+
   formData.value.forEach((item, index) => {
     if (item) {
       const currentCount = item.count;
-      
+
       // 只有当数量确实需要更新时才处理
       if (currentCount !== newVal) {
         // 更新数量
         item.count = newVal;
-        
+
         // 检查是否有运费配置信息
         if (item.shippingFeeType !== undefined && item.shippingFeeType !== null) {
           // 直接使用现有的运费配置重新计算，避免重复获取
@@ -335,11 +340,11 @@ watch(() => formData.value?.map(item => item?.saleOtherFees), (newVals, oldVals)
   if (!formData.value || !newVals || !oldVals) return;
   // 在详情模式下跳过重新计算
   if (props.mode === 'detail') return;
-  
+
   // 检查杂费是否真的发生了变化
   const hasChanged = newVals.some((newVal, index) => newVal !== oldVals[index]);
   if (!hasChanged) return;
-  
+
   formData.value.forEach((item, index) => {
     if (item && newVals[index] !== oldVals[index]) {
       // 只重新计算总额，不重新计算运费
@@ -354,12 +359,12 @@ const handleAdd = () => {
     message.warning('只能添加一条出货信息');
     return;
   }
-  
+
   if (!comboProductId.value) {
     message.warning('请先选择采购产品');
     return;
   }
-  
+
   selectCustomRef.value.open();
 };
 
@@ -374,7 +379,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
     message.warning('只能添加一条出货信息');
     return;
   }
-  
+
   selectedProducts.forEach(product => {
     // 确定出货单价
     let salePrice = 0;
@@ -383,7 +388,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
     } else if (product.distributionPrice !== undefined && product.distributionPrice !== null) {
       salePrice = Number(product.distributionPrice);
     }
-    
+
     // 创建新的销售项
     const newSaleItem = {
       salesperson: undefined, //销售人员
@@ -407,15 +412,15 @@ const handleProductSelected = (selectedProducts: any[]) => {
       additionalWeight: product.additionalWeight !== undefined ? Number(product.additionalWeight) : 1,
       additionalWeightPrice: product.additionalWeightPrice !== undefined ? Number(product.additionalWeightPrice) : 0
     };
-    
+
     // 添加到表单数据
     formData.value.push(newSaleItem);
-    
+
     // 立即计算运费和总额
     calculateSaleShippingFee(newSaleItem);
     updateTotalSaleAmount(newSaleItem);
   });
-  
+
   // 强制重新渲染表格
   tableKey.value++;
 };
@@ -431,7 +436,7 @@ const recalculateShipping = () => {
   if (props.mode === 'detail') {
     return;
   }
-  
+
   formData.value?.forEach((item, index) => {
     if (item.shippingFeeType !== undefined && item.shippingFeeType !== null) {
       calculateSaleShippingFee(item); // 重新计算出货运费
@@ -449,13 +454,13 @@ const getSaleShippingInfo = async (groupProductId, customerName) => {
       customerName: customerName,
     };
     const salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
-    
+
     if (salePriceResult && salePriceResult.length > 0) {
       // 获取组品重量信息
       let comboWeight = 0;
       try {
         const comboInfo = await ComboApi.getCombo(groupProductId);
-        
+
         if (comboInfo) {
           if (comboInfo.weight !== undefined && comboInfo.weight !== null) {
             comboWeight = Number(comboInfo.weight) || 0;
@@ -464,7 +469,7 @@ const getSaleShippingInfo = async (groupProductId, customerName) => {
       } catch (error) {
         console.error('获取组品重量失败:', error);
       }
-      
+
       return {
         shippingFeeType: salePriceResult[0].shippingFeeType,
         fixedShippingFee: salePriceResult[0].fixedShippingFee,
@@ -487,14 +492,14 @@ const getSaleShippingInfo = async (groupProductId, customerName) => {
 const updateShippingInfo = (newShippingInfo) => {
   if (formData.value && formData.value.length > 0) {
     const item = formData.value[0];
-    
+
     // 更新运费相关字段
     Object.assign(item, newShippingInfo);
-    
+
     // 重新计算运费和总额
     calculateSaleShippingFee(item);
     updateTotalSaleAmount(item);
-    
+
     // 强制重新渲染
     tableKey.value++;
   }

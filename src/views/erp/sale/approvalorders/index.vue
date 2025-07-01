@@ -198,27 +198,27 @@
       <el-form-item class="summary-row">
         <div class="summary-container">
           <div class="summary-item">
-            <span class="summary-label">批发出货单价合计：</span>
+            <span class="summary-label">出货单价合计：</span>
             <el-input v-model="totalSalePrice" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">批发货拉拉费合计：</span>
+            <span class="summary-label">出货货拉拉费合计：</span>
             <el-input v-model="totalSaleTruckFee" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">批发出货物流费用合计：</span>
+            <span class="summary-label">出货物流费用合计：</span>
             <el-input v-model="totalSaleLogisticsFee" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">批发出货杂费合计：</span>
+            <span class="summary-label">出货杂费合计：</span>
             <el-input v-model="totalSaleOtherFees" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">批发出货总额合计：</span>
+            <span class="summary-label">出货总额合计：</span>
             <el-input v-model="totalSaleAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">售后审核费用合计：</span>
+            <span class="summary-label">出货售后审核费用合计：</span>
             <el-input v-model="totalSaleAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
         </div>

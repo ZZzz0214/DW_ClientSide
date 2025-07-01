@@ -198,27 +198,27 @@
       <el-form-item class="summary-row">
         <div class="summary-container">
           <div class="summary-item">
-            <span class="summary-label">批发采购单价合计：</span>
+            <span class="summary-label">采购单价合计：</span>
             <el-input v-model="totalPurchasePrice" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">批发采购货拉拉费合计：</span>
+            <span class="summary-label">采购货拉拉费合计：</span>
             <el-input v-model="totalTruckFee" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">批发采购物流费用合计：</span>
+            <span class="summary-label">采购物流费用合计：</span>
             <el-input v-model="totalLogisticsFee" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">批发采购杂费合计：</span>
+            <span class="summary-label">采购杂费合计：</span>
             <el-input v-model="totalOtherFees" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">批发采购总额合计：</span>
+            <span class="summary-label">采购总额合计：</span>
             <el-input v-model="totalPurchaseAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
-            <span class="summary-label">售后审核费用合计：</span>
+            <span class="summary-label">采购售后审核费用合计：</span>
             <el-input v-model="totalPurchaseAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
         </div>

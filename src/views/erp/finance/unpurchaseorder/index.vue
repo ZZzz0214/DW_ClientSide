@@ -160,6 +160,31 @@
           <Icon icon="ep:close" class="mr-5px" /> 批量反审核
         </el-button>
       </el-form-item>
+      <!-- 合计字段统一行 -->
+      <el-form-item class="summary-row">
+        <div class="summary-container">
+          <div class="summary-item">
+            <span class="summary-label">采购单价合计：</span>
+            <el-input v-model="totalPurchasePrice" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">采购运费合计：</span>
+            <el-input v-model="totalShippingFee" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">采购杂费合计：</span>
+            <el-input v-model="totalOtherFees" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">采购总额合计：</span>
+            <el-input v-model="totalPurchaseAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+<!--          <div class="summary-item">-->
+<!--            <span class="summary-label">售后审核费用合计：</span>-->
+<!--            <el-input v-model="totalPurchaseAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />-->
+<!--          </div>-->
+        </div>
+      </el-form-item>
     </el-form>
   </ContentWrap>
 
@@ -313,6 +338,7 @@ const exportLoading = ref(false) // 导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
 const supplierList = ref<SupplierVO[]>([]) // 供应商列表
 const userList = ref<UserVO[]>([]) // 用户列表
+const totalPurchaseAfterSalesAmount = ref<string>('')
 
 /** 查询列表 */
 const getList = async () => {
@@ -323,6 +349,7 @@ const getList = async () => {
     totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
     totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
     totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
+    totalPurchaseAfterSalesAmount.value = data.totalPurchaseAfterSalesAmount?.toFixed(2) || ''
     console.log(data.pageResult.list)
 
     list.value = data.pageResult.list
@@ -431,3 +458,44 @@ onMounted(async () => {
   userList.value = await UserApi.getSimpleUserList()
 })
 </script>
+<style scoped>
+.summary-row {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.summary-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: #606266;
+  margin-right: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.summary-input {
+  width: 120px;
+}
+
+.summary-input :deep(.el-input__inner) {
+  font-weight: 500;
+  color: #409eff;
+  text-align: right;
+}
+</style>

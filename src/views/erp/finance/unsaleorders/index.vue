@@ -161,19 +161,19 @@
       </el-form-item>
       <el-form-item>
         <!-- 新增四个合计字段显示框 -->
-        <el-form-item label="批发出货单价合计" style="margin-left: 20px;" label-width="140px">
+        <el-form-item label="出货单价合计" style="margin-left: 20px;" label-width="140px">
           <el-input v-model="totalSalePrice" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
-        <el-form-item label="批发货拉拉费合计" style="margin-left: 20px;" label-width="140px">
+        <el-form-item label="货拉拉费合计" style="margin-left: 20px;" label-width="140px">
           <el-input v-model="totalSaleTruckFee" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
-        <el-form-item label="批发出货物流费用合计" style="margin-left: 20px;" label-width="160px">
+        <el-form-item label="出货物流费用合计" style="margin-left: 20px;" label-width="160px">
           <el-input v-model="totalSaleLogisticsFee" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
-        <el-form-item label="批发出货杂费合计" style="margin-left: 20px;" label-width="140px">
+        <el-form-item label="出货杂费合计" style="margin-left: 20px;" label-width="140px">
           <el-input v-model="totalSaleOtherFees" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
-        <el-form-item label="批发出货总额合计" style="margin-left: 20px;" label-width="140px">
+        <el-form-item label="出货总额合计" style="margin-left: 20px;" label-width="140px">
           <el-input v-model="totalSaleAmount" disabled class="!w-120px" placeholder="无数据" />
         </el-form-item>
       </el-form-item>

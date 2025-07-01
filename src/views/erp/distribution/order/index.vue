@@ -153,9 +153,9 @@
         <el-date-picker
           v-model="queryParams.afterSalesTime"
           value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
@@ -247,9 +247,9 @@
         <el-date-picker
           v-model="queryParams.createTime"
           value-format="YYYY-MM-DD HH:mm:ss"
-          type="daterange"
-          start-placeholder="开始日期"
-          end-placeholder="结束日期"
+          type="datetimerange"
+          start-placeholder="开始时间"
+          end-placeholder="结束时间"
           :default-time="[new Date('1 00:00:00'), new Date('1 23:59:59')]"
           class="!w-240px"
         />
@@ -305,15 +305,15 @@
         >
           <Icon icon="ep:upload" class="mr-5px" /> 导入
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleBasicExport"
-          :loading="basicExportLoading"
-          v-hasPermi="['erp:distribution:importBasic']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 基础导出
-        </el-button>
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleBasicExport"-->
+<!--          :loading="basicExportLoading"-->
+<!--          v-hasPermi="['erp:distribution:importBasic']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 基础导出-->
+<!--        </el-button>-->
         <el-button
           type="success"
           plain
@@ -332,15 +332,15 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 出货导出
         </el-button>
-        <el-button
-          type="success"
-          plain
-          @click="handleShipExport"
-          :loading="shipExportLoading"
-          v-hasPermi="['erp:distribution:importShip']"
-        >
-          <Icon icon="ep:download" class="mr-5px" /> 发货导出
-        </el-button>
+<!--        <el-button-->
+<!--          type="success"-->
+<!--          plain-->
+<!--          @click="handleShipExport"-->
+<!--          :loading="shipExportLoading"-->
+<!--          v-hasPermi="['erp:distribution:importShip']"-->
+<!--        >-->
+<!--          <Icon icon="ep:download" class="mr-5px" /> 发货导出-->
+<!--        </el-button>-->
 
         <el-button
           type="danger"
@@ -368,13 +368,12 @@
     >
       <el-table-column width="30" label="选择" type="selection" />
       <el-table-column label="订单编号" align="center" prop="no"  min-width="140" :show-overflow-tooltip="false"/>
-
-
+      <el-table-column label="订单号" align="center" prop="orderNumber"  min-width="140" :show-overflow-tooltip="false"/>
       <el-table-column label="物流公司" align="center" prop="logisticsCompany" :show-overflow-tooltip="false"/>
       <el-table-column label="物流单号" align="center" prop="trackingNumber" :show-overflow-tooltip="false"/>
       <el-table-column label="收件姓名" align="center" prop="receiverName" :show-overflow-tooltip="false"/>
       <el-table-column label="联系电话" align="center" prop="receiverPhone" :show-overflow-tooltip="false"/>
-      <el-table-column label="详细地址" align="center" prop="receiverAddress" />
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" :show-overflow-tooltip="false"/>
       <el-table-column label="产品名称" align="center" prop="productName" min-width="140" :show-overflow-tooltip="false"/>
 
       <el-table-column label="产品规格" align="center" prop="productSpecification" :show-overflow-tooltip="false"/>

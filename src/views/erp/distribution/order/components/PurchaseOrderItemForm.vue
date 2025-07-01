@@ -42,6 +42,7 @@
             <el-input
               disabled
               v-model="row.shippingFee"
+              :formatter="erpPriceInputFormatter"
             />
           </el-form-item>
         </template>
@@ -103,6 +104,7 @@ import { ref, onMounted, watch } from 'vue';
 import SelectProduct from './SelectProduct.vue';
 import { ProductApi, ProductVO } from '@/api/erp/product/product';
 import { ComboApi, ComboVO } from '@/api/erp/product/combo';
+import { erpPriceInputFormatter } from '@/utils';
 const message = useMessage() // 消息弹窗
 
 const props = defineProps<{
@@ -144,7 +146,7 @@ const calculateShippingFee = (item) => {
     // 按件运费
     const additionalItemQuantity = Number(item.additionalItemQuantity) || 1;
     const additionalItemPrice = Number(item.additionalItemPrice) || 0;
-    
+
     if (item.count <= additionalItemQuantity) {
       newShippingFee = additionalItemPrice;
     } else {
@@ -159,11 +161,11 @@ const calculateShippingFee = (item) => {
     const firstWeightPrice = Number(item.firstWeightPrice) || 0;
     const additionalWeight = Number(item.additionalWeight) || 1;
     const additionalWeightPrice = Number(item.additionalWeightPrice) || 0;
-    
+
     if (totalWeight <= firstWeight) {
       newShippingFee = firstWeightPrice;
     } else {
-      const additionalUnits = Math.ceil((totalWeight - firstWeight) / additionalWeight);
+      const additionalUnits = (totalWeight - firstWeight) / additionalWeight;
       newShippingFee = firstWeightPrice + additionalUnits * additionalWeightPrice;
     }
   }
@@ -199,7 +201,7 @@ watch(() => props.ssb, (newVal, oldVal) => {
   if (!formData.value || !Array.isArray(formData.value)) {
     return;
   }
-  
+
   formData.value.forEach((item, index) => {
     if (item) {
       item.count = newVal; // 更新子组件中的产品数量
@@ -212,7 +214,7 @@ watch(() => props.ssb, (newVal, oldVal) => {
 // 监听子组件中采购其他费用的变化
 watch(() => formData.value, (newVal) => {
   if (!newVal || !Array.isArray(newVal)) return;
-  
+
   newVal.forEach((item, index) => {
     if (item) {
       calculateShippingFee(item); // 重新计算运费
