@@ -370,6 +370,10 @@
             <el-input v-model="totalPurchaseAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
+            <span class="summary-label">代发采购审核总额合计：</span>
+            <el-input v-model="totalPurchaseAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
             <span class="summary-label">采购售后审核费用合计：</span>
             <el-input v-model="totalPurchaseAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
@@ -415,6 +419,7 @@
       <el-table-column label="采购运费" align="center" prop="shippingFee" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="代发采购审核总额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
       <el-table-column label="采购备注" align="center" prop="purchaseRemark" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="采购反审核时间" align="center" prop="purchaseUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
       <el-table-column label="采购售后金额" align="center" prop="purchaseAfterSalesAmount" width="120" :show-overflow-tooltip="false"/>
@@ -476,6 +481,15 @@
           >
             审批
           </el-button>
+<!--          <el-button-->
+<!--            link-->
+<!--            type="danger"-->
+<!--            @click="handleAudit(scope.row.id, 'antiAudit')"-->
+<!--            v-hasPermi="['erp:purchase-order:update-status']"-->
+<!--            v-if="scope.row.purchaseAuditStatus === 20"-->
+<!--          >-->
+<!--            反审批-->
+<!--          </el-button>-->
           <el-button
           link
           type="warning"
@@ -556,6 +570,7 @@ const totalShippingFee = ref<string>('')
 const totalOtherFees = ref<string>('')
 const totalPurchaseAmount = ref<string>('')
 const totalPurchaseAfterSalesAmount = ref<string>('')
+const totalPurchaseAuditTotalAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -604,6 +619,7 @@ const getList = async () => {
     totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
     totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
     totalPurchaseAfterSalesAmount.value = data.totalPurchaseAfterSalesAmount?.toFixed(2) || ''
+    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
     console.log(data.pageResult.list)
 
     list.value = data.pageResult.list
@@ -659,8 +675,8 @@ const openForm = (type: string, id?: number) => {
 const auditFormRef = ref()
 
 // 点击审核按钮触发
-const handleAudit = (id: number) => {
-  auditFormRef.value.open(id) // 调用 AuditForm 的 open 方法
+const handleAudit = (id: number, operationType: 'audit' | 'antiAudit' = 'audit') => {
+  auditFormRef.value.open(id, operationType) // 调用 AuditForm 的 open 方法
 }
 
 // 在 handleUpdateStatus 方法后添加以下代码

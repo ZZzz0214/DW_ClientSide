@@ -35,7 +35,9 @@
       <el-form-item label="采购总额">
         <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
       </el-form-item>
-
+      <el-form-item label="代发采购审核总额">
+        <el-input v-model="formData.purchaseAuditTotalAmount" :disabled="true" />
+      </el-form-item>
       <el-form-item label="审核时间" prop="purchaseApprovalTime">
         <el-date-picker
           v-model="formData.purchaseApprovalTime"
@@ -110,7 +112,8 @@ const formData = reactive({
   auditAmount: 0, // 审核费用（对应原售后费用）
   auditTime: null as string | null, // 审核时间（对应原售后时间）
   purchaseApprovalTime: null as string | null,
-  purchaseUnapproveTime: null as string | null
+  purchaseUnapproveTime: null as string | null,
+  purchaseAuditTotalAmount: 0
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -137,6 +140,7 @@ const open = async (id: number) => {
     formData.shippingFee = orderDetail.shippingFee || 0
     formData.otherFees = orderDetail.otherFees || 0
     formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0
+    formData.purchaseAuditTotalAmount = orderDetail.purchaseAuditTotalAmount || 0
 
     //审核时间
     formData.purchaseApprovalTime = orderDetail.purchaseApprovalTime || null
@@ -165,23 +169,24 @@ const resetForm = () => {
   formData.auditSituation = ''
   formData.auditAmount = 0
   formData.auditTime = null
+  formData.purchaseAuditTotalAmount = 0
 }
 const emit = defineEmits(['success'])
 const submitForm = async () => {
   try {
     formLoading.value = true
     console.log("123",formData.id)
-    // 调用审核接口，传递采购杂费
+    // 调用审核接口，反审批时不传递审核总额字段
     await PurchaseOrderApi.updatePurchaseOrderStatus({
       id: formData.id,
-      purchaseAuditStatus: 10, // 20 表示审核通过
+      purchaseAuditStatus: 10, // 10 表示反审核
       otherFees: formData.otherFees // 传递采购杂费
     })
-    message.success('审核成功')
+    message.success('反审核成功')
     dialogVisible.value = false
     emit('success') // 触发父组件刷新
   } catch (err) {
-    message.error('审核提交失败，请重试')
+    message.error('反审核提交失败，请重试')
   } finally {
     formLoading.value = false
   }

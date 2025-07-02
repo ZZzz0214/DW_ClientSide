@@ -301,6 +301,10 @@
             <el-input v-model="totalPurchaseAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
+            <span class="summary-label">批发采购审核总额合计：</span>
+            <el-input v-model="totalPurchaseAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
             <span class="summary-label">采购售后审核费用合计：</span>
             <el-input v-model="totalPurchaseAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
@@ -342,6 +346,7 @@
       <el-table-column label="采购物流费用" align="center" prop="logisticsFee" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="批发采购审核总额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
       <el-table-column label="采购备注" align="center" prop="purchaseRemark" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
@@ -466,6 +471,7 @@ const totalLogisticsFee = ref<string>('')
 const totalOtherFees = ref<string>('')
 const totalPurchaseAmount = ref<string>('')
 const totalPurchaseAfterSalesAmount = ref<string>('')
+const totalPurchaseAuditTotalAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -510,6 +516,7 @@ const getList = async () => {
     totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
     totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
     totalPurchaseAfterSalesAmount.value = data.totalPurchaseAfterSalesAmount?.toFixed(2) || ''
+    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
     list.value = data.pageResult.list
     total.value = data.pageResult.total
   } finally {

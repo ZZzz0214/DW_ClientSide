@@ -48,6 +48,9 @@
       <el-form-item label="采购总额">
         <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
       </el-form-item>
+      <el-form-item label="代发采购审核总额">
+        <el-input v-model="formData.purchaseAuditTotalAmount" :disabled="true" />
+      </el-form-item>
 
 <!--      <el-form-item label="审核时间" prop="purchaseApprovalTime">-->
 <!--        <el-date-picker-->
@@ -137,7 +140,8 @@ const formData = reactive({
   purchaseApprovalTime: null as string | null,
   purchaseUnapproveTime: null as string | null,
   no:0,
-  orderNumber:0
+  orderNumber:0,
+  purchaseAuditTotalAmount: 0
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -149,11 +153,14 @@ const formRules = reactive({
 })
 
 // 打开审核弹窗（逻辑与 AfterSaleForm 的 open 方法类似）
-const open = async (id: number) => {
+const open = async (id: number, operationType: 'audit' | 'antiAudit' = 'audit') => {
   try {
     dialogVisible.value = true
     formLoading.value = true
     resetForm()
+
+    // 根据操作类型设置标题
+    dialogTitle.value = operationType === 'audit' ? '审核信息' : '反审核信息'
 
     // 获取订单详情填充表单（复用 AfterSaleForm 的接口）
     const orderDetail = await PurchaseOrderApi.getPurchaseOrder(id)
@@ -172,6 +179,15 @@ const open = async (id: number) => {
     //审核时间
     formData.purchaseApprovalTime = orderDetail.purchaseApprovalTime || null
     formData.purchaseUnapproveTime = orderDetail.purchaseUnapproveTime || null
+    
+    // 根据操作类型设置审核总额
+    if (operationType === 'audit') {
+      // 审批时设置代发采购审核总额等于采购总额
+      formData.purchaseAuditTotalAmount = orderDetail.totalPurchaseAmount || 0
+    } else {
+      // 反审批时保持原有的审核总额
+      formData.purchaseAuditTotalAmount = orderDetail.purchaseAuditTotalAmount || 0
+    }
 
     // 初始化审核字段（可选填充历史数据）
     formData.auditSituation = orderDetail.purchaseAfterSalesSituation || ''
@@ -197,23 +213,30 @@ const resetForm = () => {
   formData.auditSituation = ''
   formData.auditAmount = 0
   formData.auditTime = null
+  formData.purchaseAuditTotalAmount = 0
 }
 const emit = defineEmits(['success'])
 const submitForm = async () => {
   try {
     formLoading.value = true
     console.log("123",formData.id)
-    // 调用审核接口，传递采购杂费
+    
+    // 根据标题判断是审批还是反审批
+    const isAudit = dialogTitle.value === '审核信息'
+    const auditStatus = isAudit ? 20 : 10 // 20表示审核通过，10表示反审核
+    
+    // 调用审核接口，传递采购杂费和代发采购审核总额
     await PurchaseOrderApi.updatePurchaseOrderStatus({
       id: formData.id,
-      purchaseAuditStatus: 20, // 20 表示审核通过
-      otherFees: formData.otherFees // 传递采购杂费
+      purchaseAuditStatus: auditStatus,
+      otherFees: formData.otherFees, // 传递采购杂费
+      purchaseAuditTotalAmount: formData.purchaseAuditTotalAmount // 传递代发采购审核总额
     })
-    message.success('审核成功')
+    message.success(isAudit ? '审核成功' : '反审核成功')
     dialogVisible.value = false
     emit('success') // 触发父组件刷新
   } catch (err) {
-    message.error('审核提交失败，请重试')
+    message.error('操作提交失败，请重试')
   } finally {
     formLoading.value = false
   }

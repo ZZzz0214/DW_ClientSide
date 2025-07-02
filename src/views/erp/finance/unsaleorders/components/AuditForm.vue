@@ -45,6 +45,9 @@
       <el-form-item label="出货总额">
         <el-input v-model="formData.totalSaleAmount" :disabled="true" />
       </el-form-item>
+      <el-form-item label="批发销售审核总额">
+        <el-input v-model="formData.saleAuditTotalAmount" :disabled="true" />
+      </el-form-item>
       <el-form-item label="审核时间">
         <el-date-picker
           v-model="formData.saleApprovalTime"
@@ -118,7 +121,8 @@ const formData = reactive({
   totalSaleAmount: 0,
   auditTime: null,
   saleApprovalTime: null as string | null,
-  saleUnapproveTime: null as string | null
+  saleUnapproveTime: null as string | null,
+  saleAuditTotalAmount: 0
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -150,6 +154,7 @@ const open = async (id: number) => {
     // 填充时间数据
     formData.saleApprovalTime = orderDetail.saleApprovalTime || null
     formData.saleUnapproveTime = orderDetail.saleUnapproveTime || null
+    formData.saleAuditTotalAmount = orderDetail.saleAuditTotalAmount || 0
   } catch (err) {
     message.error('获取订单信息失败，请重试')
     dialogVisible.value = false
@@ -169,23 +174,24 @@ const resetForm = () => {
   formData.saleOtherFees = 0
   formData.totalSaleAmount = 0
   formData.auditTime = null
+  formData.saleAuditTotalAmount = 0
 }
 const emit = defineEmits(['success'])
 const submitForm = async () => {
   try {
     formLoading.value = true
     console.log("123",formData.id)
-    // 调用审核接口，传递采购杂费
+    // 调用审核接口，反审批时不传递审核总额字段
     await PurchaseOrderApi.updateSaleOrderStatus({
       id: formData.id,
-      saleAuditStatus: 10, // 20 表示审核通过
-      otherFees: formData.saleOtherFees // 传递采购杂费
+      saleAuditStatus: 10, // 10 表示反审核
+      otherFees: formData.saleOtherFees // 传递出货杂费
     })
-    message.success('审核成功')
+    message.success('反审核成功')
     dialogVisible.value = false
     emit('success') // 触发父组件刷新
   } catch (err) {
-    message.error('审核提交失败，请重试')
+    message.error('反审核提交失败，请重试')
   } finally {
     formLoading.value = false
   }

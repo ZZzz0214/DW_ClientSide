@@ -301,6 +301,10 @@
             <el-input v-model="totalSaleAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
+            <span class="summary-label">批发销售审核总额合计：</span>
+            <el-input v-model="totalSaleAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
             <span class="summary-label">出货售后审核费用合计：</span>
             <el-input v-model="totalSaleAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
@@ -342,6 +346,7 @@
       <el-table-column label="出货物流费用" align="center" prop="saleLogisticsFee" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="出货杂费" align="center" prop="saleOtherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="出货总额" align="center" prop="totalSaleAmount" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="批发销售审核总额" align="center" prop="saleAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
       <el-table-column label="出货备注" align="center" prop="saleRemark" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="中转人员" prop="transferPerson" :show-overflow-tooltip="false"/>
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
@@ -467,6 +472,7 @@ const totalSaleLogisticsFee = ref<string>('')
 const totalSaleOtherFees = ref<string>('')
 const totalSaleAmount = ref<string>('')
 const totalSaleAfterSalesAmount = ref<string>('')
+const totalSaleAuditTotalAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -512,6 +518,7 @@ const getList = async () => {
     totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
     totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
     totalSaleAfterSalesAmount.value = data.totalSaleAfterSalesAmount?.toFixed(2) || ''
+    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
 
     list.value = data.pageResult.list
     total.value = data.pageResult.total

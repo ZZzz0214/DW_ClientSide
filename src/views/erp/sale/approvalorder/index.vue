@@ -370,6 +370,10 @@
             <el-input v-model="totalSaleAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
           <div class="summary-item">
+            <span class="summary-label">代发销售审核总额合计：</span>
+            <el-input v-model="totalSaleAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
             <span class="summary-label">出货售后审核费用合计：</span>
             <el-input v-model="totalSaleAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
@@ -414,6 +418,7 @@
         <el-table-column label="出货运费" prop="saleShippingFee" :show-overflow-tooltip="false"/>
         <el-table-column label="出货杂费" prop="saleOtherFees" :show-overflow-tooltip="false"/>
         <el-table-column label="出货总额" prop="totalSaleAmount" :show-overflow-tooltip="false"/>
+        <el-table-column label="代发销售审核总额" prop="saleAuditTotalAmount" :show-overflow-tooltip="false"/>
         <el-table-column label="出货备注" prop="saleRemark" :show-overflow-tooltip="false"/>
         <el-table-column label="中转人员" prop="transferPerson" :show-overflow-tooltip="false"/>
 
@@ -542,6 +547,7 @@ const totalSaleShippingFee = ref<string>('')
 const totalSaleOtherFees = ref<string>('')
 const totalSaleAmount = ref<string>('')
 const totalSaleAfterSalesAmount = ref<string>('')
+const totalSaleAuditTotalAmount = ref<string>('')
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
@@ -559,6 +565,7 @@ const getList = async () => {
     totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
     totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
     totalSaleAfterSalesAmount.value = data.totalSaleAfterSalesAmount?.toFixed(2) || ''
+    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
     list.value = data.pageResult.list
     total.value = data.pageResult.total
   } finally {

@@ -52,6 +52,9 @@
       <el-form-item label="出货总额">
         <el-input v-model="formData.totalSaleAmount" :disabled="true" />
       </el-form-item>
+      <el-form-item label="批发销售审核总额">
+        <el-input v-model="formData.saleAuditTotalAmount" :disabled="true" />
+      </el-form-item>
       <!-- 新增审核时间和反审核时间字段 -->
 
       <el-form-item label="反审核时间">
@@ -130,6 +133,7 @@ const formData = reactive({
   saleUnapproveTime: null as string | null,
   no:0,
   logisticsNumber:0,
+  saleAuditTotalAmount: 0,
 })
 
 // 审核验证规则（与 AfterSaleForm 类似）
@@ -163,6 +167,7 @@ const open = async (id: number) => {
         // 填充时间数据
     formData.saleApprovalTime = orderDetail.saleApprovalTime || null
     formData.saleUnapproveTime = orderDetail.saleUnapproveTime || null
+    formData.saleAuditTotalAmount = orderDetail.totalSaleAmount || 0
   } catch (err) {
     message.error('获取订单信息失败，请重试')
     dialogVisible.value = false
@@ -182,17 +187,19 @@ const resetForm = () => {
   formData.saleOtherFees = 0
   formData.totalSaleAmount = 0
   formData.auditTime = null
+  formData.saleAuditTotalAmount = 0
 }
 const emit = defineEmits(['success'])
 const submitForm = async () => {
   try {
     formLoading.value = true
     console.log("123",formData.id)
-    // 调用审核接口，传递采购杂费
+    // 调用审核接口，传递出货杂费和批发销售审核总额
     await PurchaseOrderApi.updateSaleOrderStatus({
       id: formData.id,
       saleAuditStatus: 20, // 20 表示审核通过
-      otherFees: formData.saleOtherFees // 传递采购杂费
+      otherFees: formData.saleOtherFees, // 传递出货杂费
+      saleAuditTotalAmount: formData.saleAuditTotalAmount // 传递批发销售审核总额
     })
     message.success('审核成功')
     dialogVisible.value = false
