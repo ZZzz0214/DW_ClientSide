@@ -293,6 +293,189 @@
       </el-table>
     </div>
 
+    <!-- 审核数量统计区域 -->
+    <div class="audit-statistics-section" v-loading="auditLoading">
+      <div class="section-header">
+        <div class="header-left">
+          <h4 class="section-title">
+            <Icon icon="ep:audit" class="title-icon" />
+            代发批发审核数量统计
+          </h4>
+          <p class="section-subtitle">实时监控代发和批发业务的审核状态和售后情况</p>
+        </div>
+        <div class="header-right">
+          <div class="refresh-info">
+            <span v-if="lastRefreshTime" class="last-refresh">
+              最后刷新: {{ formatTime(lastRefreshTime) }}
+            </span>
+          </div>
+          <el-button 
+            type="primary" 
+            size="small" 
+            @click="refreshAuditData" 
+            :loading="auditLoading"
+            :icon="Refresh"
+          >
+            刷新数据
+          </el-button>
+        </div>
+      </div>
+      
+      <div class="audit-cards">
+        <!-- 代发业务审核统计 -->
+        <div class="audit-card distribution-card">
+          <div class="card-header">
+            <h5>代发业务</h5>
+            <Icon icon="ep:truck" class="card-icon" />
+          </div>
+          <div class="card-content">
+            <div class="audit-row">
+              <div class="audit-group">
+                <h6>采购审核</h6>
+                <div class="audit-metrics">
+                  <div class="audit-metric unaudited">
+                    <span class="metric-label">未审核</span>
+                    <span class="metric-value">{{ auditData.distributionPurchaseUnauditedCount }}</span>
+                  </div>
+                  <div class="audit-metric audited">
+                    <span class="metric-label">已审核</span>
+                    <span class="metric-value">{{ auditData.distributionPurchaseAuditedCount }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="audit-group">
+                <h6>采购售后</h6>
+                <div class="audit-metrics">
+                  <div class="audit-metric no-after-sales">
+                    <span class="metric-label">未售后</span>
+                    <span class="metric-value">{{ auditData.distributionPurchaseNoAfterSalesCount }}</span>
+                  </div>
+                  <div class="audit-metric after-sales">
+                    <span class="metric-label">已售后</span>
+                    <span class="metric-value">{{ auditData.distributionPurchaseAfterSalesCount }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="audit-row">
+              <div class="audit-group">
+                <h6>销售审核</h6>
+                <div class="audit-metrics">
+                  <div class="audit-metric unaudited">
+                    <span class="metric-label">未审核</span>
+                    <span class="metric-value">{{ auditData.distributionSaleUnauditedCount }}</span>
+                  </div>
+                  <div class="audit-metric audited">
+                    <span class="metric-label">已审核</span>
+                    <span class="metric-value">{{ auditData.distributionSaleAuditedCount }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="audit-group">
+                <h6>销售售后</h6>
+                <div class="audit-metrics">
+                  <div class="audit-metric no-after-sales">
+                    <span class="metric-label">未售后</span>
+                    <span class="metric-value">{{ auditData.distributionSaleNoAfterSalesCount }}</span>
+                  </div>
+                  <div class="audit-metric after-sales">
+                    <span class="metric-label">已售后</span>
+                    <span class="metric-value">{{ auditData.distributionSaleAfterSalesCount }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="audit-total">
+              <div class="total-item">
+                <span class="total-label">采购总数</span>
+                <span class="total-value">{{ auditData.distributionPurchaseTotalCount }}</span>
+              </div>
+              <div class="total-item">
+                <span class="total-label">销售总数</span>
+                <span class="total-value">{{ auditData.distributionSaleTotalCount }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- 批发业务审核统计 -->
+        <div class="audit-card wholesale-card">
+          <div class="card-header">
+            <h5>批发业务</h5>
+            <Icon icon="ep:box" class="card-icon" />
+          </div>
+          <div class="card-content">
+            <div class="audit-row">
+              <div class="audit-group">
+                <h6>采购审核</h6>
+                <div class="audit-metrics">
+                  <div class="audit-metric unaudited">
+                    <span class="metric-label">未审核</span>
+                    <span class="metric-value">{{ auditData.wholesalePurchaseUnauditedCount }}</span>
+                  </div>
+                  <div class="audit-metric audited">
+                    <span class="metric-label">已审核</span>
+                    <span class="metric-value">{{ auditData.wholesalePurchaseAuditedCount }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="audit-group">
+                <h6>采购售后</h6>
+                <div class="audit-metrics">
+                  <div class="audit-metric no-after-sales">
+                    <span class="metric-label">未售后</span>
+                    <span class="metric-value">{{ auditData.wholesalePurchaseNoAfterSalesCount }}</span>
+                  </div>
+                  <div class="audit-metric after-sales">
+                    <span class="metric-label">已售后</span>
+                    <span class="metric-value">{{ auditData.wholesalePurchaseAfterSalesCount }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="audit-row">
+              <div class="audit-group">
+                <h6>销售审核</h6>
+                <div class="audit-metrics">
+                  <div class="audit-metric unaudited">
+                    <span class="metric-label">未审核</span>
+                    <span class="metric-value">{{ auditData.wholesaleSaleUnauditedCount }}</span>
+                  </div>
+                  <div class="audit-metric audited">
+                    <span class="metric-label">已审核</span>
+                    <span class="metric-value">{{ auditData.wholesaleSaleAuditedCount }}</span>
+                  </div>
+                </div>
+              </div>
+              <div class="audit-group">
+                <h6>销售售后</h6>
+                <div class="audit-metrics">
+                  <div class="audit-metric no-after-sales">
+                    <span class="metric-label">未售后</span>
+                    <span class="metric-value">{{ auditData.wholesaleSaleNoAfterSalesCount }}</span>
+                  </div>
+                  <div class="audit-metric after-sales">
+                    <span class="metric-label">已售后</span>
+                    <span class="metric-value">{{ auditData.wholesaleSaleAfterSalesCount }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+            <div class="audit-total">
+              <div class="total-item">
+                <span class="total-label">采购总数</span>
+                <span class="total-value">{{ auditData.wholesalePurchaseTotalCount }}</span>
+              </div>
+              <div class="total-item">
+                <span class="total-label">销售总数</span>
+                <span class="total-value">{{ auditData.wholesaleSaleTotalCount }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
     <!-- 详情弹窗 -->
     <el-dialog
       v-model="detailDialogVisible"
@@ -395,14 +578,17 @@
 <script setup lang="ts">
 import { ref, reactive, computed, onMounted } from 'vue'
 import { ElMessage } from 'element-plus'
+import { Refresh } from '@element-plus/icons-vue'
 import { formatDate } from '@/utils/formatTime'
 import { 
   getDistributionWholesaleStatistics, 
   getCategoryList, 
   getDetailStatistics,
+  getAuditStatistics,
   type DistributionWholesaleStatisticsReqVO, 
   type StatisticsItem,
-  type DetailStatistics
+  type DetailStatistics,
+  type AuditStatistics
 } from '@/api/erp/statistics/distributionWholesale'
 
 defineOptions({ name: 'DistributionWholesaleStatistics' })
@@ -412,11 +598,35 @@ const loading = ref(false)
 const exportLoading = ref(false)
 const searchLoading = ref(false)
 const detailLoading = ref(false)
+const auditLoading = ref(false)
 const statisticsData = ref<StatisticsItem[]>([])
 const searchOptions = ref<string[]>([])
 const dateRange = ref<[Date, Date] | null>(null)
 const detailDialogVisible = ref(false)
 const detailData = ref<DetailStatistics | null>(null)
+const lastRefreshTime = ref<Date | null>(null) // 最后刷新时间
+const auditData = ref<AuditStatistics>({
+  distributionPurchaseUnauditedCount: 0,
+  distributionPurchaseAuditedCount: 0,
+  distributionPurchaseNoAfterSalesCount: 0,
+  distributionPurchaseAfterSalesCount: 0,
+  distributionSaleUnauditedCount: 0,
+  distributionSaleAuditedCount: 0,
+  distributionSaleNoAfterSalesCount: 0,
+  distributionSaleAfterSalesCount: 0,
+  wholesalePurchaseUnauditedCount: 0,
+  wholesalePurchaseAuditedCount: 0,
+  wholesalePurchaseNoAfterSalesCount: 0,
+  wholesalePurchaseAfterSalesCount: 0,
+  wholesaleSaleUnauditedCount: 0,
+  wholesaleSaleAuditedCount: 0,
+  wholesaleSaleNoAfterSalesCount: 0,
+  wholesaleSaleAfterSalesCount: 0,
+  distributionPurchaseTotalCount: 0,
+  distributionSaleTotalCount: 0,
+  wholesalePurchaseTotalCount: 0,
+  wholesaleSaleTotalCount: 0
+})
 
 // 查询参数
 const queryParams = reactive<DistributionWholesaleStatisticsReqVO>({
@@ -425,6 +635,24 @@ const queryParams = reactive<DistributionWholesaleStatisticsReqVO>({
   endTime: undefined,
   searchKeyword: undefined
 })
+
+// 初始化默认时间范围（最近30天）
+const initDefaultDateRange = () => {
+  const endDate = new Date()
+  const startDate = new Date()
+  startDate.setDate(endDate.getDate() - 30)
+  
+  // 设置开始时间为当天的00:00:00
+  startDate.setHours(0, 0, 0, 0)
+  // 设置结束时间为当天的23:59:59
+  endDate.setHours(23, 59, 59, 999)
+  
+  queryParams.beginTime = formatDateTime(startDate)
+  queryParams.endTime = formatDateTime(endDate)
+  
+  // 设置日期选择器的值
+  dateRange.value = [startDate, endDate]
+}
 
 // 计算属性
 const totalStats = computed(() => {
@@ -718,16 +946,50 @@ const productChartOptions = computed(() => {
 // 方法
 const getStatistics = async () => {
   loading.value = true
+  auditLoading.value = true
   try {
-    const data = await getDistributionWholesaleStatistics(queryParams)
+    // 并行获取统计数据和审核统计数据
+    const [data, auditDataResult] = await Promise.all([
+      getDistributionWholesaleStatistics(queryParams),
+      getAuditStatistics(queryParams)
+    ])
     statisticsData.value = data.items || []
+    auditData.value = auditDataResult
+    lastRefreshTime.value = new Date()
   } catch (error) {
     console.error('获取统计数据失败:', error)
     ElMessage.error('获取统计数据失败')
   } finally {
     loading.value = false
+    auditLoading.value = false
   }
 }
+
+// 刷新审核数据
+const refreshAuditData = async () => {
+  auditLoading.value = true
+  try {
+    const auditDataResult = await getAuditStatistics(queryParams)
+    auditData.value = auditDataResult
+    lastRefreshTime.value = new Date()
+    ElMessage.success('审核数据已刷新')
+  } catch (error) {
+    console.error('刷新审核数据失败:', error)
+    ElMessage.error('刷新审核数据失败')
+  } finally {
+    auditLoading.value = false
+  }
+}
+
+
+
+// 组件挂载时初始化
+onMounted(() => {
+  initDefaultDateRange()
+  getStatistics()
+})
+
+
 
 const handleStatisticsTypeChange = () => {
   queryParams.searchKeyword = undefined
@@ -789,10 +1051,9 @@ const formatDateTime = (date: Date): string => {
 
 const resetQuery = () => {
   queryParams.searchKeyword = undefined
-  queryParams.beginTime = undefined
-  queryParams.endTime = undefined
-  dateRange.value = null
   searchOptions.value = []
+  // 重置为默认时间范围
+  initDefaultDateRange()
   getStatistics()
 }
 
@@ -879,6 +1140,19 @@ const formatNumber = (num: number) => {
 
 const formatAmount = (amount: number) => {
   return amount.toLocaleString('zh-CN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+}
+
+const formatTime = (date: Date) => {
+  const now = new Date()
+  const diff = now.getTime() - date.getTime()
+  const minutes = Math.floor(diff / (1000 * 60))
+  const seconds = Math.floor((diff % (1000 * 60)) / 1000)
+  
+  if (minutes > 0) {
+    return `${minutes}分钟${seconds}秒前`
+  } else {
+    return `${seconds}秒前`
+  }
 }
 
 const getColumnLabel = () => {
@@ -1137,6 +1411,229 @@ onMounted(() => {
 
         &.wholesale-card .card-icon {
           color: #E6A23C;
+        }
+      }
+    }
+  }
+
+  .audit-statistics-section {
+    background: white;
+    border-radius: 12px;
+    padding: 24px;
+    box-shadow: 0 2px 12px 0 rgba(0, 0, 0, 0.1);
+    margin-top: 24px;
+
+    .section-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 24px;
+
+      .header-left {
+        flex: 1;
+
+        .section-title {
+          display: flex;
+          align-items: center;
+          font-size: 18px;
+          font-weight: 600;
+          color: #2c3e50;
+          margin-bottom: 8px;
+
+          .title-icon {
+            margin-right: 8px;
+            color: #409EFF;
+          }
+        }
+
+        .section-subtitle {
+          margin: 0;
+          color: #7f8c8d;
+          font-size: 14px;
+        }
+      }
+
+      .header-right {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+
+        .refresh-info {
+          .last-refresh {
+            font-size: 12px;
+            color: #7f8c8d;
+            background: #f8f9fa;
+            padding: 4px 8px;
+            border-radius: 4px;
+            border: 1px solid #e9ecef;
+          }
+        }
+      }
+    }
+
+    .audit-cards {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+      gap: 24px;
+
+      .audit-card {
+        background: #f8f9fa;
+        border-radius: 12px;
+        padding: 20px;
+        border: 2px solid transparent;
+        transition: all 0.3s ease;
+
+        &.distribution-card {
+          border-color: #409EFF;
+          background: linear-gradient(135deg, #e3f2fd 0%, #f3e5f5 100%);
+
+          .card-header {
+            h5 {
+              color: #1976d2;
+            }
+          }
+        }
+
+        &.wholesale-card {
+          border-color: #67C23A;
+          background: linear-gradient(135deg, #e8f5e8 0%, #f1f8e9 100%);
+
+          .card-header {
+            h5 {
+              color: #388e3c;
+            }
+          }
+        }
+
+        .card-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          margin-bottom: 20px;
+          padding-bottom: 12px;
+          border-bottom: 1px solid rgba(0, 0, 0, 0.1);
+
+          h5 {
+            margin: 0;
+            font-size: 16px;
+            font-weight: 600;
+          }
+
+          .card-icon {
+            font-size: 20px;
+          }
+        }
+
+        .card-content {
+          .audit-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+
+            &:last-of-type {
+              margin-bottom: 16px;
+            }
+
+            .audit-group {
+              h6 {
+                margin: 0 0 12px 0;
+                font-size: 14px;
+                font-weight: 600;
+                color: #2c3e50;
+                text-align: center;
+              }
+
+              .audit-metrics {
+                display: flex;
+                flex-direction: column;
+                gap: 8px;
+
+                .audit-metric {
+                  display: flex;
+                  justify-content: space-between;
+                  align-items: center;
+                  padding: 8px 12px;
+                  background: white;
+                  border-radius: 6px;
+                  border-left: 4px solid #ddd;
+                  transition: all 0.3s ease;
+
+                  &:hover {
+                    transform: translateX(2px);
+                    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+                  }
+
+                  .metric-label {
+                    font-size: 12px;
+                    color: #7f8c8d;
+                  }
+
+                  .metric-value {
+                    font-size: 14px;
+                    font-weight: 600;
+
+                    &.unaudited {
+                      color: #f39c12;
+                    }
+                  }
+
+                  &.unaudited {
+                    border-left-color: #f39c12;
+                  }
+
+                  &.audited {
+                    border-left-color: #27ae60;
+
+                    .metric-value {
+                      color: #27ae60;
+                    }
+                  }
+
+                  &.no-after-sales {
+                    border-left-color: #e74c3c;
+
+                    .metric-value {
+                      color: #e74c3c;
+                    }
+                  }
+
+                  &.after-sales {
+                    border-left-color: #8e44ad;
+
+                    .metric-value {
+                      color: #8e44ad;
+                    }
+                  }
+                }
+              }
+            }
+          }
+
+          .audit-total {
+            display: flex;
+            justify-content: space-around;
+            padding-top: 16px;
+            border-top: 1px solid rgba(0, 0, 0, 0.1);
+
+            .total-item {
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+
+              .total-label {
+                font-size: 12px;
+                color: #7f8c8d;
+                margin-bottom: 4px;
+              }
+
+              .total-value {
+                font-size: 18px;
+                font-weight: 600;
+                color: #2c3e50;
+              }
+            }
+          }
         }
       }
     }

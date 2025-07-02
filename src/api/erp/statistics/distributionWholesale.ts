@@ -62,6 +62,30 @@ export interface ProfitAnalysis {
   wholesaleProfit: number
 }
 
+// 审核数量统计
+export interface AuditStatistics {
+  distributionPurchaseUnauditedCount: number
+  distributionPurchaseAuditedCount: number
+  distributionPurchaseNoAfterSalesCount: number
+  distributionPurchaseAfterSalesCount: number
+  distributionSaleUnauditedCount: number
+  distributionSaleAuditedCount: number
+  distributionSaleNoAfterSalesCount: number
+  distributionSaleAfterSalesCount: number
+  wholesalePurchaseUnauditedCount: number
+  wholesalePurchaseAuditedCount: number
+  wholesalePurchaseNoAfterSalesCount: number
+  wholesalePurchaseAfterSalesCount: number
+  wholesaleSaleUnauditedCount: number
+  wholesaleSaleAuditedCount: number
+  wholesaleSaleNoAfterSalesCount: number
+  wholesaleSaleAfterSalesCount: number
+  distributionPurchaseTotalCount: number
+  distributionSaleTotalCount: number
+  wholesalePurchaseTotalCount: number
+  wholesaleSaleTotalCount: number
+}
+
 // 订单明细
 export interface OrderDetail {
   orderNo: string
@@ -102,5 +126,13 @@ export const getDetailStatistics = (reqVO: DistributionWholesaleStatisticsReqVO,
       ...reqVO,
       categoryName
     }
+  })
+}
+
+// 获得代发批发审核数量统计
+export const getAuditStatistics = (params: DistributionWholesaleStatisticsReqVO): Promise<AuditStatistics> => {
+  return request.get({
+    url: '/erp/statistics/distribution-wholesale/get-audit-statistics',
+    params
   })
 } 
