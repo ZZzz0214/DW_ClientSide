@@ -58,7 +58,7 @@
         </div>
         <div class="data-item">
           <span class="field-name">售后时间：</span>
-          <span class="field-value">{{ formData.afterSalesTime || '-' }}</span>
+          <span class="field-value">{{ formatAfterSalesTime(formData.afterSalesTime) || '-' }}</span>
         </div>
       </template>
     </div>
@@ -68,6 +68,7 @@
 <script setup lang="ts">
 import { CopyDocument } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { dateFormatter } from '@/utils/formatTime'
 
 interface Props {
   formData: any
@@ -76,6 +77,12 @@ interface Props {
 const props = defineProps<Props>()
 const copyDataRef = ref()
 const copyLoading = ref(false)
+
+// 格式化售后时间
+const formatAfterSalesTime = (time: any) => {
+  if (!time) return ''
+  return dateFormatter(null, null, time)
+}
 
 // 复制全部数据
 const copyAllData = async () => {
@@ -123,7 +130,7 @@ const generateCopyText = () => {
     `产品规格：${props.formData.productSpecification || '-'}`,
     `产品数量：${props.formData.productQuantity || '-'}`,
     `售后状况：${props.formData.afterSalesStatus || '-'}`,
-    `售后时间：${props.formData.afterSalesTime || '-'}`
+    `售后时间：${formatAfterSalesTime(props.formData.afterSalesTime) || '-'}`
   ]
   return lines.join('\n')
 }
