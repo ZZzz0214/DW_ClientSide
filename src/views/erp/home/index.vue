@@ -70,6 +70,12 @@
         <SampleStatistics />
       </el-col>
     </el-row>
+    <!-- 复盘统计报表 -->
+    <el-row :gutter="16" class="row">
+      <el-col :span="24">
+        <ReviewStatistics />
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script lang="ts" setup>
@@ -80,6 +86,7 @@ import NotebookStatistics from './components/NotebookStatistics.vue'
 import DistributionWholesaleProductStatistics from './components/DistributionWholesaleProductStatistics.vue'
 import FinanceStatistics from './components/FinanceStatistics.vue'
 import SampleStatistics from './components/SampleStatistics.vue'
+import ReviewStatistics from './components/ReviewStatistics.vue'
 import {
   ErpSaleSummaryRespVO,
   ErpSaleTimeSummaryRespVO,

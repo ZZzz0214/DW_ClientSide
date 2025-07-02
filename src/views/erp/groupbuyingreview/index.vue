@@ -428,15 +428,58 @@
       return
     }
     const selectedRow = selectionList.value[0]
+    
+    // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
+    const formatDate = (timestamp: any) => {
+      if (!timestamp) return undefined
+      if (typeof timestamp === 'string' && timestamp.includes('-')) {
+        return timestamp // 已经是YYYY-MM-DD格式
+      }
+      if (typeof timestamp === 'number') {
+        const date = new Date(timestamp)
+        return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
+      }
+      return undefined
+    }
+    
+    // 创建复制数据，格式化日期字段
+    const copyData = {
+      ...selectedRow,
+      sampleSendDate: formatDate(selectedRow.sampleSendDate),
+      groupStartDate: formatDate(selectedRow.groupStartDate),
+      repeatGroupDate: formatDate(selectedRow.repeatGroupDate)
+    }
+    
     // 存储复制的数据到localStorage，供表单页面使用
-    localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(selectedRow))
+    localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(copyData))
     push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true' } })
   }
 
   /** 复制新增操作 - 单条记录 */
   const handleCopyCreateSingle = (row: GroupBuyingReviewVO) => {
+    // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
+    const formatDate = (timestamp: any) => {
+      if (!timestamp) return undefined
+      if (typeof timestamp === 'string' && timestamp.includes('-')) {
+        return timestamp // 已经是YYYY-MM-DD格式
+      }
+      if (typeof timestamp === 'number') {
+        const date = new Date(timestamp)
+        return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
+      }
+      return undefined
+    }
+    
+    // 创建复制数据，格式化日期字段
+    const copyData = {
+      ...row,
+      sampleSendDate: formatDate(row.sampleSendDate),
+      groupStartDate: formatDate(row.groupStartDate),
+      repeatGroupDate: formatDate(row.repeatGroupDate)
+    }
+    
     // 存储复制的数据到localStorage，供表单页面使用
-    localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(row))
+    localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(copyData))
     push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true' } })
   }
 

@@ -109,6 +109,19 @@
         try {
           const parsedData = JSON.parse(copyData)
           
+          // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
+          const formatDate = (timestamp: any) => {
+            if (!timestamp) return undefined
+            if (typeof timestamp === 'string' && timestamp.includes('-')) {
+              return timestamp // 已经是YYYY-MM-DD格式
+            }
+            if (typeof timestamp === 'number') {
+              const date = new Date(timestamp)
+              return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
+            }
+            return undefined
+          }
+          
           // 复制数据并重置某些字段
           formData.value = {
             ...parsedData,
@@ -118,11 +131,11 @@
             groupBuyingNo: parsedData.groupBuyingNo, // 保留团购货盘编号
             customerId: parsedData.customerId, // 保留客户ID
             customerName: parsedData.customerName, // 保留客户名称
-            // 保留进展相关字段，不重置
-            sampleSendDate: parsedData.sampleSendDate, // 保留寄样日期
-            groupStartDate: parsedData.groupStartDate, // 保留开团日期
+            // 保留进展相关字段，并格式化日期
+            sampleSendDate: formatDate(parsedData.sampleSendDate), // 格式化寄样日期
+            groupStartDate: formatDate(parsedData.groupStartDate), // 格式化开团日期
             groupSales: parsedData.groupSales, // 保留开团销量
-            repeatGroupDate: parsedData.repeatGroupDate, // 保留复团日期
+            repeatGroupDate: formatDate(parsedData.repeatGroupDate), // 格式化复团日期
             repeatGroupSales: parsedData.repeatGroupSales, // 保留复团销量
             createTime: undefined,
             updateTime: undefined,

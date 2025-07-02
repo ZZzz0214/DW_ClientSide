@@ -97,7 +97,29 @@
       if (copyDataStr) {
         try {
           const copyData = JSON.parse(copyDataStr)
-          formData.value = { ...formData.value, ...copyData }
+          
+          // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
+          const formatDate = (timestamp: any) => {
+            if (!timestamp) return undefined
+            if (typeof timestamp === 'string' && timestamp.includes('-')) {
+              return timestamp // 已经是YYYY-MM-DD格式
+            }
+            if (typeof timestamp === 'number') {
+              const date = new Date(timestamp)
+              return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
+            }
+            return undefined
+          }
+          
+          // 格式化日期字段
+          const formattedCopyData = {
+            ...copyData,
+            sampleSendDate: formatDate(copyData.sampleSendDate),
+            liveStartDate: formatDate(copyData.liveStartDate),
+            repeatLiveDate: formatDate(copyData.repeatLiveDate)
+          }
+          
+          formData.value = { ...formData.value, ...formattedCopyData }
           localStorage.removeItem('copyLiveBroadcastingReviewData') // 使用后清除
           message.success('已自动填充复制的数据')
           return

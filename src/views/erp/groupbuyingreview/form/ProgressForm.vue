@@ -12,7 +12,7 @@
           type="date"
           placeholder="请选择寄样日期"
           class="w-80!"
-          value-format="x"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
       <el-form-item label="开团日期" prop="groupStartDate">
@@ -21,7 +21,7 @@
           type="date"
           placeholder="请选择开团日期"
           class="w-80!"
-          value-format="x"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
       <el-form-item label="开团销量" prop="groupSales">
@@ -38,7 +38,7 @@
           type="date"
           placeholder="请选择复团日期"
           class="w-80!"
-          value-format="x"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
       <el-form-item label="复团销量" prop="repeatGroupSales">

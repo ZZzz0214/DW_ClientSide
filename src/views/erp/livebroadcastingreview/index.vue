@@ -439,13 +439,30 @@
       // 获取第一条数据作为模板
       const sourceData = await LiveBroadcastingReviewApi.copyLiveBroadcastingReview(ids[0])
       
+      // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
+      const formatDate = (timestamp: any) => {
+        if (!timestamp) return undefined
+        if (typeof timestamp === 'string' && timestamp.includes('-')) {
+          return timestamp // 已经是YYYY-MM-DD格式
+        }
+        if (typeof timestamp === 'number') {
+          const date = new Date(timestamp)
+          return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
+        }
+        return undefined
+      }
+      
       // 将数据存储到 localStorage，供新增页面使用
       const copyData = {
         ...sourceData,
         id: undefined, // 清除ID，作为新增
         no: '', // 清除编号，让后端自动生成
         createTime: undefined, // 清除创建时间
-        updateTime: undefined // 清除更新时间
+        updateTime: undefined, // 清除更新时间
+        // 格式化日期字段
+        sampleSendDate: formatDate(sourceData.sampleSendDate),
+        liveStartDate: formatDate(sourceData.liveStartDate),
+        repeatLiveDate: formatDate(sourceData.repeatLiveDate)
       }
       
       localStorage.setItem('copyLiveBroadcastingReviewData', JSON.stringify(copyData))

@@ -13,7 +13,7 @@
           type="date"
           placeholder="请选择寄样日期"
           class="w-80"
-          value-format="x"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
 
@@ -24,7 +24,7 @@
           type="date"
           placeholder="请选择开团日期"
           class="w-80"
-          value-format="x"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
 
@@ -45,7 +45,7 @@
           type="date"
           placeholder="请选择复团日期"
           class="w-80"
-          value-format="x"
+          value-format="YYYY-MM-DD"
         />
       </el-form-item>
 

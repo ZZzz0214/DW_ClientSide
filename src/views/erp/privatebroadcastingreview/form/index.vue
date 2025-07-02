@@ -111,13 +111,31 @@
       formLoading.value = true
       try {
         const res = await PrivateBroadcastingReviewApi.getPrivateBroadcastingReview(copyId)
-        // 复制数据，但重置关键字段
+        
+        // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
+        const formatDate = (timestamp: any) => {
+          if (!timestamp) return undefined
+          if (typeof timestamp === 'string' && timestamp.includes('-')) {
+            return timestamp // 已经是YYYY-MM-DD格式
+          }
+          if (typeof timestamp === 'number') {
+            const date = new Date(timestamp)
+            return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
+          }
+          return undefined
+        }
+        
+        // 复制数据，但重置关键字段，并格式化日期
         formData.value = {
           ...res,
           id: undefined,
           no: '',
           createTime: undefined,
-          updateTime: undefined
+          updateTime: undefined,
+          // 格式化日期字段
+          sampleSendDate: formatDate(res.sampleSendDate),
+          groupStartDate: formatDate(res.groupStartDate),
+          repeatGroupDate: formatDate(res.repeatGroupDate)
         }
       } catch (error) {
         console.error('获取复制数据失败:', error)
