@@ -34,7 +34,7 @@
         </div>
         <div class="data-item">
           <span class="field-name">产品日期：</span>
-          <span class="field-value">{{ formData.productionDate || '-' }}</span>
+          <span class="field-value">{{ formatProductionDate(formData.productionDate) || '-' }}</span>
         </div>
         <div class="data-item">
           <span class="field-name">产品品类：</span>
@@ -64,6 +64,7 @@
 <script setup lang="ts">
 import { CopyDocument } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
+import { dateFormatter2 } from '@/utils/formatTime'
 
 interface Props {
   formData: any
@@ -72,6 +73,12 @@ interface Props {
 const props = defineProps<Props>()
 const copyDataRef = ref()
 const copyLoading = ref(false)
+
+// 格式化产品日期
+const formatProductionDate = (date: any) => {
+  if (!date) return ''
+  return dateFormatter2(null, null, date)
+}
 
 // 获取箱长宽高原始数据
 const getCartonDimensionsRaw = () => {
@@ -126,7 +133,7 @@ const generateCopyText = () => {
     `产品简称：${props.formData.productShortName || '-'}`,
     `发货编码：${props.formData.shippingCode || '-'}`,
     `产品规格：${props.formData.standard || '-'}`,
-    `产品日期：${props.formData.productionDate || '-'}`,
+    `产品日期：${formatProductionDate(props.formData.productionDate) || '-'}`,
     `产品品类：${props.formData.categoryId || '-'}`,
     `条形编号：${props.formData.barCode || '-'}`,
     `箱规数量：${props.formData.totalQuantity || '-'}`,
