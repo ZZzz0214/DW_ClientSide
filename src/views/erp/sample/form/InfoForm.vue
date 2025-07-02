@@ -102,7 +102,7 @@
       <el-form-item label="产品数量" prop="productQuantity">
         <el-input-number
           v-model="formData.productQuantity"
-          :min="1"
+          :min="0"
           placeholder="请输入产品数量"
           class="w-80"
         />
@@ -174,7 +174,7 @@
 
     <!-- 组品选择弹窗 -->
     <ComboSelectDialog ref="comboSelectDialogRef" @combo-selected="handleComboSelected" />
-    
+
     <!-- 客户搜索弹窗 -->
     <CustomerSearchDialog ref="customerSearchDialogRef" @customer-selected="handleCustomerSelected" />
   </template>
@@ -262,10 +262,10 @@
     formData.comboProductId = combo.no || combo.id?.toString() || ''
     formData.shippingCode = combo.shippingCode || ''
     formData.comboProductName = combo.name || ''
-    
+
     // 同步数据到父组件
     Object.assign(props.propFormData, formData)
-    
+
     // 触发组品编号字段的验证
     nextTick(() => {
       formRef.value?.validateField('comboProductId')
@@ -287,10 +287,10 @@
   /** 处理客户选择 */
   const handleCustomerSelected = (customer: any) => {
     formData.customerName = customer.name || ''
-    
+
     // 同步数据到父组件
     Object.assign(props.propFormData, formData)
-    
+
     // 触发客户名称字段的验证
     nextTick(() => {
       formRef.value?.validateField('customerName')
