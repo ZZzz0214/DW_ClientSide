@@ -315,17 +315,16 @@ const getStatistics = async () => {
         endDate: queryParams.financeEndDate
       })
       console.log('财务表统计响应：', financeData)
-      console.log('财务表统计响应data：', financeData.data)
-      if (financeData.data) {
+      if (financeData) {
         const newFinanceSummary = {
-          unauditedCount: Number(financeData.data.unauditedCount) || 0,
-          auditedCount: Number(financeData.data.auditedCount) || 0,
-          unauditedExpense: parseFloat(String(financeData.data.unauditedExpense || 0)),
-          unauditedIncome: parseFloat(String(financeData.data.unauditedIncome || 0)),
-          auditedExpense: parseFloat(String(financeData.data.auditedExpense || 0)),
-          auditedIncome: parseFloat(String(financeData.data.auditedIncome || 0)),
-          totalExpense: parseFloat(String(financeData.data.totalExpense || 0)),
-          totalIncome: parseFloat(String(financeData.data.totalIncome || 0))
+          unauditedCount: Number(financeData.unauditedCount) || 0,
+          auditedCount: Number(financeData.auditedCount) || 0,
+          unauditedExpense: parseFloat(String(financeData.unauditedExpense || 0)),
+          unauditedIncome: parseFloat(String(financeData.unauditedIncome || 0)),
+          auditedExpense: parseFloat(String(financeData.auditedExpense || 0)),
+          auditedIncome: parseFloat(String(financeData.auditedIncome || 0)),
+          totalExpense: parseFloat(String(financeData.totalExpense || 0)),
+          totalIncome: parseFloat(String(financeData.totalIncome || 0))
         }
         console.log('设置财务表统计数据：', newFinanceSummary)
         financeSummary.value = newFinanceSummary
@@ -344,18 +343,17 @@ const getStatistics = async () => {
         endDate: queryParams.financeAmountEndDate
       })
       console.log('财务金额表统计响应：', financeAmountData)
-      console.log('财务金额表统计响应data：', financeAmountData.data)
-      if (financeAmountData.data) {
+      if (financeAmountData) {
         const newFinanceAmountSummary = {
-          unauditedCount: Number(financeAmountData.data.unauditedCount) || 0,
-          auditedCount: Number(financeAmountData.data.auditedCount) || 0,
-          wechatCount: Number(financeAmountData.data.wechatCount) || 0,
-          alipayCount: Number(financeAmountData.data.alipayCount) || 0,
-          bankCardCount: Number(financeAmountData.data.bankCardCount) || 0,
-          wechatTotal: parseFloat(String(financeAmountData.data.wechatTotal || 0)),
-          alipayTotal: parseFloat(String(financeAmountData.data.alipayTotal || 0)),
-          bankCardTotal: parseFloat(String(financeAmountData.data.bankCardTotal || 0)),
-          totalAmount: parseFloat(String(financeAmountData.data.totalAmount || 0))
+          unauditedCount: Number(financeAmountData.unauditedCount) || 0,
+          auditedCount: Number(financeAmountData.auditedCount) || 0,
+          wechatCount: Number(financeAmountData.wechatCount) || 0,
+          alipayCount: Number(financeAmountData.alipayCount) || 0,
+          bankCardCount: Number(financeAmountData.bankCardCount) || 0,
+          wechatTotal: parseFloat(String(financeAmountData.wechatTotal || 0)),
+          alipayTotal: parseFloat(String(financeAmountData.alipayTotal || 0)),
+          bankCardTotal: parseFloat(String(financeAmountData.bankCardTotal || 0)),
+          totalAmount: parseFloat(String(financeAmountData.totalAmount || 0))
         }
         console.log('设置财务金额表统计数据：', newFinanceAmountSummary)
         financeAmountSummary.value = newFinanceAmountSummary
