@@ -259,6 +259,9 @@
           <el-form-item label="采购总额合计" style="margin-left: 20px;" label-width="140px">
             <el-input v-model="totalPurchaseAmount" disabled class="!w-120px" placeholder="无数据" />
           </el-form-item>
+          <el-form-item label="采购审核总额合计" style="margin-left: 20px;" label-width="140px">
+            <el-input v-model="totalPurchaseAuditTotalAmount" disabled class="!w-120px" placeholder="无数据" />
+          </el-form-item>
       </el-form-item>
 
     </el-form>
@@ -415,6 +418,7 @@ const totalTruckFee = ref<string>('')
 const totalLogisticsFee = ref<string>('')
 const totalOtherFees = ref<string>('')
 const totalPurchaseAmount = ref<string>('')
+const totalPurchaseAuditTotalAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -458,6 +462,7 @@ const getList = async () => {
     totalLogisticsFee.value = data.totalLogisticsFee?.toFixed(2) || ''
     totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
     totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
+    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
     list.value = data.pageResult.list
     total.value = data.pageResult.total
   } finally {

@@ -369,10 +369,10 @@
             <span class="summary-label">出货总额合计：</span>
             <el-input v-model="totalSaleAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
-          <div class="summary-item">
-            <span class="summary-label">代发销售审核总额合计：</span>
-            <el-input v-model="totalSaleAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
-          </div>
+<!--          <div class="summary-item">-->
+<!--            <span class="summary-label">代发销售审核总额合计：</span>-->
+<!--            <el-input v-model="totalSaleAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />-->
+<!--          </div>-->
           <div class="summary-item">
             <span class="summary-label">出货售后审核费用合计：</span>
             <el-input v-model="totalSaleAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />

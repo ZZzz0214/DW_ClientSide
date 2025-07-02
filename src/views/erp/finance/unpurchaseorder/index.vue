@@ -335,6 +335,10 @@
             <span class="summary-label">采购总额合计：</span>
             <el-input v-model="totalPurchaseAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
+                    <div class="summary-item">
+                      <span class="summary-label">代发采购审核总额合计：</span>
+                      <el-input v-model="totalPurchaseAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+                    </div>
 <!--          <div class="summary-item">-->
 <!--            <span class="summary-label">售后审核费用合计：</span>-->
 <!--            <el-input v-model="totalPurchaseAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />-->
@@ -504,6 +508,7 @@ const totalPurchasePrice = ref<string>('')
 const totalShippingFee = ref<string>('')
 const totalOtherFees = ref<string>('')
 const totalPurchaseAmount = ref<string>('')
+const totalPurchaseAuditTotalAmount = ref<string>('')
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
@@ -520,6 +525,7 @@ const getList = async () => {
     totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
     totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
     totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
+    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
     totalPurchaseAfterSalesAmount.value = data.totalPurchaseAfterSalesAmount?.toFixed(2) || ''
     console.log(data.pageResult.list)
 

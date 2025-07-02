@@ -317,18 +317,21 @@
       </el-form-item>
       <el-form-item>
     <!-- 新增四个出货合计字段显示框 -->
-    <el-form-item label="出货单价合计" style="margin-left: 20px;" label-width="100px">
-      <el-input v-model="totalSalePrice" disabled class="!w-240px" placeholder="无数据" />
+    <el-form-item label="出货单价合计" style="margin-left: 20px;" label-width="140px">
+      <el-input v-model="totalSalePrice" disabled class="!w-120px" placeholder="无数据" />
     </el-form-item>
-    <el-form-item label="出货运费合计" style="margin-left: 20px;" label-width="100px">
-      <el-input v-model="totalSaleShippingFee" disabled class="!w-240px" placeholder="无数据" />
+    <el-form-item label="出货运费合计" style="margin-left: 20px;" label-width="160px">
+      <el-input v-model="totalSaleShippingFee" disabled class="!w-120px" placeholder="无数据" />
     </el-form-item>
-    <el-form-item label="出货杂费合计" style="margin-left: 20px;" label-width="100px">
-      <el-input v-model="totalSaleOtherFees" disabled class="!w-240px" placeholder="无数据" />
+    <el-form-item label="出货杂费合计" style="margin-left: 20px;" label-width="140px">
+      <el-input v-model="totalSaleOtherFees" disabled class="!w-120px" placeholder="无数据" />
     </el-form-item>
-    <el-form-item label="出货总额合计" style="margin-left: 20px;" label-width="100px">
-      <el-input v-model="totalSaleAmount" disabled class="!w-240px" placeholder="无数据" />
+    <el-form-item label="出货总额合计" style="margin-left: 20px;" label-width="140px">
+      <el-input v-model="totalSaleAmount" disabled class="!w-120px" placeholder="无数据" />
     </el-form-item>
+        <el-form-item label="出货审核总额合计" style="margin-left: 20px;" label-width="140px">
+          <el-input v-model="totalSaleAuditTotalAmount" disabled class="!w-120px" placeholder="无数据" />
+        </el-form-item>
   </el-form-item>
     </el-form>
   </ContentWrap>
@@ -477,6 +480,7 @@ const totalSalePrice = ref<string>('')
 const totalSaleShippingFee = ref<string>('')
 const totalSaleOtherFees = ref<string>('')
 const totalSaleAmount = ref<string>('')
+const totalSaleAuditTotalAmount = ref<string>('')
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
@@ -493,6 +497,7 @@ const getList = async () => {
     totalSaleShippingFee.value = data.totalSaleShippingFee?.toFixed(2) || ''
     totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
     totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
+    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
     list.value = data.pageResult.list
     total.value = data.pageResult.total
   } finally {
