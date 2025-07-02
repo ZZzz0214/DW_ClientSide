@@ -46,12 +46,19 @@
         <DistributionWholesaleStatistics />
       </el-col>
     </el-row>
+    <!-- 记事本统计报表 -->
+    <el-row :gutter="16" class="row">
+      <el-col :span="24">
+        <NotebookStatistics />
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script lang="ts" setup>
 import SummaryCard from './components/SummaryCard.vue'
 import TimeSummaryChart from './components/TimeSummaryChart.vue'
 import DistributionWholesaleStatistics from './components/DistributionWholesaleStatistics.vue'
+import NotebookStatistics from './components/NotebookStatistics.vue'
 import {
   ErpSaleSummaryRespVO,
   ErpSaleTimeSummaryRespVO,
