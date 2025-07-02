@@ -58,6 +58,12 @@
         <DistributionWholesaleProductStatistics />
       </el-col>
     </el-row>
+    <!-- 财务表统计报表 -->
+    <el-row :gutter="16" class="row">
+      <el-col :span="24">
+        <FinanceStatistics />
+      </el-col>
+    </el-row>
   </div>
 </template>
 <script lang="ts" setup>
@@ -66,6 +72,7 @@ import TimeSummaryChart from './components/TimeSummaryChart.vue'
 import DistributionWholesaleStatistics from './components/DistributionWholesaleStatistics.vue'
 import NotebookStatistics from './components/NotebookStatistics.vue'
 import DistributionWholesaleProductStatistics from './components/DistributionWholesaleProductStatistics.vue'
+import FinanceStatistics from './components/FinanceStatistics.vue'
 import {
   ErpSaleSummaryRespVO,
   ErpSaleTimeSummaryRespVO,
