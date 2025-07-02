@@ -25,19 +25,19 @@
             />
           </el-form-item>
 
-          <el-form-item label="客户名称">
+          <el-form-item label="产品名称">
             <el-select
-              v-model="queryParams.customerName"
-              placeholder="请选择客户"
+              v-model="queryParams.productName"
+              placeholder="请选择产品"
               clearable
               filterable
               style="width: 200px"
             >
               <el-option
-                v-for="customer in reviewData.customerOptions"
-                :key="customer.customerName"
-                :label="`${customer.customerName} (${customer.reviewCount})`"
-                :value="customer.customerName"
+                v-for="product in reviewData.productOptions"
+                :key="product.productName"
+                :label="`${product.productName} (${product.reviewCount})`"
+                :value="product.productName"
               />
             </el-select>
           </el-form-item>
@@ -134,6 +134,18 @@
           </div>
         </div>
       </div>
+      <!-- 团购复盘分页 -->
+      <div class="pagination-wrapper" v-if="reviewData.groupBuyingStats.length > 0">
+        <el-pagination
+          v-model:current-page="groupBuyingPagination.pageNo"
+          v-model:page-size="groupBuyingPagination.pageSize"
+          :page-sizes="[5, 10, 20, 50]"
+          :total="reviewData.total"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handleGroupBuyingSizeChange"
+          @current-change="handleGroupBuyingCurrentChange"
+        />
+      </div>
     </div>
 
     <!-- 私播复盘统计 -->
@@ -213,6 +225,18 @@
             </div>
           </div>
         </div>
+      </div>
+      <!-- 私播复盘分页 -->
+      <div class="pagination-wrapper" v-if="reviewData.privateBroadcastingStats.length > 0">
+        <el-pagination
+          v-model:current-page="privateBroadcastingPagination.pageNo"
+          v-model:page-size="privateBroadcastingPagination.pageSize"
+          :page-sizes="[5, 10, 20, 50]"
+          :total="reviewData.total"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handlePrivateBroadcastingSizeChange"
+          @current-change="handlePrivateBroadcastingCurrentChange"
+        />
       </div>
     </div>
 
@@ -294,6 +318,18 @@
           </div>
         </div>
       </div>
+      <!-- 直播复盘分页 -->
+      <div class="pagination-wrapper" v-if="reviewData.liveBroadcastingStats.length > 0">
+        <el-pagination
+          v-model:current-page="liveBroadcastingPagination.pageNo"
+          v-model:page-size="liveBroadcastingPagination.pageSize"
+          :page-sizes="[5, 10, 20, 50]"
+          :total="reviewData.total"
+          layout="total, sizes, prev, pager, next, jumper"
+          @size-change="handleLiveBroadcastingSizeChange"
+          @current-change="handleLiveBroadcastingCurrentChange"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -313,7 +349,9 @@ const loading = ref(false)
 const queryParams = reactive({
   beginDate: '',
   endDate: '',
-  customerName: ''
+  productName: '',
+  pageNo: 1,
+  pageSize: 10
 })
 
 // 日期范围
@@ -324,7 +362,26 @@ const reviewData = ref<ErpReviewStatisticsRespVO>({
   groupBuyingStats: [],
   privateBroadcastingStats: [],
   liveBroadcastingStats: [],
-  customerOptions: []
+  productOptions: [],
+  total: 0,
+  pageNo: 1,
+  pageSize: 10
+})
+
+// 分页配置
+const groupBuyingPagination = reactive({
+  pageNo: 1,
+  pageSize: 10
+})
+
+const privateBroadcastingPagination = reactive({
+  pageNo: 1,
+  pageSize: 10
+})
+
+const liveBroadcastingPagination = reactive({
+  pageNo: 1,
+  pageSize: 10
 })
 
 // 处理复盘日期范围变化
@@ -345,11 +402,13 @@ const getStatistics = async () => {
     console.log('开始获取复盘统计数据，查询参数：', queryParams)
 
     if (queryParams.beginDate && queryParams.endDate) {
-      console.log('获取复盘统计，日期范围：', queryParams.beginDate, '到', queryParams.endDate, '客户名称：', queryParams.customerName)
+      console.log('获取复盘统计，日期范围：', queryParams.beginDate, '到', queryParams.endDate, '产品名称：', queryParams.productName)
       const data = await getReviewStatistics({
         beginDate: queryParams.beginDate,
         endDate: queryParams.endDate,
-        customerName: queryParams.customerName || undefined
+        productName: queryParams.productName || undefined,
+        pageNo: queryParams.pageNo,
+        pageSize: queryParams.pageSize
       })
       console.log('复盘统计响应：', data)
       if (data) {
@@ -371,7 +430,10 @@ const getStatistics = async () => {
       groupBuyingStats: [],
       privateBroadcastingStats: [],
       liveBroadcastingStats: [],
-      customerOptions: []
+      productOptions: [],
+      total: 0,
+      pageNo: 1,
+      pageSize: 10
     }
   } finally {
     loading.value = false
@@ -383,15 +445,73 @@ const resetQuery = () => {
   reviewDateRange.value = null
   queryParams.beginDate = ''
   queryParams.endDate = ''
-  queryParams.customerName = ''
+  queryParams.productName = ''
+  queryParams.pageNo = 1
+  queryParams.pageSize = 10
+
+  // 重置分页
+  groupBuyingPagination.pageNo = 1
+  groupBuyingPagination.pageSize = 10
+  privateBroadcastingPagination.pageNo = 1
+  privateBroadcastingPagination.pageSize = 10
+  liveBroadcastingPagination.pageNo = 1
+  liveBroadcastingPagination.pageSize = 10
 
   // 重置统计数据
   reviewData.value = {
     groupBuyingStats: [],
     privateBroadcastingStats: [],
     liveBroadcastingStats: [],
-    customerOptions: []
+    productOptions: [],
+    total: 0,
+    pageNo: 1,
+    pageSize: 10
   }
+}
+
+// 团购复盘分页处理
+const handleGroupBuyingSizeChange = (size: number) => {
+  groupBuyingPagination.pageSize = size
+  groupBuyingPagination.pageNo = 1
+  queryParams.pageSize = size
+  queryParams.pageNo = 1
+  getStatistics()
+}
+
+const handleGroupBuyingCurrentChange = (page: number) => {
+  groupBuyingPagination.pageNo = page
+  queryParams.pageNo = page
+  getStatistics()
+}
+
+// 私播复盘分页处理
+const handlePrivateBroadcastingSizeChange = (size: number) => {
+  privateBroadcastingPagination.pageSize = size
+  privateBroadcastingPagination.pageNo = 1
+  queryParams.pageSize = size
+  queryParams.pageNo = 1
+  getStatistics()
+}
+
+const handlePrivateBroadcastingCurrentChange = (page: number) => {
+  privateBroadcastingPagination.pageNo = page
+  queryParams.pageNo = page
+  getStatistics()
+}
+
+// 直播复盘分页处理
+const handleLiveBroadcastingSizeChange = (size: number) => {
+  liveBroadcastingPagination.pageSize = size
+  liveBroadcastingPagination.pageNo = 1
+  queryParams.pageSize = size
+  queryParams.pageNo = 1
+  getStatistics()
+}
+
+const handleLiveBroadcastingCurrentChange = (page: number) => {
+  liveBroadcastingPagination.pageNo = page
+  queryParams.pageNo = page
+  getStatistics()
 }
 
 // 格式化数字
@@ -573,6 +693,12 @@ onMounted(() => {
           }
         }
       }
+    }
+
+    .pagination-wrapper {
+      margin-top: 20px;
+      display: flex;
+      justify-content: center;
     }
   }
 }
