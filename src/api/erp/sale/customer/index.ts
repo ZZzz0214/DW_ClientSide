@@ -61,5 +61,10 @@ export const CustomerApi = {
   // 搜索结果
   searchCustomer: async (params: any) => {
     return await request.get({ url: `/erp/customer/search`, params });
+  },
+
+  // 分页搜索结果
+  searchCustomerPage: async (params: any) => {
+    return await request.get({ url: `/erp/customer/search-page`, params });
   }
 }
