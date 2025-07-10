@@ -60,8 +60,8 @@
   })
 
   const rules = reactive({
-    corePrice: [{ required: true, message: '核心价格不能为空', trigger: 'blur' }],
-    distributionPrice: [{ required: true, message: '分发价格不能为空', trigger: 'blur' }]
+    //corePrice: [{ required: true, message: '核心价格不能为空', trigger: 'blur' }],
+    //distributionPrice: [{ required: true, message: '分发价格不能为空', trigger: 'blur' }]
   })
 
   /** 将传进来的值赋值给 formData */
@@ -80,7 +80,7 @@
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      
+
       // 通过emit事件将数据传递给父组件，而不是直接修改props
       const updatedData = { ...formData }
       emit('update:formData', updatedData)

@@ -40,7 +40,7 @@
       <el-input v-model="formData.productSpec" placeholder="请输入产品规格" :disabled="isDetail" />
     </el-form-item>
     <el-form-item label="产品SKU" prop="productSku">
-      <el-input v-model="formData.productSku" placeholder="请输入产品SKU" :disabled="isDetail" />
+      <el-input v-model="formData.productSku" placeholder="请输入产品SKU" :disabled="isDetail"  type="textarea" :autosize="{ minRows: 1, maxRows: 6}"/>
     </el-form-item>
     <el-form-item label="市场价格" prop="marketPrice">
       <el-input v-model.number="formData.marketPrice" placeholder="请输入市场价格" :disabled="isDetail" />

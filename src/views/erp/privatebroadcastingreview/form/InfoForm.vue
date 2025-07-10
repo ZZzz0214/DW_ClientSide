@@ -53,6 +53,7 @@
           placeholder="自动填充"
           readonly
           class="w-80"
+          type="textarea" :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
 
@@ -139,10 +140,10 @@
     () => props.propFormData,
     (data) => {
       if (!data || isInternalUpdate.value) return
-      
+
       isInternalUpdate.value = true
       copyValueToTarget(formData, data)
-      
+
       nextTick(() => {
         isInternalUpdate.value = false
       })
@@ -174,7 +175,7 @@
     console.log("选中的私播货盘表数据:", privateBroadcasting)
     console.log("brandName值:", privateBroadcasting.brandName, "类型:", typeof privateBroadcasting.brandName)
     console.log("brandId值:", privateBroadcasting.brandId, "类型:", typeof privateBroadcasting.brandId)
-    
+
     // 从私播货盘数据中提取品牌名称
     // 如果后端返回的是brandName，直接使用；如果是brandId，需要转换
     let brandNameValue = ''
@@ -186,7 +187,7 @@
       const brandOption = brandOptions.find(option => option.value === String(privateBroadcasting.brandId))
       brandNameValue = brandOption ? brandOption.value : String(privateBroadcasting.brandId)
     }
-    
+
     // 先更新本地 formData
     formData.privateBroadcastingId = privateBroadcasting.id
     formData.privateBroadcastingNo = privateBroadcasting.no
@@ -196,7 +197,7 @@
     formData.productSku = privateBroadcasting.productSku
     formData.livePrice = privateBroadcasting.livePrice
     formData.privateStatus = privateBroadcasting.privateStatus
-    
+
     // 同时更新父组件的 propFormData，避免被 watch 覆盖
     Object.assign(props.propFormData, {
       privateBroadcastingId: privateBroadcasting.id,
@@ -208,7 +209,7 @@
       livePrice: privateBroadcasting.livePrice,
       privateStatus: privateBroadcasting.privateStatus
     })
-    
+
     console.log("赋值后的formData.brandName:", formData.brandName)
     console.log("赋值后的props.propFormData.brandName:", props.propFormData.brandName)
   }
