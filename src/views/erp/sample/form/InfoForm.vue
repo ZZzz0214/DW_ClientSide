@@ -223,13 +223,13 @@
 
   const rules = reactive({
     no: [{ required: true, message: '样品编号不能为空', trigger: 'blur' }],
-    logisticsCompany: [{ required: true, message: '物流公司不能为空', trigger: 'blur' }],
-    logisticsNo: [{ required: true, message: '物流单号不能为空', trigger: 'blur' }],
+    //logisticsCompany: [{ required: true, message: '物流公司不能为空', trigger: 'blur' }],
+    //logisticsNo: [{ required: true, message: '物流单号不能为空', trigger: 'blur' }],
     receiverName: [{ required: true, message: '收件姓名不能为空', trigger: 'blur' }],
     contactPhone: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
     address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }],
     comboProductId: [{ required: true, message: '请选择组品编号', trigger: 'change' }],
-    productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
+    //productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
     productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
     customerName: [{ required: true, message: '请选择客户名称', trigger: 'change' }],
     sampleStatus: [{ required: true, message: '样品状态不能为空', trigger: 'blur' }]
