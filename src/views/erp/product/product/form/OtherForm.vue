@@ -38,7 +38,7 @@
                   placeholder="请输入公域活动最低价"
                   class="beautiful-input"
                 />
-                <span class="unit-label">元</span>
+
               </div>
             </el-form-item>
 
@@ -51,7 +51,7 @@
                   placeholder="请输入直播活动最低价"
                   class="beautiful-input"
                 />
-                <span class="unit-label">元</span>
+
               </div>
             </el-form-item>
 
@@ -64,7 +64,7 @@
                   placeholder="请输入多多活动最低价"
                   class="beautiful-input"
                 />
-                <span class="unit-label">元</span>
+
               </div>
             </el-form-item>
 
@@ -77,7 +77,7 @@
                   placeholder="请输入阿里活动最低价"
                   class="beautiful-input"
                 />
-                <span class="unit-label">元</span>
+
               </div>
             </el-form-item>
 
@@ -90,7 +90,7 @@
                   placeholder="请输入团购活动最低价"
                   class="beautiful-input"
                 />
-                <span class="unit-label">元</span>
+
               </div>
             </el-form-item>
           </div>
@@ -298,7 +298,7 @@ defineExpose({ validate })
 
   .beautiful-input {
     flex: 1;
-    
+
     :deep(.el-input__wrapper) {
       border: none;
       box-shadow: none;
