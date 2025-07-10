@@ -140,7 +140,7 @@ const formData = reactive<ProductVO>({
   trademarkCode: '' // 商标编号
 });
 const rules = reactive({
-  barCode: [{ required: true, message: '条形编号不能为空', trigger: 'blur' }],
+  //barCode: [{ required: true, message: '条形编号不能为空', trigger: 'blur' }],
 });
 
 /** 将传进来的值赋值给 formData */

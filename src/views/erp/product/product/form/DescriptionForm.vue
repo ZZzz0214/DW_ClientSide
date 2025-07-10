@@ -196,7 +196,7 @@ const rules = reactive({
   weight: [{ required: true, message: '产品重量不能为空', trigger: 'blur' }],
   productWidth: [{ required: true, message: '箱规数量不能为空', trigger: 'blur' }],
   cartonDimensions: [{ required: true, message: '箱长宽高不能为空', trigger: 'blur' }],
-  cartonWeight: [{ required: true, message: '箱规重量不能为空', trigger: 'blur' }],
+  //cartonWeight: [{ required: true, message: '箱规重量不能为空', trigger: 'blur' }],
   // cartonHeight: [{ required: true, message: '箱高不能为空', trigger: 'blur' }],
   // cartonWeight: [{ required: true, message: '箱规重量不能为空', trigger: 'blur' }],
 });
@@ -355,7 +355,7 @@ defineExpose({ validate });
 
 .beautiful-number-input {
   width: 100%;
-  
+
   :deep(.el-input__wrapper) {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
