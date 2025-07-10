@@ -177,8 +177,8 @@
 
   const rules = reactive({
     // no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
-    originalProduct: [{ required: true, message: '原表商品不能为空', trigger: 'blur' }],
-    originalSpec: [{ required: true, message: '原表规格不能为空', trigger: 'blur' }],
+    //originalProduct: [{ required: true, message: '原表商品不能为空', trigger: 'blur' }],
+    //originalSpec: [{ required: true, message: '原表规格不能为空', trigger: 'blur' }],
     originalQuantity: [{ required: true, message: '原表数量不能为空', trigger: 'blur' }],
     // productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
     // productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],

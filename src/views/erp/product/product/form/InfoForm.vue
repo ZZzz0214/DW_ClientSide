@@ -60,6 +60,8 @@
                 placeholder="请输入产品名称"
                 class="beautiful-input"
                 prefix-icon="ep:goods"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 6}"
               />
             </el-form-item>
 
@@ -70,6 +72,8 @@
                 placeholder="请输入产品简称"
                 class="beautiful-input"
                 prefix-icon="ep:edit"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 6}"
               />
             </el-form-item>
 
@@ -90,6 +94,8 @@
                 placeholder="请输入产品规格"
                 class="beautiful-input"
                 prefix-icon="ep:scale-to-original"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 6}"
               />
             </el-form-item>
           </div>
@@ -284,7 +290,7 @@ const formData = reactive<ProductVO>({
 
 const rules = reactive({
   name: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-  image: [{ required: true, message: '产品图片不能为空', trigger: 'blur' }],
+  //image: [{ required: true, message: '产品图片不能为空', trigger: 'blur' }],
   purchaser: [{ required: true, message: '采购人员不能为空', trigger: 'blur' }],
   standard: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
   // weight: [{ required: true, message: '产品重量不能为空', trigger: 'blur' }],
@@ -313,7 +319,7 @@ watch(
     } else {
       formData.image = []
     }
-    
+
     // 处理复制数据时的特殊逻辑
     if (data.name && data.name.includes('_副本')) {
       // 如果是复制的数据，确保各字段正确设置
@@ -524,7 +530,7 @@ onMounted(async () => {
 .clickable-input {
   :deep(.el-input__wrapper) {
     cursor: pointer;
-    
+
     &:hover {
       background: linear-gradient(135deg, #f8f9ff 0%, #e8f0fe 100%);
     }
@@ -552,7 +558,7 @@ onMounted(async () => {
 
 .beautiful-date-picker {
   width: 100%;
-  
+
   :deep(.el-input__wrapper) {
     border-radius: 8px;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);

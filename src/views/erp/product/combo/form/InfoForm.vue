@@ -200,7 +200,8 @@
 
 <script setup lang="ts">
 import {ref, reactive, watch, PropType} from 'vue';
-import PurchaserSearchDialog from './PurchaserSearchDialog.vue'; // 引入采购人员搜索弹窗组件
+//import PurchaserSearchDialog from './PurchaserSearchDialog.vue'; // 引入采购人员搜索弹窗组件
+import PurchaserSearchDialog from "@/views/erp/product/product/form/PurchaserSearchDialog.vue";
 import SupplierSearchDialog from './SupplierSearchDialog.vue'; // 引入供应商搜索弹窗组件
 import SelectProduct from './SelectProduct.vue';
 import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue';
