@@ -621,9 +621,15 @@ const close = () => {
 }
 
 // 获取列表数据
-const getList = async () => {
+const getList = async (paginationParams?: any) => {
   loading.value = true
   try {
+    // 如果传入了分页参数，更新查询参数
+    if (paginationParams) {
+      queryParams.pageNo = paginationParams.page
+      queryParams.pageSize = paginationParams.limit
+    }
+    
     const data = await SalePriceApi.getCombinedMissingPrices(queryParams)
     list.value = data.list
     total.value = data.total
