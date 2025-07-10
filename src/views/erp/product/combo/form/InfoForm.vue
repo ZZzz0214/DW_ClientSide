@@ -306,7 +306,7 @@ const handleDelete = (index: number) => {
 const updateComboInfo = () => {
   // 更新组品名称
   const productNames = formData.value.items.map(item => `${item.name || ''}×${item.count || 0}`);
-  formData.value.name = productNames.join(' + '); // 更新 namecount 字段
+  formData.value.name = productNames.join('｜'); // 更新 namecount 字段
   // 更新产品重量
   const totalWeight = formData.value.items.reduce((sum, item) => sum + (item.weight || 0) * (item.count || 0), 0);
   formData.value.weight = totalWeight;
