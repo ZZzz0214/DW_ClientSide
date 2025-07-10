@@ -51,19 +51,20 @@
         />
       </el-form-item>
     </el-form>
-    
-    <!-- 客户选择弹窗 -->
-    <CustomerSearchDialog
-      v-model:visible="customerSearchDialogVisible"
-      @customer-selected="handleCustomerSelected"
-    />
+
+  <!-- 客户搜索弹窗 -->
+  <CustomerSearchDialog
+    v-model:visible="customerSearchDialogVisible"
+    @customer-selected="handleCustomerSelected"
+    ref="customerSearchDialog"
+  />
   </template>
 
   <script lang="ts" setup>
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
-  import CustomerSearchDialog from './CustomerSearchDialog.vue'
+  import CustomerSearchDialog from "@/views/erp/sale/saleprice/components/CustomerSearchDialog.vue";
 
   defineOptions({ name: 'ErpPrivateBroadcastingReviewPriceForm' })
 
@@ -99,10 +100,10 @@
     () => props.propFormData,
     (data) => {
       if (!data || isInternalUpdate.value) return
-      
+
       isInternalUpdate.value = true
       copyValueToTarget(formData, data)
-      
+
       nextTick(() => {
         isInternalUpdate.value = false
       })
@@ -133,7 +134,7 @@
   const handleCustomerSelected = (customer: any) => {
     formData.customerId = customer.id
     formData.customerName = customer.name
-    
+
     // 同时更新父组件的 propFormData
     Object.assign(props.propFormData, {
       customerId: customer.id,

@@ -12,6 +12,8 @@
           v-model="formData.expressCompany"
           placeholder="请输入快递公司"
           class="w-240px"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
 
@@ -21,6 +23,8 @@
           v-model="formData.shippingTime"
           placeholder="请输入发货时效"
           class="w-240px"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
 
@@ -30,6 +34,8 @@
           v-model="formData.shippingArea"
           placeholder="请输入发货地区"
           class="w-240px"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
     </el-form>

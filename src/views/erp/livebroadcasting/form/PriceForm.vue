@@ -11,7 +11,6 @@
         <el-input-number
           v-model="formData.livePrice"
           :min="0"
-          :precision="2"
           placeholder="请输入直播价格"
           class="w-240px"
         />
@@ -23,7 +22,6 @@
         <el-input-number
           v-model="formData.liveCommission"
           :min="0"
-          :precision="2"
           placeholder="请输入直播佣金"
           class="w-240px"
         />
@@ -35,7 +33,6 @@
         <el-input-number
           v-model="formData.publicCommission"
           :min="0"
-          :precision="2"
           placeholder="请输入公开佣金"
           class="w-240px"
         />
@@ -47,7 +44,6 @@
         <el-input-number
           v-model="formData.rebateCommission"
           :min="0"
-          :precision="2"
           placeholder="请输入返点佣金"
           class="w-240px"
         />
@@ -83,8 +79,14 @@
 
   const rules = reactive({
     livePrice: [{ required: true, message: '直播价格不能为空', trigger: 'blur' }],
-    liveCommission: [{ required: true, message: '直播佣金不能为空', trigger: 'blur' }],
-    publicCommission: [{ required: true, message: '公开佣金不能为空', trigger: 'blur' }]
+    liveCommission: [
+      { required: true, message: '直播佣金不能为空', trigger: 'blur' },
+      { type: 'number', min: 0.01, message: '直播佣金必须大于0', trigger: 'blur' }
+    ],
+    publicCommission: [
+      { required: true, message: '公开佣金不能为空', trigger: 'blur' },
+      { type: 'number', min: 0.01, message: '公开佣金必须大于0', trigger: 'blur' }
+    ]
   })
 
   /** 将传进来的值赋值给 formData */

@@ -51,6 +51,8 @@
           placeholder="自动填充"
           readonly
           class="w-80"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
 

@@ -172,7 +172,7 @@ import { propTypes } from '@/utils/propTypes'
 import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
 import type { ErpPrivateBroadcastingInfoRespVO } from '@/api/erp/privateBroadcastingInfo'
 import type { CustomerVO } from '@/api/erp/sale/customer'
-import CustomerSearchDialog from './CustomerSearchDialog.vue'
+import CustomerSearchDialog from "@/views/erp/sale/saleprice/components/CustomerSearchDialog.vue";
 
 defineOptions({ name: 'ErpPrivateBroadcastingInfoForm' })
 

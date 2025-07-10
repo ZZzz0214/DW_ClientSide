@@ -53,7 +53,6 @@
           <el-input-number
             v-model="formData.liveCommission"
             :min="0"
-            :precision="2"
             placeholder="请输入直播佣金"
             class="w-80!"
           />
@@ -67,7 +66,6 @@
           <el-input-number
             v-model="formData.publicCommission"
             :min="0"
-            :precision="2"
             placeholder="请输入公开佣金"
             class="w-80!"
           />
@@ -81,7 +79,6 @@
           <el-input-number
             v-model="formData.rebateCommission"
             :min="0"
-            :precision="2"
             placeholder="请输入返点佣金"
             class="w-80!"
           />
@@ -128,8 +125,10 @@
   const rules = reactive({
     customerName: [{ required: true, message: '客户名称不能为空', trigger: 'change' }],
     livePlatform: [{ required: true, message: '直播平台不能为空', trigger: 'blur' }],
-    liveCommission: [{ required: true, message: '直播佣金不能为空', trigger: 'blur' }],
-    publicCommission: [{ required: true, message: '公开佣金不能为空', trigger: 'blur' }],
+    liveCommission: [{ required: true, message: '直播佣金不能为空', trigger: 'blur' },
+      { type: 'number', min: 0.01, message: '直播佣金必须大于0', trigger: 'blur' }],
+    publicCommission: [{ required: true, message: '公开佣金不能为空', trigger: 'blur' },
+      { type: 'number', min: 0.01, message: '公开佣金必须大于0', trigger: 'blur' }],
     //rebateCommission: [{ required: true, message: '返点佣金不能为空', trigger: 'blur' }]
   })
 

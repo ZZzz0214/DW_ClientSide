@@ -79,6 +79,8 @@
           v-model="formData.productSku"
           placeholder="请输入产品SKU"
           class="w-240px"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
 
@@ -202,7 +204,7 @@
   const rules = reactive({
     no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
     productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
-    brandName: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
+    productSku: [{ required: true, message: '产品SKU不能为空', trigger: 'change' }],
     //marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
     //productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
     liveStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
