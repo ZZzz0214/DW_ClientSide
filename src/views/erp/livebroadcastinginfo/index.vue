@@ -177,7 +177,7 @@
           v-loading="loading"
           :data="list"
           :stripe="true"
-          :show-overflow-tooltip="true"
+          :show-overflow-tooltip="false"
           @selection-change="handleSelectionChange"
         >
           <el-table-column width="30" label="选择" type="selection" />
@@ -453,10 +453,10 @@
       creator: undefined,
       updater: undefined
     }
-    
+
     // 将复制数据存储到 sessionStorage
     sessionStorage.setItem('copyLiveBroadcastingInfoData', JSON.stringify(cleanCopyData))
-    
+
     push({ name: 'ErpLiveBroadcastingInfoAdd', query: { copy: 'true' } })
   }
 

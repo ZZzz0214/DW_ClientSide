@@ -170,7 +170,7 @@
         v-loading="loading"
         :data="list"
         :stripe="true"
-        :show-overflow-tooltip="true"
+        :show-overflow-tooltip="false"
         @selection-change="handleSelectionChange"
         :row-style="{height: '80px'}"
         :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"

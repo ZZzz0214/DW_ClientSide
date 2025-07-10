@@ -208,7 +208,7 @@
         v-loading="loading"
         :data="list"
         :stripe="true"
-        :show-overflow-tooltip="true"
+        :show-overflow-tooltip="false"
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
@@ -434,11 +434,11 @@
       message.warning('请选择要复制的数据')
       return
     }
-    
+
     try {
       // 获取第一条数据作为模板
       const sourceData = await LiveBroadcastingReviewApi.copyLiveBroadcastingReview(ids[0])
-      
+
       // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
       const formatDate = (timestamp: any) => {
         if (!timestamp) return undefined
@@ -451,7 +451,7 @@
         }
         return undefined
       }
-      
+
       // 将数据存储到 localStorage，供新增页面使用
       const copyData = {
         ...sourceData,
@@ -464,12 +464,12 @@
         liveStartDate: formatDate(sourceData.liveStartDate),
         repeatLiveDate: formatDate(sourceData.repeatLiveDate)
       }
-      
+
       localStorage.setItem('copyLiveBroadcastingReviewData', JSON.stringify(copyData))
-      
+
       // 跳转到新增页面
       push({ name: 'ErpLiveBroadcastingReviewAdd', query: { copy: 'true' } })
-      
+
       message.success('已复制数据，请完善信息后保存')
     } catch (error) {
       message.error('复制失败，请重试')

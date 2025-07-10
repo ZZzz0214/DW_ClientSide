@@ -185,7 +185,7 @@
       v-loading="loading"
       :data="list"
       :stripe="true"
-      :show-overflow-tooltip="true"
+      :show-overflow-tooltip="false"
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
@@ -437,10 +437,10 @@ const openFormWithCopyData = (copyData: ErpPrivateBroadcastingInfoRespVO) => {
     creator: undefined,
     updater: undefined
   }
-  
+
   // 将复制数据存储到 sessionStorage
   sessionStorage.setItem('copyPrivateBroadcastingInfoData', JSON.stringify(cleanCopyData))
-  
+
   push({ name: 'ErpPrivateBroadcastingInfoAdd', query: { copy: 'true' } })
 }
 

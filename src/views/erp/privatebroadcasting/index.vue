@@ -189,7 +189,7 @@
       v-loading="loading"
       :data="list"
       :stripe="true"
-      :show-overflow-tooltip="true"
+      :show-overflow-tooltip="false"
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
@@ -204,8 +204,8 @@
               fit="cover"
               :preview-teleported="true"
             />
-            <div 
-              v-if="getImageUrls(scope.row.productImage).length > 1" 
+            <div
+              v-if="getImageUrls(scope.row.productImage).length > 1"
               class="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-green-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-white z-10"
               style="font-size: 10px; font-weight: bold;"
             >
