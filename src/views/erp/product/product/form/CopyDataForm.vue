@@ -6,7 +6,7 @@
         复制全部数据
       </el-button>
     </div>
-    
+
     <div class="copy-data-content" ref="copyDataRef">
       <div v-if="!formData || Object.keys(formData).length === 0" class="empty-state">
         <el-empty description="暂无产品数据" />
@@ -38,7 +38,7 @@
         </div>
         <div class="data-item">
           <span class="field-name">产品品类：</span>
-          <span class="field-value">{{ formData.categoryId || '-' }}</span>
+          <span class="field-value">{{ getStatusText(formData.categoryId) || '-' }}</span>
         </div>
         <div class="data-item">
           <span class="field-name">条形编号：</span>
@@ -65,6 +65,7 @@
 import { CopyDocument } from '@element-plus/icons-vue'
 import { ElMessage } from 'element-plus'
 import { dateFormatter2 } from '@/utils/formatTime'
+import {DICT_TYPE, getIntDictOptions, getStrDictOptions} from "@/utils/dict";
 
 interface Props {
   formData: any
@@ -84,12 +85,12 @@ const formatProductionDate = (date: any) => {
 const getCartonDimensionsRaw = () => {
   const { cartonLength, cartonWidth, cartonHeight } = props.formData
   if (!cartonLength && !cartonWidth && !cartonHeight) return ''
-  
+
   const dimensions = []
   if (cartonLength) dimensions.push(cartonLength)
   if (cartonWidth) dimensions.push(cartonWidth)
   if (cartonHeight) dimensions.push(cartonHeight)
-  
+
   return dimensions.join('×')
 }
 
@@ -121,12 +122,18 @@ const copyAllData = async () => {
   }
 }
 
+const getStatusText = (status: string) => {
+  const statusOptions = getIntDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)
+  const statusOption = statusOptions.find(option => option.value === status)
+  return statusOption ? statusOption.label : status
+}
+
 // 生成复制文本
 const generateCopyText = () => {
   if (!props.formData) {
     return '暂无数据'
   }
-  
+
   const lines = [
     `产品编号：${props.formData.no || '-'}`,
     `产品名称：${props.formData.name || '-'}`,
@@ -134,7 +141,7 @@ const generateCopyText = () => {
     `发货编码：${props.formData.shippingCode || '-'}`,
     `产品规格：${props.formData.standard || '-'}`,
     `产品日期：${formatProductionDate(props.formData.productionDate) || '-'}`,
-    `产品品类：${props.formData.categoryId || '-'}`,
+    `产品品类：${getStatusText(props.formData.categoryId) || '-'}`,
     `条形编号：${props.formData.barCode || '-'}`,
     `箱规数量：${props.formData.productCartonSpec || '-'}`,
     `箱长宽高：${getCartonDimensionsRaw() || '-'}`,
@@ -215,20 +222,20 @@ const generateCopyText = () => {
   .copy-data-content {
     grid-template-columns: 1fr;
   }
-  
+
   .copy-data-header {
     flex-direction: column;
     gap: 10px;
     align-items: flex-start;
   }
-  
+
   .data-item {
     flex-direction: column;
     gap: 5px;
   }
-  
+
   .field-name {
     min-width: auto;
   }
 }
-</style> 
+</style>
