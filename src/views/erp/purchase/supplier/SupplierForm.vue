@@ -8,11 +8,11 @@
       v-loading="formLoading"
     >
       <el-row :gutter="20">
-        <el-col :span="12">
-          <el-form-item label="供应商编号" prop="no">
-            <el-input v-model="formData.no" placeholder="请输入供应商编号" />
-          </el-form-item>
-        </el-col>
+<!--        <el-col :span="12">-->
+<!--          <el-form-item label="供应商编号" prop="no">-->
+<!--            <el-input v-model="formData.no" placeholder="请输入供应商编号" />-->
+<!--          </el-form-item>-->
+<!--        </el-col>-->
         <el-col :span="12">
           <el-form-item label="供应商名称" prop="name">
             <el-input v-model="formData.name" placeholder="请输入供应商名称" />

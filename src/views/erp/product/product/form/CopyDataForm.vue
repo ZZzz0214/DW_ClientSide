@@ -46,7 +46,7 @@
         </div>
         <div class="data-item">
           <span class="field-name">箱规数量：</span>
-          <span class="field-value">{{ formData.totalQuantity || '-' }}</span>
+          <span class="field-value">{{ formData.productCartonSpec || '-' }}</span>
         </div>
         <div class="data-item">
           <span class="field-name">箱长宽高：</span>
@@ -136,7 +136,7 @@ const generateCopyText = () => {
     `产品日期：${formatProductionDate(props.formData.productionDate) || '-'}`,
     `产品品类：${props.formData.categoryId || '-'}`,
     `条形编号：${props.formData.barCode || '-'}`,
-    `箱规数量：${props.formData.totalQuantity || '-'}`,
+    `箱规数量：${props.formData.productCartonSpec || '-'}`,
     `箱长宽高：${getCartonDimensionsRaw() || '-'}`,
     `箱规重量：${props.formData.cartonWeight || '-'}`
   ]

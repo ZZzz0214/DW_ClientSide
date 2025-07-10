@@ -424,7 +424,7 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await ProductApi.getProductPage(queryParams)
-    console.log(data.total)
+    console.log(data.list)
     list.value = data.list
     total.value = data.total
   } finally {
