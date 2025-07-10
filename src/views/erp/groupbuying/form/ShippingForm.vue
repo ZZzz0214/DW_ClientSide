@@ -12,6 +12,8 @@
           v-model="formData.expressCompany"
           placeholder="请输入快递公司"
           class="w-80"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
 
@@ -21,6 +23,8 @@
           v-model="formData.shippingTime"
           placeholder="请输入发货时效"
           class="w-80"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
 
@@ -30,6 +34,8 @@
           v-model="formData.shippingArea"
           placeholder="请输入发货地区"
           class="w-80"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
     </el-form>
@@ -80,7 +86,7 @@
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      
+
       // 通过emit事件将数据传递给父组件，而不是直接修改props
       const updatedData = { ...formData }
       emit('update:formData', updatedData)

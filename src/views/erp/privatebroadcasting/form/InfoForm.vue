@@ -113,7 +113,7 @@ const rules = {
   productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
  // productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
  // marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
-  brandName: [{ required: true, message: '品牌名称不能为空', trigger: 'change' }],
+  productSku: [{ required: true, message: '产品SKU不能为空', trigger: 'change' }],
   privateStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
 }
 
