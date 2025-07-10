@@ -1,7 +1,7 @@
 <template>
   <Dialog v-model="dialogVisible" title="选择供应商" width="1200px"
           top="3vh"
-          style="max-height: 94vh;"
+          style="max-height: 94vh; z-index: 9999;"
           :destroy-on-close="true"
           class="supplier-dialog">
     <div class="dialog-content">
@@ -20,7 +20,7 @@
                   placeholder="请输入供应商编号"
                   clearable
                   prefix-icon="ep:key"
-                  @keyup.enter="handleQuery"
+                  @keyup.enter="handleSearch"
                   class="search-input"
                 />
               </el-form-item>
@@ -32,7 +32,7 @@
                   placeholder="请输入供应商名称"
                   clearable
                   prefix-icon="ep:office-building"
-                  @keyup.enter="handleQuery"
+                  @keyup.enter="handleSearch"
                   class="search-input"
                 />
               </el-form-item>
@@ -40,11 +40,11 @@
             <el-col :span="6">
               <el-form-item label="联系方式">
                 <el-input
-                  v-model="searchForm.mobile"
+                  v-model="searchForm.telephone"
                   placeholder="请输入联系方式"
                   clearable
                   prefix-icon="ep:phone"
-                  @keyup.enter="handleQuery"
+                  @keyup.enter="handleSearch"
                   class="search-input"
                 />
               </el-form-item>
@@ -52,11 +52,11 @@
             <el-col :span="6">
               <el-form-item label="联系人">
                 <el-input
-                  v-model="searchForm.contact"
+                  v-model="searchForm.receiverName"
                   placeholder="请输入联系人"
                   clearable
                   prefix-icon="ep:user"
-                  @keyup.enter="handleQuery"
+                  @keyup.enter="handleSearch"
                   class="search-input"
                 />
               </el-form-item>
@@ -64,29 +64,20 @@
           </el-row>
           <el-row :gutter="24">
             <el-col :span="6">
-              <el-form-item label="状态">
-                <el-select
-                  v-model="searchForm.status"
-                  placeholder="请选择状态"
+              <el-form-item label="地址">
+                <el-input
+                  v-model="searchForm.address"
+                  placeholder="请输入地址"
                   clearable
-                  class="w-full search-select"
-                >
-                  <el-option label="合作中" :value="1">
-                    <span class="option-item">
-                      <el-tag type="success" size="small">合作中</el-tag>
-                    </span>
-                  </el-option>
-                  <el-option label="已停用" :value="0">
-                    <span class="option-item">
-                      <el-tag type="danger" size="small">已停用</el-tag>
-                    </span>
-                  </el-option>
-                </el-select>
+                  prefix-icon="ep:location"
+                  @keyup.enter="handleSearch"
+                  class="search-input"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="18">
               <el-form-item class="search-buttons">
-                <el-button type="primary" @click="handleQuery" :loading="loading" class="search-btn">
+                <el-button type="primary" @click="handleSearch" :loading="loading" class="search-btn">
                   <Icon icon="ep:search" class="mr-1" />
                   查询
                 </el-button>
@@ -94,7 +85,7 @@
                   <Icon icon="ep:refresh" class="mr-1" />
                   重置
                 </el-button>
-                <el-button type="info" plain @click="handleQuery" class="refresh-btn">
+                <el-button type="info" plain @click="handleSearch" class="refresh-btn">
                   <Icon icon="ep:refresh-right" class="mr-1" />
                   刷新数据
                 </el-button>
@@ -111,7 +102,7 @@
           <span class="header-title">供应商列表</span>
           <div class="table-info">
             <el-tag v-if="!loading" type="info" size="small">
-              共 {{ total }} 条记录
+              共 {{ pagination.total }} 条记录
             </el-tag>
           </div>
         </div>
@@ -127,8 +118,7 @@
           @row-click="handleRowClick"
         >
           <el-table-column type="selection" width="50" align="center" fixed="left" />
-          <!-- 完美解决方案：自适应宽度 + Tooltip + 复制功能 -->
-          <el-table-column label="供应商编号" prop="no" min-width="280" align="center" fixed="left">
+          <el-table-column label="供应商编号" prop="no" min-width="120" align="center" fixed="left">
             <template #default="scope">
               <div class="no-container">
                 <el-tooltip
@@ -145,16 +135,6 @@
                     {{ scope.row.no }}
                   </el-tag>
                 </el-tooltip>
-                <el-button
-                  v-if="isNoOverflow(scope.row.no)"
-                  type="text"
-                  size="small"
-                  class="copy-btn"
-                  @click="copyToClipboard(scope.row.no)"
-                  title="复制完整编号"
-                >
-                  <Icon icon="ep:copy-document" />
-                </el-button>
               </div>
             </template>
           </el-table-column>
@@ -171,21 +151,21 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="联系方式" prop="mobile" min-width="140">
+          <el-table-column label="联系方式" prop="telephone" min-width="140">
             <template #default="scope">
               <div class="contact-cell">
                 <Icon icon="ep:phone" class="contact-icon" />
-                <span>{{ scope.row.mobile }}</span>
+                <span>{{ scope.row.telephone }}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="联系人" prop="contact" min-width="120">
+          <el-table-column label="联系人" prop="receiverName" min-width="120">
             <template #default="scope">
               <div class="person-cell">
                 <el-avatar :size="24" class="person-avatar">
                   <Icon icon="ep:user" />
                 </el-avatar>
-                <span class="person-name">{{ scope.row.contact }}</span>
+                <span class="person-name">{{ scope.row.receiverName }}</span>
               </div>
             </template>
           </el-table-column>
@@ -197,38 +177,19 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="状态" prop="status" width="120" align="center">
-            <template #default="scope">
-              <el-tag
-                :type="scope.row.status === 1 ? 'success' : 'danger'"
-                size="small"
-                :effect="scope.row.status === 1 ? 'light' : 'dark'"
-                class="status-tag"
-              >
-                <Icon :icon="scope.row.status === 1 ? 'ep:check' : 'ep:close'" class="mr-1" />
-                {{ scope.row.status === 1 ? '合作中' : '已停用' }}
-              </el-tag>
-            </template>
-          </el-table-column>
-          <el-table-column label="创建时间" prop="createTime" width="180" align="center">
-            <template #default="scope">
-              <div class="time-cell">
-                <Icon icon="ep:calendar" class="time-icon" />
-                <span>{{ formatDate(scope.row.createTime) }}</span>
-              </div>
-            </template>
-          </el-table-column>
         </el-table>
-
+        
         <!-- 分页组件 -->
-        <div class="pagination-section">
-          <Pagination
-            :total="total"
-            v-model:page="queryParams.pageNo"
-            v-model:limit="queryParams.pageSize"
-            @pagination="handleSearch"
+        <div class="pagination-container">
+          <el-pagination
+            v-model:current-page="pagination.pageNo"
+            v-model:page-size="pagination.pageSize"
             :page-sizes="[10, 20, 50, 100]"
+            :total="pagination.total"
             layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            class="pagination"
           />
         </div>
       </div>
@@ -246,13 +207,7 @@
             <Icon icon="ep:close" class="mr-1" />
             取消
           </el-button>
-          <el-button
-            type="primary"
-            @click="confirmSelection"
-            :disabled="!selectedSupplier"
-            size="large"
-            class="confirm-btn"
-          >
+          <el-button @click="confirmSelection" type="primary" size="large" class="confirm-btn" :disabled="!selectedSupplier">
             <Icon icon="ep:check" class="mr-1" />
             确定选择
           </el-button>
@@ -263,9 +218,9 @@
 </template>
 
 <script setup lang="ts">
-import { ref, reactive, watch, computed } from 'vue';
+import { ref, reactive, watch, defineProps, defineEmits, computed } from 'vue';
 import { ElMessage } from 'element-plus';
-import { SupplierApi } from '@/api/erp/purchase/supplier'; // 引入真实API
+import { SupplierApi } from '@/api/erp/purchase/supplier';
 import { formatDate } from '@/utils/formatTime';
 
 const props = defineProps({
@@ -275,9 +230,6 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits(['supplier-selected', 'update:visible']);
-
-// 响应式数据
 const dialogVisible = computed({
   get() {
     return props.visible;
@@ -287,117 +239,113 @@ const dialogVisible = computed({
   }
 });
 
-const loading = ref(false);
-const tableRef = ref();
-const searchForm = reactive({
-  no: '',
-  name: '',
-  mobile: '',
-  contact: '',
-  status: undefined,
-});
-
-const queryParams = reactive({
-  pageNo: 1,
-  pageSize: 10,
-});
-
-const supplierList = ref<any[]>([]);
-const selectedSupplier = ref<any>(null);
-const total = ref(0);
-
-// 监听弹窗显示状态
 watch(() => props.visible, (newValue) => {
+  dialogVisible.value = newValue;
   if (newValue) {
-    resetSearch();
     handleSearch();
   }
 });
 
-// 搜索功能
+const searchForm = reactive({
+  no: '',
+  name: '',
+  telephone: '',
+  receiverName: '',
+  address: ''
+});
+
+const supplierList = ref<any[]>([]);
+const selectedSupplier = ref<any>(null);
+const loading = ref(false);
+const tableRef = ref();
+
+// 分页配置
+const pagination = reactive({
+  pageNo: 1,
+  pageSize: 20,
+  total: 0
+});
+
 const handleSearch = async () => {
   loading.value = true;
   try {
     const params = {
-      ...searchForm,
-      ...queryParams,
+      pageNo: pagination.pageNo,
+      pageSize: pagination.pageSize,
+      no: searchForm.no,
+      name: searchForm.name,
+      telephone: searchForm.telephone,
+      receiverName: searchForm.receiverName,
+      address: searchForm.address
     };
-    const response = await SupplierApi.searchSupplier(params);
-    supplierList.value = response || [];
-    total.value = supplierList.value.length;
-
+    const response = await SupplierApi.getSupplierPage(params);
+    if (response && response.list) {
+      supplierList.value = response.list;
+      pagination.total = response.total;
+    } else {
+      supplierList.value = [];
+      pagination.total = 0;
+    }
   } catch (error) {
-    ElMessage.error('查询失败，请重试');
+    ElMessage.error('查询失败');
     supplierList.value = [];
-    total.value = 0;
+    pagination.total = 0;
   } finally {
     loading.value = false;
   }
 };
 
-// 查询按钮点击
-const handleQuery = () => {
-  queryParams.pageNo = 1;
-  handleSearch();
-};
-
-// 重置搜索
 const resetSearch = () => {
   searchForm.no = '';
   searchForm.name = '';
-  searchForm.mobile = '';
-  searchForm.contact = '';
-  searchForm.status = undefined;
-  queryParams.pageNo = 1;
-  selectedSupplier.value = null;
-  if (tableRef.value) {
-    tableRef.value.clearSelection();
+  searchForm.telephone = '';
+  searchForm.receiverName = '';
+  searchForm.address = '';
+  pagination.pageNo = 1;
+  handleSearch();
+};
+
+const handleSizeChange = (size: number) => {
+  pagination.pageSize = size;
+  pagination.pageNo = 1;
+  handleSearch();
+};
+
+const handleCurrentChange = (page: number) => {
+  pagination.pageNo = page;
+  handleSearch();
+};
+
+const handleSelectionChange = (selection: any[]) => {
+  if (selection.length > 0) {
+    selectedSupplier.value = selection[0];
+  } else {
+    selectedSupplier.value = null;
   }
 };
 
-// 判断编号是否超出显示范围
-const isNoOverflow = (no: string) => {
-  if (!no) return false;
-  // 根据编号长度判断是否需要显示Tooltip
-  return no.length > 20; // 超过20个字符显示Tooltip
+const handleRowClick = (row: any) => {
+  // 点击行时选中该行
+  tableRef.value?.clearSelection();
+  tableRef.value?.toggleRowSelection(row, true);
 };
 
-// 复制到剪贴板
+const tableRowClassName = ({ row, rowIndex }: { row: any; rowIndex: number }) => {
+  if (selectedSupplier.value && row.id === selectedSupplier.value.id) {
+    return 'selected-row';
+  }
+  return '';
+};
+
 const copyToClipboard = async (text: string) => {
   try {
     await navigator.clipboard.writeText(text);
-    ElMessage.success(`编号已复制：${text}`);
+    ElMessage.success('已复制到剪贴板');
   } catch (err) {
-    // 降级方案
-    const textArea = document.createElement('textarea');
-    textArea.value = text;
-    document.body.appendChild(textArea);
-    textArea.select();
-    document.execCommand('copy');
-    document.body.removeChild(textArea);
-    ElMessage.success(`编号已复制：${text}`);
+    ElMessage.error('复制失败');
   }
 };
 
-// 选择变化处理
-const handleSelectionChange = (selection: any[]) => {
-  selectedSupplier.value = selection.length > 0 ? selection[0] : null;
-};
-
-// 行点击处理
-const handleRowClick = (row: any) => {
-  tableRef.value?.toggleRowSelection(row);
-};
-
-// 表格行样式
-const tableRowClassName = ({ row, rowIndex }: { row: any; rowIndex: number }) => {
-  if (selectedSupplier.value && selectedSupplier.value.no === row.no) {
-    return 'selected-row';
-  }
-  return rowIndex % 2 === 1 ? 'stripe-row' : '';
-};
-
-// 确认选择
 const confirmSelection = () => {
   if (!selectedSupplier.value) {
     ElMessage.warning('请选择一个供应商');
@@ -405,10 +353,10 @@ const confirmSelection = () => {
   }
   emit('supplier-selected', selectedSupplier.value);
   dialogVisible.value = false;
-  ElMessage.success(`已选择供应商：${selectedSupplier.value.name}`);
 };
 
-// 暴露方法
+const emit = defineEmits(['supplier-selected', 'update:visible']);
+
 defineExpose({
   open: () => {
     dialogVisible.value = true;
@@ -417,351 +365,276 @@ defineExpose({
 </script>
 
 <style scoped>
-.supplier-dialog :deep(.el-dialog) {
-  border-radius: 12px;
-  box-shadow: 0 12px 32px rgba(0, 0, 0, 0.15);
+.supplier-dialog {
+  z-index: 9999 !important;
 }
 
-.supplier-dialog :deep(.el-dialog__header) {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  color: white;
-  padding: 20px 24px;
-  border-radius: 12px 12px 0 0;
-}
-
-.supplier-dialog :deep(.el-dialog__title) {
-  font-size: 18px;
-  font-weight: 600;
-}
-
-.dialog-content {
-  padding: 0;
-  max-height: calc(94vh - 200px);
+.supplier-dialog .dialog-content {
+  max-height: 70vh;
   overflow-y: auto;
 }
 
-.search-section {
-  background: #f8fafc;
+.supplier-dialog .search-section {
+  background: #f8f9fa;
   border-radius: 8px;
-  margin: 20px;
   padding: 20px;
-  border: 1px solid #e2e8f0;
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
 }
 
-.section-header {
+.supplier-dialog .search-section .section-header {
   display: flex;
   align-items: center;
-  margin-bottom: 16px;
-  font-weight: 600;
-  color: #374151;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dee2e6;
 }
 
-.header-icon {
-  font-size: 18px;
-  color: #f5576c;
+.supplier-dialog .search-section .section-header .header-icon {
+  color: #007bff;
   margin-right: 8px;
+  font-size: 18px;
 }
 
-.header-title {
+.supplier-dialog .search-section .section-header .header-title {
   font-size: 16px;
+  font-weight: 600;
+  color: #495057;
 }
 
-.table-info {
-  margin-left: auto;
+.supplier-dialog .search-section .search-form .search-input {
+  width: 100%;
 }
 
-.search-form {
-  margin-top: 16px;
+.supplier-dialog .search-section .search-form .search-select {
+  width: 100%;
 }
 
-.search-input :deep(.el-input__wrapper) {
-  border-radius: 8px;
-  transition: all 0.3s ease;
+.supplier-dialog .search-section .search-form .search-buttons {
+  margin-bottom: 0;
+  text-align: right;
 }
 
-.search-input :deep(.el-input__wrapper:hover) {
-  box-shadow: 0 0 0 1px #f5576c;
+.supplier-dialog .search-section .search-form .search-buttons .search-btn {
+  margin-right: 10px;
 }
 
-.search-select :deep(.el-select__wrapper) {
-  border-radius: 8px;
+.supplier-dialog .search-section .search-form .search-buttons .reset-btn {
+  margin-right: 10px;
 }
 
-.option-item {
+.supplier-dialog .table-section .section-header {
   display: flex;
   align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dee2e6;
 }
 
-.search-buttons {
-  display: flex;
-  justify-content: flex-end;
-  align-items: center;
+.supplier-dialog .table-section .section-header .header-icon {
+  color: #28a745;
+  margin-right: 8px;
+  font-size: 18px;
 }
 
-.search-btn {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  border: none;
-  border-radius: 8px;
-  padding: 10px 20px;
-  font-weight: 500;
-}
-
-.reset-btn, .refresh-btn {
-  border-radius: 8px;
-  padding: 10px 16px;
-  margin-left: 12px;
-}
-
-.table-section {
-  margin: 20px;
-}
-
-.data-table {
-  border-radius: 8px;
-  overflow: hidden;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
-  margin-top: 16px;
-}
-
-.data-table :deep(.el-table__header) {
-  background: #f1f5f9;
-}
-
-.data-table :deep(.el-table__header th) {
-  background: #f1f5f9;
-  color: #374151;
+.supplier-dialog .table-section .section-header .header-title {
+  font-size: 16px;
   font-weight: 600;
-  border-bottom: 2px solid #e2e8f0;
+  color: #495057;
 }
 
-.data-table :deep(.selected-row) {
-  background-color: #fef7f7 !important;
-}
-
-.data-table :deep(.selected-row:hover) {
-  background-color: #fecaca !important;
-}
-
-.data-table :deep(.el-table__row:hover) {
-  background-color: #f8fafc;
-  cursor: pointer;
-}
-
-.no-tag {
-  font-family: 'Courier New', monospace;
-  font-weight: 600;
-}
-
-.no-tag-auto {
-  font-family: 'Courier New', monospace;
-  font-weight: 600;
-  letter-spacing: 0.5px;
-  border-radius: 6px;
-  padding: 4px 8px;
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  border: none;
-  color: white;
+.supplier-dialog .table-section .section-header .table-info .el-tag {
   font-size: 12px;
-  white-space: nowrap;
+}
+
+.supplier-dialog .table-section .data-table {
+  border-radius: 8px;
   overflow: hidden;
-  text-overflow: ellipsis;
-  max-width: 100%;
-  min-width: 140px;
-  display: inline-block;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.supplier-dialog .table-section .data-table .no-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.supplier-dialog .table-section .data-table .no-container .no-tag-enhanced {
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
-  .no-tag-auto:hover {
-    transform: scale(1.05);
-    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
-  }
+.supplier-dialog .table-section .data-table .no-container .no-tag-enhanced:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
 
-  .no-container {
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    gap: 6px;
-    width: 100%;
-  }
-
-  .no-tag-enhanced {
-    font-family: 'Courier New', monospace;
-    font-weight: 600;
-    letter-spacing: 0.5px;
-    border-radius: 6px;
-    padding: 4px 8px;
-    background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-    border: none;
-    color: white;
-    font-size: 12px;
-    white-space: nowrap;
-    overflow: hidden;
-    text-overflow: ellipsis;
-    max-width: calc(100% - 30px);
-    min-width: 140px;
-    display: inline-block;
-    cursor: pointer;
-    transition: all 0.3s ease;
-    flex: 1;
-  }
-
-  .no-tag-enhanced:hover {
-    transform: scale(1.02);
-    box-shadow: 0 4px 12px rgba(245, 87, 108, 0.4);
-    background: linear-gradient(135deg, #ec4899 0%, #ef4444 100%);
-  }
-
-  .copy-btn {
-    padding: 2px 4px !important;
-    margin-left: 4px;
-    color: #f5576c;
-    transition: all 0.3s ease;
-    border-radius: 4px;
-    min-width: 20px;
-  }
-
-  .copy-btn:hover {
-    color: #ef4444;
-    background-color: #fef7f7;
-    transform: scale(1.1);
-  }
-
-.company-cell {
+.supplier-dialog .table-section .data-table .company-cell {
   display: flex;
   align-items: center;
   gap: 12px;
 }
 
-.company-avatar {
-  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+.supplier-dialog .table-section .data-table .company-cell .company-avatar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
 }
 
-.company-info {
-  display: flex;
-  flex-direction: column;
-}
-
-.company-name {
+.supplier-dialog .table-section .data-table .company-cell .company-info .company-name {
   font-weight: 600;
-  color: #374151;
-  font-size: 14px;
+  color: #2c3e50;
+  margin-bottom: 4px;
 }
 
-.company-type {
+.supplier-dialog .table-section .data-table .company-cell .company-info .company-type {
   font-size: 12px;
-  color: #9ca3af;
+  color: #6c757d;
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
 }
 
-.contact-cell {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.contact-icon {
-  color: #10b981;
-  font-size: 14px;
-}
-
-.person-cell {
+.supplier-dialog .table-section .data-table .contact-cell {
   display: flex;
   align-items: center;
   gap: 8px;
 }
 
-.person-avatar {
-  background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+.supplier-dialog .table-section .data-table .contact-cell .contact-icon {
+  color: #28a745;
+  font-size: 16px;
 }
 
-.person-name {
-  font-weight: 500;
-  color: #374151;
-}
-
-.address-cell {
+.supplier-dialog .table-section .data-table .person-cell {
   display: flex;
-  align-items: flex-start;
-  gap: 6px;
+  align-items: center;
+  gap: 8px;
 }
 
-.address-icon {
-  color: #f59e0b;
-  font-size: 14px;
-  margin-top: 2px;
-  flex-shrink: 0;
+.supplier-dialog .table-section .data-table .person-cell .person-avatar {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
 }
 
-.address-text {
-  font-size: 13px;
-  color: #6b7280;
+.supplier-dialog .table-section .data-table .person-cell .person-name {
+  font-weight: 500;
+  color: #495057;
+}
+
+.supplier-dialog .table-section .data-table .address-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.supplier-dialog .table-section .data-table .address-cell .address-icon {
+  color: #ffc107;
+  font-size: 16px;
+}
+
+.supplier-dialog .table-section .data-table .address-cell .address-text {
+  color: #6c757d;
   line-height: 1.4;
 }
 
-.status-tag {
-  font-weight: 500;
+.supplier-dialog .table-section .data-table .selected-row {
+  background-color: #e3f2fd !important;
 }
 
-.time-cell {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-  font-size: 13px;
-  color: #6b7280;
-}
-
-.time-icon {
-  color: #8b5cf6;
-  font-size: 14px;
-}
-
-.pagination-section {
-  margin-top: 20px;
+.supplier-dialog .table-section .pagination-container {
   display: flex;
   justify-content: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
 }
 
-.dialog-footer {
+.supplier-dialog .table-section .pagination-container .pagination .el-pagination__total {
+  margin-right: 16px;
+}
+
+.supplier-dialog .table-section .pagination-container .pagination .el-pagination__sizes {
+  margin-right: 16px;
+}
+
+.supplier-dialog .dialog-footer {
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 24px;
-  background: #f8fafc;
-  border-top: 1px solid #e2e8f0;
+  padding: 20px 0;
+  border-top: 1px solid #e9ecef;
 }
 
-.selected-info {
+.supplier-dialog .dialog-footer .selected-info {
   display: flex;
   align-items: center;
-  color: #059669;
+  gap: 8px;
+  color: #28a745;
   font-weight: 500;
 }
 
-.selected-icon {
-  margin-right: 6px;
-  color: #10b981;
+.supplier-dialog .dialog-footer .selected-info .selected-icon {
+  font-size: 16px;
 }
 
-.footer-buttons {
+.supplier-dialog .dialog-footer .footer-buttons {
   display: flex;
   gap: 12px;
 }
 
-.cancel-btn {
-  border-radius: 8px;
-  padding: 10px 20px;
+.supplier-dialog .dialog-footer .footer-buttons .cancel-btn {
+  border-color: #6c757d;
+  color: #6c757d;
 }
 
-.confirm-btn {
-  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+.supplier-dialog .dialog-footer .footer-buttons .cancel-btn:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.supplier-dialog .dialog-footer .footer-buttons .confirm-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   border: none;
-  border-radius: 8px;
-  padding: 10px 24px;
-  font-weight: 500;
 }
 
-.confirm-btn:disabled {
-  background: #d1d5db;
-  color: #9ca3af;
+.supplier-dialog .dialog-footer .footer-buttons .confirm-btn:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.supplier-dialog .dialog-footer .footer-buttons .confirm-btn:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .supplier-dialog {
+    width: 95vw !important;
+    max-width: 1200px;
+  }
+}
+
+@media (max-width: 768px) {
+  .supplier-dialog .search-section .search-form .el-row .el-col {
+    margin-bottom: 16px;
+  }
+
+  .supplier-dialog .dialog-footer {
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .supplier-dialog .dialog-footer .selected-info {
+    justify-content: center;
+  }
+
+  .supplier-dialog .dialog-footer .footer-buttons {
+    width: 100%;
+    justify-content: center;
+  }
 }
 </style>

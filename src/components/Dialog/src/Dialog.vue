@@ -68,6 +68,7 @@ const dialogStyle = computed(() => {
     draggable
     class="com-dialog"
     :show-close="false"
+    :append-to-body="true"
   >
     <template #header="{ close }">
       <div class="relative h-54px flex items-center justify-between pl-15px pr-15px">

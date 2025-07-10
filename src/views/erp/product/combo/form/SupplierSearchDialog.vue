@@ -1,7 +1,7 @@
 <template>
   <Dialog v-model="dialogVisible" title="选择供应商" width="1200px"
           top="3vh"
-          style="max-height: 94vh;"
+          style="max-height: 94vh; z-index: 9999;"
           :destroy-on-close="true"
           class="supplier-dialog">
     <div class="dialog-content">
@@ -16,7 +16,7 @@
             <el-col :span="6">
               <el-form-item label="供应商编号">
                 <el-input
-                  v-model="searchForm.id"
+                  v-model="searchForm.no"
                   placeholder="请输入供应商编号"
                   clearable
                   prefix-icon="ep:key"
@@ -40,7 +40,7 @@
             <el-col :span="6">
               <el-form-item label="联系方式">
                 <el-input
-                  v-model="searchForm.mobile"
+                  v-model="searchForm.telephone"
                   placeholder="请输入联系方式"
                   clearable
                   prefix-icon="ep:phone"
@@ -52,7 +52,7 @@
             <el-col :span="6">
               <el-form-item label="联系人">
                 <el-input
-                  v-model="searchForm.contact"
+                  v-model="searchForm.receiverName"
                   placeholder="请输入联系人"
                   clearable
                   prefix-icon="ep:user"
@@ -64,24 +64,15 @@
           </el-row>
           <el-row :gutter="24">
             <el-col :span="6">
-              <el-form-item label="状态">
-                <el-select
-                  v-model="searchForm.status"
-                  placeholder="请选择状态"
+              <el-form-item label="地址">
+                <el-input
+                  v-model="searchForm.address"
+                  placeholder="请输入地址"
                   clearable
-                  class="w-full search-select"
-                >
-                  <el-option label="合作中" :value="1">
-                    <span class="option-item">
-                      <el-tag type="success" size="small">合作中</el-tag>
-                    </span>
-                  </el-option>
-                  <el-option label="已停用" :value="0">
-                    <span class="option-item">
-                      <el-tag type="danger" size="small">已停用</el-tag>
-                    </span>
-                  </el-option>
-                </el-select>
+                  prefix-icon="ep:location"
+                  @keyup.enter="handleSearch"
+                  class="search-input"
+                />
               </el-form-item>
             </el-col>
             <el-col :span="18">
@@ -111,7 +102,7 @@
           <span class="header-title">供应商列表</span>
           <div class="table-info">
             <el-tag v-if="!loading" type="info" size="small">
-              共 {{ supplierList.length }} 条记录
+              共 {{ pagination.total }} 条记录
             </el-tag>
           </div>
         </div>
@@ -127,11 +118,11 @@
           @row-click="handleRowClick"
         >
           <el-table-column type="selection" width="50" align="center" fixed="left" />
-          <el-table-column label="供应商编号" prop="id" min-width="120" align="center" fixed="left">
+          <el-table-column label="供应商编号" prop="no" min-width="120" align="center" fixed="left">
             <template #default="scope">
               <div class="no-container">
                 <el-tooltip
-                  :content="`完整编号：${scope.row.id}，点击复制`"
+                  :content="`完整编号：${scope.row.no}，点击复制`"
                   placement="top"
                   effect="dark"
                 >
@@ -139,9 +130,9 @@
                     type="primary"
                     size="small"
                     class="no-tag-enhanced"
-                    @click="copyToClipboard(scope.row.id)"
+                    @click="copyToClipboard(scope.row.no)"
                   >
-                    {{ scope.row.id }}
+                    {{ scope.row.no }}
                   </el-tag>
                 </el-tooltip>
               </div>
@@ -160,21 +151,21 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="联系方式" prop="mobile" min-width="140">
+          <el-table-column label="联系方式" prop="telephone" min-width="140">
             <template #default="scope">
               <div class="contact-cell">
                 <Icon icon="ep:phone" class="contact-icon" />
-                <span>{{ scope.row.mobile }}</span>
+                <span>{{ scope.row.telephone }}</span>
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="联系人" prop="contact" min-width="120">
+          <el-table-column label="联系人" prop="receiverName" min-width="120">
             <template #default="scope">
               <div class="person-cell">
                 <el-avatar :size="24" class="person-avatar">
                   <Icon icon="ep:user" />
                 </el-avatar>
-                <span class="person-name">{{ scope.row.contact }}</span>
+                <span class="person-name">{{ scope.row.receiverName }}</span>
               </div>
             </template>
           </el-table-column>
@@ -186,17 +177,21 @@
               </div>
             </template>
           </el-table-column>
-          <el-table-column label="状态" prop="status" width="120" align="center">
-            <template #default="scope">
-              <el-tag
-                :type="scope.row.status === 1 ? 'success' : 'danger'"
-                size="small"
-              >
-                {{ scope.row.status === 1 ? '合作中' : '已停用' }}
-              </el-tag>
-            </template>
-          </el-table-column>
         </el-table>
+        
+        <!-- 分页组件 -->
+        <div class="pagination-container">
+          <el-pagination
+            v-model:current-page="pagination.pageNo"
+            v-model:page-size="pagination.pageSize"
+            :page-sizes="[10, 20, 50, 100]"
+            :total="pagination.total"
+            layout="total, sizes, prev, pager, next, jumper"
+            @size-change="handleSizeChange"
+            @current-change="handleCurrentChange"
+            class="pagination"
+          />
+        </div>
       </div>
     </div>
 
@@ -252,11 +247,11 @@ watch(() => props.visible, (newValue) => {
 });
 
 const searchForm = reactive({
-  id: '',
+  no: '',
   name: '',
-  mobile: '',
-  contact: '',
-  status: undefined
+  telephone: '',
+  receiverName: '',
+  address: ''
 });
 
 const supplierList = ref<any[]>([]);
@@ -264,36 +259,60 @@ const selectedSupplier = ref<any>(null);
 const loading = ref(false);
 const tableRef = ref();
 
+// 分页配置
+const pagination = reactive({
+  pageNo: 1,
+  pageSize: 20,
+  total: 0
+});
+
 const handleSearch = async () => {
   loading.value = true;
   try {
     const params = {
-      id: searchForm.id,
+      pageNo: pagination.pageNo,
+      pageSize: pagination.pageSize,
+      no: searchForm.no,
       name: searchForm.name,
-      mobile: searchForm.mobile,
-      contact: searchForm.contact,
-      status: searchForm.status
+      telephone: searchForm.telephone,
+      receiverName: searchForm.receiverName,
+      address: searchForm.address
     };
-    const response = await SupplierApi.searchSupplier(params);
-    if (Array.isArray(response)) {
-      supplierList.value = response;
+    const response = await SupplierApi.getSupplierPage(params);
+    if (response && response.list) {
+      supplierList.value = response.list;
+      pagination.total = response.total;
     } else {
       supplierList.value = [];
+      pagination.total = 0;
     }
   } catch (error) {
     ElMessage.error('查询失败');
     supplierList.value = [];
+    pagination.total = 0;
   } finally {
     loading.value = false;
   }
 };
 
 const resetSearch = () => {
-  searchForm.id = '';
+  searchForm.no = '';
   searchForm.name = '';
-  searchForm.mobile = '';
-  searchForm.contact = '';
-  searchForm.status = undefined;
+  searchForm.telephone = '';
+  searchForm.receiverName = '';
+  searchForm.address = '';
+  pagination.pageNo = 1;
+  handleSearch();
+};
+
+const handleSizeChange = (size: number) => {
+  pagination.pageSize = size;
+  pagination.pageNo = 1;
+  handleSearch();
+};
+
+const handleCurrentChange = (page: number) => {
+  pagination.pageNo = page;
   handleSearch();
 };
 
@@ -347,267 +366,275 @@ defineExpose({
 
 <style scoped>
 .supplier-dialog {
-  .dialog-content {
-    max-height: 70vh;
-    overflow-y: auto;
-  }
+  z-index: 9999 !important;
+}
 
-  .search-section {
-    background: #f8f9fa;
-    border-radius: 8px;
-    padding: 20px;
-    margin-bottom: 20px;
-    border: 1px solid #e9ecef;
+.supplier-dialog .dialog-content {
+  max-height: 70vh;
+  overflow-y: auto;
+}
 
-    .section-header {
-      display: flex;
-      align-items: center;
-      margin-bottom: 20px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #dee2e6;
+.supplier-dialog .search-section {
+  background: #f8f9fa;
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #e9ecef;
+}
 
-      .header-icon {
-        color: #007bff;
-        margin-right: 8px;
-        font-size: 18px;
-      }
+.supplier-dialog .search-section .section-header {
+  display: flex;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dee2e6;
+}
 
-      .header-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #495057;
-      }
-    }
+.supplier-dialog .search-section .section-header .header-icon {
+  color: #007bff;
+  margin-right: 8px;
+  font-size: 18px;
+}
 
-    .search-form {
-      .search-input {
-        width: 100%;
-      }
+.supplier-dialog .search-section .section-header .header-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #495057;
+}
 
-      .search-select {
-        width: 100%;
-      }
+.supplier-dialog .search-section .search-form .search-input {
+  width: 100%;
+}
 
-      .search-buttons {
-        margin-bottom: 0;
-        text-align: right;
+.supplier-dialog .search-section .search-form .search-select {
+  width: 100%;
+}
 
-        .search-btn {
-          margin-right: 10px;
-        }
+.supplier-dialog .search-section .search-form .search-buttons {
+  margin-bottom: 0;
+  text-align: right;
+}
 
-        .reset-btn {
-          margin-right: 10px;
-        }
-      }
-    }
-  }
+.supplier-dialog .search-section .search-form .search-buttons .search-btn {
+  margin-right: 10px;
+}
 
-  .table-section {
-    .section-header {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      margin-bottom: 15px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid #dee2e6;
+.supplier-dialog .search-section .search-form .search-buttons .reset-btn {
+  margin-right: 10px;
+}
 
-      .header-icon {
-        color: #28a745;
-        margin-right: 8px;
-        font-size: 18px;
-      }
+.supplier-dialog .table-section .section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+  padding-bottom: 10px;
+  border-bottom: 1px solid #dee2e6;
+}
 
-      .header-title {
-        font-size: 16px;
-        font-weight: 600;
-        color: #495057;
-      }
+.supplier-dialog .table-section .section-header .header-icon {
+  color: #28a745;
+  margin-right: 8px;
+  font-size: 18px;
+}
 
-      .table-info {
-        .el-tag {
-          font-size: 12px;
-        }
-      }
-    }
+.supplier-dialog .table-section .section-header .header-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: #495057;
+}
 
-    .data-table {
-      border-radius: 8px;
-      overflow: hidden;
-      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+.supplier-dialog .table-section .section-header .table-info .el-tag {
+  font-size: 12px;
+}
 
-      .no-container {
-        display: flex;
-        align-items: center;
-        justify-content: center;
+.supplier-dialog .table-section .data-table {
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
 
-        .no-tag-enhanced {
-          cursor: pointer;
-          transition: all 0.3s ease;
+.supplier-dialog .table-section .data-table .no-container {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
 
-          &:hover {
-            transform: scale(1.05);
-            box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
-          }
-        }
-      }
+.supplier-dialog .table-section .data-table .no-container .no-tag-enhanced {
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
 
-      .company-cell {
-        display: flex;
-        align-items: center;
-        gap: 12px;
+.supplier-dialog .table-section .data-table .no-container .no-tag-enhanced:hover {
+  transform: scale(1.05);
+  box-shadow: 0 2px 8px rgba(0, 123, 255, 0.3);
+}
 
-        .company-avatar {
-          background: linear-gradient(135deg, #ff6b6b 0%, #ee5a24 100%);
-        }
+.supplier-dialog .table-section .data-table .company-cell {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
 
-        .company-info {
-          .company-name {
-            font-weight: 600;
-            color: #2c3e50;
-            margin-bottom: 2px;
-          }
+.supplier-dialog .table-section .data-table .company-cell .company-avatar {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+}
 
-          .company-type {
-            font-size: 12px;
-            color: #7f8c8d;
-            background: #ecf0f1;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-          }
-        }
-      }
+.supplier-dialog .table-section .data-table .company-cell .company-info .company-name {
+  font-weight: 600;
+  color: #2c3e50;
+  margin-bottom: 4px;
+}
 
-      .contact-cell {
-        display: flex;
-        align-items: center;
-        gap: 6px;
+.supplier-dialog .table-section .data-table .company-cell .company-info .company-type {
+  font-size: 12px;
+  color: #6c757d;
+  background: #e9ecef;
+  padding: 2px 6px;
+  border-radius: 4px;
+  display: inline-block;
+}
 
-        .contact-icon {
-          color: #28a745;
-          font-size: 14px;
-        }
-      }
+.supplier-dialog .table-section .data-table .contact-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-      .person-cell {
-        display: flex;
-        align-items: center;
-        gap: 8px;
+.supplier-dialog .table-section .data-table .contact-cell .contact-icon {
+  color: #28a745;
+  font-size: 16px;
+}
 
-        .person-avatar {
-          background: linear-gradient(135deg, #74b9ff 0%, #0984e3 100%);
-        }
+.supplier-dialog .table-section .data-table .person-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-        .person-name {
-          font-weight: 500;
-          color: #2c3e50;
-        }
-      }
+.supplier-dialog .table-section .data-table .person-cell .person-avatar {
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: white;
+}
 
-      .address-cell {
-        display: flex;
-        align-items: flex-start;
-        gap: 6px;
+.supplier-dialog .table-section .data-table .person-cell .person-name {
+  font-weight: 500;
+  color: #495057;
+}
 
-        .address-icon {
-          color: #ffc107;
-          font-size: 14px;
-          margin-top: 2px;
-        }
+.supplier-dialog .table-section .data-table .address-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
 
-        .address-text {
-          color: #6c757d;
-          line-height: 1.4;
-        }
-      }
+.supplier-dialog .table-section .data-table .address-cell .address-icon {
+  color: #ffc107;
+  font-size: 16px;
+}
 
-      .selected-row {
-        background-color: #e3f2fd !important;
-      }
-    }
-  }
+.supplier-dialog .table-section .data-table .address-cell .address-text {
+  color: #6c757d;
+  line-height: 1.4;
+}
 
-  .dialog-footer {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 15px 0;
-    border-top: 1px solid #e9ecef;
+.supplier-dialog .table-section .data-table .selected-row {
+  background-color: #e3f2fd !important;
+}
 
-    .selected-info {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      color: #28a745;
-      font-weight: 500;
+.supplier-dialog .table-section .pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+  padding-top: 20px;
+  border-top: 1px solid #e9ecef;
+}
 
-      .selected-icon {
-        color: #28a745;
-      }
-    }
+.supplier-dialog .table-section .pagination-container .pagination .el-pagination__total {
+  margin-right: 16px;
+}
 
-    .footer-buttons {
-      display: flex;
-      gap: 10px;
+.supplier-dialog .table-section .pagination-container .pagination .el-pagination__sizes {
+  margin-right: 16px;
+}
 
-      .cancel-btn {
-        border-color: #6c757d;
-        color: #6c757d;
+.supplier-dialog .dialog-footer {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 0;
+  border-top: 1px solid #e9ecef;
+}
 
-        &:hover {
-          background-color: #6c757d;
-          color: white;
-        }
-      }
+.supplier-dialog .dialog-footer .selected-info {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #28a745;
+  font-weight: 500;
+}
 
-      .confirm-btn {
-        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        border: none;
+.supplier-dialog .dialog-footer .selected-info .selected-icon {
+  font-size: 16px;
+}
 
-        &:hover {
-          transform: translateY(-1px);
-          box-shadow: 0 4px 12px rgba(102, 126, 234, 0.4);
-        }
+.supplier-dialog .dialog-footer .footer-buttons {
+  display: flex;
+  gap: 12px;
+}
 
-        &:disabled {
-          background: #e9ecef;
-          color: #6c757d;
-          transform: none;
-          box-shadow: none;
-        }
-      }
-    }
+.supplier-dialog .dialog-footer .footer-buttons .cancel-btn {
+  border-color: #6c757d;
+  color: #6c757d;
+}
+
+.supplier-dialog .dialog-footer .footer-buttons .cancel-btn:hover {
+  background-color: #6c757d;
+  border-color: #6c757d;
+  color: white;
+}
+
+.supplier-dialog .dialog-footer .footer-buttons .confirm-btn {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+}
+
+.supplier-dialog .dialog-footer .footer-buttons .confirm-btn:hover {
+  background: linear-gradient(135deg, #5a6fd8 0%, #6a4190 100%);
+}
+
+.supplier-dialog .dialog-footer .footer-buttons .confirm-btn:disabled {
+  background: #e9ecef;
+  color: #6c757d;
+  cursor: not-allowed;
+}
+
+/* 响应式设计 */
+@media (max-width: 1200px) {
+  .supplier-dialog {
+    width: 95vw !important;
+    max-width: 1200px;
   }
 }
 
 @media (max-width: 768px) {
-  .supplier-dialog {
-    .dialog-content {
-      max-height: 80vh;
-    }
+  .supplier-dialog .search-section .search-form .el-row .el-col {
+    margin-bottom: 16px;
+  }
 
-    .search-section {
-      padding: 15px;
+  .supplier-dialog .dialog-footer {
+    flex-direction: column;
+    gap: 16px;
+  }
 
-      .search-form {
-        .el-row {
-          .el-col {
-            margin-bottom: 15px;
-          }
-        }
-      }
-    }
+  .supplier-dialog .dialog-footer .selected-info {
+    justify-content: center;
+  }
 
-    .dialog-footer {
-      flex-direction: column;
-      gap: 15px;
-      align-items: stretch;
-
-      .footer-buttons {
-        justify-content: center;
-      }
-    }
+  .supplier-dialog .dialog-footer .footer-buttons {
+    width: 100%;
+    justify-content: center;
   }
 }
 </style>
