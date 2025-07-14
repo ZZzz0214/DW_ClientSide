@@ -39,6 +39,8 @@
           v-model="formData.taskName"
           placeholder="请输入任务名称"
           class="w-80"
+          type="textarea"
+          :autosize="{ minRows: 1, maxRows: 6}"
         />
       </el-form-item>
 
@@ -146,7 +148,7 @@
     (data) => {
       if (!data) return
       copyValueToTarget(formData, data)
-      
+
       // 处理图片数据：如果是字符串，转换为数组
       if (data.images && typeof data.images === 'string') {
         formData.images = data.images.split(',').filter(img => img.trim())
@@ -188,7 +190,7 @@
       border-radius: 4px;
       font-size: 12px;
       color: #0288d1;
-      
+
       .tip-icon {
         margin-right: 4px;
         font-size: 14px;

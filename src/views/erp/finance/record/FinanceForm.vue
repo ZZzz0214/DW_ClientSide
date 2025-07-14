@@ -16,7 +16,7 @@
         </el-col>
         <el-col :span="12">
           <el-form-item label="账单名称" prop="billName">
-            <el-input v-model="formData.billName" placeholder="请输入账单名称" />
+            <el-input v-model="formData.billName" placeholder="请输入账单名称"  type="textarea" :autosize="{ minRows: 1, maxRows: 6}"/>
           </el-form-item>
         </el-col>
       </el-row>
@@ -274,7 +274,7 @@ const formatDate = (date: any): string => {
 const open = async (type: string, id?: number, copyData?: any) => {
   dialogVisible.value = true
   formType.value = type === 'copy' ? 'create' : type // 复制模式实际上是创建模式
-  
+
   // 设置弹窗标题
   if (type === 'copy') {
     dialogTitle.value = '复制新增'
@@ -288,10 +288,10 @@ const open = async (type: string, id?: number, copyData?: any) => {
   } else if (type === 'copy' && copyData) {
     // 复制模式，使用传入的数据填充表单
     resetForm()
-    
+
     // 获取当前日期作为默认下单日期
     const today = new Date().toISOString().split('T')[0]
-    
+
     // 处理复制数据的日期字段
     let orderDate = copyData.orderDate
     if (orderDate) {
