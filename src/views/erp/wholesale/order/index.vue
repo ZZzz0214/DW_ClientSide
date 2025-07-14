@@ -512,7 +512,7 @@ const handleBasicExport = async () => {
     // 发起导出
     basicExportLoading.value = true
     const data = await ErpWholesaleApi.exportBasicWholesale(queryParams)
-    download.excel(data, '批发基础订单.xlsx')
+    download.excel(data, '批发订单.xlsx')
   } catch {
   } finally {
     basicExportLoading.value = false
@@ -527,7 +527,7 @@ const handlePurchaseExport = async () => {
     // 发起导出
     purchaseExportLoading.value = true
     const data = await ErpWholesaleApi.exportPurchaseWholesale(queryParams)
-    download.excel(data, '批发采购订单.xlsx')
+    download.excel(data, '批发订单.xlsx')
   } catch {
   } finally {
     purchaseExportLoading.value = false
@@ -542,7 +542,7 @@ const handleSaleExport = async () => {
     // 发起导出
     saleExportLoading.value = true
     const data = await ErpWholesaleApi.exportSaleWholesale(queryParams)
-    download.excel(data, '批发出货订单.xlsx')
+    download.excel(data, '批发订单.xlsx')
   } catch {
   } finally {
     saleExportLoading.value = false
@@ -557,7 +557,7 @@ const handleShipExport = async () => {
     // 发起导出
     shipExportLoading.value = true
     const data = await ErpWholesaleApi.exportShipWholesale(queryParams)
-    download.excel(data, '批发发货订单.xlsx')
+    download.excel(data, '批发订单.xlsx')
   } catch {
   } finally {
     shipExportLoading.value = false
