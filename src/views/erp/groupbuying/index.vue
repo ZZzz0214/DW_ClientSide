@@ -210,14 +210,25 @@
         </el-table-column>
         <el-table-column label="产品图片" align="center" prop="productImage" :show-overflow-tooltip="false">
           <template #default="scope">
-            <el-image
-              v-if="getFirstImage(scope.row.productImage)"
-              :src="getFirstImage(scope.row.productImage)"
-              :preview-src-list="getAllImages(scope.row.productImage)"
-              style="width: 60px; height: 60px; border-radius: 4px;"
-              fit="cover"
-            />
-            <span v-else class="no-image-text">暂无图片</span>
+            <div v-if="getImageUrls(scope.row.productImage).length > 0" class="relative">
+              <el-image
+                :src="getImageUrls(scope.row.productImage)[0]"
+                :preview-src-list="getImageUrls(scope.row.productImage)"
+                class="w-15 h-15 rounded"
+                fit="cover"
+                :preview-teleported="true"
+              />
+              <div
+                v-if="getImageUrls(scope.row.productImage).length > 1"
+                class="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-green-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-white z-10"
+                style="font-size: 10px; font-weight: bold;"
+              >
+                {{ getImageUrls(scope.row.productImage).length }}
+              </div>
+            </div>
+            <div v-else class="w-15 h-15 bg-gray-100 rounded flex items-center justify-center">
+              <Icon icon="ep:picture" class="text-gray-400" />
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
@@ -433,17 +444,10 @@
     push({ name: 'ErpGroupBuyingAdd', query: { copy: 'true' } })
   }
 
-  /** 获取第一张图片 */
-  const getFirstImage = (productImage: string) => {
-    if (!productImage) return ''
-    const images = productImage.split(',').filter(img => img.trim())
-    return images.length > 0 ? images[0].trim() : ''
-  }
-
-  /** 获取所有图片列表 */
-  const getAllImages = (productImage: string) => {
+  /** 获取图片URLs */
+  const getImageUrls = (productImage: string | undefined): string[] => {
     if (!productImage) return []
-    return productImage.split(',').filter(img => img.trim()).map(img => img.trim())
+    return productImage.split(',').map(img => img.trim()).filter(img => img)
   }
 
   /** 初始化 **/
@@ -461,18 +465,4 @@
   });
   </script>
 
-<style lang="scss" scoped>
-.no-image-text {
-  color: #999;
-  font-size: 12px;
-  display: inline-block;
-  padding: 20px 10px;
-  background-color: #f5f5f5;
-  border-radius: 4px;
-  width: 60px;
-  height: 60px;
-  line-height: 20px;
-  text-align: center;
-  box-sizing: border-box;
-}
-</style>
+
