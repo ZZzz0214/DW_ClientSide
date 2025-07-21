@@ -247,10 +247,7 @@
 
   /** 打开组品选择弹窗 */
   const openComboSelectDialog = () => {
-    console.log('点击了组品选择按钮')
-    console.log('comboSelectDialogRef:', comboSelectDialogRef.value)
     if (comboSelectDialogRef.value) {
-      console.log('调用弹窗的open方法')
       comboSelectDialogRef.value.open()
     } else {
       console.error('组品选择弹窗引用为空')
@@ -274,10 +271,7 @@
 
   /** 打开客户搜索弹窗 */
   const openCustomerSearchDialog = () => {
-    console.log('点击了客户搜索按钮')
-    console.log('customerSearchDialogRef:', customerSearchDialogRef.value)
     if (customerSearchDialogRef.value) {
-      console.log('调用弹窗的open方法')
       customerSearchDialogRef.value.open()
     } else {
       console.error('客户搜索弹窗引用为空')
