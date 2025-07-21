@@ -124,6 +124,20 @@
           </div>
         </div>
       </div>
+      
+      <!-- 分页控件 -->
+      <div class="pagination-container" v-if="sampleSummary.total > 0">
+        <el-pagination
+          background
+          layout="total, sizes, prev, pager, next, jumper"
+          :total="sampleSummary.total"
+          :page-sizes="[10, 20, 50, 100]"
+          :page-size="queryParams.pageSize"
+          :current-page="queryParams.pageNo"
+          @size-change="handleSizeChange"
+          @current-change="handleCurrentChange"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -144,7 +158,9 @@ const loading = ref(false)
 const queryParams = reactive({
   sampleBeginDate: '',
   sampleEndDate: '',
-  customerName: ''
+  customerName: '',
+  pageNo: 1,
+  pageSize: 10
 })
 
 // 日期范围
@@ -155,7 +171,10 @@ const sampleSummary = ref<ErpSampleSummaryRespVO>({
   statusCount: {},
   customerStats: [],
   totalCount: 0,
-  customerOptions: []
+  customerOptions: [],
+  total: 0,
+  pageNo: 1,
+  pageSize: 10
 })
 
 // 客户选项
@@ -236,7 +255,9 @@ const getStatistics = async () => {
       const sampleData = await getSampleSummary({
         beginDate: queryParams.sampleBeginDate,
         endDate: queryParams.sampleEndDate,
-        customerName: queryParams.customerName || undefined
+        customerName: queryParams.customerName || undefined,
+        pageNo: queryParams.pageNo,
+        pageSize: queryParams.pageSize
       })
       console.log('样品统计响应：', sampleData)
       if (sampleData) {
@@ -244,7 +265,10 @@ const getStatistics = async () => {
           statusCount: sampleData.statusCount || {},
           customerStats: sampleData.customerStats || [],
           totalCount: Number(sampleData.totalCount) || 0,
-          customerOptions: sampleData.customerOptions || []
+          customerOptions: sampleData.customerOptions || [],
+          total: sampleData.total || 0,
+          pageNo: sampleData.pageNo || 1,
+          pageSize: sampleData.pageSize || 10
         }
         console.log('设置样品统计数据：', newSampleSummary)
         sampleSummary.value = newSampleSummary
@@ -265,11 +289,28 @@ const getStatistics = async () => {
     sampleSummary.value = {
       statusCount: {},
       customerStats: [],
-      totalCount: 0
+      totalCount: 0,
+      customerOptions: [],
+      total: 0,
+      pageNo: 1,
+      pageSize: 10
     }
   } finally {
     loading.value = false
   }
+}
+
+// 处理每页条数变化
+const handleSizeChange = (size: number) => {
+  queryParams.pageSize = size;
+  queryParams.pageNo = 1; // 重置到第一页
+  getStatistics();
+}
+
+// 处理页码变化
+const handleCurrentChange = (page: number) => {
+  queryParams.pageNo = page;
+  getStatistics();
 }
 
 // 重置查询
@@ -278,13 +319,18 @@ const resetQuery = () => {
   queryParams.sampleBeginDate = ''
   queryParams.sampleEndDate = ''
   queryParams.customerName = ''
+  queryParams.pageNo = 1
+  queryParams.pageSize = 10
 
   // 重置统计数据
   sampleSummary.value = {
     statusCount: {},
     customerStats: [],
     totalCount: 0,
-    customerOptions: []
+    customerOptions: [],
+    total: 0,
+    pageNo: 1,
+    pageSize: 10
   }
   customerOptions.value = []
 }
@@ -648,6 +694,12 @@ onMounted(() => {
   .sample-overview-section,
   .customer-sample-section {
     margin-bottom: 32px;
+  }
+  
+  .pagination-container {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
   }
 }
 </style>
