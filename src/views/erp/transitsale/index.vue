@@ -165,13 +165,13 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <!-- 编号 -->
-        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false" min-width="140"/>
 
         <!-- 组品编号 -->
-        <el-table-column label="组品编号" align="center" prop="groupProductNo" :show-overflow-tooltip="false"/>
+        <el-table-column label="组品编号" align="center" prop="groupProductNo" :show-overflow-tooltip="false" min-width="140"/>
 
         <!-- 中转人员 -->
-        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="产品简称" align="center" prop="productShortName" :show-overflow-tooltip="false"/>
         <el-table-column
           label="中转人员"

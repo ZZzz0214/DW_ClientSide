@@ -75,23 +75,6 @@
             />
           </el-select>
         </el-form-item>
-        <el-form-item label="现货库存" prop="spotInventory">
-          <el-input-number
-            v-model="queryParams.spotInventory"
-            placeholder="请输入现货库存"
-            clearable
-            class="!w-240px"
-            :min="0"
-          />
-        </el-form-item>
-        <el-form-item label="剩余库存" prop="remainingInventory">
-          <el-input-number
-            v-model="queryParams.remainingInventory"
-            placeholder="请输入剩余库存"
-            clearable
-            class="!w-240px"
-          />
-        </el-form-item>
         <el-form-item label="创建人员" prop="creator">
           <el-input
             v-model="queryParams.creator"
@@ -161,9 +144,9 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品编号" align="center" prop="productNo" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false" min-width="140"/>
+        <el-table-column label="产品编号" align="center" prop="productNo" :show-overflow-tooltip="false" min-width="140"/>
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="产品简称" align="center" prop="productShortName" :show-overflow-tooltip="false"/>
         <el-table-column
           label="品牌名称"

@@ -163,7 +163,7 @@
               ref="tableRef">
       <el-table-column type="selection" width="50" align="center" />
       <!-- 产品名称 -->
-      <el-table-column label="组品编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column label="组品编号" align="center" prop="no" :show-overflow-tooltip="false" min-width="140"/>
       <el-table-column label="产品图片" align="center" prop="image" width="100" :show-overflow-tooltip="false">
         <template #default="scope">
           <div class="image-container">
@@ -192,7 +192,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="产品名称" align="center" prop="name" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="name" :show-overflow-tooltip="false" min-width="350"/>
 
       <!-- 产品简称 -->
       <el-table-column label="产品简称" align="center" prop="shortName" :show-overflow-tooltip="false"/>

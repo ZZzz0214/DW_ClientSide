@@ -212,7 +212,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
+        <el-table-column label="编号" align="center" prop="no"  min-width="140"/>
         <el-table-column
           label="品牌名称"
           align="center"
@@ -223,7 +223,8 @@
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" align="center" prop="productName" />
+        <el-table-column label="直播货盘编号" align="center" prop="liveBroadcastingNo" :show-overflow-tooltip="false" min-width="140"/>
+        <el-table-column label="产品名称" align="center" prop="productName" min-width="350" />
         <el-table-column label="产品规格" align="center" prop="productSpec" />
         <el-table-column label="货盘状态" align="center" prop="liveStatus">
           <template #default="scope">
@@ -235,8 +236,14 @@
             <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="scope.row.customerName" />
           </template>
         </el-table-column>
-        <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
-        <el-table-column label="开播日期" align="center" prop="liveStartDate" :formatter="dateFormatter2" />
+        <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" min-width="100"/>
+        <el-table-column label="开播日期" align="center" prop="liveStartDate" :formatter="dateFormatter2" min-width="100"/>
+        <el-table-column label="复播日期" align="center" prop="repeatLiveDate" :formatter="dateFormatter2" min-width="100"/>
+        <el-table-column label="货盘状态" align="center" prop="liveStatus">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
+          </template>
+        </el-table-column>
         <el-table-column label="操作" align="center" width="260">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>

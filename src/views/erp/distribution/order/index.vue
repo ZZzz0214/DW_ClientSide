@@ -375,14 +375,14 @@
       :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column label="订单编号" align="center" prop="no"  min-width="140" :show-overflow-tooltip="false"/>
+      <el-table-column label="订单编号" align="center" prop="no" min-width="140"  :show-overflow-tooltip="false"/>
       <el-table-column label="订单号" align="center" prop="orderNumber"  min-width="140" :show-overflow-tooltip="false"/>
       <el-table-column label="物流公司" align="center" prop="logisticsCompany" :show-overflow-tooltip="false"/>
       <el-table-column label="物流单号" align="center" prop="trackingNumber" :show-overflow-tooltip="false"/>
       <el-table-column label="收件姓名" align="center" prop="receiverName" :show-overflow-tooltip="false"/>
       <el-table-column label="联系电话" align="center" prop="receiverPhone" :show-overflow-tooltip="false"/>
-      <el-table-column label="详细地址" align="center" prop="receiverAddress" :show-overflow-tooltip="false"/>
-      <el-table-column label="产品名称" align="center" prop="productName" min-width="140" :show-overflow-tooltip="false"/>
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="140" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="productName" min-width="350" :show-overflow-tooltip="false"/>
 
       <el-table-column label="产品规格" align="center" prop="productSpecification" :show-overflow-tooltip="false"/>
       <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>

@@ -170,13 +170,13 @@
         :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
-        <el-table-column label="原表商品" align="center" prop="originalProduct" :show-overflow-tooltip="false"/>
-        <el-table-column label="原表规格" align="center" prop="originalSpec" :show-overflow-tooltip="false"/>
+        <el-table-column label="编号" align="center" prop="no" min-width="140" :show-overflow-tooltip="false"/>
+        <el-table-column label="原表商品" align="center" prop="originalProduct" min-width="350" :show-overflow-tooltip="false"/>
+        <el-table-column label="原表规格" align="center" prop="originalSpec" min-width="150" :show-overflow-tooltip="false"/>
         <el-table-column label="原表数量" align="center" prop="originalQuantity" :show-overflow-tooltip="false"/>
-        <el-table-column label="组品编号" align="center" prop="comboProductNo" :show-overflow-tooltip="false"/>
-        <el-table-column label="发货编码" align="center" prop="shippingCode" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="组品编号" align="center" prop="comboProductNo" min-width="140" :show-overflow-tooltip="false"/>
+        <el-table-column label="发货编码" align="center" prop="shippingCode" min-width="150" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="productName" min-width="350" :show-overflow-tooltip="false"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
         <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
         <el-table-column label="备注信息" align="center" prop="remark" :show-overflow-tooltip="false"/>

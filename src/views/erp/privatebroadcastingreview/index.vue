@@ -203,18 +203,24 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column label="编号" align="center" prop="no" />
-      <el-table-column label="私播货盘编号" align="center" prop="privateBroadcastingNo" />
-      <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false">
+      <el-table-column label="编号" align="center" prop="no" min-width="140"/>
+      <el-table-column label="私播货盘编号" align="center" prop="privateBroadcastingNo"  min-width="140"/>
+      <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false" min-width="100">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
         </template>
       </el-table-column>
-      <el-table-column label="产品名称" align="center" prop="productName" />
+      <el-table-column label="产品名称" align="center" prop="productName" min-width="350"/>
       <el-table-column label="产品规格" align="center" prop="productSpec" />
       <el-table-column label="客户名称" align="center" prop="customerName" />
-      <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" />
-      <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" />
+      <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" min-width="100"/>
+      <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" min-width="100"/>
+      <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" min-width="100"/>
+      <el-table-column label="货盘状态" align="center" prop="privateStatus">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRIVATE_STATUS" :value="scope.row.privateStatus" />
+        </template>
+      </el-table-column>
       <el-table-column label="操作" align="center" width="260">
         <template #default="scope">
           <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>

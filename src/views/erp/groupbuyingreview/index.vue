@@ -206,20 +206,22 @@
         :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
-        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false">
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false" min-width="140"/>
+        <el-table-column label="团购货盘编号" align="center" prop="groupBuyingNo" :show-overflow-tooltip="false" min-width="140"/>
+        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false" min-width="100">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品SKU" align="center" prop="productSku" :show-overflow-tooltip="false"/>
+
         <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
         <el-table-column label="供团价格" align="center" prop="supplyGroupPrice" :show-overflow-tooltip="false"/>
         <el-table-column label="快递费用" align="center" prop="expressFee" :show-overflow-tooltip="false"/>
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" width="150px"/>
         <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" width="150px"/>
+        <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" min-width="100"/>
         <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_STATUS" :value="scope.row.status" />
@@ -428,7 +430,7 @@
       return
     }
     const selectedRow = selectionList.value[0]
-    
+
     // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
     const formatDate = (timestamp: any) => {
       if (!timestamp) return undefined
@@ -441,7 +443,7 @@
       }
       return undefined
     }
-    
+
     // 创建复制数据，格式化日期字段
     const copyData = {
       ...selectedRow,
@@ -449,7 +451,7 @@
       groupStartDate: formatDate(selectedRow.groupStartDate),
       repeatGroupDate: formatDate(selectedRow.repeatGroupDate)
     }
-    
+
     // 存储复制的数据到localStorage，供表单页面使用
     localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(copyData))
     push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true' } })
@@ -469,7 +471,7 @@
       }
       return undefined
     }
-    
+
     // 创建复制数据，格式化日期字段
     const copyData = {
       ...row,
@@ -477,7 +479,7 @@
       groupStartDate: formatDate(row.groupStartDate),
       repeatGroupDate: formatDate(row.repeatGroupDate)
     }
-    
+
     // 存储复制的数据到localStorage，供表单页面使用
     localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(copyData))
     push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true' } })

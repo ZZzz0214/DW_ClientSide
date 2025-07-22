@@ -419,8 +419,8 @@
       <el-table-column label="采购运费" align="center" prop="shippingFee" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="代发采购审核总额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
       <el-table-column label="采购备注" align="center" prop="purchaseRemark" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购审核总额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
       <el-table-column label="采购反审核时间" align="center" prop="purchaseUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
       <el-table-column label="采购售后金额" align="center" prop="purchaseAfterSalesAmount" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="采购售后时间" align="center" prop="purchaseAfterSalesTime" width="120" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
@@ -696,7 +696,7 @@ const handleExport = async () => {
     await message.exportConfirm()
     // 发起导出
     exportLoading.value = true
-    const data = await PurchaseOrderApi.exportPurchaseOrder2(queryParams)
+    const data = await PurchaseOrderApi.exportPurchaseOrder3(queryParams)
     download.excel(data, '代发订单.xlsx')
   } catch {
   } finally {

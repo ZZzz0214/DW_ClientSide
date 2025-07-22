@@ -61,6 +61,19 @@
       <el-table-column label="支付宝账号" align="center" prop="alipayAccount" />
       <el-table-column label="银行账号" align="center" prop="bankAccount" />
       <el-table-column label="备注信息" align="center" prop="remark" />
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
+      />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button

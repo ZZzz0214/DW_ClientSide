@@ -168,15 +168,15 @@
     >
       <el-table-column width="30" label="选择" type="selection" />
       <!-- 编号 -->
-      <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false" min-width="140"/>
 
       <!-- 组品编号 -->
-      <el-table-column label="组品编号" align="center" prop="groupProductNo" :show-overflow-tooltip="false"/>
+      <el-table-column label="组品编号" align="center" prop="groupProductNo" :show-overflow-tooltip="false" min-width="140"/>
 
       <!-- 组品简称 -->
-      <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
       <el-table-column label="产品简称" align="center" prop="productShortName" :show-overflow-tooltip="false"/>
-      <el-table-column label="客户名称" align="center" prop="customerName" />
+      <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
 
       <!-- 代发单价 -->
       <el-table-column label="代发单价" align="center" prop="distributionPrice" />

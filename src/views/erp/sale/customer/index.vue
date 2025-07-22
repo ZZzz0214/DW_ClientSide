@@ -116,7 +116,7 @@
   <!-- 列表 -->
   <ContentWrap>
     <el-table v-loading="loading" :data="list" :stripe="true" :show-overflow-tooltip="true">
-      <el-table-column label="客户编号" align="center" prop="no" />
+      <el-table-column label="客户编号" align="center" prop="no" min-width="140"/>
       <el-table-column label="客户名称" align="center" prop="name" />
       <el-table-column label="收件姓名" align="center" prop="receiverName" />
       <el-table-column label="联系电话" align="center" prop="telephone" />
@@ -124,7 +124,14 @@
       <el-table-column label="微信账号" align="center" prop="wechatAccount" />
       <el-table-column label="支付宝号" align="center" prop="alipayAccount" />
       <el-table-column label="银行账号" align="center" prop="bankAccount" />
-      <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" />
+      <el-table-column label="备注信息" align="center" prop="remark" />
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
+      />
+      <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px"/>
       <el-table-column label="操作" align="center">
         <template #default="scope">
           <el-button

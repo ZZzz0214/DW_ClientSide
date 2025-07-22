@@ -187,7 +187,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
+        <el-table-column label="编号" align="center" prop="no" min-width="140"/>
         <el-table-column label="产品图片" align="center" width="100" :show-overflow-tooltip="false">
           <template #default="scope">
             <div v-if="getImageUrls(scope.row.productImage).length > 0" class="relative">
@@ -216,12 +216,13 @@
           align="center"
           prop="brandName"
           :show-overflow-tooltip="false"
+          min-width="100"
         >
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" align="center" prop="productName" />
+        <el-table-column label="产品名称" align="center" prop="productName" min-width="350"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" />
         <el-table-column label="货盘状态" align="center" prop="liveStatus">
           <template #default="scope">

@@ -193,16 +193,16 @@
         :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false" min-width="140"/>
         <el-table-column label="物流公司" align="center" prop="logisticsCompany" :show-overflow-tooltip="false"/>
-        <el-table-column label="物流单号" align="center" prop="logisticsNo" :show-overflow-tooltip="false"/>
+        <el-table-column label="物流单号" align="center" prop="logisticsNo" :show-overflow-tooltip="false" min-width="100"/>
         <el-table-column label="收件姓名" align="center" prop="receiverName" :show-overflow-tooltip="false"/>
-        <el-table-column label="联系电话" align="center" prop="contactPhone" :show-overflow-tooltip="false"/>
-        <el-table-column label="详细地址" align="center" prop="address" :show-overflow-tooltip="false"/>
+        <el-table-column label="联系电话" align="center" prop="contactPhone" :show-overflow-tooltip="false" min-width="100"/>
+        <el-table-column label="详细地址" align="center" prop="address" :show-overflow-tooltip="false" min-width="150"/>
         <el-table-column label="备注信息" align="center" prop="remark" :show-overflow-tooltip="false"/>
-        <el-table-column label="组品编号" align="center" prop="comboProductId" :show-overflow-tooltip="false"/>
+        <el-table-column label="组品编号" align="center" prop="comboProductId" :show-overflow-tooltip="false" min-width="140"/>
         <el-table-column label="发货编码" align="center" prop="shippingCode" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品名称" align="center" prop="comboProductName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="comboProductName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
         <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
         <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>

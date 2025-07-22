@@ -37,6 +37,8 @@
                   v-model="formData.publicDomainEventMinimumPrice"
                   placeholder="请输入公域活动最低价"
                   class="beautiful-input"
+                  type="textarea"
+                  :autosize="{ minRows: 1, maxRows: 6 }"
                 />
 
               </div>
@@ -50,6 +52,8 @@
                   v-model="formData.liveStreamingEventMinimunPrice"
                   placeholder="请输入直播活动最低价"
                   class="beautiful-input"
+                  type="textarea"
+                  :autosize="{ minRows: 1, maxRows: 6 }"
                 />
 
               </div>
@@ -63,6 +67,8 @@
                   v-model="formData.pinduoduoEventMinimumPrice"
                   placeholder="请输入多多活动最低价"
                   class="beautiful-input"
+                  type="textarea"
+                  :autosize="{ minRows: 1, maxRows: 6 }"
                 />
 
               </div>
@@ -76,6 +82,8 @@
                   v-model="formData.alibabaEventMinimunPrice"
                   placeholder="请输入阿里活动最低价"
                   class="beautiful-input"
+                  type="textarea"
+                  :autosize="{ minRows: 1, maxRows: 6 }"
                 />
 
               </div>
@@ -89,6 +97,8 @@
                   v-model="formData.groupBuyEventMinimunPrice"
                   placeholder="请输入团购活动最低价"
                   class="beautiful-input"
+                  type="textarea"
+                  :autosize="{ minRows: 1, maxRows: 6 }"
                 />
 
               </div>

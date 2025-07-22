@@ -213,7 +213,7 @@
     @selection-change="handleSelectionChange"
     ref="tableRef">
       <el-table-column type="selection" width="50" align="center" />
-      <el-table-column label="产品编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品编号" align="center" prop="no" min-width="140" :show-overflow-tooltip="false"/>
       <el-table-column label="产品图片" align="center" prop="image" width="100" :show-overflow-tooltip="false">
         <template #default="scope">
           <div v-if="getImageUrls(scope.row.image).length > 0" class="relative">
@@ -237,10 +237,10 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="产品名称" align="center" prop="name" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="name" :show-overflow-tooltip="false" min-width="350"/>
       <el-table-column label="产品简称" align="center" prop="productShortName"  :show-overflow-tooltip="false"/>
       <el-table-column label="产品规格" align="center" prop="standard" :show-overflow-tooltip="false"/>
-      <el-table-column label="产品日期" align="center" prop="productionDate" :show-overflow-tooltip="false" :formatter="dateFormatter2"/>
+      <el-table-column label="产品日期" align="center" prop="productionDate" :show-overflow-tooltip="false" :formatter="dateFormatter2" min-width="140"/>
       <el-table-column
         label="品牌名称"
         align="center"

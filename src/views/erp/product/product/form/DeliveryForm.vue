@@ -66,6 +66,8 @@
                 class="beautiful-input"
                 :disabled="isDetail"
                 prefix-icon="ep:location"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 6 }"
               />
             </el-form-item>
 
@@ -77,6 +79,8 @@
                 class="beautiful-input"
                 :disabled="isDetail"
                 prefix-icon="ep:location-information"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 6 }"
               />
             </el-form-item>
 
@@ -88,6 +92,8 @@
                 class="beautiful-input"
                 :disabled="isDetail"
                 prefix-icon="ep:van"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 6 }"
               />
             </el-form-item>
           </div>
@@ -108,6 +114,8 @@
                 class="beautiful-input"
                 :disabled="isDetail"
                 prefix-icon="ep:close"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 6 }"
               />
             </el-form-item>
 
@@ -119,6 +127,8 @@
                 class="beautiful-input"
                 :disabled="isDetail"
                 prefix-icon="ep:plus"
+                type="textarea"
+                :autosize="{ minRows: 1, maxRows: 6 }"
               />
             </el-form-item>
           </div>

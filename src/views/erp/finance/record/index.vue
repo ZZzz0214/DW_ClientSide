@@ -277,7 +277,7 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="账单名称" align="center" prop="billName" min-width="120" />
+      <el-table-column label="账单名称" align="center" prop="billName" min-width="350" />
       <el-table-column label="收付金额" align="center" prop="amount" width="120">
         <template #default="scope">
           <span class="font-semibold">

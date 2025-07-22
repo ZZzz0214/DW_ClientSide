@@ -340,7 +340,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" min-width="140" :show-overflow-tooltip="false"/>
+        <el-table-column label="编号" align="center" prop="no"  :show-overflow-tooltip="false"/>
         <el-table-column label="凭证图片" align="center" prop="carouselImages" width="100">
           <template #default="scope">
             <div v-if="getImageList(scope.row.carouselImages).length > 0" class="relative">
@@ -411,7 +411,7 @@
 <!--            <span v-else class="text-gray-400">-</span>-->
 <!--          </template>-->
 <!--        </el-table-column>-->
-        <el-table-column label="下单日期" align="center" prop="orderDate" :formatter="dateFormatter" width="120px" />
+        <el-table-column label="下单日期" align="center" prop="orderDate" :formatter="dateFormatter" width="200px" />
         <el-table-column label="审核状态" align="center" prop="auditStatus" width="100">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.auditStatus" />

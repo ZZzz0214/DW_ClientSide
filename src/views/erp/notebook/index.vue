@@ -135,7 +135,7 @@
         @selection-change="handleSelectionChange"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" />
+        <el-table-column label="编号" align="center" prop="no"  min-width="140"/>
         <el-table-column label="图片" align="center" prop="images" :show-overflow-tooltip="false">
           <template #default="scope">
             <div v-if="getImageUrls(scope.row.images).length > 0" class="relative">
@@ -159,7 +159,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="任务名称" align="center" prop="taskName" />
+        <el-table-column label="任务名称" align="center" prop="taskName"  min-width="600"/>
 <!--        <el-table-column label="任务状态" align="center" prop="taskStatus"/>-->
         <el-table-column label="任务状态" align="center"  prop="taskStatus">
           <template #default="scope">

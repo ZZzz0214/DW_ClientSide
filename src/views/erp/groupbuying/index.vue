@@ -187,7 +187,7 @@
         :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
       >
         <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+        <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false" min-width="140"/>
 <!--        <el-table-column label="产品图片" align="center" prop="productImage">-->
 <!--          <template #default="scope">-->
 <!--            <el-image-->
@@ -203,9 +203,10 @@
           align="center"
           prop="brandName"
           :show-overflow-tooltip="false"
+          min-width="100"
         >
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName"  />
           </template>
         </el-table-column>
         <el-table-column label="产品图片" align="center" prop="productImage" :show-overflow-tooltip="false">
@@ -231,7 +232,7 @@
             </div>
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
         <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false">
           <template #default="scope">

@@ -163,6 +163,11 @@ export const PurchaseOrderApi = {
     return await request.download({ url: `/erp/distribution/export-purchase-excel`, params })
   },
 
+  exportPurchaseOrder3: async (params: any) => {
+    return await request.download({ url: `/erp/distribution/export-purchase-audit-excel`, params })
+  },
+
+
   // 更新采购售后信息（新增方法）
   updatePurchaseAfterSales: async (data: ErpDistributionPurchaseAfterSalesUpdateReqVO) => {
     return await request.put({
