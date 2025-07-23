@@ -9,7 +9,12 @@
           :propFormData="formData"
         />
       </el-tab-pane>
-      <el-tab-pane label="价格信息" name="price" v-hasPermi="['erp:purchaseproduct:export']">
+      <!-- When id exists (edit/detail view), apply permission check; otherwise (creation view), no permission check -->
+      <el-tab-pane
+        label="价格信息"
+        name="price"
+        v-if="!formData.id || hasPermission(['erp:product:forget'])"
+      >
         <PriceForm
           ref="priceRef"
           v-model:activeName="activeName"
@@ -86,6 +91,7 @@ import DeliveryForm from './DeliveryForm.vue'
 import CostForm from './Shippingcost.vue'
 import PriceForm from "@/views/erp/product/product/form/PriceForm.vue";
 import CopyDataForm from './CopyDataForm.vue'
+import { useUserStore } from '@/store/modules/user'
 
 defineOptions({ name: 'ErpProductAdd' })
 
@@ -94,6 +100,7 @@ const message = useMessage() // 消息弹窗
 const { push, currentRoute } = useRouter() // 路由
 const { params, name, query } = useRoute() // 查询参数
 const { delView } = useTagsViewStore() // 视图操作
+const userStore = useUserStore() // 用户权限相关
 
 const formLoading = ref(false) // 表单的加载中：1）修改时的数据加载；2）提交的按钮禁用
 const activeName = ref('info') // Tag 激活的窗口
@@ -279,4 +286,11 @@ const close = () => {
 onMounted(async () => {
   await getDetail()
 })
+
+// 检查是否拥有指定权限
+const hasPermission = (permissions: string[]) => {
+  const all_permission = '*:*:*'
+  return userStore.permissions.has(all_permission) || 
+         permissions.some((permission) => userStore.permissions.has(permission))
+}
 </script>
