@@ -211,7 +211,7 @@ const formData = ref({
   incomeExpense: 1, // 默认收入
   category: undefined,
   account: undefined,
-  status: 1, // 默认待处理
+  status: '', // 默认待处理
   remark: undefined,
   orderDate: undefined
 })
@@ -325,7 +325,7 @@ const open = async (type: string, id?: number, copyData?: any) => {
       incomeExpense: copyData.incomeExpense,
       category: copyData.category,
       account: copyData.account,
-      status: 1, // 状态重置为待处理
+      status: '', // 状态重置为待处理
       remark: copyData.remark,
       orderDate: today // 使用当前日期作为下单日期
     }
@@ -420,7 +420,7 @@ const resetForm = () => {
     incomeExpense: 1, // 默认收入
     category: undefined,
     account: undefined,
-    status: 1, // 默认待处理
+    status: '', // 默认待处理
     remark: undefined,
     orderDate: formType.value === 'create' ? today : undefined // 新增时默认当前日期
   }
