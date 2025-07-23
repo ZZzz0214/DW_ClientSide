@@ -178,6 +178,6 @@ const handleExceed = (): void => {
 /** 下载模板操作 */
 const importTemplate = async () => {
   const res = await SampleApi.importSampleTemplate()
-  download.excel(res, '样品导入模版.xlsx')
+  download.excel(res, '样品表导入模版.xlsx')
 }
 </script>

@@ -70,6 +70,23 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="直播平台" prop="livePlatform">
+          <el-select
+            v-model="queryParams.livePlatform"
+            placeholder="请选择直播平台"
+            clearable
+            class="!w-240px"
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_PLATFORM)"
+          >
+            <el-option
+              v-for="dict in filteredPlatformOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="直播价格" prop="livePrice">
           <el-input
             v-model="queryParams.livePrice"
@@ -213,6 +230,7 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no"  min-width="140"/>
+        <el-table-column label="直播货盘编号" align="center" prop="liveBroadcastingNo" :show-overflow-tooltip="false" min-width="140"/>
         <el-table-column
           label="品牌名称"
           align="center"
@@ -223,7 +241,7 @@
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
-        <el-table-column label="直播货盘编号" align="center" prop="liveBroadcastingNo" :show-overflow-tooltip="false" min-width="140"/>
+
         <el-table-column label="产品名称" align="center" prop="productName" min-width="350" />
         <el-table-column label="产品规格" align="center" prop="productSpec" />
         <el-table-column label="货盘状态" align="center" prop="liveStatus">
@@ -236,7 +254,11 @@
             <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="scope.row.customerName" />
           </template>
         </el-table-column>
-        <el-table-column label="直播平台" align="center" prop="livePlatform" />
+        <el-table-column label="直播平台" align="center" prop="livePlatform">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_LIVE_PLATFORM" :value="scope.row.livePlatform" />
+          </template>
+        </el-table-column>
         <el-table-column label="直播价格" align="center" prop="livePrice" />
         <el-table-column label="直播佣金" align="center" prop="liveCommission" />
         <el-table-column label="公开佣金" align="center" prop="publicCommission" />
@@ -317,6 +339,7 @@
     productName: undefined,
     productSpec: undefined,
     customerName: undefined,
+    livePlatform: undefined,
     livePrice: undefined,
     liveCommission: undefined,
     publicCommission: undefined,
@@ -333,9 +356,11 @@
   const brandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
   const liveStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_STATUS))
   const customerNameOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME))
+  const platformOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_PLATFORM))
   const filteredBrandOptions = ref(brandOptions.value)
   const filteredLiveStatusOptions = ref(liveStatusOptions.value)
   const filteredCustomerNameOptions = ref(customerNameOptions.value)
+  const filteredPlatformOptions = ref(platformOptions.value)
 
   // 字典过滤方法
   const filterDictOptions = (value: string, dictType: string) => {
@@ -346,6 +371,8 @@
         filteredLiveStatusOptions.value = liveStatusOptions.value
       } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
         filteredCustomerNameOptions.value = customerNameOptions.value
+      } else if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
+        filteredPlatformOptions.value = platformOptions.value
       }
       return
     }
@@ -362,6 +389,8 @@
       filteredLiveStatusOptions.value = filterOptions(liveStatusOptions.value)
     } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
       filteredCustomerNameOptions.value = filterOptions(customerNameOptions.value)
+    } else if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
+      filteredPlatformOptions.value = filterOptions(platformOptions.value)
     }
   }
 
