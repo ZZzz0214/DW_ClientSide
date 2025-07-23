@@ -410,17 +410,21 @@
         <el-table-column label="产品名称" prop="productName" :show-overflow-tooltip="false"/>
         <el-table-column label="产品规格" prop="productSpecification" :show-overflow-tooltip="false"/>
         <el-table-column label="产品数量" prop="productQuantity" :show-overflow-tooltip="false"/>
-      <el-table-column label="售后状况" align="center" prop="afterSalesStatus" width="100" :show-overflow-tooltip="false"/>
-      <el-table-column label="售后时间" align="center" prop="afterSalesTime" width="100" :formatter="dateFormatter2" :show-overflow-tooltip="false"/>
+        <el-table-column label="售后状况" align="center" prop="afterSalesStatus" width="100" :show-overflow-tooltip="false"/>
+        <el-table-column label="售后时间" align="center" prop="afterSalesTime" width="100" :formatter="dateFormatter2" :show-overflow-tooltip="false"/>
         <el-table-column label="销售人员" prop="salesperson" :show-overflow-tooltip="false"/>
         <el-table-column label="客户名称" prop="customerName" :show-overflow-tooltip="false"/>
         <el-table-column label="出货单价" prop="salePrice" :show-overflow-tooltip="false"/>
         <el-table-column label="出货运费" prop="saleShippingFee" :show-overflow-tooltip="false"/>
         <el-table-column label="出货杂费" prop="saleOtherFees" :show-overflow-tooltip="false"/>
         <el-table-column label="出货总额" prop="totalSaleAmount" :show-overflow-tooltip="false"/>
-        <el-table-column label="代发销售审核总额" prop="saleAuditTotalAmount" :show-overflow-tooltip="false"/>
-        <el-table-column label="出货备注" prop="saleRemark" :show-overflow-tooltip="false"/>
         <el-table-column label="中转人员" prop="transferPerson" :show-overflow-tooltip="false"/>
+        <el-table-column label="出货备注" prop="saleRemark" :show-overflow-tooltip="false"/>
+        <el-table-column label="出货审核金额" prop="saleAuditTotalAmount" :show-overflow-tooltip="false" width="130"/>
+        <el-table-column label="出货审核时间" align="center" prop="saleApprovalTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="出货反审核时间" align="center" prop="saleUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="出货售后金额" prop="saleAfterSalesAmount" :show-overflow-tooltip="false" width="130"/>
+      <el-table-column label="出货售后时间" align="center" prop="saleAfterSalesTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
 
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
@@ -503,7 +507,7 @@ import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
-import {dateFormatter2} from "@/utils/formatTime";
+import {dateFormatter, dateFormatter2} from "@/utils/formatTime";
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpSaleApproval' })

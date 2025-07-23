@@ -346,8 +346,13 @@
       <el-table-column label="采购物流费用" align="center" prop="logisticsFee" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="批发采购审核总额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
       <el-table-column label="采购备注" align="center" prop="purchaseRemark" width="120" :show-overflow-tooltip="false"/>
+
+      <el-table-column label="采购审核金额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购审核时间" align="center" prop="purchaseApprovalTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="采购反审核时间" align="center" prop="purchaseUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="采购售后金额" align="center" prop="purchaseAfterSalesAmount" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购售后时间" align="center" prop="purchaseAfterSalesTime" width="120" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.purchaseAuditStatus" />
@@ -457,7 +462,7 @@ import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
-import {dateFormatter2} from "@/utils/formatTime";
+import {dateFormatter, dateFormatter2} from "@/utils/formatTime";
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpPurchaseApproval' })

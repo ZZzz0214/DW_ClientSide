@@ -346,9 +346,13 @@
       <el-table-column label="出货物流费用" align="center" prop="saleLogisticsFee" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="出货杂费" align="center" prop="saleOtherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="出货总额" align="center" prop="totalSaleAmount" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="批发销售审核总额" align="center" prop="saleAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
-      <el-table-column label="出货备注" align="center" prop="saleRemark" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="中转人员" prop="transferPerson" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货备注" align="center" prop="saleRemark" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货审核金额" align="center" prop="saleAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
+      <el-table-column label="出货审核时间" align="center" prop="saleApprovalTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="出货反审核时间" align="center" prop="saleUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="出货售后金额" prop="saleAfterSalesAmount" :show-overflow-tooltip="false" width="130"/>
+      <el-table-column label="出货售后时间" align="center" prop="saleAfterSalesTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.saleAuditStatus" />
@@ -458,7 +462,7 @@ import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
-import {dateFormatter2} from "@/utils/formatTime";
+import {dateFormatter, dateFormatter2} from "@/utils/formatTime";
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpPurchaseApproval' })

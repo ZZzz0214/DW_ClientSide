@@ -4,7 +4,7 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="120px"
+      label-width="140px"
       v-loading="formLoading"
     >
       <!-- 复用 AfterSaleForm 的不可编辑字段 -->
@@ -49,7 +49,7 @@
         <el-input v-model="formData.totalPurchaseAmount" :disabled="true" />
       </el-form-item>
       <el-form-item label="代发采购审核总额">
-        <el-input v-model="formData.purchaseAuditTotalAmount" :disabled="true" />
+        <el-input v-model="formData.purchaseAuditTotalAmount" :disabled="true"  />
       </el-form-item>
 
 <!--      <el-form-item label="审核时间" prop="purchaseApprovalTime">-->
@@ -179,7 +179,7 @@ const open = async (id: number, operationType: 'audit' | 'antiAudit' = 'audit') 
     //审核时间
     formData.purchaseApprovalTime = orderDetail.purchaseApprovalTime || null
     formData.purchaseUnapproveTime = orderDetail.purchaseUnapproveTime || null
-    
+
     // 根据操作类型设置审核总额
     if (operationType === 'audit') {
       // 审批时设置代发采购审核总额等于采购总额
@@ -220,11 +220,11 @@ const submitForm = async () => {
   try {
     formLoading.value = true
     console.log("123",formData.id)
-    
+
     // 根据标题判断是审批还是反审批
     const isAudit = dialogTitle.value === '审核信息'
     const auditStatus = isAudit ? 20 : 10 // 20表示审核通过，10表示反审核
-    
+
     // 调用审核接口，传递采购杂费和代发采购审核总额
     await PurchaseOrderApi.updatePurchaseOrderStatus({
       id: formData.id,

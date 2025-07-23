@@ -420,11 +420,11 @@
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="采购备注" align="center" prop="purchaseRemark" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="采购审核总额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
-      <el-table-column label="采购反审核时间" align="center" prop="purchaseUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="采购审核金额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购审核时间" align="center" prop="purchaseUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="采购反审核时间" align="center" prop="purchaseApprovalTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
       <el-table-column label="采购售后金额" align="center" prop="purchaseAfterSalesAmount" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="采购售后时间" align="center" prop="purchaseAfterSalesTime" width="120" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
-
       <el-table-column
         label="创建人员"
         align="center"
@@ -600,7 +600,8 @@ const queryParams = reactive({
   creator: undefined,
   createTime: undefined,
   purchaseAuditStatus: undefined,
-  saleAuditStatus: undefined
+  saleAuditStatus: undefined,
+  purchaseAuditTotalAmount: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
