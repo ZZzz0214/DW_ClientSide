@@ -250,13 +250,13 @@ const formData = ref({
   supplier: '', // 供应商名
   purchasePrice: 0, // 采购单价
   shippingFee: 0, // 采购运费
-  otherFees: 0, // 采购其他费用
+  otherFees: undefined, // 采购其他费用
   totalPurchaseAmount: 0, // 采购总额
   salesperson: '', // 销售人员
   customerName: '', // 客户名称
   salePrice: 0, // 出货单价
   saleShippingFee: 0, // 出货运费
-  saleOtherFees: 0, // 销售其他费用
+  saleOtherFees: undefined, // 销售其他费用
   totalSaleAmount: 0, // 出货总额
 })
 const handleProductIdChanged = (product: {id: number, no: string}) => {
@@ -678,7 +678,7 @@ const submitForm = async () => {
       data.supplier = purchaseItem.supplier || 0
       data.purchasePrice = purchaseItem.purchasePrice || 0
       data.shippingFee = purchaseItem.shippingFee || 0
-      data.otherFees = purchaseItem.otherFees || 0
+      data.otherFees = purchaseItem.otherFees // 不设置默认值为0
       data.totalPurchaseAmount = purchaseItem.totalPurchaseAmount || 0
       data.productName = purchaseItem.productName || 0
       data.shippingCode = purchaseItem.shippingCode || 0
@@ -694,7 +694,7 @@ const submitForm = async () => {
       data.customerName = saleItem.customerName || 0
       data.salePrice = saleItem.salePrice || 0
       data.saleShippingFee = saleItem.saleShippingFee || 0
-      data.saleOtherFees = saleItem.saleOtherFees || 0
+      data.saleOtherFees = saleItem.saleOtherFees // 不设置默认值为0
       data.totalSaleAmount = saleItem.totalSaleAmount || 0
       data.saleRemark = saleItem.saleRemark || 0
       data.transferPerson = saleItem.transferPerson || 0
@@ -753,13 +753,13 @@ const resetForm = () => {
     supplier: '', // 供应商名
     purchasePrice: 0, // 采购单价
     shippingFee: 0, // 采购运费
-    otherFees: 0, // 采购其他费用
+    otherFees: undefined, // 采购其他费用
     totalPurchaseAmount: 0, // 采购总额
     salesperson: '', // 销售人员
     customerName: '', // 客户名称
     salePrice: 0, // 出货单价
     saleShippingFee: 0, // 出货运费
-    saleOtherFees: 0, // 销售其他费用
+    saleOtherFees: undefined, // 销售其他费用
     totalSaleAmount: 0, // 出货总额
   }
   formRef.value?.resetFields()

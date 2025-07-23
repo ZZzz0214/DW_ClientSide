@@ -180,7 +180,7 @@ const updateTotalPrice = (item) => {
   const price = Number(item.purchasePrice) || 0;
   const count = Number(item.count) || 0;
   const shippingFee = Number(item.shippingFee) || 0;
-  const otherFees = Number(item.otherFees) || 0;
+  const otherFees = item.otherFees !== undefined ? Number(item.otherFees) : 0;
 
   const total = price * count + shippingFee + otherFees;
   item.totalProductPrice = Number(total.toFixed(2));
@@ -251,7 +251,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       supplier: product.supplier, //供应商名
       purchasePrice: product.purchasePrice, //采购代发单价
       shippingFee: 1, //采购运费
-      otherFees: 0, //采购杂费
+      otherFees: undefined, //采购杂费
       totalPurchaseAmount: 1, //采购总额
       purchaseRemark:'', //采购备注
       shippingCode: product.shippingCode,

@@ -254,7 +254,7 @@ const updateTotalSaleAmount = (item) => {
   const price = Number(item.salePrice) || 0;
   const count = Number(item.count) || 0;
   const shippingFee = Number(item.saleShippingFee) || 0;
-  const otherFees = Number(item.saleOtherFees) || 0;
+  const otherFees = item.saleOtherFees !== undefined ? Number(item.saleOtherFees) : 0;
 
   // 计算公式：产品数量×出货单价+出货运费+出货杂费
   const totalAmount = price * count + shippingFee + otherFees;
@@ -395,7 +395,7 @@ const handleProductSelected = (selectedProducts: any[]) => {
       customerName: product.customerName, //客户名称
       salePrice: salePrice, //出货单价（使用代发价格）
       saleShippingFee: 0, //出货运费（将被重新计算）
-      saleOtherFees: 0, //销售杂费
+      saleOtherFees: undefined, //销售杂费
       totalSaleAmount: 0, //销售总额（将被重新计算）
       saleRemark: '', //出货备注
       transferPerson: '', //中转人员
