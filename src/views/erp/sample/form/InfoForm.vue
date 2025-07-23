@@ -232,7 +232,7 @@
     //productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
     productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
     customerName: [{ required: true, message: '请选择客户名称', trigger: 'change' }],
-    sampleStatus: [{ required: true, message: '样品状态不能为空', trigger: 'blur' }]
+    sampleStatus: [{ required: true, message: '请选择样品状态', trigger: 'change' }]
   })
 
   /** 将传进来的值赋值给 formData */
