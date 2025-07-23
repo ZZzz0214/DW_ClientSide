@@ -279,32 +279,32 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['erp:purchase-order:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          @click="openForm('create')"-->
+<!--          v-hasPermi="['erp:purchase-order:create']"-->
+<!--        >-->
+<!--          <Icon icon="ep:plus" class="mr-5px" /> 新增-->
+<!--        </el-button>-->
         <el-button
           type="success"
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:unpurchaseorder:export']"
+          v-hasPermi="['erp:distribution:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
-        <el-button
-          type="danger"
-          plain
-          @click="handleDelete(selectionList.map((item) => item.id))"
-          v-hasPermi="['erp:purchase-order:delete']"
-          :disabled="selectionList.length === 0"
-        >
-          <Icon icon="ep:delete" class="mr-5px" /> 删除
-        </el-button>
+<!--        <el-button-->
+<!--          type="danger"-->
+<!--          plain-->
+<!--          @click="handleDelete(selectionList.map((item) => item.id))"-->
+<!--          v-hasPermi="['erp:purchase-order:delete']"-->
+<!--          :disabled="selectionList.length === 0"-->
+<!--        >-->
+<!--          <Icon icon="ep:delete" class="mr-5px" /> 删除-->
+<!--        </el-button>-->
 
         <el-button
           type="warning"
@@ -360,20 +360,20 @@
       :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column min-width="180" label="订单编号" align="center" prop="no" :show-overflow-tooltip="false"/>
-      <el-table-column min-width="180" label="订单号" align="center" prop="orderNumber" :show-overflow-tooltip="false"/>
+      <el-table-column min-width="140" label="订单编号" align="center" prop="no" :show-overflow-tooltip="false"/>
+      <el-table-column min-width="140" label="订单号" align="center" prop="orderNumber" :show-overflow-tooltip="false"/>
       <el-table-column label="物流公司" align="center" prop="logisticsCompany" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="物流单号" align="center" prop="trackingNumber" width="160" :show-overflow-tooltip="false"/>
+      <el-table-column label="物流单号" align="center" prop="trackingNumber" min-width="140" :show-overflow-tooltip="false"/>
       <el-table-column label="收件姓名" align="center" prop="receiverName" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" :show-overflow-tooltip="false"/>
-      <el-table-column label="原表商品" align="center" prop="originalProductName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="原表商品" align="center" prop="originalProductName" min-width="350" :show-overflow-tooltip="false"/>
       <el-table-column label="原表规格" align="center" prop="originalStandard" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="原表数量" align="center" prop="originalQuantity" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="备注信息" align="center" prop="remark" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="组品编号" align="center" prop="comboProductId" width="100" :show-overflow-tooltip="false"/>
-      <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="产品名称" align="center" prop="productName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="组品编号" align="center" prop="comboProductId" min-width="140" :show-overflow-tooltip="false"/>
+      <el-table-column label="发货编码" align="center" prop="shippingCode" width="150" :show-overflow-tooltip="false"/>
+      <el-table-column label="产品名称" align="center" prop="productName" min-width="350" :show-overflow-tooltip="false"/>
       <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="产品数量" align="center" prop="productQuantity" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="售后状况" align="center" prop="afterSalesStatus" width="100" :show-overflow-tooltip="false"/>
@@ -385,7 +385,25 @@
       <el-table-column label="采购杂费" align="center" prop="otherFees" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="采购总额" align="center" prop="totalPurchaseAmount" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="采购备注" align="center" prop="purchaseRemark" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购审核金额" align="center" prop="purchaseAuditTotalAmount" width="150" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购审核时间" align="center" prop="purchaseUnapproveTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="采购反审核时间" align="center" prop="purchaseApprovalTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column label="采购售后金额" align="center" prop="purchaseAfterSalesAmount" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="采购售后时间" align="center" prop="purchaseAfterSalesTime" width="120" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
 
+      />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.purchaseAuditStatus" />
@@ -422,7 +440,7 @@
             link
             type="danger"
             @click="handleAudit(scope.row.id)"
-            v-hasPermi="['erp:purchase-order:update-status']"
+            v-hasPermi="['erp:distribution:update-purchase-audit-status-one']"
             v-if="scope.row.purchaseAuditStatus === 20"
           >
             反审批
@@ -465,7 +483,7 @@ import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { SupplierApi, SupplierVO } from '@/api/erp/purchase/supplier'
-import {dateFormatter2} from "@/utils/formatTime";
+import {dateFormatter, dateFormatter2} from "@/utils/formatTime";
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpPurchaseUnApproval' })

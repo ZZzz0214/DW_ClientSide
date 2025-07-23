@@ -279,19 +279,19 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['erp:purchase-order:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          @click="openForm('create')"-->
+<!--          v-hasPermi="['erp:purchase-order:create']"-->
+<!--        >-->
+<!--          <Icon icon="ep:plus" class="mr-5px" /> 新增-->
+<!--        </el-button>-->
         <el-button
           type="warning"
           plain
           @click="handleImport"
-          v-hasPermi="['erp:purchase-order:import']"
+          v-hasPermi="['erp:distribution:import']"
         >
           <Icon icon="ep:upload" class="mr-5px" /> 导入
         </el-button>
@@ -300,19 +300,19 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:purchase-order:export']"
+          v-hasPermi="['erp:distribution:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
-        <el-button
-          type="danger"
-          plain
-          @click="handleDelete(selectionList.map((item) => item.id))"
-          v-hasPermi="['erp:purchase-order:delete']"
-          :disabled="selectionList.length === 0"
-        >
-          <Icon icon="ep:delete" class="mr-5px" /> 删除
-        </el-button>
+<!--        <el-button-->
+<!--          type="danger"-->
+<!--          plain-->
+<!--          @click="handleDelete(selectionList.map((item) => item.id))"-->
+<!--          v-hasPermi="['erp:purchase-order:delete']"-->
+<!--          :disabled="selectionList.length === 0"-->
+<!--        >-->
+<!--          <Icon icon="ep:delete" class="mr-5px" /> 删除-->
+<!--        </el-button>-->
         <el-button
           type="primary"
           plain
@@ -395,20 +395,20 @@
       :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column min-width="180" label="订单编号" align="center" prop="no" :show-overflow-tooltip="false"/>
-      <el-table-column min-width="180" label="订单号" align="center" prop="orderNumber" :show-overflow-tooltip="false"/>
+      <el-table-column min-width="140" label="订单编号" align="center" prop="no" :show-overflow-tooltip="false" />
+      <el-table-column min-width="140" label="订单号" align="center" prop="orderNumber" :show-overflow-tooltip="false"/>
       <el-table-column label="物流公司" align="center" prop="logisticsCompany" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="物流单号" align="center" prop="trackingNumber" width="160" :show-overflow-tooltip="false"/>
       <el-table-column label="收件姓名" align="center" prop="receiverName" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="联系电话" align="center" prop="receiverPhone" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" :show-overflow-tooltip="false"/>
-      <el-table-column label="原表商品" align="center" prop="originalProductName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="详细地址" align="center" prop="receiverAddress" min-width="200" :show-overflow-tooltip="false" />
+      <el-table-column label="原表商品" align="center" prop="originalProductName" :show-overflow-tooltip="false" min-width="350"/>
       <el-table-column label="原表规格" align="center" prop="originalStandard" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="原表数量" align="center" prop="originalQuantity" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="备注信息" align="center" prop="remark" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="组品编号" align="center" prop="comboProductNo" width="100" :show-overflow-tooltip="false"/>
-      <el-table-column label="发货编码" align="center" prop="shippingCode" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="产品名称" align="center" prop="productName" width="120" :show-overflow-tooltip="false"/>
+      <el-table-column label="组品编号" align="center" prop="comboProductNo"  :show-overflow-tooltip="false" min-width="140"/>
+      <el-table-column label="发货编码" align="center" prop="shippingCode"  :show-overflow-tooltip="false" min-width="100"/>
+      <el-table-column label="产品名称" align="center" prop="productName"  :show-overflow-tooltip="false" min-width="350"/>
       <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="产品数量" align="center" prop="productQuantity" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="售后状况" align="center" prop="afterSalesStatus" width="100" :show-overflow-tooltip="false"/>
@@ -476,7 +476,7 @@
             link
             type="primary"
             @click="handleAudit(scope.row.id)"
-            v-hasPermi="['erp:purchase-order:update-status']"
+            v-hasPermi="['erp:distribution:update-purchase-audit-status-one']"
             v-if="scope.row.purchaseAuditStatus === 10"
           >
             审批
@@ -494,7 +494,7 @@
           link
           type="warning"
           @click="handleAfterSaleWithDetails(scope.row.id, 'afterSale')"
-          v-hasPermi="['erp:purchase-order:update-status']"
+          v-hasPermi="['erp:distribution:update-one']"
           v-if="scope.row.purchaseAfterSalesStatus === 30"
           >
           售后
@@ -503,7 +503,7 @@
           link
           type="warning"
           @click="handleAfterSaleWithDetails(scope.row.id, 'antiAfterSale')"
-          v-hasPermi="['erp:purchase-order:update-status']"
+          v-hasPermi="['erp:distribution:update-ones']"
           v-if="scope.row.purchaseAfterSalesStatus === 40"
           >
           反售后

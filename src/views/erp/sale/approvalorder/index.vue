@@ -279,19 +279,19 @@
       <el-form-item>
         <el-button @click="handleQuery"><Icon icon="ep:search" class="mr-5px" /> 搜索</el-button>
         <el-button @click="resetQuery"><Icon icon="ep:refresh" class="mr-5px" /> 重置</el-button>
-        <el-button
-          type="primary"
-          plain
-          @click="openForm('create')"
-          v-hasPermi="['erp:sale-order:create']"
-        >
-          <Icon icon="ep:plus" class="mr-5px" /> 新增
-        </el-button>
+<!--        <el-button-->
+<!--          type="primary"-->
+<!--          plain-->
+<!--          @click="openForm('create')"-->
+<!--          v-hasPermi="['erp:sale-order:create']"-->
+<!--        >-->
+<!--          <Icon icon="ep:plus" class="mr-5px" /> 新增-->
+<!--        </el-button>-->
         <el-button
           type="warning"
           plain
           @click="handleImport"
-          v-hasPermi="['erp:sale-order:import']"
+          v-hasPermi="['erp:distribution:import']"
         >
           <Icon icon="ep:upload" class="mr-5px" /> 导入
         </el-button>
@@ -300,19 +300,19 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:sale-order:export']"
+          v-hasPermi="['erp:distribution:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
-        <el-button
-          type="danger"
-          plain
-          @click="handleDelete(selectionList.map((item) => item.id))"
-          v-hasPermi="['erp:sale-order:delete']"
-          :disabled="selectionList.length === 0"
-        >
-          <Icon icon="ep:delete" class="mr-5px" /> 删除
-        </el-button>
+<!--        <el-button-->
+<!--          type="danger"-->
+<!--          plain-->
+<!--          @click="handleDelete(selectionList.map((item) => item.id))"-->
+<!--          v-hasPermi="['erp:sale-order:delete']"-->
+<!--          :disabled="selectionList.length === 0"-->
+<!--        >-->
+<!--          <Icon icon="ep:delete" class="mr-5px" /> 删除-->
+<!--        </el-button>-->
         <el-button
           type="primary"
           plain
@@ -394,20 +394,20 @@
       :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
     >
       <el-table-column width="30" label="选择" type="selection" />
-        <el-table-column label="订单编号" prop="no" :show-overflow-tooltip="false"/>
-        <el-table-column label="订单号" prop="orderNumber" :show-overflow-tooltip="false"/>
+        <el-table-column label="订单编号" prop="no" :show-overflow-tooltip="false" min-width="140"/>
+        <el-table-column label="订单号" prop="orderNumber" :show-overflow-tooltip="false" min-width="140"/>
         <el-table-column label="物流公司" prop="logisticsCompany" :show-overflow-tooltip="false"/>
-        <el-table-column label="物流单号" prop="trackingNumber" :show-overflow-tooltip="false"/>
+        <el-table-column label="物流单号" prop="trackingNumber" :show-overflow-tooltip="false" min-width="150"/>
         <el-table-column label="收件姓名" prop="receiverName" :show-overflow-tooltip="false"/>
-        <el-table-column label="联系电话" prop="receiverPhone" :show-overflow-tooltip="false"/>
-        <el-table-column label="详细地址" prop="receiverAddress" :show-overflow-tooltip="false"/>
-        <el-table-column label="原表商品" prop="originalProductName" :show-overflow-tooltip="false"/>
+        <el-table-column label="联系电话" prop="receiverPhone" :show-overflow-tooltip="false" min-width="140"/>
+        <el-table-column label="详细地址" prop="receiverAddress" :show-overflow-tooltip="false" min-width="200"/>
+        <el-table-column label="原表商品" prop="originalProductName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="原表规格" prop="originalStandard" :show-overflow-tooltip="false"/>
         <el-table-column label="原表数量" prop="originalQuantity" :show-overflow-tooltip="false"/>
         <el-table-column label="备注信息" prop="remark" :show-overflow-tooltip="false"/>
-        <el-table-column label="组品编号" prop="comboProductId" :show-overflow-tooltip="false"/>
-        <el-table-column label="发货编码" prop="shippingCode" :show-overflow-tooltip="false"/>
-        <el-table-column label="产品名称" prop="productName" :show-overflow-tooltip="false"/>
+        <el-table-column label="组品编号" prop="comboProductId" :show-overflow-tooltip="false"  min-width="140"/>
+        <el-table-column label="发货编码" prop="shippingCode" :show-overflow-tooltip="false" min-width="100"/>
+        <el-table-column label="产品名称" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="产品规格" prop="productSpecification" :show-overflow-tooltip="false"/>
         <el-table-column label="产品数量" prop="productQuantity" :show-overflow-tooltip="false"/>
         <el-table-column label="售后状况" align="center" prop="afterSalesStatus" width="100" :show-overflow-tooltip="false"/>
@@ -426,6 +426,20 @@
       <el-table-column label="出货售后金额" prop="saleAfterSalesAmount" :show-overflow-tooltip="false" width="130"/>
       <el-table-column label="出货售后时间" align="center" prop="saleAfterSalesTime" width="130" :show-overflow-tooltip="false" :formatter="dateFormatter"/>
 
+      <el-table-column
+        label="创建人员"
+        align="center"
+        prop="creator"
+        :show-overflow-tooltip="false"
+
+      />
+      <el-table-column
+        label="创建时间"
+        align="center"
+        prop="createTime"
+        :formatter="dateFormatter"
+        width="180px"
+      />
       <el-table-column label="审核状态" align="center" fixed="right" width="90" prop="status">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_AUDIT_STATUS" :value="scope.row.saleAuditStatus" />
@@ -452,7 +466,7 @@
             link
             type="primary"
             @click="handleAudit(scope.row.id)"
-            v-hasPermi="['erp:sale-order:update-status']"
+            v-hasPermi="['erp:distribution:update-sale-audit-status-one']"
             v-if="scope.row.saleAuditStatus === 10"
           >
             审批
@@ -461,7 +475,7 @@
             link
             type="warning"
             @click="handleAfterSaleWithDetails(scope.row.id, 'afterSale')"
-            v-hasPermi="['erp:purchase-order:update-status']"
+            v-hasPermi="['erp:distribution:update-one']"
             v-if="scope.row.saleAfterSalesStatus === 30"
           >
             售后
@@ -470,7 +484,7 @@
             link
             type="warning"
             @click="handleAfterSaleWithDetails(scope.row.id, 'antiAfterSale')"
-            v-hasPermi="['erp:purchase-order:update-status']"
+            v-hasPermi="['erp:distribution:update-one']"
             v-if="scope.row.saleAfterSalesStatus === 40"
           >
             反售后

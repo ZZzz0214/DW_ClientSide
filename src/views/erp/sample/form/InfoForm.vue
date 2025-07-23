@@ -216,7 +216,7 @@
     productSpec: '',
     productQuantity: 1,
     customerName: '',
-    sampleStatus: 1,
+    sampleStatus: '',
     reference: '',
     remark: ''
   })
