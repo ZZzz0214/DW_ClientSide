@@ -230,6 +230,11 @@
           </template>
         </el-table-column>
         <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" />
+        <el-table-column label="直播价格" align="center" prop="livePrice" />
+        <el-table-column label="直播佣金" align="center" prop="liveCommission" />
+        <el-table-column label="公开佣金" align="center" prop="publicCommission" />
+        <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
+        <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
         <el-table-column label="操作" align="center" width="240">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>

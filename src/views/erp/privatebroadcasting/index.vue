@@ -236,6 +236,11 @@
         :formatter="dateFormatter2"
         width="180px"
       />
+      <el-table-column label="直播价格" align="center" prop="livePrice" />
+      <el-table-column label="产品裸价" align="center" prop="productNakedPrice" />
+      <el-table-column label="快递费用" align="center" prop="expressFee" />
+      <el-table-column label="代发价格" align="center" prop="dropshipPrice" />
+      <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
       <el-table-column
         label="创建时间"
         align="center"

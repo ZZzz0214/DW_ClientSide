@@ -213,9 +213,16 @@
       <el-table-column label="产品名称" align="center" prop="productName" min-width="350"/>
       <el-table-column label="产品规格" align="center" prop="productSpec" />
       <el-table-column label="客户名称" align="center" prop="customerName" />
+
+      <el-table-column label="直播价格" align="center" prop="livePrice" />
+      <el-table-column label="产品裸价" align="center" prop="productNakedPrice" />
+      <el-table-column label="快递费用" align="center" prop="expressFee" />
+      <el-table-column label="代发价格" align="center" prop="dropshipPrice" />
       <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" min-width="100"/>
       <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" min-width="100"/>
       <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" min-width="100"/>
+      <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
+      <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
       <el-table-column label="货盘状态" align="center" prop="privateStatus">
         <template #default="scope">
           <dict-tag :type="DICT_TYPE.ERP_PRIVATE_STATUS" :value="scope.row.privateStatus" />

@@ -236,9 +236,15 @@
             <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="scope.row.customerName" />
           </template>
         </el-table-column>
+        <el-table-column label="直播平台" align="center" prop="livePlatform" />
+        <el-table-column label="直播价格" align="center" prop="livePrice" />
+        <el-table-column label="直播佣金" align="center" prop="liveCommission" />
+        <el-table-column label="公开佣金" align="center" prop="publicCommission" />
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" min-width="100"/>
         <el-table-column label="开播日期" align="center" prop="liveStartDate" :formatter="dateFormatter2" min-width="100"/>
         <el-table-column label="复播日期" align="center" prop="repeatLiveDate" :formatter="dateFormatter2" min-width="100"/>
+        <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
+        <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
         <el-table-column label="货盘状态" align="center" prop="liveStatus">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
