@@ -22,7 +22,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="客户名称" min-width="75">
+      <el-table-column label="客户名称" min-width="75" v-hasPermi="['erp:distribution:WKK']">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.customerName" />
@@ -30,7 +30,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="出货单价" min-width="75">
+      <el-table-column label="出货单价" min-width="75" v-hasPermi="['erp:distribution:WSS']">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.salePrice" />
@@ -79,7 +79,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="出货总额" min-width="80">
+      <el-table-column label="出货总额" min-width="80" v-hasPermi="['erp:distribution:WSS']">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.totalSaleAmount" />
@@ -98,7 +98,7 @@
           </el-form-item>
         </template>
       </el-table-column>
-      <el-table-column label="中转人员" min-width="80">
+      <el-table-column label="中转人员" min-width="80" v-hasPermi="['erp:distribution:WKK']">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input

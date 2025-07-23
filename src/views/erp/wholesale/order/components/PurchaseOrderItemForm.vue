@@ -17,7 +17,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="供应商名" min-width="80">
+      <el-table-column label="供应商名" min-width="80" v-hasPermi="['erp:distribution:WPP']">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input disabled v-model="row.supplier" />
@@ -25,7 +25,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="采购单价" min-width="80">
+      <el-table-column label="采购单价" min-width="80" v-hasPermi="['erp:distribution:WPP']">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
@@ -76,7 +76,7 @@
         </template>
       </el-table-column>
 
-      <el-table-column label="采购总额" min-width="80">
+      <el-table-column label="采购总额" min-width="80" v-hasPermi="['erp:distribution:WPP']">
         <template #default="{ row }">
           <el-form-item class="mb-0px!">
             <el-input
@@ -176,7 +176,7 @@ const calculateShippingFee = (item) => {
 // 更新合计的方法
 const updateTotalPrice = (item) => {
   if (!item) return;
-  
+
   const price = Number(item.purchasePrice) || 0;
   const count = Number(item.count) || 0;
   const logisticsFee = item.logisticsFee === undefined ? 0 : Number(item.logisticsFee);
