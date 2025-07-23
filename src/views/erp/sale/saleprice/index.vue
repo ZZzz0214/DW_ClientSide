@@ -125,6 +125,7 @@
           type="success"
           plain
           @click="openPriceQuoteDialog"
+          v-hasPermi="['erp:sale-price:price']"
         >
           <Icon icon="ep:price-tag" class="mr-5px" /> 报价
         </el-button>

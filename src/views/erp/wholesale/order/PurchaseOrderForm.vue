@@ -289,16 +289,16 @@ const formData = ref({
   purchaser: '', // 采购人员
   supplier: '', // 供应商名
   purchasePrice: 0, // 采购单价
-  truckFee: 0, // 货拉拉费
-  logisticsFee: 0, // 物流费用
-  otherFees: 0, // 采购其他费用
+  truckFee: undefined, // 货拉拉费
+  logisticsFee: undefined, // 物流费用
+  otherFees: undefined, // 采购其他费用
   totalPurchaseAmount: 0, // 采购总额
   salesperson: '', // 销售人员
   customerName: '', // 客户名称
   salePrice: 0, // 出货单价
-  saleTruckFee: 0, // 销售货拉拉费
-  saleLogisticsFee: 0, // 销售物流费用
-  saleOtherFees: 0, // 销售其他费用
+  saleTruckFee: undefined, // 销售货拉拉费
+  saleLogisticsFee: undefined, // 销售物流费用
+  saleOtherFees: undefined, // 销售其他费用
   totalSaleAmount: 0, // 出货总额
 })
 
@@ -411,9 +411,9 @@ const open = async (type: string, id?: number, copyData?: any) => {
           purchaser: copyData.purchaser,
           supplier: copyData.supplier,
           purchasePrice: copyData.purchasePrice,
-          logisticsFee: copyData.logisticsFee,
-          truckFee: copyData.truckFee,
-          otherFees: copyData.otherFees,
+          logisticsFee: copyData.logisticsFee || undefined,
+          truckFee: copyData.truckFee || undefined,
+          otherFees: copyData.otherFees || undefined,
           totalPurchaseAmount: copyData.totalPurchaseAmount,
           count: copyData.productQuantity,
           purchaseRemark: copyData.purchaseRemark,
@@ -428,9 +428,9 @@ const open = async (type: string, id?: number, copyData?: any) => {
           salesperson: copyData.salesperson,
           customerName: copyData.customerName,
           salePrice: copyData.salePrice,
-          saleLogisticsFee: copyData.saleLogisticsFee,
-          saleTruckFee: copyData.saleTruckFee,
-          saleOtherFees: copyData.saleOtherFees,
+          saleLogisticsFee: copyData.saleLogisticsFee || undefined,
+          saleTruckFee: copyData.saleTruckFee || undefined,
+          saleOtherFees: copyData.saleOtherFees || undefined,
           totalSaleAmount: copyData.totalSaleAmount,
           count: copyData.productQuantity,
           saleAuditStatus: 10, // 重置审核状态为未审核
@@ -613,9 +613,9 @@ const submitForm = async () => {
       data.purchaser = purchaseItem.purchaser || 0
       data.supplier = purchaseItem.supplier || 0
       data.purchasePrice = purchaseItem.purchasePrice || 0
-      data.logisticsFee = purchaseItem.logisticsFee || 0
-      data.truckFee = purchaseItem.truckFee || 0
-      data.otherFees = purchaseItem.otherFees || 0
+      data.logisticsFee = purchaseItem.logisticsFee
+      data.truckFee = purchaseItem.truckFee
+      data.otherFees = purchaseItem.otherFees
       data.totalPurchaseAmount = purchaseItem.totalPurchaseAmount || 0
 
       data.productName = purchaseItem.productName || 0
@@ -628,9 +628,9 @@ const submitForm = async () => {
       data.salesperson = saleItem.salesperson || 0
       data.customerName = saleItem.customerName || 0
       data.salePrice = saleItem.salePrice || 0
-      data.saleLogisticsFee = saleItem.saleLogisticsFee || 0
-      data.saleTruckFee = saleItem.saleTruckFee || 0
-      data.saleOtherFees = saleItem.saleOtherFees || 0
+      data.saleLogisticsFee = saleItem.saleLogisticsFee
+      data.saleTruckFee = saleItem.saleTruckFee
+      data.saleOtherFees = saleItem.saleOtherFees
       data.totalSaleAmount = saleItem.totalSaleAmount || 0
       data.saleRemark = saleItem.saleRemark || 0
       data.transferPerson = saleItem.transferPerson || 0
@@ -656,48 +656,6 @@ const submitForm = async () => {
 }
 
 /** 重置表单 */
-// const resetForm = () => {
-//   formData.value = {
-//     id: undefined,
-//     supplierId: undefined, // 供应商
-//     accountId: undefined, // 结算账户
-//     orderTime: undefined, // 订单时间
-//     remark: undefined, // 备注
-//     fileUrl: '', // 附件
-//
-//     items: [], // 采购列表
-//     saleItems: [], // 出货列表
-//
-//     comboProductId: 0, // 组合产品ID
-//     productName: '', // 产品名称
-//     productQuantity: 0, // 产品数量
-//     shippingCode: '', // 发货编码
-//     receiverName: '', // 收件姓名
-//     receiverPhone: '', // 收件电话
-//     receiverAddress: '', // 收件地址
-//     afterSalesStatus: '', // 售后状况
-//     afterSalesTime: '', // 售后时间，初始为空
-//
-//     no: undefined, // 订单单号，后端返回
-//     purchaser: '', // 采购人员
-//     supplier: '', // 供应商名
-//     purchasePrice: 0, // 采购单价
-//     truckFee: 0, // 货拉拉费
-//     logisticsFee: 0, // 物流费用
-//     otherFees: 0, // 采购其他费用
-//     totalPurchaseAmount: 0, // 采购总额
-//     salesperson: '', // 销售人员
-//     customerName: '', // 客户名称
-//     salePrice: 0, // 出货单价
-//     saleTruckFee: 0, // 销售货拉拉费
-//     saleLogisticsFee: 0, // 销售物流费用
-//     saleOtherFees: 0, // 销售其他费用
-//     totalSaleAmount: 0, // 出货总额
-//   }
-//   formRef.value?.resetFields()
-// }
-
-// ... existing code ...
 const resetForm = () => {
   formData.value = {
     id: undefined,
@@ -722,16 +680,16 @@ const resetForm = () => {
     purchaser: '',
     supplier: '',
     purchasePrice: 0,
-    truckFee: 0,
-    logisticsFee: 0,
-    otherFees: 0,
+    truckFee: undefined,
+    logisticsFee: undefined,
+    otherFees: undefined,
     totalPurchaseAmount: 0,
     salesperson: '',
     customerName: '',
     salePrice: 0,
-    saleTruckFee: 0,
-    saleLogisticsFee: 0,
-    saleOtherFees: 0,
+    saleTruckFee: undefined,
+    saleLogisticsFee: undefined,
+    saleOtherFees: undefined,
     totalSaleAmount: 0
   }
   formRef.value?.resetFields()

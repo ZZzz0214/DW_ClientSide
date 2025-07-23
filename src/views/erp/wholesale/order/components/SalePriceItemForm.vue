@@ -45,6 +45,7 @@
               v-model="row.saleTruckFee"
               :controls="false"
               :precision="2"
+              placeholder=""
             />
           </el-form-item>
         </template>
@@ -57,6 +58,7 @@
               v-model="row.saleLogisticsFee"
               :controls="false"
               :precision="2"
+              placeholder=""
                @change="() => updateTotalSaleAmount(row)"
             />
           </el-form-item>
@@ -70,6 +72,7 @@
               v-model="row.saleOtherFees"
               :controls="false"
               :precision="2"
+              placeholder=""
               @change="() => updateTotalSaleAmount(row)"
             />
           </el-form-item>
@@ -230,9 +233,9 @@ const updateTotalSaleAmount = (item) => {
 
   const price = Number(item.salePrice) || 0;
   const count = Number(item.count) || 0;
-  const logisticsFee = Number(item.saleLogisticsFee) || 0;
-  const otherFees = Number(item.saleOtherFees) || 0;
-  const truckFee = Number(item.saleTruckFee) || 0;
+  const logisticsFee = item.saleLogisticsFee === undefined ? 0 : Number(item.saleLogisticsFee);
+  const otherFees = item.saleOtherFees === undefined ? 0 : Number(item.saleOtherFees);
+  const truckFee = item.saleTruckFee === undefined ? 0 : Number(item.saleTruckFee);
 
   item.totalSaleAmount = price * count + logisticsFee + otherFees + truckFee;
   item.totalSaleAmount = Number(item.totalSaleAmount.toFixed(2));
@@ -297,9 +300,9 @@ const handleProductSelected = (selectedProducts: any[]) => {
       salesperson: undefined, //销售人员
       customerName: product.customerName, //客户名称
       salePrice: product.salePrice, //出货批发单价
-      saleLogisticsFee: 0, //销售物流费用
-      saleTruckFee: 0, //销售货拉拉费
-      saleOtherFees: 0, //销售杂费
+      saleLogisticsFee: undefined, //销售物流费用
+      saleTruckFee: undefined, //销售货拉拉费
+      saleOtherFees: undefined, //销售杂费
       totalSaleAmount: 1, //销售总额
       saleRemark:'', //出货备注
 

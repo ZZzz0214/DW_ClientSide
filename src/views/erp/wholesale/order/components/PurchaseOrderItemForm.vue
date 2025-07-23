@@ -43,6 +43,7 @@
               v-model="row.truckFee"
               :controls="false"
               :precision="2"
+              placeholder=""
             />
           </el-form-item>
         </template>
@@ -55,6 +56,7 @@
               v-model="row.logisticsFee"
               :controls="false"
               :precision="2"
+              placeholder=""
               @change="updateTotalPrice(row)"
             />
           </el-form-item>
@@ -68,6 +70,7 @@
               v-model="row.otherFees"
               :controls="false"
               :precision="2"
+              placeholder=""
             />
           </el-form-item>
         </template>
@@ -176,9 +179,9 @@ const updateTotalPrice = (item) => {
   
   const price = Number(item.purchasePrice) || 0;
   const count = Number(item.count) || 0;
-  const logisticsFee = Number(item.logisticsFee) || 0;
-  const otherFees = Number(item.otherFees) || 0;
-  const truckFee = Number(item.truckFee) || 0;
+  const logisticsFee = item.logisticsFee === undefined ? 0 : Number(item.logisticsFee);
+  const otherFees = item.otherFees === undefined ? 0 : Number(item.otherFees);
+  const truckFee = item.truckFee === undefined ? 0 : Number(item.truckFee);
 
   const total = price * count + logisticsFee + otherFees + truckFee;
   item.totalProductPrice = Number(total.toFixed(2));
@@ -243,9 +246,9 @@ const handleProductSelected = (selectedProducts: any[]) => {
       purchaser: product.purchaser, //采购人员
       supplier: product.supplier, //供应商名
       purchasePrice: product.wholesalePrice, //采购批发单价
-      logisticsFee: 0, //物流费用
-      truckFee: 0, //货拉拉费
-      otherFees: 0, //采购杂费
+      logisticsFee: undefined, //物流费用
+      truckFee: undefined, //货拉拉费
+      otherFees: undefined, //采购杂费
       totalPurchaseAmount: 1, //采购总额
       purchaseRemark:'', //采购备注
       shippingCode: product.shippingCode,

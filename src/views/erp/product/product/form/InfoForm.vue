@@ -393,13 +393,13 @@ defineExpose({ validate })
 /** 初始化 */
 const brandList = ref<BrandVO[]>([]) // 商品品牌列表
 const categoryList = ref<ProductCategoryVO[]>([]) // 商品分类树
-onMounted(async () => {
-  // 获得分类树
-  const data = await ProductCategoryApi.ProductCategoryApi.getProductCategoryList({})
-  categoryList.value = handleTree(data, 'id')
-  // 获取商品品牌列表
-  brandList.value = await ProductBrandApi.getSimpleBrandList()
-})
+// onMounted(async () => {
+//   // 获得分类树
+//   const data = await ProductCategoryApi.ProductCategoryApi.getProductCategoryList({})
+//   categoryList.value = handleTree(data, 'id')
+//   // 获取商品品牌列表
+//   brandList.value = await ProductBrandApi.getSimpleBrandList()
+// })
 </script>
 
 <style scoped lang="scss">
