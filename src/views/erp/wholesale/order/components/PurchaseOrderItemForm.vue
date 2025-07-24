@@ -239,7 +239,10 @@ const handleProductSelected = (selectedProducts: any[]) => {
     message.warning('只能添加一条采购信息');
     return;
   }
+
   selectedProducts.forEach(product => {
+    console.log("代发价"+product.purchasePrice)
+    console.log("批发价"+product.wholesalePrice)
     formData.value.push({
       productId: product.id, //产品id
       productName: product.name, //产品名称

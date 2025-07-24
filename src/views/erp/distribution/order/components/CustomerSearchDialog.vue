@@ -461,11 +461,11 @@ const confirmSelection = async () => {
     groupProductId: groupProductId,
     customerName: selectedCustomer.value.name,
   };
-  
+
   try {
     // 方案1：首先尝试标准搜索接口
     let salePriceResult = await SalePriceApi.searchSalePrice(searchParams);
-    
+
     // 方案2：如果标准搜索失败，尝试分页查询
     if (!salePriceResult || salePriceResult.length === 0) {
       try {
@@ -476,7 +476,7 @@ const confirmSelection = async () => {
           customerName: searchParams.customerName,
         };
         const pageResult = await SalePriceApi.getSalePricePage(pageParams);
-        
+
         if (pageResult && pageResult.list && pageResult.list.length > 0) {
           salePriceResult = pageResult.list;
         }
@@ -484,7 +484,7 @@ const confirmSelection = async () => {
         // 分页查询失败，继续尝试其他方案
       }
     }
-    
+
     // 方案3：如果仍然没有结果，尝试模糊查询
     if (!salePriceResult || salePriceResult.length === 0) {
       try {
@@ -495,14 +495,14 @@ const confirmSelection = async () => {
           // 去掉客户名称，只按组品查询
         };
         const fuzzyResult = await SalePriceApi.getSalePricePage(fuzzyParams);
-        
+
         if (fuzzyResult && fuzzyResult.list && fuzzyResult.list.length > 0) {
           // 在结果中查找匹配的客户名称
-          const matchedRecords = fuzzyResult.list.filter(item => 
+          const matchedRecords = fuzzyResult.list.filter(item =>
             item.customerName === searchParams.customerName ||
             item.customerName?.trim() === searchParams.customerName?.trim()
           );
-          
+
           if (matchedRecords.length > 0) {
             salePriceResult = matchedRecords;
           }
@@ -511,15 +511,15 @@ const confirmSelection = async () => {
         // 模糊查询失败，使用默认值
       }
     }
-    
+
     if (salePriceResult && salePriceResult.length > 0) {
       const priceData = salePriceResult[0];
-      
+
       // 获取组品信息以获取重量
       let comboWeight = 0;
       try {
         const comboInfo = await ComboApi.getCombo(groupProductId);
-        
+
         if (comboInfo) {
           if (comboInfo.weight !== undefined && comboInfo.weight !== null) {
             comboWeight = Number(comboInfo.weight) || 0;
@@ -528,7 +528,7 @@ const confirmSelection = async () => {
       } catch (error) {
         console.error('获取组品重量失败:', error);
       }
-      
+
       // 返回包含完整运费信息和代发价格的数据
       emit('customer-selected', [
         {
@@ -547,13 +547,13 @@ const confirmSelection = async () => {
       ]);
     } else {
       ElMessage.warning(`未找到组品ID: ${groupProductId} 和客户: ${selectedCustomer.value.name} 的销售价格配置。
-      
+
 请检查：
 1. 销售价格表中是否存在该记录
 2. 组品ID是否正确（当前: ${groupProductId}）
 3. 客户名称是否完全匹配（当前: "${selectedCustomer.value.name}"）
 4. 数据是否被删除或状态异常`);
-      
+
       // 如果没有搜索到销售价格表数据，返回客户名称，价格和运费信息为默认值
       emit('customer-selected', [
         {
@@ -579,7 +579,7 @@ const confirmSelection = async () => {
       searchParams: searchParams
     });
     ElMessage.error('查询销售价格表失败: ' + (error.message || '未知错误'));
-    
+
     // 出错时返回默认数据
     emit('customer-selected', [
       {
@@ -597,7 +597,7 @@ const confirmSelection = async () => {
       },
     ]);
   }
-  
+
   dialogVisible.value = false;
 };
 
