@@ -533,7 +533,7 @@ const confirmSelection = async () => {
       emit('customer-selected', [
         {
           customerName: selectedCustomer.value.name,
-          salePrice: priceData.distributionPrice || 0, // 使用代发价格作为出货单价
+          salePrice: priceData.wholesalePrice || 0, // 使用代发价格作为出货单价
           shippingFeeType: priceData.shippingFeeType,
           fixedShippingFee: priceData.fixedShippingFee,
           additionalItemQuantity: priceData.additionalItemQuantity, //按件数量

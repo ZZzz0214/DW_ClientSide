@@ -291,7 +291,7 @@
           type="warning"
           plain
           @click="handleImport"
-          v-hasPermi="['erp:distribution:import']"
+          v-hasPermi="['erp:distributionSaleAu:import']"
         >
           <Icon icon="ep:upload" class="mr-5px" /> 导入
         </el-button>
@@ -300,7 +300,7 @@
           plain
           @click="handleExport"
           :loading="exportLoading"
-          v-hasPermi="['erp:distribution:export']"
+          v-hasPermi="['erp:distributionSaleAu:export']"
         >
           <Icon icon="ep:download" class="mr-5px" /> 导出
         </el-button>
@@ -317,7 +317,7 @@
           type="primary"
           plain
           @click="handleBatchAudit(20)"
-          v-hasPermi="['erp:distribution:update-sale-audit-status']"
+          v-hasPermi="['erp:distributionSaleAu:update-sale-audit-status']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:check" class="mr-5px" /> 批量审核
@@ -326,7 +326,7 @@
           type="warning"
           plain
           @click="handleBatchAfterSales(40)"
-          v-hasPermi="['erp:distribution:update-after-sales']"
+          v-hasPermi="['erp:distributionSaleAu:update-after-sales']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:service" class="mr-5px" /> 批量售后
@@ -335,7 +335,7 @@
           type="info"
           plain
           @click="handleBatchAfterSales(30)"
-          v-hasPermi="['erp:distribution:update-after-sales-re']"
+          v-hasPermi="['erp:distributionSaleAu:update-after-sales-re']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:refresh-left" class="mr-5px" /> 批量反售后
@@ -466,7 +466,7 @@
             link
             type="primary"
             @click="handleAudit(scope.row.id)"
-            v-hasPermi="['erp:distribution:update-sale-audit-status-one']"
+            v-hasPermi="['erp:distributionSaleAu:update-sale-audit-status-one']"
             v-if="scope.row.saleAuditStatus === 10"
           >
             审批
@@ -475,7 +475,7 @@
             link
             type="warning"
             @click="handleAfterSaleWithDetails(scope.row.id, 'afterSale')"
-            v-hasPermi="['erp:distribution:update-one']"
+            v-hasPermi="['erp:distributionSaleAu:update-one']"
             v-if="scope.row.saleAfterSalesStatus === 30"
           >
             售后
@@ -484,7 +484,7 @@
             link
             type="warning"
             @click="handleAfterSaleWithDetails(scope.row.id, 'antiAfterSale')"
-            v-hasPermi="['erp:distribution:update-one-re']"
+            v-hasPermi="['erp:distributionSaleAu:update-one-re']"
             v-if="scope.row.saleAfterSalesStatus === 40"
           >
             反售后

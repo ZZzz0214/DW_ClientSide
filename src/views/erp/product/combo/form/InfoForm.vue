@@ -58,8 +58,7 @@
           @click="openPurchaserSearch"
           class="w-80"
           readonly
-          v-if="isDetail || props.propFormData.id" 
-          v-hasPermi="['erp:product:forget']"
+          v-if="isDetail || props.propFormData.id"
         />
         <el-input
           v-else
@@ -81,7 +80,7 @@
           @click="openSupplierSearch"
           class="w-80"
           readonly
-          v-if="isDetail || props.propFormData.id" 
+          v-if="isDetail || props.propFormData.id"
           v-hasPermi="['erp:product:forget']"
         />
         <el-input
@@ -97,17 +96,17 @@
 
       <el-form-item label="采购单价" prop="purchasePrice">
         <div style="display: flex; align-items: center;">
-          <el-input 
+          <el-input
             v-if="isDetail || props.propFormData.id"
-            v-model="formData.purchasePrice" 
-            placeholder="采购单价" 
-            disabled 
+            v-model="formData.purchasePrice"
+            placeholder="采购单价"
+            disabled
             v-hasPermi="['erp:product:forget']"
           />
-          <el-input 
+          <el-input
             v-else
-            v-model="formData.purchasePrice" 
-            placeholder="采购单价" 
+            v-model="formData.purchasePrice"
+            placeholder="采购单价"
             disabled
           />
           <span style="margin-left: 25px;">元</span>
@@ -116,17 +115,17 @@
 
       <el-form-item label="批发单价" prop="wholesalePrice">
         <div style="display: flex; align-items: center;">
-          <el-input 
+          <el-input
             v-if="isDetail || props.propFormData.id"
-            v-model="formData.wholesalePrice" 
-            placeholder="批发单价" 
-            disabled 
+            v-model="formData.wholesalePrice"
+            placeholder="批发单价"
+            disabled
             v-hasPermi="['erp:product:forget']"
           />
-          <el-input 
+          <el-input
             v-else
-            v-model="formData.wholesalePrice" 
-            placeholder="批发单价" 
+            v-model="formData.wholesalePrice"
+            placeholder="批发单价"
             disabled
           />
           <span style="margin-left: 25px;">元</span>
@@ -134,17 +133,17 @@
       </el-form-item>
 
       <el-form-item label="备注信息" prop="remark">
-        <el-input 
+        <el-input
           v-if="isDetail || props.propFormData.id"
-          v-model="formData.remark" 
-          placeholder="备注信息" 
-          :disabled="isDetail" 
+          v-model="formData.remark"
+          placeholder="备注信息"
+          :disabled="isDetail"
           v-hasPermi="['erp:product:forget']"
         />
-        <el-input 
+        <el-input
           v-else
-          v-model="formData.remark" 
-          placeholder="备注信息" 
+          v-model="formData.remark"
+          placeholder="备注信息"
           :disabled="isDetail"
         />
       </el-form-item>
