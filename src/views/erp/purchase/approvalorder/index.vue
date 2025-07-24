@@ -335,7 +335,7 @@
           type="info"
           plain
           @click="handleBatchAfterSales(30)"
-          v-hasPermi="['erp:distribution:update-after-sales']"
+          v-hasPermi="['erp:distribution:update-after-sales-re']"
           :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:refresh-left" class="mr-5px" /> 批量反售后
@@ -503,7 +503,7 @@
           link
           type="warning"
           @click="handleAfterSaleWithDetails(scope.row.id, 'antiAfterSale')"
-          v-hasPermi="['erp:distribution:update-ones']"
+          v-hasPermi="['erp:distribution:update-ones-re']"
           v-if="scope.row.purchaseAfterSalesStatus === 40"
           >
           反售后

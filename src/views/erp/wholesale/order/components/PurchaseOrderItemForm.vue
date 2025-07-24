@@ -281,8 +281,8 @@ const validate = () => {
 defineExpose({ validate })
 
 /** 初始化 */
-onMounted(async () => {
-  productList.value = await ProductApi.getProductSimpleList();
-  comboProductList.value = await ComboApi.getComboSimpleList();
-});
+// onMounted(async () => {
+//   productList.value = await ProductApi.getProductSimpleList();
+//   comboProductList.value = await ComboApi.getComboSimpleList();
+// });
 </script>
