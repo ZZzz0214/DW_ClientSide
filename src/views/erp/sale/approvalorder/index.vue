@@ -392,6 +392,8 @@
       @selection-change="handleSelectionChange"
       :row-style="{height: '80px'}"
       :cell-style="{padding: '10px 0', whiteSpace: 'normal', wordBreak: 'break-all'}"
+      ref="tableRef"
+      :row-key="(row) => row.id"
     >
       <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="订单编号" prop="no" :show-overflow-tooltip="false" min-width="140"/>
@@ -521,7 +523,8 @@ import { ProductApi, ProductVO } from '@/api/erp/product/product'
 import { UserVO } from '@/api/system/user'
 import * as UserApi from '@/api/system/user'
 import { CustomerApi, CustomerVO } from '@/api/erp/sale/customer'
-import {dateFormatter, dateFormatter2} from "@/utils/formatTime";
+import {dateFormatter, dateFormatter2} from "@/utils/formatTime"
+import { nextTick } from 'vue'
 
 /** ERP 销售订单列表 */
 defineOptions({ name: 'ErpSaleApproval' })
@@ -529,9 +532,19 @@ defineOptions({ name: 'ErpSaleApproval' })
 const message = useMessage() // 消息弹窗
 const { t } = useI18n() // 国际化
 
+// 安全地重置表格状态
+const safeReset = async () => {
+  selectionList.value = []
+  if (tableRef.value) {
+    tableRef.value.clearSelection()
+  }
+  await nextTick()
+}
+
 const loading = ref(true) // 列表的加载中
 const list = ref<SaleOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
+const tableRef = ref() // el-table的引用
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -576,30 +589,47 @@ const userList = ref<UserVO[]>([]) // 用户列表
 const getList = async () => {
   loading.value = true
   try {
+    // 清空当前列表，避免旧数据引用问题
+    list.value = []
+    // 安全重置表格状态
+    await safeReset()
+    
     const data = await SaleOrderApi.getSaleOrderUnreviewedPage(queryParams)
-    console.log(data.pageResult.list)
     totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
     totalSaleShippingFee.value = data.totalSaleShippingFee?.toFixed(2) || ''
     totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
     totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
     totalSaleAfterSalesAmount.value = data.totalSaleAfterSalesAmount?.toFixed(2) || ''
     totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
-    list.value = data.pageResult.list
-    total.value = data.pageResult.total
+    
+    // 使用nextTick确保DOM已更新后再设置数据
+    await nextTick(() => {
+      list.value = data.pageResult.list || []
+      total.value = data.pageResult.total
+    })
+  } catch (error) {
+    console.error('获取列表数据失败:', error)
+    message.error('获取数据失败，请刷新重试')
+    list.value = []
+    total.value = 0
   } finally {
     loading.value = false
   }
 }
 
 /** 搜索按钮操作 */
-const handleQuery = () => {
+const handleQuery = async () => {
   queryParams.pageNo = 1
+  // 安全重置表格状态
+  await safeReset()
   getList()
 }
 
 /** 重置按钮操作 */
-const resetQuery = () => {
+const resetQuery = async () => {
   queryFormRef.value.resetFields()
+  // 安全重置表格状态
+  await safeReset()
   handleQuery()
 }
 
@@ -673,32 +703,58 @@ const handleExport = async () => {
 const handleBatchAudit = async (saleAuditStatus: number) => {
   try {
     const ids = selectionList.value.map(item => item.id!)
+    if (ids.length === 0) {
+      message.warning('请至少选择一条记录')
+      return
+    }
+    
     const statusText = saleAuditStatus === 20 ? '审核' : '反审核'
     await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
 
+    // 安全重置表格状态
+    await safeReset()
+    
+    loading.value = true
     await SaleOrderApi.batchUpdateSaleAuditStatus(ids, saleAuditStatus)
     message.success(`${statusText}成功`)
-
-    // 刷新列表并清空选择
+    
+    // 刷新列表数据
     await getList()
-    selectionList.value = []
-  } catch {}
+  } catch (error) {
+    console.error('批量审核操作失败:', error)
+    message.error('操作失败，请稍后重试')
+  } finally {
+    loading.value = false
+  }
 }
 
 /** 批量售后操作 */
 const handleBatchAfterSales = async (saleAfterSalesStatus: number) => {
   try {
     const ids = selectionList.value.map(item => item.id!)
+    if (ids.length === 0) {
+      message.warning('请至少选择一条记录')
+      return
+    }
+    
     const statusText = saleAfterSalesStatus === 40 ? '售后' : '反售后'
     await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
 
+    // 安全重置表格状态
+    await safeReset()
+    
+    loading.value = true
     await SaleOrderApi.batchUpdateSaleAfterSales(ids, saleAfterSalesStatus)
     message.success(`${statusText}成功`)
-
-    // 刷新列表并清空选择
+    
+    // 刷新列表数据
     await getList()
-    selectionList.value = []
-  } catch {}
+  } catch (error) {
+    console.error('批量售后操作失败:', error)
+    message.error('操作失败，请稍后重试')
+  } finally {
+    loading.value = false
+  }
 }
 
 /** 选中操作 */
@@ -712,7 +768,7 @@ onMounted(async () => {
   await getList()
   // 加载产品、仓库列表、客户
   productList.value = await ProductApi.getProductSimpleList()
-  customerList.value = await CustomerApi.getCustomerSimpleList()
+ // customerList.value = await CustomerApi.getCustomerSimpleList()
   userList.value = await UserApi.getSimpleUserList()
 })
 // TODO 芋艿：可优化功能：列表界面，支持导入
