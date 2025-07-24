@@ -332,7 +332,7 @@ defineExpose({
 });
 
 // 初始化
-// onMounted(async () => {
-//   salepriceList.value = await SalePriceApi.getSalePriceSimpleList();
-// });
+onMounted(async () => {
+  salepriceList.value = await SalePriceApi.getSalePriceSimpleList();
+});
 </script>
