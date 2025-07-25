@@ -171,7 +171,7 @@
             plain
             @click="handleCopy"
             :disabled="selectionList.length !== 1"
-            v-hasPermi="['erp:livebroadcasting:create']"
+            v-hasPermi="['erp:livebroadcasting:CopyCreate']"
           >
             <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
           </el-button>
@@ -250,7 +250,7 @@
               link
               type="info"
               @click="handleCopyRow(scope.row)"
-              v-hasPermi="['erp:livebroadcasting:create']"
+              v-hasPermi="['erp:livebroadcasting:CopyCreate']"
             >
               复制
             </el-button>

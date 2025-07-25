@@ -150,7 +150,7 @@
           type="info"
           plain
           @click="openForm('copy', selectionList[0]?.id)"
-          v-hasPermi="['erp:private-broadcasting:create']"
+          v-hasPermi="['erp:private-broadcasting:CopyCreate']"
           :disabled="selectionList.length !== 1"
         >
           <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
@@ -263,7 +263,7 @@
             link
             type="info"
             @click="openForm('copy', scope.row.id)"
-            v-hasPermi="['erp:private-broadcasting:create']"
+            v-hasPermi="['erp:private-broadcasting:CopyCreate']"
           >
             复制
           </el-button>

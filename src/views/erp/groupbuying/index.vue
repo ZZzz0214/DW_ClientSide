@@ -142,7 +142,7 @@
             type="primary"
             plain
             @click="handleCopyCreate"
-            v-hasPermi="['erp:groupbuying:create']"
+            v-hasPermi="['erp:groupbuying:CopyCreate']"
             :disabled="selectionList.length !== 1"
           >
             <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增

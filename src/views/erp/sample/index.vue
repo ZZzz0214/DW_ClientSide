@@ -176,6 +176,7 @@
             plain
             @click="handleCopy"
             :disabled="selectionList.length !== 1"
+            v-hasPermi="['erp:sample:CopyCreate']"
           >
             <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
           </el-button>

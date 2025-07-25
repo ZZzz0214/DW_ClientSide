@@ -118,6 +118,7 @@
           plain
           @click="openForm('copy')"
           :disabled="selectionList.length !== 1"
+          v-hasPermi="['erp:sale-price:CopyCreate']"
         >
           <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
         </el-button>
@@ -224,7 +225,7 @@
             link
             type="info"
             @click="openForm('copy', scope.row.id)"
-            v-hasPermi="['erp:sale-price:create']"
+            v-hasPermi="['erp:sale-price:CopyCreate']"
           >
             复制
           </el-button>

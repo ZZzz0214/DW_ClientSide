@@ -187,7 +187,7 @@
           type="primary"
           plain
           @click="handleCopyCreate"
-          v-hasPermi="['erp:finance:create']"
+          v-hasPermi="['erp:finance:CopyCreate']"
           :disabled="selectionList.length !== 1"
         >
           <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
@@ -362,7 +362,7 @@
             link
             type="success"
             @click="handleCopyCreateSingle(scope.row)"
-            v-hasPermi="['erp:finance:create']"
+            v-hasPermi="['erp:finance:CopyCreate']"
           >
             复制
           </el-button>

@@ -119,7 +119,7 @@
             type="info"
             plain
             @click="handleCopyCreate"
-            v-hasPermi="['erp:transit-sale:create']"
+            v-hasPermi="['erp:transit-sale:CopyCreate']"
             :disabled="selectionList.length !== 1"
           >
             <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
@@ -223,7 +223,7 @@
               link
               type="info"
               @click="openForm('copy', scope.row.id)"
-              v-hasPermi="['erp:transit-sale:create']"
+              v-hasPermi="['erp:transit-sale:CopyCreate']"
             >
               复制
             </el-button>

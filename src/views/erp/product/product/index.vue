@@ -163,7 +163,7 @@
           plain
           @click="handleCopyAdd"
           :disabled="!selectedRows.length"
-          v-hasPermi="['erp:product:create']"
+          v-hasPermi="['erp:product:CopyCreate']"
         >
           <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增
         </el-button>
@@ -350,7 +350,7 @@
             link
             type="success"
             @click="handleQuickCopy(scope.row)"
-            v-hasPermi="['erp:product:create']"
+            v-hasPermi="['erp:product:CopyCreate']"
           >
             复制
           </el-button>

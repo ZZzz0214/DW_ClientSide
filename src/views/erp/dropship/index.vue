@@ -123,7 +123,7 @@
             type="info"
             plain
             @click="handleCopyCreate"
-            v-hasPermi="['erp:dropship:create']"
+            v-hasPermi="['erp:dropship:CopyCreate']"
             :disabled="selectionList.length !== 1"
           >
             <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增

@@ -219,7 +219,7 @@
           type="primary"
           plain
           @click="handleCopyCreate"
-          v-hasPermi="['erp:wholesale:create']"
+          v-hasPermi="['erp:wholesale:CopyCreate']"
           :disabled="selectionList.length !== 1"
         >
           <Icon icon="ep:copy-document" class="mr-5px" /> 复制新增

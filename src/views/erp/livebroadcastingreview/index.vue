@@ -212,7 +212,7 @@
             type="warning"
             plain
             @click="handleCopy(selectionList.map((item) => item.id))"
-            v-hasPermi="['erp:livebroadcastingreview:create']"
+            v-hasPermi="['erp:livebroadcastingreview:CopyCreate']"
             :disabled="selectionList.length === 0"
           >
             <Icon icon="ep:document-copy" class="mr-5px" /> 复制新增
@@ -287,7 +287,7 @@
               link
               type="warning"
               @click="handleCopy([scope.row.id])"
-              v-hasPermi="['erp:livebroadcastingreview:create']"
+              v-hasPermi="['erp:livebroadcastingreview:CopyCreate']"
             >
               复制
             </el-button>
