@@ -122,9 +122,9 @@ export const SaleOrderApi = {
 
   // 导出销售订单 Excel
   exportSaleOrder: async (params: any) => {
-    return await request.download({ url: `/erp/distribution/export-sale-excel`, params })
+    return await request.download({ url: `/erp/distribution/export-sale-audit-excel`, params })
   },
-  
+
   exportSaleOrder2: async (params: any) => {
     return await request.download({ url: `/erp/distribution/export-reviewed-sale-excel`, params })
   },

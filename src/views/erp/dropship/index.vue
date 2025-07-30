@@ -133,7 +133,7 @@
           type="warning"
           plain
           @click="handleImport"
-          v-hasPermi="['erp:dropship:create']"
+          v-hasPermi="['erp:dropship:import']"
         >
           <Icon icon="ep:upload" /> 导入
         </el-button>
@@ -143,7 +143,7 @@
             plain
             @click="handleExport"
             :loading="exportLoading"
-            v-hasPermi="['erp:dropship:create']"
+            v-hasPermi="['erp:dropship:export']"
           >
             <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
