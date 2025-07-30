@@ -441,7 +441,7 @@
               <el-form-item label="续件数量" label-width="100px" required>
                 <el-input-number
                   v-model="singlePriceForm.additionalItemQuantity"
-                  :min="1"
+                  :min="0"
                   controls-position="right"
                   placeholder="请输入续件数量"
                   class="!w-full"
@@ -629,7 +629,7 @@ const getList = async (paginationParams?: any) => {
       queryParams.pageNo = paginationParams.page
       queryParams.pageSize = paginationParams.limit
     }
-    
+
     const data = await SalePriceApi.getCombinedMissingPrices(queryParams)
     list.value = data.list
     total.value = data.total
@@ -698,20 +698,54 @@ const handleSingleSetPrice = async () => {
   }
 
   // 验证运费设置
-  if (singlePriceForm.shippingFeeType === 0 && !singlePriceForm.fixedShippingFee) {
+  // if (singlePriceForm.shippingFeeType === 0 && !singlePriceForm.fixedShippingFee) {
+  //   message.warning('固定运费类型需要设置固定运费金额')
+  //   return
+  // }
+
+  if (singlePriceForm.shippingFeeType === 0 && (singlePriceForm.fixedShippingFee === null || singlePriceForm.fixedShippingFee === undefined)) {
     message.warning('固定运费类型需要设置固定运费金额')
     return
   }
+  // if (singlePriceForm.shippingFeeType === 1) {
+  //   if (!singlePriceForm.additionalItemQuantity || !singlePriceForm.additionalItemPrice) {
+  //     message.warning('按件计费需要设置续件数量和续件价格')
+  //     return
+  //   }
+  // }
   if (singlePriceForm.shippingFeeType === 1) {
-    if (!singlePriceForm.additionalItemQuantity || !singlePriceForm.additionalItemPrice) {
+    if (
+      singlePriceForm.additionalItemQuantity === null || singlePriceForm.additionalItemQuantity === undefined ||
+      singlePriceForm.additionalItemPrice === null || singlePriceForm.additionalItemPrice === undefined
+    ) {
       message.warning('按件计费需要设置续件数量和续件价格')
       return
     }
   }
+  // if (singlePriceForm.shippingFeeType === 2) {
+  //   if (!singlePriceForm.firstWeight || !singlePriceForm.firstWeightPrice ||
+  //       !singlePriceForm.additionalWeight || !singlePriceForm.additionalWeightPrice) {
+  //     message.warning('按重计费需要设置首重重量、首重价格、续重重量和续重价格')
+  //     return
+  //   }
+  // }
+
   if (singlePriceForm.shippingFeeType === 2) {
-    if (!singlePriceForm.firstWeight || !singlePriceForm.firstWeightPrice ||
-        !singlePriceForm.additionalWeight || !singlePriceForm.additionalWeightPrice) {
-      message.warning('按重计费需要设置首重重量、首重价格、续重重量和续重价格')
+    const fieldMap: Record<string, string> = {
+      firstWeight: '首重重量',
+      firstWeightPrice: '首重价格',
+      additionalWeight: '续重重量',
+      additionalWeightPrice: '续重价格'
+    }
+
+    const missing = Object.keys(fieldMap).filter(
+      key => singlePriceForm[key as keyof typeof fieldMap] === null ||
+        singlePriceForm[key as keyof typeof fieldMap] === undefined
+    )
+
+    if (missing.length > 0) {
+      const missingNames = missing.map(k => fieldMap[k]).join('、')
+      message.warning(`按重计费需要设置：${missingNames}`)
       return
     }
   }
