@@ -109,6 +109,10 @@ export const ErpDistributionApi = {
     return await request.download({ url: `/erp/distribution/export-sale-excel`, params })
   },
 
+  exportSaleExcel2: async (params: any) => {
+    return await request.download({ url: `/erp/distribution/export-sale-reverse-excel`, params })
+  },
+
   // 导出代发发货信息 Excel
   exportShipExcel: async (params: any) => {
     return await request.download({ url: `/erp/distribution/export-ship-excel`, params })

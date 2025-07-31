@@ -340,6 +340,15 @@
         >
           <Icon icon="ep:download" class="mr-5px" /> 出货导出
         </el-button>
+        <el-button
+          type="success"
+          plain
+          @click="handleSaleExport2"
+          :loading="saleExportLoading"
+          v-hasPermi="['erp:distribution:importSale']"
+        >
+          <Icon icon="ep:download" class="mr-5px" /> 出货导出(顺)
+        </el-button>
 <!--        <el-button-->
 <!--          type="success"-->
 <!--          plain-->
@@ -674,6 +683,20 @@ const handleSaleExport = async () => {
     saleExportLoading.value = true
     const data = await ErpDistributionApi.exportSaleExcel(queryParams)
     download.excel(data, '代发订单.xlsx')
+  } catch {
+  } finally {
+    saleExportLoading.value = false
+  }
+}
+
+const handleSaleExport2 = async () => {
+  try {
+    // 导出的二次确认
+    await message.exportConfirm()
+    // 发起导出
+    saleExportLoading.value = true
+    const data = await ErpDistributionApi.exportSaleExcel2(queryParams)
+    download.excel(data, '代发订单(顺).xlsx')
   } catch {
   } finally {
     saleExportLoading.value = false
