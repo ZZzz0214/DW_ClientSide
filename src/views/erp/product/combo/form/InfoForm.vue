@@ -265,6 +265,7 @@ import SelectProduct from './SelectProduct.vue';
 import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue';
 import {copyValueToTarget} from "@/utils";
 import * as ProductComboApi from '@/api/erp/product/combo'
+import { ElMessage } from 'element-plus'; // 引入 ElMessage
 
 const props = defineProps({
   propFormData: {
@@ -337,7 +338,24 @@ const handleAdd = () => {
 
 // 处理选中的产品
 const handleProductSelected = (selectedProducts: any[]) => {
-  selectedProducts.forEach(product => {
+  // 过滤掉重复的产品
+  const validProducts = selectedProducts.filter(product => {
+    // 检查是否已经存在相同的产品
+    const existingProduct = formData.value.items.find(item => 
+      item.productId === product.id || item.id === product.id
+    );
+    
+    if (existingProduct) {
+      // 如果产品已存在，显示提示信息
+      ElMessage.warning(`产品"${product.name}"已经存在，不能重复添加`);
+      return false; // 过滤掉这个产品
+    }
+    
+    return true; // 允许添加这个产品
+  });
+
+  // 添加通过校验的产品
+  validProducts.forEach(product => {
     formData.value.items.push({
       productId: product.id || '', // 修复：使用 productId 字段映射到 product.id
       name: product.name || '', // 确保 productName 有默认值
@@ -351,6 +369,12 @@ const handleProductSelected = (selectedProducts: any[]) => {
       itemQuantity: 1, // 添加 itemQuantity 字段，默认值为1
     });
   });
+  
+  // 如果有产品被成功添加，显示成功提示
+  if (validProducts.length > 0) {
+    ElMessage.success(`成功添加 ${validProducts.length} 个产品到清单`);
+  }
+  
   updateComboInfo();
 };
 
