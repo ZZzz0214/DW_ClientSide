@@ -355,27 +355,51 @@
         <div class="summary-container">
           <div class="summary-item">
             <span class="summary-label">出货单价合计：</span>
-            <el-input v-model="totalSalePrice" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalSalePrice" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">出货运费合计：</span>
-            <el-input v-model="totalSaleShippingFee" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalSaleShippingFee" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">出货杂费合计：</span>
-            <el-input v-model="totalSaleOtherFees" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalSaleOtherFees" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">出货总额合计：</span>
-            <el-input v-model="totalSaleAmount" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalSaleAmount" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">代发销售审核总额合计：</span>
-            <el-input v-model="totalSaleAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalSaleAuditTotalAmount" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">出货售后审核费用合计：</span>
-            <el-input v-model="totalSaleAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalSaleAfterSalesAmount" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
         </div>
       </el-form-item>
@@ -500,7 +524,7 @@
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       :page-sizes="[10, 20, 30, 50, 100, 200, 500, 1000]"
-      @pagination="getList"
+      @pagination="getPageData"
     />
   </ContentWrap>
 
@@ -579,14 +603,15 @@ const totalSaleOtherFees = ref<string>('')
 const totalSaleAmount = ref<string>('')
 const totalSaleAfterSalesAmount = ref<string>('')
 const totalSaleAuditTotalAmount = ref<string>('')
+const summaryLoading = ref(true) // 合计数据加载状态，初始为true
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 const productList = ref<ProductVO[]>([]) // 产品列表
 const customerList = ref<CustomerVO[]>([]) // 客户列表
 const userList = ref<UserVO[]>([]) // 用户列表
 
-/** 查询列表 */
-const getList = async () => {
+/** 获取分页数据 */
+const getPageData = async () => {
   loading.value = true
   try {
     // 清空当前列表，避免旧数据引用问题
@@ -594,13 +619,8 @@ const getList = async () => {
     // 安全重置表格状态
     await safeReset()
     
+    // 只获取分页数据
     const data = await SaleOrderApi.getSaleOrderUnreviewedPage(queryParams)
-    totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
-    totalSaleShippingFee.value = data.totalSaleShippingFee?.toFixed(2) || ''
-    totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
-    totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
-    totalSaleAfterSalesAmount.value = data.totalSaleAfterSalesAmount?.toFixed(2) || ''
-    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
     
     // 使用nextTick确保DOM已更新后再设置数据
     await nextTick(() => {
@@ -608,7 +628,7 @@ const getList = async () => {
       total.value = data.pageResult.total
     })
   } catch (error) {
-    console.error('获取列表数据失败:', error)
+    console.error('获取分页数据失败:', error)
     message.error('获取数据失败，请刷新重试')
     list.value = []
     total.value = 0
@@ -617,12 +637,36 @@ const getList = async () => {
   }
 }
 
+/** 获取合计数据 */
+const getSummaryData = async () => {
+  summaryLoading.value = true
+  try {
+    // 获取合计数据
+    const data = await SaleOrderApi.getSaleOrderUnreviewedPage(queryParams)
+    totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
+    totalSaleShippingFee.value = data.totalSaleShippingFee?.toFixed(2) || ''
+    totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
+    totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
+    totalSaleAfterSalesAmount.value = data.totalSaleAfterSalesAmount?.toFixed(2) || ''
+    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
+  } catch (error) {
+    console.error('获取合计数据失败:', error)
+  } finally {
+    summaryLoading.value = false
+  }
+}
+
+/** 查询列表（包含合计数据） */
+const getList = async () => {
+  await Promise.all([getPageData(), getSummaryData()])
+}
+
 /** 搜索按钮操作 */
 const handleQuery = async () => {
   queryParams.pageNo = 1
   // 安全重置表格状态
   await safeReset()
-  getList()
+  getList() // 搜索时需要获取合计数据
 }
 
 /** 重置按钮操作 */
@@ -630,7 +674,7 @@ const resetQuery = async () => {
   queryFormRef.value.resetFields()
   // 安全重置表格状态
   await safeReset()
-  handleQuery()
+  handleQuery() // 重置时需要重新获取合计数据
 }
 
 /** 添加/修改操作 */
@@ -718,7 +762,7 @@ const handleBatchAudit = async (saleAuditStatus: number) => {
     await SaleOrderApi.batchUpdateSaleAuditStatus(ids, saleAuditStatus)
     message.success(`${statusText}成功`)
     
-    // 刷新列表数据
+    // 刷新列表数据（批量审核后需要更新合计数据）
     await getList()
   } catch (error) {
     console.error('批量审核操作失败:', error)
@@ -747,7 +791,7 @@ const handleBatchAfterSales = async (saleAfterSalesStatus: number) => {
     await SaleOrderApi.batchUpdateSaleAfterSales(ids, saleAfterSalesStatus)
     message.success(`${statusText}成功`)
     
-    // 刷新列表数据
+    // 刷新列表数据（批量售后后需要更新合计数据）
     await getList()
   } catch (error) {
     console.error('批量售后操作失败:', error)
@@ -765,7 +809,7 @@ const handleSelectionChange = (rows: SaleOrderVO[]) => {
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
+  await getList() // 初始化时需要获取完整数据（包含合计）
   // 加载产品、仓库列表、客户
   productList.value = await ProductApi.getProductSimpleList()
  // customerList.value = await CustomerApi.getCustomerSimpleList()
@@ -814,5 +858,18 @@ onMounted(async () => {
   font-weight: 500;
   color: #409eff;
   text-align: right;
+}
+
+.is-loading {
+  animation: rotating 2s linear infinite;
+}
+
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>
