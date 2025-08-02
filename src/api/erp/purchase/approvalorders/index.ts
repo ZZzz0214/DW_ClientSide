@@ -89,11 +89,30 @@ export const PurchaseOrderApi = {
     return await request.get({ url: `/erp/wholesale/purchase/reviewed-page`, params })
   },
 
+  // 获取采购订单合计
+  getPurchaseOrderSummary: async (params: any) => {
+    return await request.get({ url: `/erp/wholesale/purchase/unreviewed-summary`, params })
+  },
   getSaleOrderPage: async (params: any) => {
     return await request.get({ url: `/erp/wholesale/sale/unreviewed-page`, params })
   },
   getSaleReviewedOrderPage: async (params: any) => {
     return await request.get({ url: `/erp/wholesale/sale/reviewed-page`, params })
+  },
+
+  // 获取销售订单合计
+  getSaleOrderSummary: async (params: any) => {
+    return await request.get({ url: `/erp/wholesale/sale/unreviewed-summary`, params })
+  },
+
+  // 获取已审核采购订单合计
+  getPurchaseReviewedOrderSummary: async (params: any) => {
+    return await request.get({ url: `/erp/wholesale/purchase/reviewed-summary`, params })
+  },
+
+  // 获取已审核销售订单合计
+  getSaleReviewedOrderSummary: async (params: any) => {
+    return await request.get({ url: `/erp/wholesale/sale/reviewed-summary`, params })
   },
 
 

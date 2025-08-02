@@ -339,7 +339,7 @@
             <el-input v-model="totalSaleAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
           </div>
         </div>
-      </el-form-item>
+  </el-form-item>
     </el-form>
   </ContentWrap>
 

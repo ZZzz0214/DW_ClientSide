@@ -281,7 +281,7 @@
       </el-form-item>
       <!-- 合计字段统一行 -->
       <el-form-item class="summary-row">
-        <div class="summary-container">
+        <div class="summary-container" v-loading="summaryLoading" element-loading-text="正在计算合计...">
           <div class="summary-item">
             <span class="summary-label">出货单价合计：</span>
             <el-input v-model="totalSalePrice" disabled class="summary-input" placeholder="无数据" />
@@ -509,6 +509,10 @@ const totalSaleAuditTotalAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
+
+// 新增合计数据加载状态
+const summaryLoading = ref(false)
+
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -551,14 +555,6 @@ const getList = async () => {
     
     const data = await PurchaseOrderApi.getSaleOrderPage(queryParams)
 
-    totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
-    totalSaleTruckFee.value = data.totalSaleTruckFee?.toFixed(2) || ''
-    totalSaleLogisticsFee.value = data.totalSaleLogisticsFee?.toFixed(2) || ''
-    totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
-    totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
-    totalSaleAfterSalesAmount.value = data.totalSaleAfterSalesAmount?.toFixed(2) || ''
-    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
-    
     // 使用nextTick确保DOM已更新后再设置数据
     await nextTick(() => {
       list.value = data.pageResult.list || []
@@ -574,12 +570,30 @@ const getList = async () => {
   }
 }
 
+/** 获取合计数据 */
+const getSummaryData = async () => {
+  summaryLoading.value = true
+  try {
+    const data = await PurchaseOrderApi.getSaleOrderSummary(queryParams)
+    totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
+    totalSaleTruckFee.value = data.totalSaleTruckFee?.toFixed(2) || ''
+    totalSaleLogisticsFee.value = data.totalSaleLogisticsFee?.toFixed(2) || ''
+    totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
+    totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
+    totalSaleAfterSalesAmount.value = data.totalSaleAfterSalesAmount?.toFixed(2) || ''
+    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
+  } finally {
+    summaryLoading.value = false
+  }
+}
+
 /** 搜索按钮操作 */
 const handleQuery = async () => {
   queryParams.pageNo = 1
   // 安全重置表格状态
   await safeReset()
   getList()
+  getSummaryData()
 }
 
 /** 重置按钮操作 */
@@ -679,7 +693,10 @@ const handleBatchAudit = async (saleAuditStatus: number) => {
     message.success(`${statusText}成功`)
     
     // 刷新列表数据
-    await getList()
+    await Promise.all([
+      getList(),
+      getSummaryData()
+    ])
   } catch (error) {
     console.error('批量审核操作失败:', error)
     message.error('操作失败，请稍后重试')
@@ -708,7 +725,10 @@ const handleBatchAfterSales = async (saleAfterSalesStatus: number) => {
     message.success(`${statusText}成功`)
     
     // 刷新列表数据
-    await getList()
+    await Promise.all([
+      getList(),
+      getSummaryData()
+    ])
   } catch (error) {
     console.error('批量售后操作失败:', error)
     message.error('操作失败，请稍后重试')
@@ -725,7 +745,10 @@ const handleSelectionChange = (rows: PurchaseOrderVO[]) => {
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
+  await Promise.all([
+    getList(),
+    getSummaryData()
+  ])
   // 加载产品、仓库列表、供应商
   productList.value = await ProductApi.getProductSimpleList()
   supplierList.value = await SupplierApi.getSupplierSimpleList()

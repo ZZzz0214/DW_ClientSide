@@ -242,26 +242,34 @@
 <!--          <Icon icon="ep:delete" class="mr-5px" /> 删除-->
 <!--        </el-button>-->
       </el-form-item>
-        <el-form-item>
-                <!-- 新增四个合计字段显示框 -->
-          <el-form-item label="采购单价合计" style="margin-left: 20px;" label-width="140px">
-            <el-input v-model="totalPurchasePrice" disabled class="!w-120px" placeholder="无数据" />
-          </el-form-item>
-          <el-form-item label="采购货拉拉费合计" style="margin-left: 20px;" label-width="160px">
-            <el-input v-model="totalTruckFee" disabled class="!w-120px" placeholder="无数据" />
-          </el-form-item>
-          <el-form-item label="采购物流费用合计" style="margin-left: 20px;" label-width="140px">
-            <el-input v-model="totalLogisticsFee" disabled class="!w-120px" placeholder="无数据" />
-          </el-form-item>
-          <el-form-item label="采购杂费合计" style="margin-left: 20px;" label-width="140px">
-            <el-input v-model="totalOtherFees" disabled class="!w-120px" placeholder="无数据" />
-          </el-form-item>
-          <el-form-item label="采购总额合计" style="margin-left: 20px;" label-width="140px">
-            <el-input v-model="totalPurchaseAmount" disabled class="!w-120px" placeholder="无数据" />
-          </el-form-item>
-          <el-form-item label="采购审核总额合计" style="margin-left: 20px;" label-width="140px">
-            <el-input v-model="totalPurchaseAuditTotalAmount" disabled class="!w-120px" placeholder="无数据" />
-          </el-form-item>
+      <!-- 合计字段统一行 -->
+      <el-form-item class="summary-row">
+        <div class="summary-container" v-loading="summaryLoading" element-loading-text="正在计算合计...">
+          <div class="summary-item">
+            <span class="summary-label">采购单价合计：</span>
+            <el-input v-model="totalPurchasePrice" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">采购货拉拉费合计：</span>
+            <el-input v-model="totalTruckFee" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">采购物流费用合计：</span>
+            <el-input v-model="totalLogisticsFee" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">采购杂费合计：</span>
+            <el-input v-model="totalOtherFees" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">采购总额合计：</span>
+            <el-input v-model="totalPurchaseAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">采购审核总额合计：</span>
+            <el-input v-model="totalPurchaseAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+        </div>
       </el-form-item>
 
     </el-form>
@@ -442,6 +450,10 @@ const totalPurchaseAuditTotalAmount = ref<string>('')
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
+
+// 新增合计数据加载状态
+const summaryLoading = ref(false)
+
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
@@ -477,12 +489,6 @@ const getList = async () => {
   loading.value = true
   try {
     const data = await PurchaseOrderApi.getPurchaseReviewedOrderPage(queryParams)
-    totalPurchasePrice.value = data.totalPurchasePrice?.toFixed(2) || ''
-    totalTruckFee.value = data.totalTruckFee?.toFixed(2) || ''
-    totalLogisticsFee.value = data.totalLogisticsFee?.toFixed(2) || ''
-    totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
-    totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
-    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
     list.value = data.pageResult.list
     total.value = data.pageResult.total
   } finally {
@@ -490,10 +496,27 @@ const getList = async () => {
   }
 }
 
+/** 获取合计数据 */
+const getSummaryData = async () => {
+  summaryLoading.value = true
+  try {
+    const data = await PurchaseOrderApi.getPurchaseReviewedOrderSummary(queryParams)
+    totalPurchasePrice.value = data.totalPurchasePrice?.toFixed(2) || ''
+    totalTruckFee.value = data.totalTruckFee?.toFixed(2) || ''
+    totalLogisticsFee.value = data.totalLogisticsFee?.toFixed(2) || ''
+    totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
+    totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
+    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
+  } finally {
+    summaryLoading.value = false
+  }
+}
+
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
+  getSummaryData()
 }
 
 /** 重置按钮操作 */
@@ -560,7 +583,10 @@ const handleBatchAudit = async (purchaseAuditStatus: number) => {
     message.success(`${statusText}成功`)
 
     // 刷新列表并清空选择
-    await getList()
+    await Promise.all([
+      getList(),
+      getSummaryData()
+    ])
     selectionList.value = []
   } catch {}
 }
@@ -588,10 +614,55 @@ const handleSelectionChange = (rows: PurchaseOrderVO[]) => {
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
+  await Promise.all([
+    getList(),
+    getSummaryData()
+  ])
   // 加载产品、仓库列表、供应商
   productList.value = await ProductApi.getProductSimpleList()
   supplierList.value = await SupplierApi.getSupplierSimpleList()
   userList.value = await UserApi.getSimpleUserList()
 })
 </script>
+
+<style scoped>
+.summary-row {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.summary-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: #606266;
+  margin-right: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.summary-input {
+  width: 120px;
+}
+
+.summary-input :deep(.el-input__inner) {
+  font-weight: 500;
+  color: #409eff;
+  text-align: right;
+}
+</style>
