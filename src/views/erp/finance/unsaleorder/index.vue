@@ -315,24 +315,31 @@
 <!--          <Icon icon="ep:delete" class="mr-5px" /> 删除-->
 <!--        </el-button>-->
       </el-form-item>
-      <el-form-item>
-    <!-- 新增四个出货合计字段显示框 -->
-    <el-form-item label="出货单价合计" style="margin-left: 20px;" label-width="140px">
-      <el-input v-model="totalSalePrice" disabled class="!w-120px" placeholder="无数据" />
-    </el-form-item>
-    <el-form-item label="出货运费合计" style="margin-left: 20px;" label-width="160px">
-      <el-input v-model="totalSaleShippingFee" disabled class="!w-120px" placeholder="无数据" />
-    </el-form-item>
-    <el-form-item label="出货杂费合计" style="margin-left: 20px;" label-width="140px">
-      <el-input v-model="totalSaleOtherFees" disabled class="!w-120px" placeholder="无数据" />
-    </el-form-item>
-    <el-form-item label="出货总额合计" style="margin-left: 20px;" label-width="140px">
-      <el-input v-model="totalSaleAmount" disabled class="!w-120px" placeholder="无数据" />
-    </el-form-item>
-        <el-form-item label="出货审核总额合计" style="margin-left: 20px;" label-width="140px">
-          <el-input v-model="totalSaleAuditTotalAmount" disabled class="!w-120px" placeholder="无数据" />
-        </el-form-item>
-  </el-form-item>
+      <!-- 合计字段统一行 -->
+      <el-form-item class="summary-row">
+        <div class="summary-container" v-loading="summaryLoading" element-loading-text="正在计算合计...">
+          <div class="summary-item">
+            <span class="summary-label">出货单价合计：</span>
+            <el-input v-model="totalSalePrice" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">出货运费合计：</span>
+            <el-input v-model="totalSaleShippingFee" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">出货杂费合计：</span>
+            <el-input v-model="totalSaleOtherFees" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">出货总额合计：</span>
+            <el-input v-model="totalSaleAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+          <div class="summary-item">
+            <span class="summary-label">出货审核总额合计：</span>
+            <el-input v-model="totalSaleAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+          </div>
+        </div>
+      </el-form-item>
     </el-form>
   </ContentWrap>
 
@@ -506,17 +513,15 @@ const productList = ref<ProductVO[]>([]) // 产品列表
 const customerList = ref<CustomerVO[]>([]) // 客户列表
 const userList = ref<UserVO[]>([]) // 用户列表
 
+// 新增合计数据加载状态
+const summaryLoading = ref(false)
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     const data = await SaleOrderApi.getSaleOrderReviewedPage(queryParams)
     console.log(data.pageResult.list)
-    totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
-    totalSaleShippingFee.value = data.totalSaleShippingFee?.toFixed(2) || ''
-    totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
-    totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
-    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
     list.value = data.pageResult.list
     total.value = data.pageResult.total
   } finally {
@@ -524,10 +529,26 @@ const getList = async () => {
   }
 }
 
+/** 获取合计数据 */
+const getSummaryData = async () => {
+  summaryLoading.value = true
+  try {
+    const data = await SaleOrderApi.getSaleOrderReviewedSummary(queryParams)
+    totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
+    totalSaleShippingFee.value = data.totalSaleShippingFee?.toFixed(2) || ''
+    totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
+    totalSaleAmount.value = data.totalSaleAmount?.toFixed(2) || ''
+    totalSaleAuditTotalAmount.value = data.totalSaleAuditTotalAmount?.toFixed(2) || ''
+  } finally {
+    summaryLoading.value = false
+  }
+}
+
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
+  getSummaryData()
 }
 
 /** 重置按钮操作 */
@@ -613,7 +634,10 @@ const handleBatchAudit = async (saleAuditStatus: number) => {
     message.success(`${statusText}成功`)
 
     // 刷新列表并清空选择
-    await getList()
+    await Promise.all([
+      getList(),
+      getSummaryData()
+    ])
     selectionList.value = []
   } catch {}
 }
@@ -621,7 +645,10 @@ const handleBatchAudit = async (saleAuditStatus: number) => {
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
+  await Promise.all([
+    getList(),
+    getSummaryData()
+  ])
   // 加载产品、仓库列表、客户
   productList.value = await ProductApi.getProductSimpleList()
   customerList.value = await CustomerApi.getCustomerSimpleList()
@@ -630,3 +657,45 @@ onMounted(async () => {
 // TODO 芋艿：可优化功能：列表界面，支持导入
 // TODO 芋艿：可优化功能：详情界面，支持打印
 </script>
+
+<style scoped>
+.summary-row {
+  margin-top: 10px;
+  margin-bottom: 15px;
+}
+
+.summary-container {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 15px;
+  align-items: center;
+  padding: 10px;
+  background-color: #f8f9fa;
+  border-radius: 6px;
+  border: 1px solid #e9ecef;
+}
+
+.summary-item {
+  display: flex;
+  align-items: center;
+  white-space: nowrap;
+}
+
+.summary-label {
+  font-weight: 500;
+  color: #606266;
+  margin-right: 8px;
+  font-size: 14px;
+  white-space: nowrap;
+}
+
+.summary-input {
+  width: 120px;
+}
+
+.summary-input :deep(.el-input__inner) {
+  font-weight: 500;
+  color: #409eff;
+  text-align: right;
+}
+</style>

@@ -73,6 +73,11 @@ export const PurchaseOrderApi = {
     return await request.get({ url: `/erp/distribution/purchase/reviewed-page`, params })
   },
 
+  // 获取采购订单合计
+  getPurchaseOrderSummary: async (params: any) => {
+    return await request.get({ url: `/erp/distribution/purchase/reviewed-summary`, params })
+  },
+
   // 查询采购订单详情
   getPurchaseOrder: async (id: number) => {
     return await request.get({ url: `/erp/distribution/purchase/get?id=` + id })
@@ -122,6 +127,5 @@ export const PurchaseOrderApi = {
         purchaseAuditStatus
       }
     })
-  },
-
+  }
 }

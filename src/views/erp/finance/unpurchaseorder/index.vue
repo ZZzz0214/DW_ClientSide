@@ -318,7 +318,7 @@
       </el-form-item>
       <!-- 合计字段统一行 -->
       <el-form-item class="summary-row">
-        <div class="summary-container">
+        <div class="summary-container" v-loading="summaryLoading" element-loading-text="正在计算合计...">
           <div class="summary-item">
             <span class="summary-label">采购单价合计：</span>
             <el-input v-model="totalPurchasePrice" disabled class="summary-input" placeholder="无数据" />
@@ -534,19 +534,14 @@ const supplierList = ref<SupplierVO[]>([]) // 供应商列表
 const userList = ref<UserVO[]>([]) // 用户列表
 const totalPurchaseAfterSalesAmount = ref<string>('')
 
+// 新增合计数据加载状态
+const summaryLoading = ref(false)
+
 /** 查询列表 */
 const getList = async () => {
   loading.value = true
   try {
     const data = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
-    totalPurchasePrice.value = data.totalPurchasePrice?.toFixed(2) || ''
-    totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
-    totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
-    totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
-    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
-    totalPurchaseAfterSalesAmount.value = data.totalPurchaseAfterSalesAmount?.toFixed(2) || ''
-    console.log(data.pageResult.list)
-
     list.value = data.pageResult.list
     total.value = data.pageResult.total
   } finally {
@@ -554,10 +549,27 @@ const getList = async () => {
   }
 }
 
+/** 获取合计数据 */
+const getSummaryData = async () => {
+  summaryLoading.value = true
+  try {
+    const data = await PurchaseOrderApi.getPurchaseOrderSummary(queryParams)
+    totalPurchasePrice.value = data.totalPurchasePrice?.toFixed(2) || ''
+    totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
+    totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
+    totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
+    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
+    totalPurchaseAfterSalesAmount.value = data.totalPurchaseAfterSalesAmount?.toFixed(2) || ''
+  } finally {
+    summaryLoading.value = false
+  }
+}
+
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
   getList()
+  getSummaryData()
 }
 
 /** 重置按钮操作 */
@@ -597,7 +609,10 @@ const handleBatchAudit = async (purchaseAuditStatus: number) => {
     message.success(`${statusText}成功`)
 
     // 刷新列表并清空选择
-    await getList()
+    await Promise.all([
+      getList(),
+      getSummaryData()
+    ])
     selectionList.value = []
   } catch {}
 }
@@ -646,7 +661,10 @@ const handleSelectionChange = (rows: PurchaseOrderVO[]) => {
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
+  await Promise.all([
+    getList(),
+    getSummaryData()
+  ])
   // 加载产品、仓库列表、供应商
   productList.value = await ProductApi.getProductSimpleList()
   supplierList.value = await SupplierApi.getSupplierSimpleList()
