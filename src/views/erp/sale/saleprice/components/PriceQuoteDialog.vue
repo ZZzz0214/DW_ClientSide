@@ -16,10 +16,18 @@
           label-width="80px"
           class="search-form"
         >
-          <el-form-item label="组品编号" prop="groupProductId">
+          <el-form-item label="组品编号" prop="groupProductNo">
             <el-input
-              v-model="queryParams.groupProductId"
+              v-model="queryParams.groupProductNo"
               placeholder="请输入组品编号"
+              clearable
+              class="!w-200px"
+            />
+          </el-form-item>
+          <el-form-item label="产品名称" prop="productName">
+            <el-input
+              v-model="queryParams.productName"
+              placeholder="请输入产品名称"
               clearable
               class="!w-200px"
             />
@@ -573,8 +581,9 @@ const total = ref(0)
 const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
-  groupProductId: '',
-  customerName: ''
+  groupProductNo: '',
+  customerName: '',
+  productName: ''
 })
 
 // 单个设置价格弹窗状态
@@ -648,8 +657,9 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryParams.pageNo = 1
   queryParams.pageSize = 10
-  queryParams.groupProductId = ''
+  queryParams.groupProductNo = ''
   queryParams.customerName = ''
+  queryParams.productName = ''
   getList()
 }
 
