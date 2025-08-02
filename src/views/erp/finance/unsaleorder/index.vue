@@ -366,7 +366,7 @@
       <el-table-column label="原表规格" prop="originalStandard" :show-overflow-tooltip="false"/>
       <el-table-column label="原表数量" prop="originalQuantity" :show-overflow-tooltip="false"/>
       <el-table-column label="备注信息" prop="remark" :show-overflow-tooltip="false"/>
-      <el-table-column label="组品编号" prop="comboProductId" :show-overflow-tooltip="false" min-width="140"/>
+      <el-table-column label="组品编号" prop="comboProductNo" :show-overflow-tooltip="false" min-width="140"/>
       <el-table-column label="发货编码" prop="shippingCode" :show-overflow-tooltip="false" min-width="150"/>
       <el-table-column label="产品名称" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
       <el-table-column label="产品规格" prop="productSpecification" :show-overflow-tooltip="false"/>

@@ -371,7 +371,7 @@
       <el-table-column label="原表规格" align="center" prop="originalStandard" width="120" :show-overflow-tooltip="false"/>
       <el-table-column label="原表数量" align="center" prop="originalQuantity" width="100" :show-overflow-tooltip="false"/>
       <el-table-column label="备注信息" align="center" prop="remark" width="120" :show-overflow-tooltip="false"/>
-      <el-table-column label="组品编号" align="center" prop="comboProductId" min-width="140" :show-overflow-tooltip="false"/>
+      <el-table-column label="组品编号" align="center" prop="comboProductNo" min-width="140" :show-overflow-tooltip="false"/>
       <el-table-column label="发货编码" align="center" prop="shippingCode" width="150" :show-overflow-tooltip="false"/>
       <el-table-column label="产品名称" align="center" prop="productName" min-width="350" :show-overflow-tooltip="false"/>
       <el-table-column label="产品规格" align="center" prop="productSpecification" width="120" :show-overflow-tooltip="false"/>

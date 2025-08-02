@@ -23,27 +23,27 @@
       </el-form>
     </ContentWrap>
   </template>
-  
+
   <script lang="ts" setup>
   import { cloneDeep } from 'lodash-es'
   import { useTagsViewStore } from '@/store/modules/tagsView'
   import * as SampleApi from '@/api/erp/sample'
   import InfoForm from './InfoForm.vue'
   import CopyDataForm from './components/CopyDataForm.vue'
-  
+
   defineOptions({ name: 'ErpSampleAdd' })
-  
+
   const { t } = useI18n() // 国际化
   const message = useMessage() // 消息弹窗
   const { push, currentRoute } = useRouter() // 路由
   const { params, query, name } = useRoute() // 查询参数
   const { delView } = useTagsViewStore() // 视图操作
-  
+
   const formLoading = ref(false) // 表单的加载中
   const activeName = ref('info') // Tab 激活的窗口
   const isDetail = ref(false) // 是否查看详情
   const infoRef = ref() // 基础信息 Ref
-  
+
   // 表单数据
   const formData = ref<SampleApi.SampleVO>({
     no: '',
@@ -62,7 +62,7 @@
     reference: '',
     remark: ''
   })
-  
+
   /** 获得详情 */
   const getDetail = async () => {
     if ('ErpSampleDetail' === name) {
@@ -70,7 +70,7 @@
     }
     const id = params.id as unknown as number
     const copyId = query.copyId as unknown as number
-    
+
     if (id) {
       formLoading.value = true
       try {
@@ -84,15 +84,16 @@
       formLoading.value = true
       try {
         const res = await SampleApi.SampleApi.getSample(copyId)
-        
+
         // 复制数据，但重置关键字段
         formData.value = {
           ...res,
+          customerName:undefined,
           id: undefined,
           createTime: undefined,
           updateTime: undefined
         }
-        
+
         // 确保数据更新后再触发子组件更新
         await nextTick()
       } finally {
@@ -100,18 +101,18 @@
       }
     }
   }
-  
+
   /** 提交按钮 */
   const submitForm = async () => {
     formLoading.value = true
     try {
       // 校验各表单
       await unref(infoRef)?.validate()
-  
+
       // 提交数据
       const data = cloneDeep(unref(formData.value))
       const id = params.id as unknown as number
-  
+
       if (!id) {
         // 新增时不传递 no 字段，让后端自动生成
         delete data.no
@@ -121,7 +122,7 @@
         await SampleApi.SampleApi.updateSample(data)
         message.success(t('common.updateSuccess'))
       }
-  
+
       // 设置刷新标志
       localStorage.setItem('refreshList', 'true')
       close()
@@ -129,13 +130,13 @@
       formLoading.value = false
     }
   }
-  
+
   /** 关闭按钮 */
   const close = () => {
     delView(unref(currentRoute))
     push({ name: 'ErpSample' })
   }
-  
+
   /** 初始化 */
   onMounted(async () => {
     await getDetail()

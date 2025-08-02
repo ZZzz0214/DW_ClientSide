@@ -181,7 +181,7 @@
           type="warning"
           plain
           @click="handleImport"
-          v-hasPermi="['erp:product:create']"
+          v-hasPermi="['erp:product:import']"
         >
           <Icon icon="ep:upload" /> 导入
         </el-button>

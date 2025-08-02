@@ -431,7 +431,7 @@
         <el-table-column label="原表规格" prop="originalStandard" :show-overflow-tooltip="false"/>
         <el-table-column label="原表数量" prop="originalQuantity" :show-overflow-tooltip="false"/>
         <el-table-column label="备注信息" prop="remark" :show-overflow-tooltip="false"/>
-        <el-table-column label="组品编号" prop="comboProductId" :show-overflow-tooltip="false"  min-width="140"/>
+        <el-table-column label="组品编号" prop="comboProductNo" :show-overflow-tooltip="false"  min-width="140"/>
         <el-table-column label="发货编码" prop="shippingCode" :show-overflow-tooltip="false" min-width="100"/>
         <el-table-column label="产品名称" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="产品规格" prop="productSpecification" :show-overflow-tooltip="false"/>
@@ -618,10 +618,10 @@ const getPageData = async () => {
     list.value = []
     // 安全重置表格状态
     await safeReset()
-    
+
     // 只获取分页数据
     const data = await SaleOrderApi.getSaleOrderUnreviewedPage(queryParams)
-    
+
     // 使用nextTick确保DOM已更新后再设置数据
     await nextTick(() => {
       list.value = data.pageResult.list || []
@@ -751,17 +751,17 @@ const handleBatchAudit = async (saleAuditStatus: number) => {
       message.warning('请至少选择一条记录')
       return
     }
-    
+
     const statusText = saleAuditStatus === 20 ? '审核' : '反审核'
     await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
 
     // 安全重置表格状态
     await safeReset()
-    
+
     loading.value = true
     await SaleOrderApi.batchUpdateSaleAuditStatus(ids, saleAuditStatus)
     message.success(`${statusText}成功`)
-    
+
     // 刷新列表数据（批量审核后需要更新合计数据）
     await getList()
   } catch (error) {
@@ -780,17 +780,17 @@ const handleBatchAfterSales = async (saleAfterSalesStatus: number) => {
       message.warning('请至少选择一条记录')
       return
     }
-    
+
     const statusText = saleAfterSalesStatus === 40 ? '售后' : '反售后'
     await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
 
     // 安全重置表格状态
     await safeReset()
-    
+
     loading.value = true
     await SaleOrderApi.batchUpdateSaleAfterSales(ids, saleAfterSalesStatus)
     message.success(`${statusText}成功`)
-    
+
     // 刷新列表数据（批量售后后需要更新合计数据）
     await getList()
   } catch (error) {
