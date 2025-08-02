@@ -355,27 +355,51 @@
         <div class="summary-container">
           <div class="summary-item">
             <span class="summary-label">采购单价合计：</span>
-            <el-input v-model="totalPurchasePrice" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalPurchasePrice" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">采购运费合计：</span>
-            <el-input v-model="totalShippingFee" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalShippingFee" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">采购杂费合计：</span>
-            <el-input v-model="totalOtherFees" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalOtherFees" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">采购总额合计：</span>
-            <el-input v-model="totalPurchaseAmount" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalPurchaseAmount" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">代发采购审核总额合计：</span>
-            <el-input v-model="totalPurchaseAuditTotalAmount" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalPurchaseAuditTotalAmount" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
           <div class="summary-item">
             <span class="summary-label">采购售后审核费用合计：</span>
-            <el-input v-model="totalPurchaseAfterSalesAmount" disabled class="summary-input" placeholder="无数据" />
+            <el-input v-model="totalPurchaseAfterSalesAmount" disabled class="summary-input" :placeholder="summaryLoading ? '' : '无数据'">
+              <template #prefix v-if="summaryLoading">
+                <Icon icon="ep:loading" class="is-loading" />
+              </template>
+            </el-input>
           </div>
         </div>
       </el-form-item>
@@ -534,7 +558,7 @@
       v-model:page="queryParams.pageNo"
       v-model:limit="queryParams.pageSize"
       :page-sizes="[10, 20, 30, 50, 100, 200, 500, 1000]"
-      @pagination="getList"
+      @pagination="getPageData"
     />
   </ContentWrap>
 
@@ -571,6 +595,7 @@ const totalOtherFees = ref<string>('')
 const totalPurchaseAmount = ref<string>('')
 const totalPurchaseAfterSalesAmount = ref<string>('')
 const totalPurchaseAuditTotalAmount = ref<string>('')
+const summaryLoading = ref(true) // 合计数据加载状态，初始为true
 const loading = ref(true) // 列表的加载中
 const list = ref<PurchaseOrderVO[]>([]) // 列表的数据
 const total = ref(0) // 列表的总页数
@@ -609,37 +634,54 @@ const productList = ref<ProductVO[]>([]) // 产品列表
 const supplierList = ref<SupplierVO[]>([]) // 供应商列表
 const userList = ref<UserVO[]>([]) // 用户列表
 
-/** 查询列表 */
-const getList = async () => {
+/** 获取分页数据 */
+const getPageData = async () => {
   loading.value = true
   try {
-    const data = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
-
-    totalPurchasePrice.value = data.totalPurchasePrice?.toFixed(2) || ''
-    totalShippingFee.value = data.totalShippingFee?.toFixed(2) || ''
-    totalOtherFees.value = data.totalOtherFees?.toFixed(2) || ''
-    totalPurchaseAmount.value = data.totalPurchaseAmount?.toFixed(2) || ''
-    totalPurchaseAfterSalesAmount.value = data.totalPurchaseAfterSalesAmount?.toFixed(2) || ''
-    totalPurchaseAuditTotalAmount.value = data.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
-    console.log(data.pageResult.list)
-
-    list.value = data.pageResult.list
-    total.value = data.pageResult.total
+    // 只获取分页数据
+    const pageData = await PurchaseOrderApi.getPurchaseOrderPage(queryParams)
+    list.value = pageData.pageResult.list
+    total.value = pageData.pageResult.total
+    console.log(pageData.pageResult.list)
   } finally {
     loading.value = false
   }
 }
 
+/** 获取合计数据 */
+const getSummaryData = async () => {
+  summaryLoading.value = true
+  try {
+    // 获取合计数据
+    const summaryData = await PurchaseOrderApi.getPurchaseOrderSummary(queryParams)
+    totalPurchasePrice.value = summaryData.totalPurchasePrice?.toFixed(2) || ''
+    totalShippingFee.value = summaryData.totalShippingFee?.toFixed(2) || ''
+    totalOtherFees.value = summaryData.totalOtherFees?.toFixed(2) || ''
+    totalPurchaseAmount.value = summaryData.totalPurchaseAmount?.toFixed(2) || ''
+    totalPurchaseAfterSalesAmount.value = summaryData.totalPurchaseAfterSalesAmount?.toFixed(2) || ''
+    totalPurchaseAuditTotalAmount.value = summaryData.totalPurchaseAuditTotalAmount?.toFixed(2) || ''
+  } catch (error) {
+    console.error('获取合计数据失败:', error)
+  } finally {
+    summaryLoading.value = false
+  }
+}
+
+/** 查询列表（包含合计数据） */
+const getList = async () => {
+  await Promise.all([getPageData(), getSummaryData()])
+}
+
 /** 搜索按钮操作 */
 const handleQuery = () => {
   queryParams.pageNo = 1
-  getList()
+  getList() // 搜索时需要获取合计数据
 }
 
 /** 重置按钮操作 */
 const resetQuery = () => {
   queryFormRef.value.resetFields()
-  handleQuery()
+  handleQuery() // 重置时需要重新获取合计数据
 }
 
 /** 添加/修改操作 */
@@ -722,7 +764,7 @@ const handleBatchAudit = async (purchaseAuditStatus: number) => {
     await PurchaseOrderApi.batchUpdatePurchaseAuditStatus(ids, purchaseAuditStatus)
     message.success(`${statusText}成功`)
 
-    // 刷新列表并清空选择
+    // 刷新列表并清空选择（批量审核后需要更新合计数据）
     await getList()
     selectionList.value = []
   } catch {}
@@ -738,7 +780,7 @@ const handleBatchAfterSales = async (purchaseAfterSalesStatus: number) => {
     await PurchaseOrderApi.batchUpdatePurchaseAfterSales(ids, purchaseAfterSalesStatus)
     message.success(`${statusText}成功`)
 
-    // 刷新列表并清空选择
+    // 刷新列表并清空选择（批量售后后需要更新合计数据）
     await getList()
     selectionList.value = []
   } catch {}
@@ -752,7 +794,7 @@ const handleSelectionChange = (rows: PurchaseOrderVO[]) => {
 
 /** 初始化 **/
 onMounted(async () => {
-  await getList()
+  await getList() // 初始化时需要获取完整数据（包含合计）
   // 加载产品、仓库列表、供应商
   productList.value = await ProductApi.getProductSimpleList()
   supplierList.value = await SupplierApi.getSupplierSimpleList()
@@ -799,5 +841,18 @@ onMounted(async () => {
   font-weight: 500;
   color: #409eff;
   text-align: right;
+}
+
+.is-loading {
+  animation: rotating 2s linear infinite;
+}
+
+@keyframes rotating {
+  0% {
+    transform: rotate(0deg);
+  }
+  100% {
+    transform: rotate(360deg);
+  }
 }
 </style>

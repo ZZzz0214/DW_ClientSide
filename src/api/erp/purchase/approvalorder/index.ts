@@ -220,5 +220,10 @@ export const PurchaseOrderApi = {
         saleAfterSalesStatus
       }
     })
+  },
+
+  // 获取采购审核合计数据
+  getPurchaseOrderSummary: async (params: any) => {
+    return await request.get({ url: `/erp/distribution/purchase/unreviewed-summary`, params })
   }
 }
