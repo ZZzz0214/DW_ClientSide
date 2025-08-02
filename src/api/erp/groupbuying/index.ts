@@ -113,5 +113,21 @@ export const GroupBuyingApi = {
   // 下载团购货盘导入模板
   importGroupBuyingTemplate: async () => {
     return await request.download({ url: `/erp/group-buying/get-import-template` })
+  },
+
+  // 批量下载团购货盘图片
+  downloadImages: async (ids: number[]) => {
+    return await request.download({ 
+      url: `/erp/group-buying/download-images`, 
+      params: { ids: ids.join(',') } 
+    })
+  },
+
+  // 按查询条件下载团购货盘图片
+  downloadImagesByQuery: async (params: GroupBuyingPageReqVO) => {
+    return await request.download({ 
+      url: `/erp/group-buying/download-images-by-query`, 
+      params
+    })
   }
 }

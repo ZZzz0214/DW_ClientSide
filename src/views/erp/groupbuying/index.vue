@@ -165,6 +165,15 @@
             <Icon icon="ep:download" class="mr-5px" /> 导出
           </el-button>
           <el-button
+            type="info"
+            plain
+            @click="handleDownloadImages"
+            :loading="downloadImagesLoading"
+            v-hasPermi="['erp:groupbuying:query']"
+          >
+            <Icon icon="ep:picture" class="mr-5px" /> 下载图片
+          </el-button>
+          <el-button
             type="danger"
             plain
             @click="handleDelete(selectionList.map((item) => item.id))"
@@ -245,7 +254,7 @@
         <el-table-column label="开团价格" align="center" prop="groupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
-        <el-table-column label="操作" align="center" width="240">
+        <el-table-column label="操作" align="center" width="320">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
             <el-button
@@ -255,6 +264,15 @@
               v-hasPermi="['erp:groupbuying:update']"
             >
               编辑
+            </el-button>
+            <el-button
+              link
+              type="info"
+              @click="handleDownloadImagesSingle(scope.row)"
+              v-hasPermi="['erp:groupbuying:query']"
+              :disabled="!scope.row.productImage || scope.row.productImage.trim() === ''"
+            >
+              下载图片
             </el-button>
             <el-button
               link
@@ -321,6 +339,7 @@
   })
   const queryFormRef = ref() // 搜索的表单
   const exportLoading = ref(false) // 导出的加载中
+  const downloadImagesLoading = ref(false) // 下载图片的加载中
 
   // 字典选项
   const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
@@ -449,6 +468,91 @@
   const getImageUrls = (productImage: string | undefined): string[] => {
     if (!productImage) return []
     return productImage.split(',').map(img => img.trim()).filter(img => img)
+  }
+
+  /** 下载图片操作 */
+  const handleDownloadImages = async () => {
+    // 如果有选中的记录，下载选中记录的图片
+    if (selectionList.value.length > 0) {
+      // 检查选中的记录中是否有图片
+      const hasImages = selectionList.value.some(item => 
+        item.productImage && item.productImage.trim() !== ''
+      )
+      
+      if (!hasImages) {
+        message.warning('选中的记录中没有图片可以下载')
+        return
+      }
+      
+      try {
+        await message.confirm('确认下载选中记录的图片吗？')
+        downloadImagesLoading.value = true
+        
+        const ids = selectionList.value.map(item => item.id)
+        const data = await GroupBuyingApi.downloadImages(ids)
+        download.zip(data, 'groupbuying_images.zip')
+        message.success('图片下载成功')
+      } catch (error) {
+        if (error !== 'cancel') {
+          console.error('下载图片失败:', error)
+          message.error('图片下载失败')
+        }
+      } finally {
+        downloadImagesLoading.value = false
+      }
+    } else {
+      // 如果没有选中记录，下载当前搜索条件下的全部数据图片
+      // 检查当前列表中是否有图片
+      const hasImages = list.value.some(item => 
+        item.productImage && item.productImage.trim() !== ''
+      )
+      
+      if (!hasImages) {
+        message.warning('当前搜索结果中没有图片可以下载')
+        return
+      }
+      
+      try {
+        await message.confirm('确认下载当前搜索条件下所有记录的图片吗？')
+        downloadImagesLoading.value = true
+        
+        // 使用当前查询条件下载全部数据的图片
+        const data = await GroupBuyingApi.downloadImagesByQuery(queryParams)
+        download.zip(data, 'groupbuying_images.zip')
+        message.success('图片下载成功')
+      } catch (error) {
+        if (error !== 'cancel') {
+          console.error('下载图片失败:', error)
+          message.error('图片下载失败')
+        }
+      } finally {
+        downloadImagesLoading.value = false
+      }
+    }
+  }
+
+  /** 下载单条图片操作 */
+  const handleDownloadImagesSingle = async (row: GroupBuyingVO) => {
+    if (!row.productImage || row.productImage.trim() === '') {
+      message.warning('该记录没有图片可以下载')
+      return
+    }
+
+    try {
+      await message.confirm('确认下载该记录的图片吗？')
+      downloadImagesLoading.value = true
+
+      const data = await GroupBuyingApi.downloadImages([row.id])
+      download.zip(data, 'groupbuying_images.zip')
+      message.success('图片下载成功')
+    } catch (error) {
+      if (error !== 'cancel') {
+        console.error('下载图片失败:', error)
+        message.error('图片下载失败')
+      }
+    } finally {
+      downloadImagesLoading.value = false
+    }
   }
 
   /** 初始化 **/
