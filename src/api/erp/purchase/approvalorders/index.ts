@@ -152,8 +152,16 @@ export const PurchaseOrderApi = {
     })
   },
 
-  // 批量更新采购审核状态
-  batchUpdatePurchaseAuditStatus: async (ids: number[], purchaseAuditStatus: number) => {
+  // 批量更新采购审核状态（新版本，支持传递采购总额）
+  batchUpdatePurchaseAuditStatus: async (batchData: any) => {
+    return await request.put({
+      url: `/erp/wholesale/batch-update-purchase-audit-status`,
+      data: batchData
+    })
+  },
+
+  // 旧版本批量更新采购审核状态（兼容性保留）
+  batchUpdatePurchaseAuditStatusOld: async (ids: number[], purchaseAuditStatus: number) => {
     return await request.put({
       url: `/erp/wholesale/batch-update-purchase-audit-status`,
       params: {
@@ -242,5 +250,10 @@ export const PurchaseOrderApi = {
         saleAfterSalesStatus
       }
     })
+  },
+
+  // 获取全部批发采购数据（用于批量操作）
+  exportAllWholesales: async (params: any) => {
+    return await request.get({ url: `/erp/wholesale/export-all-data`, params })
   }
 }
