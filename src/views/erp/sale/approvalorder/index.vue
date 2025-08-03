@@ -328,7 +328,6 @@
           plain
           @click="handleBatchAudit(20)"
           v-hasPermi="['erp:distributionSaleAu:update-sale-audit-status']"
-          :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:check" class="mr-5px" /> 批量审核
         </el-button>
@@ -672,6 +671,26 @@ const getList = async () => {
   await Promise.all([getPageData(), getSummaryData()])
 }
 
+/** 获取全部符合搜索条件的数据 */
+const getAllOrderData = async () => {
+  try {
+    // 设置查询参数，只获取未审核的数据
+    const allParams = {
+      ...queryParams,
+      saleAuditStatus: 10 // 10表示未审核状态
+    }
+    // 使用exportAllDistributions获取全部未审核数据
+    const data = await SaleOrderApi.exportAllDistributions(allParams)
+    return data.map((item: any) => ({
+      id: item.id,
+      totalSaleAmount: item.totalSaleAmount || 0
+    }))
+  } catch (error) {
+    console.error('获取全部数据失败:', error)
+    return []
+  }
+}
+
 /** 搜索按钮操作 */
 const handleQuery = async () => {
   queryParams.pageNo = 1
@@ -757,20 +776,50 @@ const handleExport = async () => {
 /** 批量审核操作 */
 const handleBatchAudit = async (saleAuditStatus: number) => {
   try {
-    const ids = selectionList.value.map(item => item.id!)
-    if (ids.length === 0) {
-      message.warning('请至少选择一条记录')
+    const statusText = saleAuditStatus === 20 ? '审核' : '反审核'
+    
+    let batchData: any
+    let confirmMessage: string
+    
+    if (selectionList.value.length > 0) {
+      // 有选择数据时，传递选中的订单数据
+      const orderData = selectionList.value.map(item => ({
+        id: item.id,
+        totalSaleAmount: item.totalSaleAmount || 0
+      }))
+      
+      batchData = {
+        orderData,
+        saleAuditStatus,
+        isSelectAll: false
+      }
+      
+      confirmMessage = `确定${statusText}选中的 ${selectionList.value.length} 条记录吗？`
+    } else {
+      // 没有选择数据时，获取全部符合搜索条件的数据
+      const orderData = await getAllOrderData()
+      
+      batchData = {
+        orderData,
+        saleAuditStatus,
+        isSelectAll: true
+      }
+      
+      confirmMessage = `当前没有选择数据，确定${statusText}当前搜索结果的所有 ${total.value} 条记录吗？`
+    }
+    
+    if (batchData.orderData.length === 0) {
+      message.warning('没有可操作的数据')
       return
     }
-
-    const statusText = saleAuditStatus === 20 ? '审核' : '反审核'
-    await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
+    
+    await message.confirm(confirmMessage)
 
     // 安全重置表格状态
     await safeReset()
 
     loading.value = true
-    await SaleOrderApi.batchUpdateSaleAuditStatus(ids, saleAuditStatus)
+    await SaleOrderApi.batchUpdateSaleAuditStatus(batchData)
     message.success(`${statusText}成功`)
 
     // 刷新列表数据（批量审核后需要更新合计数据）
@@ -780,6 +829,7 @@ const handleBatchAudit = async (saleAuditStatus: number) => {
     message.error('操作失败，请稍后重试')
   } finally {
     loading.value = false
+    selectionList.value = []
   }
 }
 

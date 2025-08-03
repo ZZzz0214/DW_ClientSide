@@ -74,6 +74,15 @@ export interface SaleOrderItemVO {
   outCount?: number // 销售出库数量
   returnCount?: number // 销售退货数量
 }
+
+// 批量更新销售审核状态的请求VO
+export interface BatchUpdateSaleAuditRequest {
+  orderData?: { id: number; totalSaleAmount: number }[]; // 订单数据列表（有选择时）
+  saleAuditStatus: number; // 审核状态
+  searchParams?: any; // 搜索参数（全选时使用）
+  isSelectAll?: boolean; // 是否全选
+}
+
 // ERP 销售订单 API
 export const SaleOrderApi = {
   // 查询销售订单分页
@@ -141,14 +150,11 @@ export const SaleOrderApi = {
     })
   },
 
-  // 批量更新销售审核状态
-  batchUpdateSaleAuditStatus: async (ids: number[], saleAuditStatus: number) => {
+  // 批量更新销售审核状态的请求VO类型
+  batchUpdateSaleAuditStatus: async (data: BatchUpdateSaleAuditRequest) => {
     return await request.put({
       url: `/erp/distribution/batch-update-sale-audit-status`,
-      params: {
-        ids: ids.join(','),
-        saleAuditStatus
-      }
+      data
     })
   },
 
@@ -161,5 +167,10 @@ export const SaleOrderApi = {
         saleAfterSalesStatus
       }
     })
+  },
+
+  // 获取全部代发数据（用于批量操作）
+  exportAllDistributions: async (params: any) => {
+    return await request.get({ url: `/erp/distribution/list`, params })
   }
 }
