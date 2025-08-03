@@ -58,7 +58,7 @@
         </div>
         <div class="data-item">
           <span class="field-name">客户名称：</span>
-          <span class="field-value">{{ formData.customerName || '-' }}</span>
+          <span class="field-value">-</span>
         </div>
         <div class="data-item">
           <span class="field-name">样品状态：</span>
@@ -135,7 +135,7 @@ const generateCopyText = () => {
     `产品名称：${props.formData.comboProductName || '-'}`,
     `产品规格：${props.formData.productSpec || '-'}`,
     `产品数量：${props.formData.productQuantity || '-'}`,
-    `客户名称：${props.formData.customerName || '-'}`,
+    `客户名称：-`,
     `样品状态：${getSampleStatusText(props.formData.sampleStatus) || '-'}`
   ]
   return lines.join('\n')
