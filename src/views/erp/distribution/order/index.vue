@@ -255,6 +255,16 @@
         />
       </el-form-item>
 
+      <el-form-item label="备注信息" prop="remark">
+        <el-input
+          v-model="queryParams.remark"
+          placeholder="请输入备注信息"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
       <el-form-item label="采购审核状态" prop="purchaseAuditStatus"  v-hasPermi="['erp:distribution:importPurchase']">
         <el-select v-model="queryParams.purchaseAuditStatus" placeholder="请选择采购审核状态" clearable class="!w-240px">
           <el-option
@@ -548,7 +558,8 @@ const queryParams = reactive({
   creator: undefined,
   createTime: undefined,
   purchaseAuditStatus: undefined,
-  saleAuditStatus: undefined
+  saleAuditStatus: undefined,
+  remark: undefined
 })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中

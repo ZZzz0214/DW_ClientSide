@@ -255,6 +255,16 @@
         />
       </el-form-item>
 
+      <el-form-item label="销售备注" prop="saleRemark">
+        <el-input
+          v-model="queryParams.saleRemark"
+          placeholder="请输入销售备注"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
       <el-form-item label="采购审核状态" prop="purchaseAuditStatus"  v-hasPermi="['erp:distribution:importPurchase']">
         <el-select v-model="queryParams.purchaseAuditStatus" placeholder="请选择采购审核状态" clearable class="!w-240px">
           <el-option
@@ -500,7 +510,9 @@ const queryParams = reactive({
   creator: undefined,
   createTime: undefined,
   purchaseAuditStatus: undefined,
-  saleAuditStatus: undefined
+  saleAuditStatus: undefined,
+  remark: undefined,
+  saleRemark: undefined
 })
 const totalSalePrice = ref<string>('')
 const totalSaleShippingFee = ref<string>('')
