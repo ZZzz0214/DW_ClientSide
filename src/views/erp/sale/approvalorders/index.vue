@@ -160,6 +160,16 @@
         />
       </el-form-item>
 
+      <el-form-item label="出货备注" prop="saleRemark">
+        <el-input
+          v-model="queryParams.saleRemark"
+          placeholder="请输入出货备注"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
+
       <el-form-item label="创建人员" prop="creator">
         <el-input
           v-model="queryParams.creator"
@@ -532,6 +542,7 @@ const queryParams = reactive({
   salesperson: undefined,
   customerName: undefined,
   transferPerson: undefined,
+  saleRemark: undefined,
   creator: undefined,
   createTime: undefined,
   purchaseAuditStatus: undefined,

@@ -181,7 +181,7 @@
         />
       </el-form-item>
 
-      <el-form-item label="销售备注" prop="saleRemark">
+      <el-form-item label="出货备注" prop="saleRemark">
         <el-input
           v-model="queryParams.saleRemark"
           placeholder="请输入销售备注"
