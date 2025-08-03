@@ -7,6 +7,18 @@
       label-width="120px"
       v-loading="formLoading"
     >
+      <el-form-item label="订单编号">
+        <el-input v-model="formData.no" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="订单号">
+        <el-input v-model="formData.orderNumber" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流公司">
+        <el-input v-model="formData.logisticsCompany" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流单号">
+        <el-input v-model="formData.trackingNumber" :disabled="true" />
+      </el-form-item>
       <!-- 产品名称 -->
       <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
@@ -107,6 +119,10 @@ const formRef = ref()
 // 审核表单数据（字段与 AfterSaleForm 一致）
 const formData = reactive({
   id: 0,
+  no:0,
+  orderNumber:0,
+  logisticsCompany: '',
+  trackingNumber: '',
   productName: '',
   productSpecification: '',
   productQuantity: 0,
@@ -144,6 +160,10 @@ const open = async (id: number) => {
     formData.saleShippingFee = orderDetail.saleShippingFee || 0
     formData.saleOtherFees = orderDetail.saleOtherFees || 0
     formData.totalSaleAmount = orderDetail.totalSaleAmount || 0
+    formData.no = orderDetail.no || 0
+    formData.orderNumber = orderDetail.orderNumber || 0
+    formData.logisticsCompany = orderDetail.logisticsCompany || ''
+    formData.trackingNumber = orderDetail.trackingNumber || ''
     // 填充销售时间数据
     formData.saleApprovalTime = orderDetail.saleApprovalTime || null
     formData.saleUnapproveTime = orderDetail.saleUnapproveTime || null

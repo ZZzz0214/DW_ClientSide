@@ -124,13 +124,10 @@ export const PurchaseOrderApi = {
   },
 
   // 批量更新采购审核状态
-  batchUpdatePurchaseAuditStatus: async (ids: number[], purchaseAuditStatus: number) => {
+  batchUpdatePurchaseAuditStatus: async (data: BatchUpdatePurchaseAuditRequest) => {
     return await request.put({
       url: `/erp/distribution/batch-update-purchase-audit-status`,
-      params: {
-        ids: ids.join(','),
-        purchaseAuditStatus
-      }
+      data
     })
   },
 
@@ -225,5 +222,18 @@ export const PurchaseOrderApi = {
   // 获取采购审核合计数据
   getPurchaseOrderSummary: async (params: any) => {
     return await request.get({ url: `/erp/distribution/purchase/unreviewed-summary`, params })
+  },
+
+  // 获取全部代发数据（用于批量操作）
+  exportAllDistributions: async (params: any) => {
+    return await request.get({ url: `/erp/distribution/list`, params })
   }
+}
+
+// 批量更新采购审核状态的请求VO
+export interface BatchUpdatePurchaseAuditRequest {
+  orderData?: { id: number; totalPurchaseAmount: number }[]; // 订单数据列表（有选择时）
+  purchaseAuditStatus: number; // 审核状态
+  searchParams?: any; // 搜索参数（全选时使用）
+  isSelectAll?: boolean; // 是否全选
 }

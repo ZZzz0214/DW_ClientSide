@@ -321,7 +321,6 @@
           plain
           @click="handleBatchAudit(10)"
           v-hasPermi="['erp:distribution:update-purchase-audit-status']"
-          :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:close" class="mr-5px" /> 批量反审核
         </el-button>
@@ -561,6 +560,23 @@ const getList = async () => {
   }
 }
 
+/** 获取全部符合搜索条件的IDs */
+const getAllIds = async () => {
+  try {
+    // 设置查询参数，只获取已审核的数据
+    const allParams = {
+      ...queryParams,
+      purchaseAuditStatus: 20 // 20表示已审核状态
+    }
+    // 使用exportAllDistributions获取全部已审核数据的IDs
+    const data = await PurchaseOrderApi.exportAllDistributions(allParams)
+    return data.map((item: any) => item.id)
+  } catch (error) {
+    console.error('获取全部IDs失败:', error)
+    return []
+  }
+}
+
 /** 获取合计数据 */
 const getSummaryData = async () => {
   summaryLoading.value = true
@@ -613,9 +629,27 @@ const handleDelete = async (ids: number[]) => {
 /** 批量审核操作 */
 const handleBatchAudit = async (purchaseAuditStatus: number) => {
   try {
-    const ids = selectionList.value.map(item => item.id)
     const statusText = purchaseAuditStatus === 20 ? '审核' : '反审核'
-    await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
+    
+    let ids: number[]
+    let confirmMessage: string
+    
+    if (selectionList.value.length > 0) {
+      // 有选择数据时，使用选中的数据
+      ids = selectionList.value.map(item => item.id)
+      confirmMessage = `确定${statusText}选中的 ${ids.length} 条记录吗？`
+    } else {
+      // 没有选择数据时，获取全部符合搜索条件的数据
+      ids = await getAllIds()
+      confirmMessage = `当前没有选择数据，确定${statusText}当前搜索结果的所有 ${total.value} 条记录吗？`
+    }
+    
+    if (ids.length === 0) {
+      message.warning('没有可操作的数据')
+      return
+    }
+    
+    await message.confirm(confirmMessage)
 
     await PurchaseOrderApi.batchUpdatePurchaseAuditStatus(ids, purchaseAuditStatus)
     message.success(`${statusText}成功`)

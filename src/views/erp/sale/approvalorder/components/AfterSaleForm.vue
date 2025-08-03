@@ -7,6 +7,18 @@
       label-width="120px"
       v-loading="formLoading"
     >
+      <el-form-item label="订单编号">
+        <el-input v-model="formData.no" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="订单号">
+        <el-input v-model="formData.orderNumber" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流公司">
+        <el-input v-model="formData.logisticsCompany" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流单号">
+        <el-input v-model="formData.trackingNumber" :disabled="true" />
+      </el-form-item>
       <!-- 新增不可编辑字段 -->
       <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
@@ -92,6 +104,10 @@ const formRef = ref()
 // 修改字段名匹配后端VO
 const formData = reactive({
   id: 0,
+  no:0,
+  orderNumber:0,
+  logisticsCompany: '',
+  trackingNumber: '',
   productName: '',
   productSpecification: '',
   productQuantity: 0,
@@ -127,6 +143,10 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
     // 获取订单详情并填充表单
     const orderDetail = await PurchaseOrderApi.getSaleOrder(id)
     formData.id = id
+    formData.no = orderDetail.no || 0
+    formData.orderNumber = orderDetail.orderNumber || 0
+    formData.logisticsCompany = orderDetail.logisticsCompany || ''
+    formData.trackingNumber = orderDetail.trackingNumber || ''
     formData.productName = orderDetail.productName || ''
     formData.productSpecification = orderDetail.productSpecification || ''
     formData.productQuantity = orderDetail.productQuantity || 0

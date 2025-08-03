@@ -120,12 +120,21 @@ export const PurchaseOrderApi = {
   }
 ,
   batchUpdatePurchaseAuditStatus: async (ids: number[], purchaseAuditStatus: number) => {
+    // 构造符合后端期望的请求体格式
+    const requestData = {
+      orderData: ids.map(id => ({ id, totalPurchaseAmount: 0 })), // 反审核不需要采购总额，设为0
+      purchaseAuditStatus,
+      isSelectAll: false
+    }
+    
     return await request.put({
       url: `/erp/distribution/batch-update-purchase-audit-status`,
-      params: {
-        ids: ids.join(','),
-        purchaseAuditStatus
-      }
+      data: requestData
     })
+  },
+
+  // 获取全部代发数据（用于批量操作）
+  exportAllDistributions: async (params: any) => {
+    return await request.get({ url: `/erp/distribution/list`, params })
   }
 }

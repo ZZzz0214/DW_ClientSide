@@ -8,6 +8,18 @@
       v-loading="formLoading"
     >
       <!-- 复用 AfterSaleForm 的不可编辑字段 -->
+      <el-form-item label="订单编号">
+        <el-input v-model="formData.no" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="订单号">
+        <el-input v-model="formData.orderNumber" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流公司">
+        <el-input v-model="formData.logisticsCompany" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流单号">
+        <el-input v-model="formData.trackingNumber" :disabled="true" />
+      </el-form-item>
       <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
       </el-form-item>
@@ -104,6 +116,10 @@ const formData = reactive({
   productName: '',
   productSpecification: '',
   productQuantity: 0,
+  no:0,
+  orderNumber:0,
+  logisticsCompany: '',
+  trackingNumber: '',
   purchasePrice: 0,
   shippingFee: 0,
   otherFees: 0,
@@ -141,6 +157,10 @@ const open = async (id: number) => {
     formData.otherFees = orderDetail.otherFees || 0
     formData.totalPurchaseAmount = orderDetail.totalPurchaseAmount || 0
     formData.purchaseAuditTotalAmount = orderDetail.purchaseAuditTotalAmount || 0
+    formData.no = orderDetail.no || 0
+    formData.orderNumber = orderDetail.orderNumber || 0
+    formData.logisticsCompany = orderDetail.logisticsCompany || ''
+    formData.trackingNumber = orderDetail.trackingNumber || ''
 
     //审核时间
     formData.purchaseApprovalTime = orderDetail.purchaseApprovalTime || null

@@ -13,6 +13,12 @@
       <el-form-item label="订单号">
         <el-input v-model="formData.orderNumber" :disabled="true" />
       </el-form-item>
+      <el-form-item label="物流公司">
+        <el-input v-model="formData.logisticsCompany" :disabled="true" />
+      </el-form-item>
+      <el-form-item label="物流单号">
+        <el-input v-model="formData.trackingNumber" :disabled="true" />
+      </el-form-item>
       <!-- 产品名称 -->
       <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
@@ -125,6 +131,8 @@ const formData = reactive({
   id: 0,
   productName: '',
   productSpecification: '',
+  logisticsCompany: '',
+  trackingNumber: '',
   productQuantity: 0,
   salePrice: 0,
   saleShippingFee: 0,
@@ -153,11 +161,12 @@ const open = async (id: number) => {
 
     // 获取订单详情填充表单（复用 AfterSaleForm 的接口）
     const orderDetail = await PurchaseOrderApi.getSaleOrder(id)
-    console.log(orderDetail)
     formData.id = id
     formData.productName = orderDetail.productName || ''
     formData.productSpecification = orderDetail.productSpecification || ''
     formData.productQuantity = orderDetail.productQuantity || 0
+    formData.logisticsCompany = orderDetail.logisticsCompany || ''
+    formData.trackingNumber = orderDetail.trackingNumber || ''
     formData.salePrice = orderDetail.salePrice || 0
     formData.saleShippingFee = orderDetail.saleShippingFee || 0
     formData.saleOtherFees = orderDetail.saleOtherFees || 0

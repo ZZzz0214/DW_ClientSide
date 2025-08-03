@@ -10,6 +10,9 @@
       <el-form-item label="订单编号">
         <el-input v-model="formData.no" :disabled="true" />
       </el-form-item>
+<!--      <el-form-item label="订单号">-->
+<!--        <el-input v-model="formData.orderNumber" :disabled="true" />-->
+<!--      </el-form-item>-->
       <el-form-item label="物流单号">
         <el-input v-model="formData.logisticsNumber" :disabled="true" />
       </el-form-item>
@@ -114,6 +117,7 @@ const formRef = ref()
 const formData = reactive({
   id: 0,
   productName: '',
+  orderNumber:0,
   productSpecification: '',
   productQuantity: 0,
   purchasePrice: 0,
@@ -151,6 +155,7 @@ const open = async (id: number) => {
     // 获取订单详情填充表单（复用 AfterSaleForm 的接口）
     const orderDetail = await PurchaseOrderApi.getPurchaseOrder(id)
     formData.id = id
+    // formData.orderNumber = orderDetail.orderNumber || 0
     formData.productName = orderDetail.productName || ''
     formData.productSpecification = orderDetail.productSpecification || ''
     formData.productQuantity = orderDetail.productQuantity || 0
