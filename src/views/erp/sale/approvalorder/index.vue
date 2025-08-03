@@ -652,7 +652,7 @@ const getSummaryData = async () => {
   summaryLoading.value = true
   try {
     // 获取合计数据
-    const data = await SaleOrderApi.getSaleOrderUnreviewedPage(queryParams)
+    const data = await SaleOrderApi.getSaleOrderUnReviewedSummary(queryParams)
     totalSalePrice.value = data.totalSalePrice?.toFixed(2) || ''
     totalSaleShippingFee.value = data.totalSaleShippingFee?.toFixed(2) || ''
     totalSaleOtherFees.value = data.totalSaleOtherFees?.toFixed(2) || ''
@@ -777,42 +777,42 @@ const handleExport = async () => {
 const handleBatchAudit = async (saleAuditStatus: number) => {
   try {
     const statusText = saleAuditStatus === 20 ? '审核' : '反审核'
-    
+
     let batchData: any
     let confirmMessage: string
-    
+
     if (selectionList.value.length > 0) {
       // 有选择数据时，传递选中的订单数据
       const orderData = selectionList.value.map(item => ({
         id: item.id,
         totalSaleAmount: item.totalSaleAmount || 0
       }))
-      
+
       batchData = {
         orderData,
         saleAuditStatus,
         isSelectAll: false
       }
-      
+
       confirmMessage = `确定${statusText}选中的 ${selectionList.value.length} 条记录吗？`
     } else {
       // 没有选择数据时，获取全部符合搜索条件的数据
       const orderData = await getAllOrderData()
-      
+
       batchData = {
         orderData,
         saleAuditStatus,
         isSelectAll: true
       }
-      
+
       confirmMessage = `当前没有选择数据，确定${statusText}当前搜索结果的所有 ${total.value} 条记录吗？`
     }
-    
+
     if (batchData.orderData.length === 0) {
       message.warning('没有可操作的数据')
       return
     }
-    
+
     await message.confirm(confirmMessage)
 
     // 安全重置表格状态

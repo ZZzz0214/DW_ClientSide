@@ -93,6 +93,10 @@ export const SaleOrderApi = {
     return await request.get({ url: `/erp/distribution/sale/reviewed-page`, params })
   },
 
+
+  getSaleOrderUnReviewedSummary: async (params: any) => {
+    return await request.get({ url: `/erp/distribution/sale/unreviewed-summary`, params })
+  },
   // 获取已审核销售订单合计
   getSaleOrderReviewedSummary: async (params: any) => {
     return await request.get({ url: `/erp/distribution/sale/reviewed-summary`, params })

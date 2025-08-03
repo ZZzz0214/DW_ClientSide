@@ -4,10 +4,17 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="120px"
+      label-width="140px"
       v-loading="formLoading"
     >
    <!-- 产品名称 -->
+      <el-form-item label="订单编号">
+        <el-input v-model="formData.no" :disabled="true" />
+      </el-form-item>
+
+      <el-form-item label="物流单号">
+        <el-input v-model="formData.logisticsNumber" :disabled="true" />
+      </el-form-item>
    <el-form-item label="产品名称">
         <el-input v-model="formData.productName" :disabled="true" />
       </el-form-item>
@@ -111,6 +118,8 @@ const formRef = ref()
 // 审核表单数据（字段与 AfterSaleForm 一致）
 const formData = reactive({
   id: 0,
+  no:0,
+  logisticsNumber:0,
   productName: '',
   productSpecification: '',
   productQuantity: 0,
@@ -142,6 +151,8 @@ const open = async (id: number) => {
     // 获取订单详情填充表单（复用 AfterSaleForm 的接口）
     const orderDetail = await PurchaseOrderApi.getSaleOrder(id)
     formData.id = id
+    formData.no = orderDetail.no || 0
+    formData.logisticsNumber = orderDetail.logisticsNumber || 0
     formData.productName = orderDetail.productName || ''
     formData.productSpecification = orderDetail.productSpecification || ''
     formData.productQuantity = orderDetail.productQuantity || 0

@@ -4,15 +4,13 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="120px"
+      label-width="140px"
       v-loading="formLoading"
     >
       <el-form-item label="订单编号">
         <el-input v-model="formData.no" :disabled="true" />
       </el-form-item>
-<!--      <el-form-item label="订单号">-->
-<!--        <el-input v-model="formData.orderNumber" :disabled="true" />-->
-<!--      </el-form-item>-->
+
       <el-form-item label="物流单号">
         <el-input v-model="formData.logisticsNumber" :disabled="true" />
       </el-form-item>
@@ -128,11 +126,8 @@ const formData = reactive({
   auditSituation: '',
   auditAmount: 0,
   auditTime: null as string | null,
-
   no:0,
   logisticsNumber:0,
-
-
   purchaseApprovalTime: null as string | null,
   purchaseUnapproveTime: null as string | null,
   purchaseAuditTotalAmount: 0

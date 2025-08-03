@@ -57,7 +57,7 @@
     comboProductName: '',
     productSpec: '',
     productQuantity: 0,
-    customerName: '',
+    // customerName: '',
     sampleStatus: '',
     reference: '',
     remark: ''
@@ -88,7 +88,6 @@
         // 复制数据，但重置关键字段
         formData.value = {
           ...res,
-          customerName:undefined,
           id: undefined,
           createTime: undefined,
           updateTime: undefined

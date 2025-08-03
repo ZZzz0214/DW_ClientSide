@@ -4,7 +4,7 @@
       ref="formRef"
       :model="formData"
       :rules="formRules"
-      label-width="120px"
+      label-width="140px"
       v-loading="formLoading"
     >
       <!-- 复用 AfterSaleForm 的不可编辑字段 -->

@@ -178,8 +178,16 @@ export const PurchaseOrderApi = {
     })
   },
 
-  // 批量更新销售审核状态
-  batchUpdateSaleAuditStatus: async (ids: number[], saleAuditStatus: number) => {
+  // 批量更新销售审核状态（新版本，支持传递出货总额）
+  batchUpdateSaleAuditStatus: async (batchData: any) => {
+    return await request.put({
+      url: `/erp/wholesale/batch-update-sale-audit-status`,
+      data: batchData
+    })
+  },
+
+  // 旧版本批量更新销售审核状态（兼容性保留）
+  batchUpdateSaleAuditStatusOld: async (ids: number[], saleAuditStatus: number) => {
     return await request.put({
       url: `/erp/wholesale/batch-update-sale-audit-status`,
       params: {

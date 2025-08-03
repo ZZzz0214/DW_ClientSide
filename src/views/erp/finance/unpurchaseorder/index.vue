@@ -630,10 +630,10 @@ const handleDelete = async (ids: number[]) => {
 const handleBatchAudit = async (purchaseAuditStatus: number) => {
   try {
     const statusText = purchaseAuditStatus === 20 ? '审核' : '反审核'
-    
+
     let ids: number[]
     let confirmMessage: string
-    
+
     if (selectionList.value.length > 0) {
       // 有选择数据时，使用选中的数据
       ids = selectionList.value.map(item => item.id)
@@ -643,13 +643,14 @@ const handleBatchAudit = async (purchaseAuditStatus: number) => {
       ids = await getAllIds()
       confirmMessage = `当前没有选择数据，确定${statusText}当前搜索结果的所有 ${total.value} 条记录吗？`
     }
-    
+
     if (ids.length === 0) {
       message.warning('没有可操作的数据')
       return
     }
-    
+
     await message.confirm(confirmMessage)
+
 
     await PurchaseOrderApi.batchUpdatePurchaseAuditStatus(ids, purchaseAuditStatus)
     message.success(`${statusText}成功`)

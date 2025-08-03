@@ -230,7 +230,6 @@
           plain
           @click="handleBatchAudit(10)"
           v-hasPermi="['erp:wholesale:update-status']"
-          :disabled="selectionList.length === 0"
         >
           <Icon icon="ep:close" class="mr-5px" /> 批量反审核
         </el-button>
@@ -496,14 +495,69 @@ const handleAfterSaleWithDetails = (id: number, operationType: 'afterSale' | 'an
   afterSaleFormRef.value.open(id, operationType)  // 传递操作类型给弹窗
 }
 
+/** 获取全部符合搜索条件的数据 */
+const getAllOrderData = async () => {
+  try {
+    // 设置查询参数，只获取已审核的数据
+    const allParams = {
+      ...queryParams,
+      saleAuditStatus: 20 // 20表示已审核状态
+    }
+    // 使用exportAllWholesales获取全部已审核数据
+    const data = await PurchaseOrderApi.exportAllWholesales(allParams)
+    return data.map((item: any) => ({
+      id: item.id,
+      totalSaleAmount: item.totalSaleAmount || 0
+    }))
+  } catch (error) {
+    console.error('获取全部数据失败:', error)
+    return []
+  }
+}
+
 /** 批量审核操作 */
 const handleBatchAudit = async (saleAuditStatus: number) => {
   try {
-    const ids = selectionList.value.map(item => item.id!)
     const statusText = saleAuditStatus === 20 ? '审核' : '反审核'
-    await message.confirm(`确定${statusText}选中的 ${ids.length} 条记录吗？`)
+    
+    let batchData: any
+    let confirmMessage: string
+    
+    if (selectionList.value.length > 0) {
+      // 有选择数据时，传递选中的订单数据
+      const orderData = selectionList.value.map(item => ({
+        id: item.id!,
+        totalSaleAmount: item.totalSaleAmount || 0
+      }))
+      
+      batchData = {
+        orderData,
+        saleAuditStatus,
+        isSelectAll: false
+      }
+      
+      confirmMessage = `确定${statusText}选中的 ${selectionList.value.length} 条记录吗？`
+    } else {
+      // 没有选择数据时，获取全部符合搜索条件的数据
+      const orderData = await getAllOrderData()
+      
+      batchData = {
+        orderData,
+        saleAuditStatus,
+        isSelectAll: true
+      }
+      
+      confirmMessage = `当前没有选择数据，确定${statusText}当前搜索结果的所有 ${total.value} 条记录吗？`
+    }
+    
+    if (batchData.orderData.length === 0) {
+      message.warning('没有可操作的数据')
+      return
+    }
+    
+    await message.confirm(confirmMessage)
 
-    await PurchaseOrderApi.batchUpdateSaleAuditStatus(ids, saleAuditStatus)
+    await PurchaseOrderApi.batchUpdateSaleAuditStatus(batchData)
     message.success(`${statusText}成功`)
 
     // 刷新列表并清空选择

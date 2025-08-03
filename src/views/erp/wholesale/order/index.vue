@@ -305,6 +305,8 @@
       <el-table-column label="产品名称" align="center" prop="productName" min-width="350" :show-overflow-tooltip="false"/>
       <el-table-column label="产品规格" align="center" prop="productSpecification" :show-overflow-tooltip="false"/>
       <el-table-column label="产品数量" align="center" prop="productQuantity" :show-overflow-tooltip="false"/>
+      <el-table-column label="售后状况" align="center" prop="afterSalesStatus" :show-overflow-tooltip="false"/>
+      <el-table-column label="售后时间" align="center" prop="afterSalesTime" :show-overflow-tooltip="false" :formatter="dateFormatter" min-width="180"/>
       <el-table-column
         label="创建人员"
         align="center"
