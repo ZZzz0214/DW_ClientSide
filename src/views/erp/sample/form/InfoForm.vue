@@ -33,6 +33,62 @@
         />
       </el-form-item>
 
+      <!-- 智能解析文本功能 -->
+      <div class="smart-parser-section">
+        <h4 class="parser-title">
+          <Icon icon="ep:magic-stick" />
+          智能地址解析
+        </h4>
+        <p class="parser-desc">
+          粘贴包含收件人姓名、手机号、地址的文本信息，系统将自动解析并填入对应字段
+        </p>
+        <el-form-item>
+          <el-input
+            v-model="inputText"
+            type="textarea"
+            placeholder="请输入包含收件姓名、联系电话、详细地址的文字信息，例如：&#10;寄样地址：徐州市泉山区矿大软件园C-2-C三楼&#10;宋双双19951839883 牙膏6支"
+            :autosize="{ minRows: 3, maxRows: 6 }"
+            class="w-full"
+          />
+          <div style="margin-top: 8px;">
+            <el-button type="primary" @click="parseText" :loading="parsing">
+              <Icon icon="ep:magic-stick" />
+              智能解析
+            </el-button>
+            <el-button @click="clearText">
+              <Icon icon="ep:refresh" />
+              清空
+            </el-button>
+          </div>
+        </el-form-item>
+
+        <!-- 解析结果预览 -->
+        <div v-if="parseResult.hasResult" class="parse-result">
+          <div class="result-header">解析结果预览：</div>
+          <div class="result-grid">
+            <div v-if="parseResult.receiverName" class="result-item">
+              <label>收件姓名</label>
+              <div class="result-value">{{ parseResult.receiverName }}</div>
+            </div>
+            <div v-if="parseResult.contactPhone" class="result-item">
+              <label>联系电话</label>
+              <div class="result-value">{{ parseResult.contactPhone }}</div>
+            </div>
+            <div v-if="parseResult.address" class="result-item">
+              <label>详细地址</label>
+              <div class="result-value">{{ parseResult.address }}</div>
+            </div>
+          </div>
+          
+          <div style="margin-top: 12px;">
+            <el-button type="success" size="small" @click="fillForm">
+              <Icon icon="ep:check" />
+              填入表单
+            </el-button>
+          </div>
+        </div>
+      </div>
+
       <!-- 收件人信息 -->
       <el-form-item label="收件姓名" prop="receiverName">
         <el-input
@@ -103,7 +159,6 @@
         <el-input-number
           v-model="formData.productQuantity"
           :min="0"
-          placeholder="请输入产品数量"
           class="w-80"
         />
       </el-form-item>
@@ -180,7 +235,7 @@
   </template>
 
   <script lang="ts" setup>
-  import { PropType } from 'vue'
+  import { PropType, nextTick, reactive } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { SampleVO } from '@/api/erp/sample'
@@ -291,6 +346,256 @@
     })
   }
 
+  /** 智能解析文本 */
+  const inputText = ref('')
+  const parsing = ref(false)
+  const parseResult = reactive({
+    hasResult: false,
+    receiverName: '',
+    contactPhone: '',
+    address: ''
+  })
+
+  // 解析文本主函数
+  const parseText = async () => {
+    if (!inputText.value.trim()) {
+      message.warning('请输入要解析的文本')
+      return
+    }
+
+    parsing.value = true
+    try {
+      const result = parseWithRegex(inputText.value)
+      Object.assign(parseResult, result)
+
+      if (result.hasResult) {
+        message.success('解析成功！')
+      } else {
+        message.warning('未能解析出有效信息，请检查文本格式')
+      }
+    } catch (error) {
+      console.error('文本解析错误:', error)
+      message.error('解析失败，请重试')
+    } finally {
+      parsing.value = false
+    }
+  }
+
+  // 智能正则解析引擎
+  const parseWithRegex = (text: string) => {
+    const result = {
+      hasResult: false,
+      receiverName: '',
+      contactPhone: '',
+      address: ''
+    }
+
+    // 预处理文本
+    const cleanText = text
+      .replace(/，/g, ',')
+      .replace(/。/g, '.')
+      .replace(/！/g, '!')
+      .replace(/？/g, '?')
+      .replace(/；/g, ';')
+      .replace(/：/g, ':')
+      .replace(/"/g, '"')
+      .replace(/"/g, '"')
+      .replace(/'/g, "'")
+      .replace(/'/g, "'")
+      .replace(/（/g, '(')
+      .replace(/）/g, ')')
+      .replace(/【/g, '[')
+      .replace(/】/g, ']')
+      .replace(/〈/g, '<')
+      .replace(/〉/g, '>')
+      .replace(/《/g, '<')
+      .replace(/》/g, '>')
+      .replace(/\s+/g, ' ')
+      .trim()
+
+    const lines = cleanText.split(/[\n\r]+/).map(line => line.trim()).filter(line => line)
+    const fullText = cleanText.replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim()
+
+    // 提取电话号码
+    result.contactPhone = extractPhone(fullText)
+    
+    // 提取姓名
+    result.receiverName = extractName(fullText, result.contactPhone)
+    
+    // 提取地址
+    result.address = extractAddress(fullText, lines, result.receiverName, result.contactPhone)
+
+    result.hasResult = !!(result.receiverName || result.contactPhone || result.address)
+    
+    return result
+  }
+
+  // 提取电话号码
+  const extractPhone = (fullText: string): string => {
+    // 明确标识的电话
+    const phonePatterns = [
+      /(?:电话|手机|联系方式?|tel|phone|联系电话|手机号)[:：\s]*(\+?86[-\s]?)?(1[3-9]\d{9})/gi,
+      /(1[3-9]\d{9})/g
+    ]
+    
+    for (const pattern of phonePatterns) {
+      const match = fullText.match(pattern)
+      if (match) {
+        const phoneMatch = match[0].match(/(1[3-9]\d{9})/)
+        if (phoneMatch) {
+          return phoneMatch[0]
+        }
+      }
+    }
+    
+    return ''
+  }
+
+  // 提取姓名
+  const extractName = (fullText: string, phone: string): string => {
+    // 从姓名+电话连写中提取
+    if (phone) {
+      const namePhonePattern = new RegExp(`([\\u4e00-\\u9fa5]{2,4})${phone}`)
+      const match = fullText.match(namePhonePattern)
+      if (match) {
+        return match[1]
+      }
+    }
+    
+    // 通用姓名搜索
+    const namePattern = /([\u4e00-\u9fa5]{2,4})/g
+    const candidates = []
+    let match
+    
+    while ((match = namePattern.exec(fullText)) !== null) {
+      candidates.push(match[1])
+    }
+    
+    const validNames = candidates.filter(name => isValidNameCandidate(name))
+    if (validNames.length > 0) {
+      return validNames[0]
+    }
+    
+    return ''
+  }
+
+  // 验证姓名候选
+  const isValidNameCandidate = (name: string): boolean => {
+    const excludeWords = [
+      '省', '市', '区', '县', '镇', '街道', '路', '号', '楼', '层', '室', '单元', '栋', '院',
+      '小区', '村', '大厦', '广场', '中心', '花园', '公园', '学校', '医院', '银行',
+      '寄样', '地址', '样品', '快递', '物流', '谢谢', '联系', '方便', '软件', '三楼',
+      '发货', '牙膏', '洗发', '化妆', '护肤', '商品', '产品', '货物', '到付',
+      '拒收', '签收', '请发', '感谢', '备注'
+    ]
+    
+    if (name.length < 2 || name.length > 4) return false
+    if (excludeWords.some(word => name.includes(word))) return false
+    if (/\d/.test(name)) return false
+    
+    return true
+  }
+
+  // 提取地址
+  const extractAddress = (fullText: string, lines: string[], name: string, phone: string): string => {
+    // 明确标识的地址行
+    const addressPatterns = [
+      /^(寄样地址|地址|详细地址|收货地址)[:：\s]*(.+)$/,
+      /(?:寄样地址|地址|详细地址|收货地址)[:：\s]*(.+)$/
+    ]
+    
+    for (const line of lines) {
+      for (const pattern of addressPatterns) {
+        const match = line.match(pattern)
+        if (match) {
+          return cleanAddress(match[match.length - 1], name, phone)
+        }
+      }
+    }
+    
+    // 基于地址关键词的智能匹配
+    const addressKeywords = ['省', '市', '区', '县', '镇', '街道', '路', '号', '楼', '层', '室', '单元', '栋', '院', '小区', '村', '大厦', '广场', '中心', '花园', '公园', '软件园', '工业园', '开发区']
+    
+    let bestLine = ''
+    let maxScore = 0
+    
+    for (const line of lines) {
+      const score = addressKeywords.filter(keyword => line.includes(keyword)).length
+      if (score > maxScore && score >= 2) {
+        maxScore = score
+        bestLine = line
+      }
+    }
+    
+    if (bestLine) {
+      return cleanAddress(bestLine, name, phone)
+    }
+    
+    return ''
+  }
+
+  // 清理地址
+  const cleanAddress = (address: string, name?: string, phone?: string): string => {
+    let cleaned = address
+    
+    // 移除姓名和电话
+    if (name) {
+      cleaned = cleaned.replace(new RegExp(name, 'g'), '')
+    }
+    if (phone) {
+      cleaned = cleaned.replace(new RegExp(phone, 'g'), '')
+    }
+    
+    // 移除地址前缀和产品描述
+    cleaned = cleaned
+      .replace(/^(寄样地址|地址|详细地址|收货地址)[:：\s]*/gi, '')
+      .replace(/[（(].*?[）)]/g, '')
+      .replace(/\s+\d+支\s*$/gi, '')
+      .replace(/\s+(牙膏|洗发水|化妆品|护肤品|面膜|精华|乳液|面霜|口红|香水)\s*\d*支?\s*$/gi, '')
+      .replace(/\s+(样品|产品|商品|货物|东西|物品).*$/gi, '')
+      .replace(/\s+(快递|物流|顺丰|韵达|圆通|中通|申通|邮政|EMS).*$/gi, '')
+      .replace(/\s+(发货|请发|谢谢|感谢|备注|到付|拒收|签收).*$/gi, '')
+    
+    return cleaned.replace(/\s+/g, '').trim()
+  }
+
+  // 填入表单
+  const fillForm = () => {
+    if (parseResult.receiverName) {
+      formData.receiverName = parseResult.receiverName
+    }
+    if (parseResult.contactPhone) {
+      formData.contactPhone = parseResult.contactPhone
+    }
+    if (parseResult.address) {
+      formData.address = parseResult.address
+    }
+    
+    // 同步数据到父组件
+    Object.assign(props.propFormData, formData)
+    
+    // 触发字段验证
+    nextTick(() => {
+      if (parseResult.receiverName) formRef.value?.validateField('receiverName')
+      if (parseResult.contactPhone) formRef.value?.validateField('contactPhone')
+      if (parseResult.address) formRef.value?.validateField('address')
+    })
+    
+    message.success('已填入表单')
+    clearText()
+  }
+
+  // 清空文本
+  const clearText = () => {
+    inputText.value = ''
+    Object.assign(parseResult, {
+      hasResult: false,
+      receiverName: '',
+      contactPhone: '',
+      address: ''
+    })
+  }
+
   /** 表单校验 */
   const emit = defineEmits(['update:activeName'])
   const validate = async () => {
@@ -307,3 +612,63 @@
 
   defineExpose({ validate })
   </script>
+
+  <style scoped>
+  .smart-parser-section {
+    border: 1px solid #dbeafe;
+    background-color: #eff6ff;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    border-radius: 0.375rem;
+  }
+
+  .parser-title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #1e40af;
+    margin-bottom: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .parser-desc {
+    font-size: 0.75rem;
+    color: #2563eb;
+    margin-bottom: 0.75rem;
+    line-height: 1.25rem;
+  }
+
+  .parse-result {
+    margin-top: 1rem;
+    padding: 1rem;
+    border: 1px solid #e5e7eb;
+    border-radius: 0.375rem;
+    background-color: #f9fafb;
+  }
+
+  .result-header {
+    font-size: 0.875rem;
+    color: #4b5563;
+    margin-bottom: 0.5rem;
+  }
+
+  .result-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 1rem;
+  }
+
+  .result-item label {
+    font-size: 0.75rem;
+    color: #6b7280;
+    display: block;
+  }
+
+  .result-value {
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #111827;
+    margin-top: 0.25rem;
+  }
+  </style>
