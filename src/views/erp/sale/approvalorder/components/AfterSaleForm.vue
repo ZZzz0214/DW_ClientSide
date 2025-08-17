@@ -157,11 +157,16 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
     formData.saleAfterSalesAmount = orderDetail.saleAfterSalesAmount || 0
     formData.afterSalesTime = orderDetail.afterSalesTime || ''
     formData.afterSalesStatus = orderDetail.afterSalesStatus || ''
-    if (!orderDetail.saleAfterSalesTime) {
+    
+    // 修复：根据操作类型判断是否更新售后时间
+    if (operationType === 'afterSale') {
+      // 点击售后按钮时，更新为当前时间
       formData.saleAfterSalesTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
+      console.log('售后操作，更新销售售后时间为当前时间：', formData.saleAfterSalesTime)
     } else {
-      formData.saleAfterSalesTime = orderDetail.saleAfterSalesTime
-      console.log('有时间',formData.saleAfterSalesTime)
+      // 点击反售后按钮时，保持原有时间
+      formData.saleAfterSalesTime = orderDetail.saleAfterSalesTime || null
+      console.log('反售后操作，保持原有销售售后时间：', formData.saleAfterSalesTime)
     }
   } catch (err) {
     message.error('获取订单售后信息失败，请重试')

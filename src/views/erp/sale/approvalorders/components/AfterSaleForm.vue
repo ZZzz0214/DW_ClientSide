@@ -145,20 +145,16 @@ const open = async (id: number, operationType: 'afterSale' | 'antiAfterSale') =>
     formData.totalSaleAmount = orderDetail.totalSaleAmount || 0 // 售后金额
     formData.saleAfterSalesAmount = orderDetail.saleAfterSalesAmount || ''
     formData.afterSalesStatus = orderDetail.afterSalesStatus || ''
-    if (!orderDetail.saleAfterSalesTime) {
-      // 生成符合 yyyy-MM-dd HH:mm:ss 格式的字符串（与 value-format 一致）
-      // const now = new Date()
-      // const year = now.getFullYear()
-      // const month = String(now.getMonth() + 1).padStart(2, '0')
-      // const day = String(now.getDate()).padStart(2, '0')
-      // const hours = String(now.getHours()).padStart(2, '0')
-      // const minutes = String(now.getMinutes()).padStart(2, '0')
-      // const seconds = String(now.getSeconds()).padStart(2, '0')
-      // formData.purchaseAfterSalesTime = `${year}-${month}-${day} ${hours}:${minutes}:${seconds}` // 关键修改：手动拼接格式
+    
+    // 修复：根据操作类型判断是否更新售后时间
+    if (operationType === 'afterSale') {
+      // 点击售后按钮时，更新为当前时间
       formData.saleAfterSalesTime = dayjs().format('YYYY-MM-DD HH:mm:ss')
+      console.log('售后操作，更新批发销售售后时间为当前时间：', formData.saleAfterSalesTime)
     } else {
-      // 直接使用后端返回的字符串（假设后端返回的格式已符合 yyyy-MM-dd HH:mm:ss）
-      formData.saleAfterSalesTime = orderDetail.saleAfterSalesTime
+      // 点击反售后按钮时，保持原有时间
+      formData.saleAfterSalesTime = orderDetail.saleAfterSalesTime || null
+      console.log('反售后操作，保持原有批发销售售后时间：', formData.saleAfterSalesTime)
     }
   } catch (err) {
     message.error('获取订单售后信息失败，请重试')
