@@ -58,6 +58,18 @@ export interface ErpPrivateBroadcastingReviewSaveReqVO {
 // ERP 私播复盘分页 Request VO
 export interface ErpPrivateBroadcastingReviewPageReqVO {
   no?: string // 编号
+  privateBroadcastingNo?: string // 私播货盘编号
+  brandName?: string // 品牌名称
+  productName?: string // 产品名称
+  productSpec?: string // 产品规格
+  customerName?: string // 客户名称
+  nakedPrice?: string // 产品裸价
+  expressFee?: string // 快递费用
+  dropshippingPrice?: string // 代发价格
+  sampleSendDate?: Date[] // 寄样日期
+  groupStartDate?: Date[] // 开团日期
+  status?: string // 货盘状态
+  creator?: string // 创建人员
   privateBroadcastingId?: number // 私播货盘表ID
   createTime?: Date[] // 创建时间范围
 }

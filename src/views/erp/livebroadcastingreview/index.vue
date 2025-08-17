@@ -18,6 +18,15 @@
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="直播货盘编号" prop="liveBroadcastingNo">
+          <el-input
+            v-model="queryParams.liveBroadcastingNo"
+            placeholder="请输入直播货盘编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="品牌名称" prop="brandName">
           <el-select
             v-model="queryParams.brandName"
@@ -230,7 +239,7 @@
       >
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no"  min-width="140"/>
-        <el-table-column label="直播货盘编号" align="center" prop="liveBroadcastingNo" :show-overflow-tooltip="false" min-width="140"/>
+        <el-table-column label="货盘编号" align="center" prop="liveBroadcastingNo" :show-overflow-tooltip="false" min-width="140"/>
         <el-table-column
           label="品牌名称"
           align="center"
@@ -335,6 +344,7 @@
     pageNo: 1,
     pageSize: 10,
     no: undefined,
+    liveBroadcastingNo: undefined,
     brandName: undefined,
     productName: undefined,
     productSpec: undefined,

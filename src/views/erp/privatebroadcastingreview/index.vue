@@ -17,6 +17,15 @@
           class="!w-240px"
         />
       </el-form-item>
+      <el-form-item label="货盘编号" prop="privateBroadcastingNo">
+        <el-input
+          v-model="queryParams.privateBroadcastingNo"
+          placeholder="请输入私播货盘编号"
+          clearable
+          @keyup.enter="handleQuery"
+          class="!w-240px"
+        />
+      </el-form-item>
       <el-form-item label="品牌名称" prop="brandName">
         <el-select
           v-model="queryParams.brandName"
@@ -292,6 +301,7 @@ const queryParams = reactive({
   pageNo: 1,
   pageSize: 10,
   no: undefined,
+  privateBroadcastingNo: undefined,
   brandName: undefined,
   productName: undefined,
   productSpec: undefined,

@@ -18,6 +18,15 @@
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="货盘编号" prop="groupBuyingNo">
+          <el-input
+            v-model="queryParams.groupBuyingNo"
+            placeholder="请输入团购货盘编号"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="品牌名称" prop="brandName">
           <el-select
             v-model="queryParams.brandName"
@@ -303,6 +312,7 @@
     pageNo: 1,
     pageSize: 10,
     no: undefined,
+    groupBuyingNo: undefined,
     brandName: undefined,
     productName: undefined,
     productSpec: undefined,

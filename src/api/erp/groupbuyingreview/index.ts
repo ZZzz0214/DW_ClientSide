@@ -45,6 +45,7 @@ export interface GroupBuyingReviewSaveReqVO {
 // ERP 团购复盘分页 Request VO
 export interface GroupBuyingReviewPageReqVO {
   no?: string // 编号
+  groupBuyingNo?: string // 团购货盘编号
   brandName?: string // 品牌名称
   productName?: string // 产品名称
   productSpec?: string // 产品规格

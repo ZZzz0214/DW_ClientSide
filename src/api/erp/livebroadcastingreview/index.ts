@@ -49,9 +49,21 @@ export interface LiveBroadcastingReviewSaveReqVO {
 // ERP 直播复盘分页 Request VO
 export interface LiveBroadcastingReviewPageReqVO {
   no?: string // 编号
+  liveBroadcastingNo?: string // 直播货盘编号
+  brandName?: string // 品牌名称
+  productName?: string // 产品名称
+  productSpec?: string // 产品规格
+  customerName?: string // 客户名称
+  livePlatform?: string // 直播平台
+  livePrice?: string // 直播价格
+  liveCommission?: string // 直播佣金
+  publicCommission?: string // 公开佣金
+  sampleSendDate?: Date[] // 寄样日期
+  liveStartDate?: Date[] // 开播日期
+  liveStatus?: string // 货盘状态
+  creator?: string // 创建人员
   liveBroadcastingId?: number // 直播货盘表ID
   customerId?: number // 客户ID
-  livePlatform?: string // 直播平台
   createTime?: Date[] // 创建时间
 }
 
