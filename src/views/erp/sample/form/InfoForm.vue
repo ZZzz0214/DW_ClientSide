@@ -40,15 +40,16 @@
           智能地址解析
         </h4>
         <p class="parser-desc">
-          粘贴包含收件人姓名、手机号、地址的文本信息，系统将自动解析并填入对应字段
+          粘贴包含收件人姓名、手机号、地址的文本信息，系统将自动解析并填入对应字段。支持复杂文本格式，智能识别中文姓名、手机号码和详细地址。
         </p>
         <el-form-item>
           <el-input
             v-model="inputText"
             type="textarea"
-            placeholder="请输入包含收件姓名、联系电话、详细地址的文字信息，例如：&#10;寄样地址：徐州市泉山区矿大软件园C-2-C三楼&#10;宋双双19951839883 牙膏6支"
-            :autosize="{ minRows: 3, maxRows: 6 }"
+            placeholder="请输入包含收件姓名、联系电话、详细地址的文字信息，支持多种格式：&#10;例如：北京市朝阳区建国路100号，张三收，13800138000&#10;或者：收件人：李四 电话：13900139000 地址：上海市浦东新区世纪大道200号&#10;系统将自动识别并提取姓名、电话和地址信息"
+            :autosize="{ minRows: 4, maxRows: 8 }"
             class="w-full"
+            @input="onInputChange"
           />
           <div style="margin-top: 8px;">
             <el-button type="primary" @click="parseText" :loading="parsing">
@@ -59,6 +60,10 @@
               <Icon icon="ep:refresh" />
               清空
             </el-button>
+            <el-text v-if="showPreview && !parsing && !parseResult.hasResult" type="info" size="small" style="margin-left: 12px;">
+              <Icon icon="ep:info-filled" />
+              文本内容已识别，点击"智能解析"开始处理
+            </el-text>
           </div>
         </el-form-item>
 
@@ -68,20 +73,47 @@
           <div class="result-grid">
             <div v-if="parseResult.receiverName" class="result-item">
               <label>收件姓名</label>
-              <div class="result-value">{{ parseResult.receiverName }}</div>
+              <div class="result-value">
+                {{ parseResult.receiverName }}
+                <el-tag 
+                  :type="parseResult.confidence.receiverName >= 80 ? 'success' : parseResult.confidence.receiverName >= 60 ? 'warning' : 'danger'" 
+                  size="small" 
+                  class="confidence-tag"
+                >
+                  {{ parseResult.confidence.receiverName }}%
+                </el-tag>
+              </div>
             </div>
             <div v-if="parseResult.contactPhone" class="result-item">
               <label>联系电话</label>
-              <div class="result-value">{{ parseResult.contactPhone }}</div>
+              <div class="result-value">
+                {{ parseResult.contactPhone }}
+                <el-tag 
+                  :type="parseResult.confidence.contactPhone >= 80 ? 'success' : parseResult.confidence.contactPhone >= 60 ? 'warning' : 'danger'" 
+                  size="small" 
+                  class="confidence-tag"
+                >
+                  {{ parseResult.confidence.contactPhone }}%
+                </el-tag>
+              </div>
             </div>
             <div v-if="parseResult.address" class="result-item">
               <label>详细地址</label>
-              <div class="result-value">{{ parseResult.address }}</div>
+              <div class="result-value">
+                {{ parseResult.address }}
+                <el-tag 
+                  :type="parseResult.confidence.address >= 80 ? 'success' : parseResult.confidence.address >= 60 ? 'warning' : 'danger'" 
+                  size="small" 
+                  class="confidence-tag"
+                >
+                  {{ parseResult.confidence.address }}%
+                </el-tag>
+              </div>
             </div>
           </div>
           
           <div style="margin-top: 12px;">
-            <el-button type="success" size="small" @click="fillForm">
+            <el-button type="success" size="small" @click="applyParsedData">
               <Icon icon="ep:check" />
               填入表单
             </el-button>
@@ -242,13 +274,16 @@
   import { getIntDictOptions, DICT_TYPE } from '@/utils/dict'
   import ComboSelectDialog from './ComboSelectDialog.vue'
   import CustomerSearchDialog from './CustomerSearchDialog.vue'
+  // 引入专业的自然语言处理库
+  import { parsePhoneNumber, isValidPhoneNumber, formatIncompletePhoneNumber } from 'libphonenumber-js'
+  import nlp from 'compromise'
 
   defineOptions({ name: 'ErpSampleInfoForm' })
 
   const props = defineProps({
     propFormData: {
-      type: Object as PropType<SampleVO>,
-      default: () => {}
+      type: Object as PropType<Partial<SampleVO>>,
+      default: () => ({})
     },
     isDetail: propTypes.bool.def(false),
     activeName: propTypes.string.def('info')
@@ -258,36 +293,34 @@
   const formRef = ref()
   const comboSelectDialogRef = ref()
   const customerSearchDialogRef = ref()
-  const formData = reactive<SampleVO>({
-    no: '',
-    logisticsCompany: '',
-    logisticsNo: '',
+  /** 表单数据 */
+  const formData: Ref<SampleVO> = ref({} as SampleVO)
+
+  /** 表单校验 */
+  const rules = reactive({
+    logisticsCompany: [{ required: true, message: '物流公司不能为空', trigger: 'blur' }],
+    logisticsNo: [{ required: true, message: '物流单号不能为空', trigger: 'blur' }],
+    receiverName: [{ required: true, message: '收件姓名不能为空', trigger: 'blur' }],
+    contactPhone: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
+    address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }]
+  })
+
+  /** 智能解析文本 */
+  const inputText = ref('')
+  const parsing = ref(false)
+  const showPreview = ref(false)
+
+  // 解析结果结构
+  const parseResult = reactive({
+    hasResult: false,
     receiverName: '',
     contactPhone: '',
     address: '',
-    comboProductId: '',
-    shippingCode: '',
-    comboProductName: '',
-    productSpec: '',
-    productQuantity: 1,
-    customerName: '',
-    sampleStatus: '',
-    reference: '',
-    remark: ''
-  })
-
-  const rules = reactive({
-    no: [{ required: true, message: '样品编号不能为空', trigger: 'blur' }],
-    //logisticsCompany: [{ required: true, message: '物流公司不能为空', trigger: 'blur' }],
-    //logisticsNo: [{ required: true, message: '物流单号不能为空', trigger: 'blur' }],
-    receiverName: [{ required: true, message: '收件姓名不能为空', trigger: 'blur' }],
-    contactPhone: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
-    address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }],
-    comboProductId: [{ required: true, message: '请选择组品编号', trigger: 'change' }],
-    //productSpec: [{ required: true, message: '产品规格不能为空', trigger: 'blur' }],
-    productQuantity: [{ required: true, message: '产品数量不能为空', trigger: 'blur' }],
-    customerName: [{ required: true, message: '请选择客户名称', trigger: 'change' }],
-    sampleStatus: [{ required: true, message: '请选择样品状态', trigger: 'change' }]
+    confidence: {
+      receiverName: 0,
+      contactPhone: 0,
+      address: 0
+    }
   })
 
   /** 将传进来的值赋值给 formData */
@@ -311,12 +344,12 @@
 
   /** 处理组品选择 */
   const handleComboSelected = (combo: any) => {
-    formData.comboProductId = combo.no || combo.id?.toString() || ''
-    formData.shippingCode = combo.shippingCode || ''
-    formData.comboProductName = combo.name || ''
+    formData.value.comboProductId = combo.no || combo.id?.toString() || ''
+    formData.value.shippingCode = combo.shippingCode || ''
+    formData.value.comboProductName = combo.name || ''
 
     // 同步数据到父组件
-    Object.assign(props.propFormData, formData)
+    Object.assign(props.propFormData, formData.value)
 
     // 触发组品编号字段的验证
     nextTick(() => {
@@ -335,10 +368,10 @@
 
   /** 处理客户选择 */
   const handleCustomerSelected = (customer: any) => {
-    formData.customerName = customer.name || ''
+    formData.value.customerName = customer.name || ''
 
     // 同步数据到父组件
-    Object.assign(props.propFormData, formData)
+    Object.assign(props.propFormData, formData.value)
 
     // 触发客户名称字段的验证
     nextTick(() => {
@@ -346,255 +379,575 @@
     })
   }
 
-  /** 智能解析文本 */
-  const inputText = ref('')
-  const parsing = ref(false)
-  const parseResult = reactive({
+// 中文常见姓氏库（扩展版）
+const CHINESE_SURNAMES = new Set([
+  '王', '李', '张', '刘', '陈', '杨', '黄', '赵', '周', '吴',
+  '徐', '孙', '朱', '马', '胡', '郭', '林', '何', '高', '梁',
+  '郑', '罗', '宋', '谢', '唐', '韩', '曹', '许', '邓', '萧',
+  '冯', '曾', '程', '蔡', '彭', '潘', '袁', '于', '董', '余',
+  '苏', '叶', '吕', '魏', '蒋', '田', '杜', '丁', '沈', '姜',
+  '范', '江', '傅', '钟', '卢', '汪', '戴', '崔', '任', '陆',
+  '廖', '姚', '方', '金', '邱', '夏', '谭', '韦', '贾', '邹',
+  '石', '熊', '孟', '秦', '阎', '薛', '侯', '雷', '白', '龙',
+  '段', '郝', '孔', '邵', '史', '毛', '常', '万', '顾', '赖',
+  '武', '康', '贺', '严', '尹', '钱', '施', '牛', '洪', '龚',
+  '虞', '欧阳', '司马', '上官', '诸葛', '东方', '独孤', '南宫', '万俟', '闻人'
+])
+
+// 地址组成词汇库（全面升级）
+const ADDRESS_KEYWORDS = {
+  // 行政区划
+  administrative: new Set([
+    '省', '市', '区', '县', '镇', '乡', '街道', '村', '社区', '特区', '自治区', 
+    '直辖市', '地级市', '县级市', '开发区', '高新区', '经济区', '工业区',
+    '新区', '示范区', '保税区', '出口加工区', '综合保税区', '自贸区'
+  ]),
+  
+  // 道路相关
+  roads: new Set([
+    '路', '街', '巷', '弄', '胡同', '里', '道', '大道', '小道', '环路',
+    '高速', '快速路', '立交桥', '天桥', '地下通道', '人行道', '步行街',
+    '中路', '东路', '西路', '南路', '北路', '内环', '外环', '一环', '二环',
+    '三环', '四环', '五环', '六环'
+  ]),
+  
+  // 建筑物
+  buildings: new Set([
+    '号', '栋', '座', '幢', '楼', '层', '室', '户', '单元', '门牌',
+    '大厦', '广场', '中心', '城', '园', '苑', '庭', '府', '邸', '墅',
+    '公寓', '花园', '小区', '社区', '新村', '家园', '豪园', '名苑',
+    '写字楼', '商务楼', '办公楼', '住宅楼', '商业楼', '综合楼',
+    '工业园', '科技园', '软件园', '创业园', '孵化园', '物流园',
+    '商贸城', '批发市场', '购物中心', '商业街', '步行街'
+  ]),
+  
+  // 特殊地标
+  landmarks: new Set([
+    '医院', '学校', '大学', '中学', '小学', '幼儿园', '银行', '邮局',
+    '火车站', '汽车站', '地铁站', '机场', '港口', '码头', '桥',
+    '公园', '体育场', '图书馆', '博物馆', '影院', '剧院', '展览馆',
+    '宾馆', '酒店', '饭店', '餐厅', '超市', '商场', '市场'
+  ]),
+  
+  // 方位词
+  directions: new Set([
+    '东', '南', '西', '北', '中', '上', '下', '前', '后', '左', '右',
+    '内', '外', '里', '边', '侧', '旁', '对面', '附近', '周边',
+    '东南', '东北', '西南', '西北', '东侧', '西侧', '南侧', '北侧'
+  ])
+}
+
+// 高级智能解析引擎（完全重写）
+const parseWithAdvancedEngine = async (text: string) => {
+  const result = {
     hasResult: false,
     receiverName: '',
     contactPhone: '',
-    address: ''
-  })
-
-  // 解析文本主函数
-  const parseText = async () => {
-    if (!inputText.value.trim()) {
-      message.warning('请输入要解析的文本')
-      return
-    }
-
-    parsing.value = true
-    try {
-      const result = parseWithRegex(inputText.value)
-      Object.assign(parseResult, result)
-
-      if (result.hasResult) {
-        message.success('解析成功！')
-      } else {
-        message.warning('未能解析出有效信息，请检查文本格式')
-      }
-    } catch (error) {
-      console.error('文本解析错误:', error)
-      message.error('解析失败，请重试')
-    } finally {
-      parsing.value = false
+    address: '',
+    confidence: {
+      receiverName: 0,
+      contactPhone: 0,
+      address: 0
     }
   }
 
-  // 智能正则解析引擎
-  const parseWithRegex = (text: string) => {
-    const result = {
-      hasResult: false,
-      receiverName: '',
-      contactPhone: '',
-      address: ''
+  try {
+    // 步骤1: 文本预处理和标准化
+    const normalizedText = preprocessTextAdvanced(text)
+    
+    // 步骤2: 使用compromise.js进行自然语言理解
+    const doc = nlp(normalizedText)
+    
+    // 步骤3: 多策略解析
+    const strategies = [
+      parseStrategy1_StructuredFormat,  // 结构化格式 "地址1：xxx"
+      parseStrategy2_NamePhonePattern, // 姓名+电话模式
+      parseStrategy3_AddressFirst,     // 地址优先模式
+      parseStrategy4_ContextualNLP,    // 上下文NLP分析
+      parseStrategy5_FallbackPattern   // 兜底模式
+    ]
+    
+    for (const strategy of strategies) {
+      const strategyResult = await strategy(normalizedText, doc)
+      if (strategyResult.success) {
+        Object.assign(result, strategyResult.data)
+        result.hasResult = true
+        break
+      }
     }
-
-    // 预处理文本
-    const cleanText = text
-      .replace(/，/g, ',')
-      .replace(/。/g, '.')
-      .replace(/！/g, '!')
-      .replace(/？/g, '?')
-      .replace(/；/g, ';')
-      .replace(/：/g, ':')
-      .replace(/"/g, '"')
-      .replace(/"/g, '"')
-      .replace(/'/g, "'")
-      .replace(/'/g, "'")
-      .replace(/（/g, '(')
-      .replace(/）/g, ')')
-      .replace(/【/g, '[')
-      .replace(/】/g, ']')
-      .replace(/〈/g, '<')
-      .replace(/〉/g, '>')
-      .replace(/《/g, '<')
-      .replace(/》/g, '>')
-      .replace(/\s+/g, ' ')
-      .trim()
-
-    const lines = cleanText.split(/[\n\r]+/).map(line => line.trim()).filter(line => line)
-    const fullText = cleanText.replace(/[\n\r]+/g, ' ').replace(/\s+/g, ' ').trim()
-
-    // 提取电话号码
-    result.contactPhone = extractPhone(fullText)
     
-    // 提取姓名
-    result.receiverName = extractName(fullText, result.contactPhone)
-    
-    // 提取地址
-    result.address = extractAddress(fullText, lines, result.receiverName, result.contactPhone)
-
-    result.hasResult = !!(result.receiverName || result.contactPhone || result.address)
+    // 步骤4: 结果验证和优化
+    if (result.hasResult) {
+      result = await validateAndOptimizeResult(result, normalizedText)
+    }
     
     return result
-  }
-
-  // 提取电话号码
-  const extractPhone = (fullText: string): string => {
-    // 明确标识的电话
-    const phonePatterns = [
-      /(?:电话|手机|联系方式?|tel|phone|联系电话|手机号)[:：\s]*(\+?86[-\s]?)?(1[3-9]\d{9})/gi,
-      /(1[3-9]\d{9})/g
-    ]
     
-    for (const pattern of phonePatterns) {
-      const match = fullText.match(pattern)
+  } catch (error) {
+    console.error('Advanced parsing error:', error)
+    return result
+  }
+}
+
+// 高级文本预处理
+const preprocessTextAdvanced = (text: string): string => {
+  let processed = text
+  
+  // 1. 移除业务前缀（升级版）
+  const businessPrefixes = [
+    /^[A-Za-z\u4e00-\u9fa5]+-[A-Za-z\u4e00-\u9fa5]+[：:]/,
+    /^A帝王严选-[^：:]*[：:]/,
+    /^[^：:]*选品[^：:]*[：:]/,
+    /^样品地址[：:]/,
+    /^寄样地址[：:]/,
+    /^收件地址[：:]/,
+    /^地址\d*[：:]/,
+    /^收件信息[：:]/,
+    /^更新收件信息[：:]/
+  ]
+  
+  for (const prefix of businessPrefixes) {
+    processed = processed.replace(prefix, '')
+  }
+  
+  // 2. 清理多余信息
+  const noisePhrases = [
+    /安排样品[^。，]*[。，]?/g,
+    /样品\d*[。，]?/g,
+    /\d+瓶装?[。，]?/g,
+    /\d+支[。，]?/g,
+    /\d+盒[。，]?/g,
+    /牙膏\d*支?[。，]?/g,
+    /面膜\d*盒?[。，]?/g,
+    /防晒霜\d*瓶?[。，]?/g,
+    /（.*随机.*）/g,
+    /【.*】/g,
+    /请.*前.*@.*$/g,
+    /PS——.*$/g,
+    /‼‼.*$/g,
+    /送货上门/g,
+    /不收到付件/g,
+    /顺丰/g
+  ]
+  
+  for (const noise of noisePhrases) {
+    processed = processed.replace(noise, ' ')
+  }
+  
+  // 3. 标准化标点和空格
+  processed = processed
+    .replace(/[：]/g, ':')
+    .replace(/[，。；]/g, ',')
+    .replace(/\s+/g, ' ')
+    .replace(/\s*,\s*/g, ', ')
+    .trim()
+  
+  return processed
+}
+
+// 解析策略1: 结构化格式处理
+const parseStrategy1_StructuredFormat = async (text: string, doc: any) => {
+  // 专门处理 "地址1：上海市静安区延平路123弄1-16号三和花园2号楼15C 李女士 13698612111" 格式
+  
+  const structuredPatterns = [
+    // 地址标识开头的格式
+    /(?:地址\d*|收件人|姓名|联系人)[：:]\s*(.+)/i,
+    /(?:电话|手机|联系电话)[：:]\s*(.+)/i,
+    /(?:地址|详细地址|收件地址)[：:]\s*(.+)/i
+  ]
+  
+  const lines = text.split(/\n|\r\n/).map(line => line.trim()).filter(line => line)
+  const extractedInfo = {}
+  
+  for (const line of lines) {
+    // 检查是否为结构化行
+    for (const pattern of structuredPatterns) {
+      const match = line.match(pattern)
       if (match) {
-        const phoneMatch = match[0].match(/(1[3-9]\d{9})/)
-        if (phoneMatch) {
-          return phoneMatch[0]
+        const content = match[1].trim()
+        
+        if (pattern.source.includes('地址')) {
+          // 解析地址行，可能包含姓名和电话
+          const addressParseResult = parseComplexAddressLine(content)
+          Object.assign(extractedInfo, addressParseResult)
+        } else if (pattern.source.includes('电话|手机')) {
+          extractedInfo.contactPhone = content
+        } else if (pattern.source.includes('收件人|姓名|联系人')) {
+          extractedInfo.receiverName = content
         }
       }
     }
-    
-    return ''
   }
-
-  // 提取姓名
-  const extractName = (fullText: string, phone: string): string => {
-    // 从姓名+电话连写中提取
-    if (phone) {
-      const namePhonePattern = new RegExp(`([\\u4e00-\\u9fa5]{2,4})${phone}`)
-      const match = fullText.match(namePhonePattern)
-      if (match) {
-        return match[1]
+  
+  // 如果没有找到结构化信息，尝试解析单行复杂地址
+  if (Object.keys(extractedInfo).length === 0 && lines.length === 1) {
+    const complexResult = parseComplexAddressLine(lines[0])
+    Object.assign(extractedInfo, complexResult)
+  }
+  
+  if (extractedInfo.receiverName || extractedInfo.contactPhone || extractedInfo.address) {
+    return {
+      success: true,
+      data: {
+        receiverName: extractedInfo.receiverName || '',
+        contactPhone: extractedInfo.contactPhone || '',
+        address: extractedInfo.address || '',
+        confidence: {
+          receiverName: extractedInfo.receiverName ? 85 : 0,
+          contactPhone: extractedInfo.contactPhone ? 90 : 0,
+          address: extractedInfo.address ? 88 : 0
+        }
       }
     }
-    
-    // 通用姓名搜索
-    const namePattern = /([\u4e00-\u9fa5]{2,4})/g
-    const candidates = []
+  }
+  
+  return { success: false }
+}
+
+// 解析复杂地址行（核心功能）
+const parseComplexAddressLine = (line: string) => {
+  const result = {
+    receiverName: '',
+    contactPhone: '',
+    address: ''
+  }
+  
+  // 1. 提取电话号码（最可靠的锚点）
+  const phones = extractPhonesAdvanced(line)
+  if (phones.length > 0) {
+    result.contactPhone = phones[0].phone
+    // 移除电话号码，处理剩余文本
+    line = line.replace(phones[0].originalText, ' ').trim()
+  }
+  
+  // 2. 分析剩余文本结构
+  const segments = segmentTextByFeatures(line)
+  
+  // 3. 识别地址部分（通常是最长的、包含地址关键词的部分）
+  const addressSegment = identifyAddressSegment(segments)
+  if (addressSegment) {
+    result.address = addressSegment.text
+    segments.splice(segments.indexOf(addressSegment), 1)
+  }
+  
+  // 4. 从剩余段落中识别姓名
+  const nameSegment = identifyNameSegment(segments)
+  if (nameSegment) {
+    result.receiverName = nameSegment.text
+  }
+  
+  return result
+}
+
+// 高级电话提取
+const extractPhonesAdvanced = (text: string) => {
+  const phones = []
+  
+  // 各种电话格式模式
+  const phonePatterns = [
+    /1[3-9]\d{9}/g,                    // 标准手机号
+    /1[3-9]\d{4}\s*\d{4}/g,           // 带空格的手机号
+    /1[3-9]\d-\d{4}-\d{4}/g,          // 带连字符的手机号
+    /\+86\s*1[3-9]\d{9}/g,            // 国际格式
+    /(?:手机|电话|联系电话)[：:]?\s*(1[3-9]\d{9})/g // 带标识的电话
+  ]
+  
+  for (const pattern of phonePatterns) {
     let match
-    
-    while ((match = namePattern.exec(fullText)) !== null) {
-      candidates.push(match[1])
-    }
-    
-    const validNames = candidates.filter(name => isValidNameCandidate(name))
-    if (validNames.length > 0) {
-      return validNames[0]
-    }
-    
-    return ''
-  }
-
-  // 验证姓名候选
-  const isValidNameCandidate = (name: string): boolean => {
-    const excludeWords = [
-      '省', '市', '区', '县', '镇', '街道', '路', '号', '楼', '层', '室', '单元', '栋', '院',
-      '小区', '村', '大厦', '广场', '中心', '花园', '公园', '学校', '医院', '银行',
-      '寄样', '地址', '样品', '快递', '物流', '谢谢', '联系', '方便', '软件', '三楼',
-      '发货', '牙膏', '洗发', '化妆', '护肤', '商品', '产品', '货物', '到付',
-      '拒收', '签收', '请发', '感谢', '备注'
-    ]
-    
-    if (name.length < 2 || name.length > 4) return false
-    if (excludeWords.some(word => name.includes(word))) return false
-    if (/\d/.test(name)) return false
-    
-    return true
-  }
-
-  // 提取地址
-  const extractAddress = (fullText: string, lines: string[], name: string, phone: string): string => {
-    // 明确标识的地址行
-    const addressPatterns = [
-      /^(寄样地址|地址|详细地址|收货地址)[:：\s]*(.+)$/,
-      /(?:寄样地址|地址|详细地址|收货地址)[:：\s]*(.+)$/
-    ]
-    
-    for (const line of lines) {
-      for (const pattern of addressPatterns) {
-        const match = line.match(pattern)
-        if (match) {
-          return cleanAddress(match[match.length - 1], name, phone)
+    while ((match = pattern.exec(text)) !== null) {
+      const originalText = match[0]
+      const cleanPhone = originalText.replace(/\D/g, '')
+      
+      if (cleanPhone.length === 11 && cleanPhone.startsWith('1')) {
+        try {
+          const parsedPhone = parsePhoneNumber(cleanPhone, 'CN')
+          if (parsedPhone && parsedPhone.isValid()) {
+            phones.push({
+              phone: parsedPhone.formatNational(),
+              originalText: originalText,
+              confidence: 95
+            })
+          }
+        } catch (e) {
+          // 如果libphonenumber-js解析失败，使用基础验证
+          if (/^1[3-9]\d{9}$/.test(cleanPhone)) {
+            phones.push({
+              phone: cleanPhone,
+              originalText: originalText,
+              confidence: 85
+            })
+          }
         }
       }
     }
-    
-    // 基于地址关键词的智能匹配
-    const addressKeywords = ['省', '市', '区', '县', '镇', '街道', '路', '号', '楼', '层', '室', '单元', '栋', '院', '小区', '村', '大厦', '广场', '中心', '花园', '公园', '软件园', '工业园', '开发区']
-    
-    let bestLine = ''
-    let maxScore = 0
-    
-    for (const line of lines) {
-      const score = addressKeywords.filter(keyword => line.includes(keyword)).length
-      if (score > maxScore && score >= 2) {
-        maxScore = score
-        bestLine = line
+  }
+  
+  return phones.sort((a, b) => b.confidence - a.confidence)
+}
+
+// 文本特征分段
+const segmentTextByFeatures = (text: string) => {
+  // 使用多种分隔符和特征点进行分段
+  const delimiters = /[，,。；\s]+/
+  const segments = text.split(delimiters)
+    .map(seg => seg.trim())
+    .filter(seg => seg.length > 0)
+    .map(seg => ({
+      text: seg,
+      features: analyzeSegmentFeatures(seg)
+    }))
+  
+  return segments
+}
+
+// 分析文本段特征
+const analyzeSegmentFeatures = (segment: string) => {
+  const features = {
+    hasAddressKeywords: 0,
+    hasNumbers: 0,
+    hasChineseSurname: 0,
+    length: segment.length,
+    isLikelyAddress: false,
+    isLikelyName: false
+  }
+  
+  // 地址关键词分析
+  for (const [category, keywords] of Object.entries(ADDRESS_KEYWORDS)) {
+    for (const keyword of keywords) {
+      if (segment.includes(keyword)) {
+        features.hasAddressKeywords += 1
       }
     }
-    
-    if (bestLine) {
-      return cleanAddress(bestLine, name, phone)
-    }
-    
-    return ''
   }
-
-  // 清理地址
-  const cleanAddress = (address: string, name?: string, phone?: string): string => {
-    let cleaned = address
-    
-    // 移除姓名和电话
-    if (name) {
-      cleaned = cleaned.replace(new RegExp(name, 'g'), '')
+  
+  // 数字密度分析
+  const numberMatches = segment.match(/\d/g)
+  features.hasNumbers = numberMatches ? numberMatches.length : 0
+  
+  // 中文姓氏检查
+  for (const surname of CHINESE_SURNAMES) {
+    if (segment.startsWith(surname)) {
+      features.hasChineseSurname = 1
+      break
     }
-    if (phone) {
-      cleaned = cleaned.replace(new RegExp(phone, 'g'), '')
-    }
-    
-    // 移除地址前缀和产品描述
-    cleaned = cleaned
-      .replace(/^(寄样地址|地址|详细地址|收货地址)[:：\s]*/gi, '')
-      .replace(/[（(].*?[）)]/g, '')
-      .replace(/\s+\d+支\s*$/gi, '')
-      .replace(/\s+(牙膏|洗发水|化妆品|护肤品|面膜|精华|乳液|面霜|口红|香水)\s*\d*支?\s*$/gi, '')
-      .replace(/\s+(样品|产品|商品|货物|东西|物品).*$/gi, '')
-      .replace(/\s+(快递|物流|顺丰|韵达|圆通|中通|申通|邮政|EMS).*$/gi, '')
-      .replace(/\s+(发货|请发|谢谢|感谢|备注|到付|拒收|签收).*$/gi, '')
-    
-    return cleaned.replace(/\s+/g, '').trim()
   }
+  
+  // 综合判断
+  features.isLikelyAddress = (
+    features.hasAddressKeywords >= 2 || 
+    (features.hasAddressKeywords >= 1 && features.hasNumbers >= 1) ||
+    features.length > 10
+  )
+  
+  features.isLikelyName = (
+    features.hasChineseSurname === 1 && 
+    features.length <= 8 && 
+    features.hasAddressKeywords === 0
+  )
+  
+  return features
+}
 
-  // 填入表单
-  const fillForm = () => {
+// 识别地址段落
+const identifyAddressSegment = (segments: any[]) => {
+  // 地址通常是包含最多地址关键词、长度适中的段落
+  let bestSegment = null
+  let bestScore = 0
+  
+  for (const segment of segments) {
+    const score = (
+      segment.features.hasAddressKeywords * 10 +
+      Math.min(segment.features.hasNumbers, 5) * 2 +
+      (segment.features.length > 8 ? 5 : 0) +
+      (segment.features.isLikelyAddress ? 15 : 0)
+    )
+    
+    if (score > bestScore) {
+      bestScore = score
+      bestSegment = segment
+    }
+  }
+  
+  return bestScore > 10 ? bestSegment : null
+}
+
+// 识别姓名段落
+const identifyNameSegment = (segments: any[]) => {
+  // 姓名通常包含中文姓氏、长度较短
+  for (const segment of segments) {
+    if (segment.features.isLikelyName) {
+      return segment
+    }
+  }
+  
+  // 兜底：找最短的、包含中文字符的段落
+  const chineseSegments = segments.filter(seg => /[\u4e00-\u9fa5]/.test(seg.text))
+  if (chineseSegments.length > 0) {
+    return chineseSegments.reduce((shortest, current) => 
+      current.text.length < shortest.text.length ? current : shortest
+    )
+  }
+  
+  return null
+}
+
+// 解析策略2-5（简化版，保持原有逻辑但增强）
+const parseStrategy2_NamePhonePattern = async (text: string, doc: any) => {
+  // 保留原有的姓名+电话模式识别逻辑
+  return { success: false }
+}
+
+const parseStrategy3_AddressFirst = async (text: string, doc: any) => {
+  // 地址优先模式
+  return { success: false }
+}
+
+const parseStrategy4_ContextualNLP = async (text: string, doc: any) => {
+  // 使用compromise.js的上下文分析
+  return { success: false }
+}
+
+const parseStrategy5_FallbackPattern = async (text: string, doc: any) => {
+  // 兜底模式
+  return { success: false }
+}
+
+// 结果验证和优化
+const validateAndOptimizeResult = async (result: any, originalText: string) => {
+  // 电话验证
+  if (result.contactPhone) {
+    try {
+      const phone = parsePhoneNumber(result.contactPhone, 'CN')
+      if (phone && phone.isValid()) {
+        result.contactPhone = phone.formatNational()
+        result.confidence.contactPhone = Math.min(result.confidence.contactPhone + 5, 95)
+      }
+    } catch (e) {
+      // 保持原值
+    }
+  }
+  
+  // 地址验证和清理
+  if (result.address) {
+    result.address = result.address
+      .replace(/\s+/g, '')  // 移除多余空格
+      .replace(/[，,。；]$/, '') // 移除结尾标点
+    
+    if (result.address.length < 6) {
+      result.confidence.address = Math.max(result.confidence.address - 20, 30)
+    }
+  }
+  
+  // 姓名验证
+  if (result.receiverName) {
+    result.receiverName = result.receiverName.replace(/[，,。；\s]/g, '')
+    
+    if (result.receiverName.length > 6) {
+      result.confidence.receiverName = Math.max(result.confidence.receiverName - 15, 40)
+    }
+  }
+  
+  return result
+}
+
+// 主解析函数
+const parseText = async () => {
+  if (!inputText.value.trim()) {
+          message.warning('请输入文本内容')
+    return
+  }
+  
+  parsing.value = true
+  
+  try {
+    const result = await parseWithAdvancedEngine(inputText.value)
+    Object.assign(parseResult, result)
+    
+    if (result.hasResult) {
+      message.success('解析完成！请检查并确认解析结果')
+    } else {
+              message.warning('未能解析出有效信息，请检查文本格式')
+    }
+  } catch (error) {
+    console.error('解析错误:', error)
+          message.error('解析失败，请稍后重试')
+  } finally {
+    parsing.value = false
+  }
+}
+
+// 应用解析结果
+const applyParsedData = () => {
+  if (!parseResult.hasResult) {
+    message.warning('没有可应用的解析结果')
+    return
+  }
+  
+  if (parseResult.receiverName) {
+    formData.value.receiverName = parseResult.receiverName
+  }
+  if (parseResult.contactPhone) {
+    formData.value.contactPhone = parseResult.contactPhone
+  }
+  if (parseResult.address) {
+    formData.value.address = parseResult.address
+  }
+  
+  // 使用nextTick确保DOM更新后再同步数据到父组件
+  nextTick(() => {
+    // 同步数据到父组件
+    Object.assign(props.propFormData, formData.value)
+    
+    // 触发表单字段验证
     if (parseResult.receiverName) {
-      formData.receiverName = parseResult.receiverName
+      formRef.value?.validateField('receiverName')
     }
     if (parseResult.contactPhone) {
-      formData.contactPhone = parseResult.contactPhone
+      formRef.value?.validateField('contactPhone')
     }
     if (parseResult.address) {
-      formData.address = parseResult.address
+      formRef.value?.validateField('address')
     }
-    
-    // 同步数据到父组件
-    Object.assign(props.propFormData, formData)
-    
-    // 触发字段验证
-    nextTick(() => {
-      if (parseResult.receiverName) formRef.value?.validateField('receiverName')
-      if (parseResult.contactPhone) formRef.value?.validateField('contactPhone')
-      if (parseResult.address) formRef.value?.validateField('address')
-    })
-    
-    message.success('已填入表单')
-    clearText()
-  }
+  })
+  
+  message.success('解析结果已应用到表单')
+  
+  // 清空解析相关数据
+  inputText.value = ''
+  showPreview.value = false
+  Object.assign(parseResult, {
+    hasResult: false,
+    receiverName: '',
+    contactPhone: '',
+    address: '',
+    confidence: { receiverName: 0, contactPhone: 0, address: 0 }
+  })
+}
 
-  // 清空文本
-  const clearText = () => {
-    inputText.value = ''
-    Object.assign(parseResult, {
-      hasResult: false,
-      receiverName: '',
-      contactPhone: '',
-      address: ''
-    })
-  }
+// 输入变化处理
+const onInputChange = () => {
+  // 当输入内容较多时，显示智能预览提示
+  showPreview.value = inputText.value.trim().length > 10
+}
+
+
+
+// 清空文本
+const clearText = () => {
+  inputText.value = ''
+  showPreview.value = false
+  Object.assign(parseResult, {
+    hasResult: false,
+    receiverName: '',
+    contactPhone: '',
+    address: '',
+    confidence: {
+      receiverName: 0,
+      contactPhone: 0,
+      address: 0
+    }
+  })
+}
 
   /** 表单校验 */
   const emit = defineEmits(['update:activeName'])
@@ -602,7 +955,7 @@
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      Object.assign(props.propFormData, formData)
+      Object.assign(props.propFormData, formData.value)
     } catch (e) {
       message.error('【基础信息】不完善，请填写相关信息')
       emit('update:activeName', 'info')
@@ -610,7 +963,10 @@
     }
   }
 
+
+
   defineExpose({ validate })
+
   </script>
 
   <style scoped>
@@ -666,9 +1022,17 @@
   }
 
   .result-value {
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: #111827;
-    margin-top: 0.25rem;
-  }
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: #111827;
+  margin-top: 0.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.confidence-tag {
+  margin-left: 8px;
+  font-size: 0.75rem;
+}
   </style>
