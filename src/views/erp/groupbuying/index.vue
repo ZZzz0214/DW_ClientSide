@@ -495,7 +495,23 @@
       } catch (error) {
         if (error !== 'cancel') {
           console.error('下载图片失败:', error)
-          message.error('图片下载失败')
+          // 尝试解析错误信息
+          let errorMsg = '图片下载失败'
+          if (error && error.response && error.response.data) {
+            if (typeof error.response.data === 'string') {
+              try {
+                const errorData = JSON.parse(error.response.data)
+                errorMsg = errorData.msg || errorMsg
+              } catch (e) {
+                errorMsg = error.response.data
+              }
+            } else if (error.response.data.msg) {
+              errorMsg = error.response.data.msg
+            }
+          } else if (error && error.message) {
+            errorMsg = error.message
+          }
+          message.error(errorMsg)
         }
       } finally {
         downloadImagesLoading.value = false
@@ -523,7 +539,23 @@
       } catch (error) {
         if (error !== 'cancel') {
           console.error('下载图片失败:', error)
-          message.error('图片下载失败')
+          // 尝试解析错误信息
+          let errorMsg = '图片下载失败'
+          if (error && error.response && error.response.data) {
+            if (typeof error.response.data === 'string') {
+              try {
+                const errorData = JSON.parse(error.response.data)
+                errorMsg = errorData.msg || errorMsg
+              } catch (e) {
+                errorMsg = error.response.data
+              }
+            } else if (error.response.data.msg) {
+              errorMsg = error.response.data.msg
+            }
+          } else if (error && error.message) {
+            errorMsg = error.message
+          }
+          message.error(errorMsg)
         }
       } finally {
         downloadImagesLoading.value = false
@@ -548,7 +580,23 @@
     } catch (error) {
       if (error !== 'cancel') {
         console.error('下载图片失败:', error)
-        message.error('图片下载失败')
+        // 尝试解析错误信息
+        let errorMsg = '图片下载失败'
+        if (error && error.response && error.response.data) {
+          if (typeof error.response.data === 'string') {
+            try {
+              const errorData = JSON.parse(error.response.data)
+              errorMsg = errorData.msg || errorMsg
+            } catch (e) {
+              errorMsg = error.response.data
+            }
+          } else if (error.response.data.msg) {
+            errorMsg = error.response.data.msg
+          }
+        } else if (error && error.message) {
+          errorMsg = error.message
+        }
+        message.error(errorMsg)
       }
     } finally {
       downloadImagesLoading.value = false
