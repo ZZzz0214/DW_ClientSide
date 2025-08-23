@@ -135,6 +135,17 @@
              />
            </template>
          </el-table-column>
+         <el-table-column label="备注信息" prop="remark" min-width="200">
+           <template #default="scope">
+             <el-input
+               v-model="scope.row.remark"
+               type="textarea"
+               :autosize="{ minRows: 1, maxRows: 4 }"
+               readonly
+               style="border: none; background: transparent; resize: none;"
+             />
+           </template>
+         </el-table-column>
        </el-table>
 
       <Pagination
