@@ -217,7 +217,7 @@
         <el-table-column width="30" label="选择" type="selection" />
         <el-table-column label="编号" align="center" prop="no" :show-overflow-tooltip="false" min-width="140"/>
         <el-table-column label="团购货盘编号" align="center" prop="groupBuyingNo" :show-overflow-tooltip="false" min-width="140"/>
-        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false" min-width="100">
+        <el-table-column label="品牌名称" align="center" prop="brandName" :show-overflow-tooltip="false" min-width="150">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>

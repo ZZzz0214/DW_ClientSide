@@ -212,7 +212,7 @@
           align="center"
           prop="brandName"
           :show-overflow-tooltip="false"
-          min-width="100"
+          min-width="150"
         >
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName"  />
