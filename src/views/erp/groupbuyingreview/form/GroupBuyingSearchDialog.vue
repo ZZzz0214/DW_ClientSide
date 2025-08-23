@@ -12,7 +12,20 @@
           </el-col>
           <el-col :span="8">
             <el-form-item label="品牌名称">
-              <el-input v-model="searchForm.brandName" placeholder="请输入品牌名称" />
+              <el-select
+                v-model="searchForm.brandName"
+                placeholder="请选择品牌名称"
+                clearable
+                filterable
+                :filter-method="(value) => filterBrandOptions(value)"
+              >
+                <el-option
+                  v-for="dict in filteredBrandOptions"
+                  :key="dict.value"
+                  :label="dict.label"
+                  :value="dict.value"
+                />
+              </el-select>
             </el-form-item>
           </el-col>
           <el-col :span="8">
@@ -179,6 +192,19 @@ const total = ref(0);
 
 // 字典选项
 const statusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS));
+const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND));
+
+// 品牌选项过滤方法
+const filterBrandOptions = (value) => {
+  const allOptions = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND);
+  if (!value) {
+    filteredBrandOptions.value = allOptions;
+    return;
+  }
+  filteredBrandOptions.value = allOptions.filter(item =>
+    item.label.toLowerCase().includes(value.toLowerCase())
+  );
+};
 
 const handleSearch = async () => {
   try {
@@ -205,6 +231,8 @@ const resetQuery = () => {
     pageNo: 1,
     pageSize: 10
   });
+  // 重置品牌选项
+  filteredBrandOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND);
   handleSearch();
 };
 
