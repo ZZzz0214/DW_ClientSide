@@ -110,13 +110,13 @@
         />
       </el-form-item>
 
-      <el-form-item label="供团价格" prop="supplyGroupPrice">
+      <el-form-item label="供货价格" prop="supplyGroupPrice">
         <div style="display: flex; align-items: center;">
         <el-input-number
           v-model="formData.supplyGroupPrice"
           :min="0"
           :precision="2"
-          placeholder="请输入供团价格"
+          placeholder="请输入供货价格"
           class="w-80!"
         />
         <span style="margin-left: 25px;">元</span>
@@ -216,7 +216,7 @@
     //no: [{ required: true, message: '编号不能为空', trigger: 'blur' }],
     groupBuyingNo: [{ required: true, message: '请选择团购货盘', trigger: 'blur' }],
     customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
-    supplyGroupPrice: [{ required: true, message: '供团价格不能为空', trigger: 'blur' }],
+    supplyGroupPrice: [{ required: true, message: '供货价格不能为空', trigger: 'blur' }],
     groupMechanism: [{ required: true, message: '开团机制不能为空', trigger: 'blur' }]
   })
 
@@ -263,7 +263,7 @@ const handleGroupBuyingSelected = (groupBuying: any) => {
   formData.productSku = groupBuying.productSku || '';
   formData.groupMechanism = groupBuying.groupMechanism || '';
   formData.status = groupBuying.status; // 填充货盘状态
-  // 如果货盘有供团价格，也可以自动填充
+          // 如果货盘有供货价格，也可以自动填充
   if (groupBuying.supplyGroupPrice) {
     formData.supplyGroupPrice = groupBuying.supplyGroupPrice;
   }

@@ -119,7 +119,7 @@
              <dict-tag :type="DICT_TYPE.ERP_PRODUCT_STATUS" :value="scope.row.status" />
            </template>
          </el-table-column>
-         <el-table-column label="供团价格" prop="supplyGroupPrice" width="100">
+         <el-table-column label="供货价格" prop="supplyGroupPrice" width="100">
            <template #default="scope">
              <span v-if="scope.row.supplyGroupPrice">{{ scope.row.supplyGroupPrice }}元</span>
            </template>

@@ -29,7 +29,7 @@
           <span class="field-value">{{ formData.productSku || '-' }}</span>
         </div>
         <div class="data-item">
-          <span class="field-name">供团价格：</span>
+                      <span class="field-name">供货价格：</span>
           <span class="field-value">{{ formData.supplyGroupPrice || '-' }}</span>
         </div>
         <div class="data-item">
@@ -116,7 +116,7 @@ const generateCopyText = () => {
     `产品名称：${props.formData.productName || '-'}`,
     `产品规格：${props.formData.productSpec || '-'}`,
     `产品SKU：${props.formData.productSku || '-'}`,
-    `供团价格：${props.formData.supplyGroupPrice || '-'}`,
+          `供货价格：${props.formData.supplyGroupPrice || '-'}`,
     `帮卖佣金：${props.formData.sellingCommission || '-'}`,
     `开团价格：${props.formData.groupPrice || '-'}`,
     `渠道毛利：${props.formData.channelProfit || '-'}`,

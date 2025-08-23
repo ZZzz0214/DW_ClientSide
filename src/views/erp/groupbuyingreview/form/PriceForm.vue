@@ -13,14 +13,14 @@
           class="w-80"
         />
       </el-form-item>
-      <el-form-item label="供团价格" prop="supplyGroupPrice">
-        <el-input-number
-          v-model="formData.supplyGroupPrice"
-          :min="0"
-          :precision="2"
-          placeholder="请输入供团价格"
-          class="w-80"
-        />
+              <el-form-item label="供货价格" prop="supplyGroupPrice">
+          <el-input-number
+            v-model="formData.supplyGroupPrice"
+            :min="0"
+            :precision="2"
+            placeholder="请输入供货价格"
+            class="w-80"
+          />
       </el-form-item>
 <!--      <el-form-item label="开团机制" prop="groupMechanism">-->
 <!--        <el-input-->
@@ -61,7 +61,7 @@
 
   const rules = reactive({
     customerId: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
-    supplyGroupPrice: [{ required: true, message: '供团价格不能为空', trigger: 'blur' }]
+    supplyGroupPrice: [{ required: true, message: '供货价格不能为空', trigger: 'blur' }]
   })
 
   /** 将传进来的值赋值给 formData */

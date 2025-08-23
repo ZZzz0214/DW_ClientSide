@@ -6,14 +6,14 @@
       :rules="rules"
       label-width="120px"
     >
-      <!-- 供团价格 -->
-      <el-form-item label="供团价格" prop="supplyGroupPrice">
+      <!-- 供货价格 -->
+      <el-form-item label="供货价格" prop="supplyGroupPrice">
         <div style="display: flex; align-items: center;">
         <el-input-number
           v-model="formData.supplyGroupPrice"
           :min="0"
           :precision="2"
-          placeholder="请输入供团价格"
+          placeholder="请输入供货价格"
           class="w-80"
           @change="calculateProfit"
         />
@@ -120,7 +120,7 @@
   })
 
   const rules = reactive({
-    supplyGroupPrice: [{ required: true, message: '供团价格不能为空', trigger: 'blur' }],
+    supplyGroupPrice: [{ required: true, message: '供货价格不能为空', trigger: 'blur' }],
     sellingCommission: [{ required: true, message: '帮卖佣金不能为空', trigger: 'blur' }],
     groupPrice: [{ required: true, message: '开团价格不能为空', trigger: 'blur' }],
     groupMechanism: [{ required: true, message: '开团机制不能为空', trigger: 'blur' }],

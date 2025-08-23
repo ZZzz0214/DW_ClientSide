@@ -63,10 +63,10 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="供团价格" prop="supplyGroupPrice">
+        <el-form-item label="供货价格" prop="supplyGroupPrice">
           <el-input
             v-model="queryParams.supplyGroupPrice"
-            placeholder="请输入供团价格"
+            placeholder="请输入供货价格"
             clearable
             @keyup.enter="handleQuery"
             class="!w-240px"
@@ -249,7 +249,7 @@
           </template>
         </el-table-column>
         <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" width="180px" :show-overflow-tooltip="false"/>
-        <el-table-column label="供团价格" align="center" prop="supplyGroupPrice"  :show-overflow-tooltip="false"/>
+        <el-table-column label="供货价格" align="center" prop="supplyGroupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="帮卖佣金" align="center" prop="sellingCommission"  :show-overflow-tooltip="false"/>
         <el-table-column label="开团价格" align="center" prop="groupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
