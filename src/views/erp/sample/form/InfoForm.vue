@@ -267,7 +267,7 @@
   </template>
 
   <script lang="ts" setup>
-  import { PropType, nextTick, reactive } from 'vue'
+  import { PropType, nextTick, reactive, onMounted } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { SampleVO } from '@/api/erp/sample'
@@ -295,6 +295,43 @@
   const customerSearchDialogRef = ref()
   /** 表单数据 */
   const formData: Ref<SampleVO> = ref({} as SampleVO)
+
+  /** 表单校验 */
+  const emit = defineEmits(['update:activeName', 'update:propFormData'])
+  
+  // 🔥 添加数据同步逻辑：监听父组件传递的数据变化
+  watch(
+    () => props.propFormData,
+    (newData) => {
+      if (newData && typeof newData === 'object' && Object.keys(newData).length > 0) {
+        // 🔥 使用深拷贝确保数据完全同步
+        formData.value = { ...formData.value, ...newData }
+      }
+    },
+    { 
+      immediate: true, 
+      deep: true 
+    }
+  )
+
+  // 🔥 添加表单数据变化监听：使用emit通知父组件更新数据
+  watch(
+    formData,
+    (newData) => {
+      if (newData && typeof newData === 'object') {
+        // 🔥 使用emit事件通知父组件更新数据，而不是直接修改props
+        emit('update:propFormData', newData)
+      }
+    },
+    { deep: true }
+  )
+
+  // 🔥 组件挂载时强制同步数据
+  onMounted(() => {
+    if (props.propFormData && typeof props.propFormData === 'object' && Object.keys(props.propFormData).length > 0) {
+      formData.value = { ...formData.value, ...props.propFormData }
+    }
+  })
 
   /** 表单校验 */
   const rules = reactive({
@@ -348,8 +385,8 @@
     formData.value.shippingCode = combo.shippingCode || ''
     formData.value.comboProductName = combo.name || ''
 
-    // 同步数据到父组件
-    Object.assign(props.propFormData, formData.value)
+    // 🔥 使用emit事件通知父组件更新数据，而不是直接修改props
+    emit('update:propFormData', formData.value)
 
     // 触发组品编号字段的验证
     nextTick(() => {
@@ -370,8 +407,8 @@
   const handleCustomerSelected = (customer: any) => {
     formData.value.customerName = customer.name || ''
 
-    // 同步数据到父组件
-    Object.assign(props.propFormData, formData.value)
+    // 🔥 使用emit事件通知父组件更新数据，而不是直接修改props
+    emit('update:propFormData', formData.value)
 
     // 触发客户名称字段的验证
     nextTick(() => {
@@ -895,8 +932,8 @@ const applyParsedData = () => {
   
   // 使用nextTick确保DOM更新后再同步数据到父组件
   nextTick(() => {
-    // 同步数据到父组件
-    Object.assign(props.propFormData, formData.value)
+    // 🔥 使用emit事件通知父组件更新数据，而不是直接修改props
+    emit('update:propFormData', formData.value)
     
     // 触发表单字段验证
     if (parseResult.receiverName) {
@@ -950,12 +987,12 @@ const clearText = () => {
 }
 
   /** 表单校验 */
-  const emit = defineEmits(['update:activeName'])
   const validate = async () => {
     if (!formRef) return
     try {
       await unref(formRef)?.validate()
-      Object.assign(props.propFormData, formData.value)
+      // 🔥 使用emit事件通知父组件更新数据，而不是直接修改props
+      emit('update:propFormData', formData.value)
     } catch (e) {
       message.error('【基础信息】不完善，请填写相关信息')
       emit('update:activeName', 'info')

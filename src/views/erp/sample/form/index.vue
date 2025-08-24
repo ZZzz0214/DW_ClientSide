@@ -7,6 +7,7 @@
             v-model:activeName="activeName"
             :is-detail="isDetail"
             :propFormData="formData"
+            @update:propFormData="handleFormDataUpdate"
           />
         </el-tab-pane>
         <el-tab-pane label="复制数据" name="copy" v-if="isDetail">
@@ -70,12 +71,19 @@
     }
     const id = params.id as unknown as number
     const copyId = query.copyId as unknown as number
-
+    
     if (id) {
       formLoading.value = true
       try {
         const res = await SampleApi.SampleApi.getSample(id)
-        formData.value = res
+        
+        if (res && typeof res === 'object') {
+          formData.value = res
+        } else {
+          message.error('获取样品详情失败：数据格式错误')
+        }
+      } catch (error) {
+        message.error('获取样品详情失败')
       } finally {
         formLoading.value = false
       }
@@ -85,16 +93,22 @@
       try {
         const res = await SampleApi.SampleApi.getSample(copyId)
 
-        // 复制数据，但重置关键字段
-        formData.value = {
-          ...res,
-          id: undefined,
-          createTime: undefined,
-          updateTime: undefined
-        }
+        if (res && typeof res === 'object') {
+          // 复制数据，但重置关键字段
+          formData.value = {
+            ...res,
+            id: undefined,
+            createTime: undefined,
+            updateTime: undefined
+          }
 
-        // 确保数据更新后再触发子组件更新
-        await nextTick()
+          // 确保数据更新后再触发子组件更新
+          await nextTick()
+        } else {
+          message.error('获取样品数据失败：数据格式错误')
+        }
+      } catch (error) {
+        message.error('获取样品数据失败')
       } finally {
         formLoading.value = false
       }
@@ -115,10 +129,10 @@
       if (!id) {
         // 新增时不传递 no 字段，让后端自动生成
         delete data.no
-        await SampleApi.SampleApi.createSample(data)
+        await SampleApi.createSample(data)
         message.success(t('common.createSuccess'))
       } else {
-        await SampleApi.SampleApi.updateSample(data)
+        await SampleApi.updateSample(data)
         message.success(t('common.updateSuccess'))
       }
 
@@ -128,6 +142,12 @@
     } finally {
       formLoading.value = false
     }
+  }
+
+  /** 处理子组件的数据更新 */
+  const handleFormDataUpdate = (newData: any) => {
+    // 使用Object.assign确保响应式更新
+    Object.assign(formData.value, newData)
   }
 
   /** 关闭按钮 */
