@@ -116,7 +116,7 @@
          </el-table-column>
          <el-table-column label="货盘状态" prop="status" width="100">
            <template #default="scope">
-             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_STATUS" :value="scope.row.status" />
+             <dict-tag :type="DICT_TYPE.ERP_STATUS" :value="scope.row.status" />
            </template>
          </el-table-column>
          <el-table-column label="供货价格" prop="supplyGroupPrice" width="100">
@@ -202,7 +202,7 @@ const selectedGroupBuying = ref<any>(null);
 const total = ref(0);
 
 // 字典选项
-const statusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS));
+const statusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_STATUS));
 const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND));
 
 // 品牌选项过滤方法

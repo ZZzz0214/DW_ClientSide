@@ -125,7 +125,7 @@
             clearable
             class="!w-240px"
             filterable
-            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_STATUS)"
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_STATUS)"
           >
             <el-option
               v-for="dict in filteredStatusOptions"
@@ -231,9 +231,9 @@
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" width="150px"/>
         <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" width="150px"/>
         <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" min-width="100"/>
-        <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false">
+        <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false" min-width="120">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_STATUS" :value="scope.row.status" />
+            <dict-tag :type="DICT_TYPE.ERP_STATUS" :value="scope.row.status" />
           </template>
         </el-table-column>
         <el-table-column
@@ -331,7 +331,7 @@
 
   // 字典选项
   const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
-  const filteredStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS))
+  const filteredStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_STATUS))
 
   // 字典过滤方法
   const filterDictOptions = (value, dictType) => {
@@ -339,7 +339,7 @@
     if (!value) {
       if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
         filteredBrandOptions.value = allOptions
-      } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+      } else if (dictType === DICT_TYPE.ERP_STATUS) {
         filteredStatusOptions.value = allOptions
       }
       return
@@ -349,7 +349,7 @@
     )
     if (dictType === DICT_TYPE.ERP_PRODUCT_BRAND) {
       filteredBrandOptions.value = filtered
-    } else if (dictType === DICT_TYPE.ERP_PRODUCT_STATUS) {
+    } else if (dictType === DICT_TYPE.ERP_STATUS) {
       filteredStatusOptions.value = filtered
     }
   }
@@ -377,7 +377,7 @@
     queryFormRef.value.resetFields()
     // 重置字典过滤选项
     filteredBrandOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND)
-    filteredStatusOptions.value = getStrDictOptions(DICT_TYPE.ERP_PRODUCT_STATUS)
+    filteredStatusOptions.value = getStrDictOptions(DICT_TYPE.ERP_STATUS)
     handleQuery()
   }
 

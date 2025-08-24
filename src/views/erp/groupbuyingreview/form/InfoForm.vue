@@ -138,7 +138,7 @@
     <!-- 货盘状态 -->
     <el-form-item label="货盘状态" prop="status">
       <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-        <dict-tag v-if="formData.status" :type="DICT_TYPE.ERP_PRODUCT_STATUS" :value="formData.status" />
+        <dict-tag v-if="formData.status" :type="DICT_TYPE.ERP_STATUS" :value="formData.status" />
         <span v-else style="color: #c0c4cc;">自动填充</span>
       </div>
     </el-form-item>
