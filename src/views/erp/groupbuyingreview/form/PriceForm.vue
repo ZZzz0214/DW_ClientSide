@@ -14,13 +14,13 @@
         />
       </el-form-item>
               <el-form-item label="供货价格" prop="supplyGroupPrice">
-          <el-input-number
-            v-model="formData.supplyGroupPrice"
-            :min="0"
-            :precision="2"
+        <el-input-number
+          v-model="formData.supplyGroupPrice"
+          :min="0"
+          :precision="2"
             placeholder="请输入供货价格"
-            class="w-80"
-          />
+          class="w-80"
+        />
       </el-form-item>
 <!--      <el-form-item label="开团机制" prop="groupMechanism">-->
 <!--        <el-input-->

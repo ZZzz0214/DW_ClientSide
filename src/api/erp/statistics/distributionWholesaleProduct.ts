@@ -3,6 +3,8 @@ import request from '@/config/axios'
 export interface ErpDistributionWholesaleProductStatisticsReqVO {
   startDate: string
   endDate: string
+  supplier?: string
+  customerName?: string
   pageNo: number
   pageSize: number
 }

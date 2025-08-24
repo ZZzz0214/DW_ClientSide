@@ -25,6 +25,24 @@
             />
           </el-form-item>
 
+          <el-form-item label="供应商名称">
+            <el-input
+              v-model="queryParams.supplier"
+              placeholder="请输入供应商名称"
+              clearable
+              style="width: 200px"
+            />
+          </el-form-item>
+
+          <el-form-item label="客户名称">
+            <el-input
+              v-model="queryParams.customerName"
+              placeholder="请输入客户名称"
+              clearable
+              style="width: 200px"
+            />
+          </el-form-item>
+
           <el-form-item>
             <el-button type="primary" @click="getStatistics" :loading="loading">
               <Icon icon="ep:search" />
@@ -365,6 +383,8 @@ const searchLoading = ref(false)
 const queryParams = reactive<ErpDistributionWholesaleProductStatisticsReqVO>({
   startDate: undefined,
   endDate: undefined,
+  supplier: undefined,
+  customerName: undefined,
   pageNo: 1,
   pageSize: 10
 })
@@ -373,6 +393,8 @@ const queryParams = reactive<ErpDistributionWholesaleProductStatisticsReqVO>({
 const singleProductQueryParams = reactive<ErpDistributionWholesaleProductStatisticsReqVO>({
   startDate: undefined,
   endDate: undefined,
+  supplier: undefined,
+  customerName: undefined,
   pageNo: 1,
   pageSize: 10
 })
@@ -381,6 +403,8 @@ const singleProductQueryParams = reactive<ErpDistributionWholesaleProductStatist
 const comboProductQueryParams = reactive<ErpDistributionWholesaleProductStatisticsReqVO>({
   startDate: undefined,
   endDate: undefined,
+  supplier: undefined,
+  customerName: undefined,
   pageNo: 1,
   pageSize: 10
 })
@@ -446,11 +470,15 @@ const getStatistics = async () => {
     queryParams.endDate = formatDate(endDate, 'YYYY-MM-DD')
   }
   
-  // 同步日期参数到单品和组品查询参数
+  // 同步查询参数到单品和组品查询参数
   singleProductQueryParams.startDate = queryParams.startDate
   singleProductQueryParams.endDate = queryParams.endDate
+  singleProductQueryParams.supplier = queryParams.supplier
+  singleProductQueryParams.customerName = queryParams.customerName
   comboProductQueryParams.startDate = queryParams.startDate
   comboProductQueryParams.endDate = queryParams.endDate
+  comboProductQueryParams.supplier = queryParams.supplier
+  comboProductQueryParams.customerName = queryParams.customerName
   
   loading.value = true
   try {
@@ -539,17 +567,23 @@ const resetQuery = () => {
   dateRange.value = null
   queryParams.startDate = undefined
   queryParams.endDate = undefined
+  queryParams.supplier = undefined
+  queryParams.customerName = undefined
   queryParams.pageNo = 1
   
   // 重置单品查询参数
   singleProductQueryParams.startDate = undefined
   singleProductQueryParams.endDate = undefined
+  singleProductQueryParams.supplier = undefined
+  singleProductQueryParams.customerName = undefined
   singleProductQueryParams.pageNo = 1
   singleProductQueryParams.pageSize = 10
   
   // 重置组品查询参数
   comboProductQueryParams.startDate = undefined
   comboProductQueryParams.endDate = undefined
+  comboProductQueryParams.supplier = undefined
+  comboProductQueryParams.customerName = undefined
   comboProductQueryParams.pageNo = 1
   comboProductQueryParams.pageSize = 10
   
