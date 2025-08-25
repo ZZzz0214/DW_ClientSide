@@ -1,12 +1,43 @@
 <template>
   <el-dialog
     v-model="dialogVisible"
-    title="报价设置"
     width="98%"
     :close-on-click-modal="false"
     :close-on-press-escape="false"
     class="price-quote-dialog"
+    :style="{ opacity: opacity / 100 }"
   >
+    <!-- 自定义头部 -->
+    <template #header="{ close, titleId, titleClass }">
+      <div class="dialog-header">
+        <div class="dialog-title-section">
+          <span :id="titleId" :class="titleClass">报价设置</span>
+        </div>
+        <div class="dialog-controls">
+          <div class="opacity-control">
+            <Icon icon="ep:sunny" class="opacity-icon" />
+            <el-slider
+              v-model="opacity"
+              :min="20"
+              :max="100"
+              :step="5"
+              class="opacity-slider"
+              size="small"
+              show-tooltip
+              :format-tooltip="(val) => `${val}%`"
+            />
+            <span class="opacity-text">{{ opacity }}%</span>
+          </div>
+          <el-button
+            type="danger"
+            size="small"
+            :icon="Close"
+            circle
+            @click="close"
+          />
+        </div>
+      </div>
+    </template>
     <!-- 搜索区域 -->
     <div class="search-section">
       <el-card shadow="never" class="search-card">
@@ -566,7 +597,8 @@ import {
   WarningFilled,
   InfoFilled,
   Money,
-  Setting
+  Setting,
+  Close
 } from '@element-plus/icons-vue'
 
 const message = useMessage()
@@ -576,6 +608,9 @@ const dialogVisible = ref(false)
 const loading = ref(false)
 const list = ref<any[]>([])
 const total = ref(0)
+
+// 透明度控制
+const opacity = ref(95)
 
 // 查询参数
 const queryParams = reactive({
@@ -1218,6 +1253,52 @@ defineExpose({
   border-top: 1px solid #f0f0f0;
 }
 
+/* 弹窗头部样式 */
+.dialog-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 20px 24px 0;
+}
+
+.dialog-title-section {
+  font-size: 18px;
+  font-weight: 600;
+  color: #303133;
+}
+
+.dialog-controls {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.opacity-control {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: #f5f7fa;
+  border-radius: 6px;
+  border: 1px solid #e4e7ed;
+}
+
+.opacity-icon {
+  color: #409eff;
+  font-size: 16px;
+}
+
+.opacity-slider {
+  width: 100px;
+}
+
+.opacity-text {
+  font-size: 12px;
+  color: #606266;
+  font-weight: 500;
+  min-width: 30px;
+}
+
 /* 响应式调整 */
 @media (max-width: 1200px) {
   .price-quote-dialog {
@@ -1226,6 +1307,15 @@ defineExpose({
 
   .price-setting-dialog {
     width: 90% !important;
+  }
+  
+  .opacity-control {
+    padding: 6px 8px;
+    gap: 6px;
+  }
+  
+  .opacity-slider {
+    width: 80px;
   }
 }
 
