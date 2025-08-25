@@ -231,7 +231,7 @@
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" width="150px"/>
         <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" width="150px"/>
         <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" min-width="100"/>
-        <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false" min-width="120">
+        <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false" min-width="160">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_STATUS" :value="scope.row.status" />
           </template>

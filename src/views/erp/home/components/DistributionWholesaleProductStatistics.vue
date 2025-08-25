@@ -778,10 +778,12 @@ const initCharts = () => {
 const exportData = async () => {
   exportLoading.value = true
   try {
-    // 导出时使用不包含分页信息的参数
+    // 导出时使用不包含分页信息的参数，但包含所有筛选条件
     const exportParams = {
       startDate: queryParams.startDate,
-      endDate: queryParams.endDate
+      endDate: queryParams.endDate,
+      supplier: queryParams.supplier,
+      customerName: queryParams.customerName
     }
     console.log('导出参数:', exportParams)
     const res = await DistributionWholesaleProductStatisticsApi.exportDistributionWholesaleProductStatistics(exportParams)

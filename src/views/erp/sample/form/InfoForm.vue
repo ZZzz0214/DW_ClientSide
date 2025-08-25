@@ -335,8 +335,6 @@
 
   /** 表单校验 */
   const rules = reactive({
-    logisticsCompany: [{ required: true, message: '物流公司不能为空', trigger: 'blur' }],
-    logisticsNo: [{ required: true, message: '物流单号不能为空', trigger: 'blur' }],
     receiverName: [{ required: true, message: '收件姓名不能为空', trigger: 'blur' }],
     contactPhone: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
     address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }],

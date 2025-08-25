@@ -243,7 +243,7 @@
         </el-table-column>
         <el-table-column label="产品名称" align="center" prop="productName" :show-overflow-tooltip="false" min-width="350"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
-        <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false" min-width="120">
+        <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false" min-width="160">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_STATUS" :value="scope.row.status" />
           </template>

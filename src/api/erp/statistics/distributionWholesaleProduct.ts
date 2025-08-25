@@ -12,6 +12,8 @@ export interface ErpDistributionWholesaleProductStatisticsReqVO {
 export interface ErpDistributionWholesaleProductStatisticsExportReqVO {
   startDate: string
   endDate: string
+  supplier?: string
+  customerName?: string
 }
 
 export interface SingleProductStatistics {
