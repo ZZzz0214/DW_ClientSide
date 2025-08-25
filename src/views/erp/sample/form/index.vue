@@ -129,10 +129,10 @@
       if (!id) {
         // 新增时不传递 no 字段，让后端自动生成
         delete data.no
-        await SampleApi.createSample(data)
+        await SampleApi.SampleApi.createSample(data)
         message.success(t('common.createSuccess'))
       } else {
-        await SampleApi.updateSample(data)
+        await SampleApi.SampleApi.updateSample(data)
         message.success(t('common.updateSuccess'))
       }
 
