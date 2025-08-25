@@ -339,7 +339,10 @@
     logisticsNo: [{ required: true, message: '物流单号不能为空', trigger: 'blur' }],
     receiverName: [{ required: true, message: '收件姓名不能为空', trigger: 'blur' }],
     contactPhone: [{ required: true, message: '联系电话不能为空', trigger: 'blur' }],
-    address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }]
+    address: [{ required: true, message: '详细地址不能为空', trigger: 'blur' }],
+    comboProductId: [{ required: true, message: '组品编号不能为空', trigger: 'blur' }],
+    customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+    sampleStatus: [{ required: true, message: '样品状态不能为空', trigger: 'change' }]
   })
 
   /** 智能解析文本 */
