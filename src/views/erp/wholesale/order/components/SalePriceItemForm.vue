@@ -174,6 +174,7 @@ const salespersonSearchDialogVisible = ref(false); // 销售人员搜索弹窗�
 
 const comboProductId = ref(null);
 const tableKey = ref(0); // 定义一个响应式的 key
+const isCalculating = ref(false); // 防止递归计算的标志位
 const setComboProductId = (id) => {
   comboProductId.value = id;
 };
@@ -229,16 +230,29 @@ const calculateSaleShippingFee = (item) => {
 
 // 更新出货总额的方法
 const updateTotalSaleAmount = (item) => {
-  if (!item) return;
+  if (!item || isCalculating.value) return;
+  
+  // 设置计算标志，防止递归
+  isCalculating.value = true;
+  
+  try {
+    const price = Number(item.salePrice) || 0;
+    const count = Number(item.count) || 0;
+    const logisticsFee = item.saleLogisticsFee === undefined ? 0 : Number(item.saleLogisticsFee);
+    const otherFees = item.saleOtherFees === undefined ? 0 : Number(item.saleOtherFees);
+    const truckFee = item.saleTruckFee === undefined ? 0 : Number(item.saleTruckFee);
 
-  const price = Number(item.salePrice) || 0;
-  const count = Number(item.count) || 0;
-  const logisticsFee = item.saleLogisticsFee === undefined ? 0 : Number(item.saleLogisticsFee);
-  const otherFees = item.saleOtherFees === undefined ? 0 : Number(item.saleOtherFees);
-  const truckFee = item.saleTruckFee === undefined ? 0 : Number(item.saleTruckFee);
-
-  item.totalSaleAmount = price * count + logisticsFee + otherFees + truckFee;
-  item.totalSaleAmount = Number(item.totalSaleAmount.toFixed(2));
+    const newTotal = price * count + logisticsFee + otherFees + truckFee;
+    const formattedTotal = Number(newTotal.toFixed(2));
+    
+    // 只有当计算结果确实不同时才更新
+    if (item.totalSaleAmount !== formattedTotal) {
+      item.totalSaleAmount = formattedTotal;
+    }
+  } finally {
+    // 确保标志位被重置
+    isCalculating.value = false;
+  }
 };
 
 // 初始化设置出库项
@@ -262,13 +276,33 @@ watch(() => props.ssb, (newVal) => {
   });
 }, { immediate: true });
 
-// 监听子组件中出货其他费用的变化
-watch(() => formData.value, (newVal) => {
-  if (!newVal) return;
-  newVal.forEach((item) => {
-    if (item) {
-      // calculateSaleShippingFee(item); // 重新计算出货运费
-      updateTotalSaleAmount(item); // 重新计算出货总额
+// 监听影响出货总额计算的特定字段变化
+watch(() => formData.value?.map(item => ({
+  salePrice: item?.salePrice,
+  count: item?.count,
+  saleLogisticsFee: item?.saleLogisticsFee,
+  saleOtherFees: item?.saleOtherFees,
+  saleTruckFee: item?.saleTruckFee
+})), (newVal, oldVal) => {
+  if (!newVal || !formData.value || isCalculating.value) return;
+  
+  // 只有在相关字段真正变化时才重新计算
+  newVal.forEach((newItem, index) => {
+    const oldItem = oldVal?.[index];
+    const formItem = formData.value[index];
+    
+    if (!formItem) return;
+    
+    // 检查是否有相关字段变化（排除totalSaleAmount字段避免递归）
+    const hasChanged = !oldItem || 
+      newItem.salePrice !== oldItem.salePrice ||
+      newItem.count !== oldItem.count ||
+      newItem.saleLogisticsFee !== oldItem.saleLogisticsFee ||
+      newItem.saleOtherFees !== oldItem.saleOtherFees ||
+      newItem.saleTruckFee !== oldItem.saleTruckFee;
+    
+    if (hasChanged) {
+      updateTotalSaleAmount(formItem);
     }
   });
 }, { deep: true });
