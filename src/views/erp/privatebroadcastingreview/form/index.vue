@@ -9,14 +9,6 @@
             :propFormData="formData"
           />
         </el-tab-pane>
-        <el-tab-pane label="价格机制" name="price">
-          <PriceForm
-            ref="priceRef"
-            v-model:activeName="activeName"
-            :is-detail="isDetail"
-            :propFormData="formData"
-          />
-        </el-tab-pane>
         <el-tab-pane label="进展跟踪" name="progress">
           <ProgressForm
             ref="progressRef"
@@ -42,7 +34,6 @@
   import { useTagsViewStore } from '@/store/modules/tagsView'
   import * as PrivateBroadcastingReviewApi from '@/api/erp/privateBroadcastingReview'
   import InfoForm from './InfoForm.vue'
-  import PriceForm from './PriceForm.vue'
   import ProgressForm from './ProgressForm.vue'
 
   defineOptions({ name: 'ErpPrivateBroadcastingReviewAdd' })
@@ -57,7 +48,6 @@
   const activeName = ref('info')
   const isDetail = ref(false)
   const infoRef = ref()
-  const priceRef = ref()
   const progressRef = ref()
 
   // 表单数据
@@ -75,11 +65,9 @@
     remark: '',
     customerId: undefined,
     customerName: '',
-    productPrice: 0,
-    productNakedPrice: 0,
-    expressFee: 0,
-    distributionPrice: 0,
-    dropshipPrice: 0,
+    productNakedPrice: '',
+    expressFee: '',
+    dropshipPrice: '',
     sampleSendDate: '',
     groupStartDate: '',
     groupSales: 0,
@@ -152,7 +140,6 @@
     try {
       // 校验各表单
       await unref(infoRef)?.validate()
-      await unref(priceRef)?.validate()
       await unref(progressRef)?.validate()
 
       // 提交数据
