@@ -17,6 +17,9 @@
             :propFormData="formData"
           />
         </el-tab-pane>
+        <el-tab-pane label="复制数据" name="copy" v-if="isDetail">
+          <CopyDataForm :formData="formData" />
+        </el-tab-pane>
       </el-tabs>
       <el-form>
         <el-form-item style="float: right">
@@ -35,6 +38,7 @@
   import * as PrivateBroadcastingReviewApi from '@/api/erp/privateBroadcastingReview'
   import InfoForm from './InfoForm.vue'
   import ProgressForm from './ProgressForm.vue'
+  import CopyDataForm from './components/CopyDataForm.vue'
 
   defineOptions({ name: 'ErpPrivateBroadcastingReviewAdd' })
 
