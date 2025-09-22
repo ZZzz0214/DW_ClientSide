@@ -56,23 +56,7 @@
         />
       </el-form-item>
 
-      <!-- 货盘状态 -->
-      <el-form-item label="货盘状态" prop="liveStatus">
-        <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-          <dict-tag v-if="formData.liveStatus !== undefined && formData.liveStatus !== null" :type="DICT_TYPE.ERP_LIVE_STATUS" :value="formData.liveStatus" />
-          <span v-else style="color: #c0c4cc;">自动填充</span>
-        </div>
-      </el-form-item>
-
-      <!-- 直播价格 -->
-      <el-form-item label="直播价格" prop="livePrice">
-        <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-          <span v-if="formData.livePrice && formData.livePrice > 0">{{ formData.livePrice }}元</span>
-          <span v-else style="color: #c0c4cc;">自动填充</span>
-        </div>
-        <span style="margin-left: 25px;">元</span>
-      </el-form-item>
-
+      <!-- 备注信息 -->
       <el-form-item label="备注信息" prop="remark">
         <el-input
           v-model="formData.remark"
@@ -81,6 +65,104 @@
           class="w-80"
           :autosize="{ minRows: 2, maxRows: 4 }"
         />
+      </el-form-item>
+
+      <!-- 客户名称 -->
+      <el-form-item label="客户名称" prop="customerName">
+        <div v-if="isDetail" class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+          <dict-tag v-if="formData.customerName" :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="formData.customerName" />
+          <span v-else style="color: #c0c4cc;">未设置</span>
+        </div>
+        <el-select
+          v-else
+          v-model="formData.customerName"
+          placeholder="请选择客户名称"
+          class="w-80"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)"
+        >
+          <el-option
+            v-for="dict in filteredCustomerNameOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <!-- 直播价格 -->
+      <el-form-item label="直播价格" prop="livePrice">
+        <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+          <span v-if="formData.livePrice && formData.livePrice > 0">{{ formData.livePrice }}</span>
+          <span v-else style="color: #c0c4cc;">自动填充</span>
+        </div>
+        <span style="margin-left: 8px; color: #909399;">元</span>
+      </el-form-item>
+
+      <!-- 直播平台 -->
+      <el-form-item label="直播平台" prop="livePlatform">
+        <el-select
+          v-model="formData.livePlatform"
+          placeholder="请选择直播平台"
+          class="w-80"
+          filterable
+          :disabled="isDetail"
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_PLATFORM)"
+        >
+          <el-option
+            v-for="dict in filteredPlatformOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
+      <!-- 直播佣金 -->
+      <el-form-item label="直播佣金" prop="liveCommission">
+        <div style="display: flex; align-items: center;">
+          <el-input
+            v-model="formData.liveCommission"
+            placeholder="请输入直播佣金"
+            class="w-80"
+            :disabled="isDetail"
+          />
+          <span style="margin-left: 8px; color: #909399;">%</span>
+        </div>
+      </el-form-item>
+
+      <!-- 公开佣金 -->
+      <el-form-item label="公开佣金" prop="publicCommission">
+        <div style="display: flex; align-items: center;">
+          <el-input
+            v-model="formData.publicCommission"
+            placeholder="请输入公开佣金"
+            class="w-80"
+            :disabled="isDetail"
+          />
+          <span style="margin-left: 8px; color: #909399;">%</span>
+        </div>
+      </el-form-item>
+
+      <!-- 返点佣金 -->
+      <el-form-item label="返点佣金" prop="rebateCommission">
+        <div style="display: flex; align-items: center;">
+          <el-input
+            v-model="formData.rebateCommission"
+            placeholder="请输入返点佣金"
+            class="w-80"
+            :disabled="isDetail"
+          />
+          <span style="margin-left: 8px; color: #909399;">%</span>
+        </div>
+      </el-form-item>
+
+      <!-- 货盘状态 -->
+      <el-form-item label="货盘状态" prop="liveStatus">
+        <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+          <dict-tag v-if="formData.liveStatus !== undefined && formData.liveStatus !== null" :type="DICT_TYPE.ERP_LIVE_STATUS" :value="formData.liveStatus" />
+          <span v-else style="color: #c0c4cc;">自动填充</span>
+        </div>
       </el-form-item>
 
     </el-form>
@@ -120,20 +202,106 @@
     brandName: '', // 品牌名称
     productSpec: '',
     productSku: '',
-    liveStatus: undefined, // 货盘状态（使用liveStatus）
     remark: '',
-    livePrice: 0
+    customerName: '', // 客户名称
+    livePrice: 0,
+    livePlatform: '', // 直播平台
+    liveCommission: '', // 直播佣金
+    publicCommission: '', // 公开佣金
+    rebateCommission: '', // 返点佣金
+    liveStatus: undefined // 货盘状态（使用liveStatus）
   })
 
 
 
   const rules = reactive({
-    liveBroadcastingNo: [{ required: true, message: '请选择直播货盘', trigger: 'blur' }]
+    liveBroadcastingNo: [{ required: true, message: '请选择直播货盘', trigger: 'blur' }],
+    customerName: [{ required: true, message: '客户名称不能为空', trigger: 'change' }],
+    livePlatform: [{ required: true, message: '直播平台不能为空', trigger: 'blur' }],
+    liveCommission: [
+      { 
+        validator: (rule, value, callback) => {
+          if (!value || value === '') {
+            callback()
+            return
+          }
+          if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+            callback(new Error('请输入有效的佣金格式（最多两位小数）'))
+            return
+          }
+          callback()
+        },
+        trigger: 'blur'
+      }
+    ],
+    publicCommission: [
+      { 
+        validator: (rule, value, callback) => {
+          if (!value || value === '') {
+            callback()
+            return
+          }
+          if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+            callback(new Error('请输入有效的佣金格式（最多两位小数）'))
+            return
+          }
+          callback()
+        },
+        trigger: 'blur'
+      }
+    ],
+    rebateCommission: [
+      { 
+        validator: (rule, value, callback) => {
+          if (!value || value === '') {
+            callback()
+            return
+          }
+          if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+            callback(new Error('请输入有效的佣金格式（最多两位小数）'))
+            return
+          }
+          callback()
+        },
+        trigger: 'blur'
+      }
+    ]
   })
 
 
 
 
+
+  // 字典选项
+  const filteredPlatformOptions = ref<any[]>([])
+  const filteredCustomerNameOptions = ref<any[]>([])
+
+  // 初始化字典选项
+  onMounted(() => {
+    filteredPlatformOptions.value = getStrDictOptions(DICT_TYPE.ERP_LIVE_PLATFORM)
+    filteredCustomerNameOptions.value = getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)
+  })
+
+  // 字典选项过滤方法
+  const filterDictOptions = (value, dictType) => {
+    const allOptions = getStrDictOptions(dictType)
+    if (!value) {
+      if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
+        filteredPlatformOptions.value = allOptions
+      } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
+        filteredCustomerNameOptions.value = allOptions
+      }
+      return
+    }
+    const filtered = allOptions.filter(item =>
+      item.label.toLowerCase().includes(value.toLowerCase())
+    )
+    if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
+      filteredPlatformOptions.value = filtered
+    } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
+      filteredCustomerNameOptions.value = filtered
+    }
+  }
 
   /** 将传进来的值赋值给 formData */
   watch(
@@ -180,7 +348,11 @@
     formData.liveStatus = liveBroadcasting.liveStatus // 使用liveStatus
     // 自动填充直播价格（不可变更）
     formData.livePrice = liveBroadcasting.livePrice || 0
-    console.log("Updated form data:", { brandName: formData.brandName, liveStatus: formData.liveStatus, livePrice: formData.livePrice })
+    // 自动填充佣金信息（可以更改）
+    formData.liveCommission = liveBroadcasting.liveCommission || ''
+    formData.publicCommission = liveBroadcasting.publicCommission || ''
+    formData.rebateCommission = liveBroadcasting.rebateCommission || ''
+    console.log("Updated form data:", { brandName: formData.brandName, liveStatus: formData.liveStatus, livePrice: formData.livePrice, liveCommission: formData.liveCommission })
   }
 
   defineExpose({ validate })

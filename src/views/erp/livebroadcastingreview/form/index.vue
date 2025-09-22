@@ -9,14 +9,6 @@
             :propFormData="formData"
           />
         </el-tab-pane>
-        <el-tab-pane label="价格机制" name="price">
-          <PriceForm
-            ref="priceRef"
-            v-model:activeName="activeName"
-            :is-detail="isDetail"
-            :propFormData="formData"
-          />
-        </el-tab-pane>
         <el-tab-pane label="进展跟踪" name="progress">
           <ProgressForm
             ref="progressRef"
@@ -42,7 +34,6 @@
   import { useTagsViewStore } from '@/store/modules/tagsView'
   import { LiveBroadcastingReviewApi } from '@/api/erp/livebroadcastingreview'
   import InfoForm from './InfoForm.vue'
-  import PriceForm from './PriceForm.vue'
   import ProgressForm from './ProgressForm.vue'
 
   defineOptions({ name: 'ErpLiveBroadcastingReviewAdd' })
@@ -57,7 +48,6 @@
   const activeName = ref('info') // Tab 激活的窗口
   const isDetail = ref(false) // 是否查看详情
   const infoRef = ref() // 基础信息 Ref
-  const priceRef = ref() // 价格机制 Ref
   const progressRef = ref() // 进展跟踪 Ref
 
   // 表单数据
@@ -75,9 +65,9 @@
     livePrice: 0,
     liveStatus: undefined, // 货盘状态
     livePlatform: '', // 直播平台
-    liveCommission: 0, // 直播佣金
-    publicCommission: 0, // 公开佣金
-    rebateCommission: 0, // 返点佣金
+    liveCommission: '', // 直播佣金
+    publicCommission: '', // 公开佣金
+    rebateCommission: '', // 返点佣金
     sampleSendDate: undefined,
     liveStartDate: undefined,
     liveSales: 0,
@@ -148,7 +138,6 @@
     try {
       // 校验各表单
       await unref(infoRef)?.validate()
-      await unref(priceRef)?.validate()
       await unref(progressRef)?.validate()
 
       // 提交数据
