@@ -26,7 +26,7 @@
         </div>
         <div class="data-item">
           <span class="field-name">客户名称：</span>
-          <span class="field-value">{{ formData.customerName || '-' }}</span>
+          <span class="field-value">{{ getCustomerNameText(formData.customerName) || '-' }}</span>
         </div>
         <div class="data-item">
           <span class="field-name">直播价格：</span>
@@ -73,12 +73,19 @@ const getStatusText = (status: string) => {
   return statusOption ? statusOption.label : status
 }
 
-// 获取平台文本
-const getPlatformText = (platform: string) => {
-  const platformOptions = getStrDictOptions(DICT_TYPE.ERP_PLATFORM)
-  const platformOption = platformOptions.find(option => option.value === platform)
-  return platformOption ? platformOption.label : platform
-}
+  // 获取客户名称文本
+  const getCustomerNameText = (customerName: string) => {
+    const customerNameOptions = getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)
+    const customerNameOption = customerNameOptions.find(option => option.value === customerName)
+    return customerNameOption ? customerNameOption.label : customerName
+  }
+
+  // 获取平台文本
+  const getPlatformText = (platform: string) => {
+    const platformOptions = getStrDictOptions(DICT_TYPE.ERP_LIVE_PLATFORM)
+    const platformOption = platformOptions.find(option => option.value === platform)
+    return platformOption ? platformOption.label : platform
+  }
 
 // 复制全部数据
 const copyAllData = async () => {
@@ -118,7 +125,7 @@ const generateCopyText = () => {
     `产品名称：${props.formData.productName || '-'}`,
     `产品规格：${props.formData.productSpec || '-'}`,
     `产品SKU：${props.formData.productSku || '-'}`,
-    `客户名称：${props.formData.customerName || '-'}`,
+    `客户名称：${getCustomerNameText(props.formData.customerName) || '-'}`,
     `直播价格：${props.formData.livePrice || '-'}`,
     `直播平台：${getPlatformText(props.formData.livePlatform) || '-'}`,
     `直播佣金：${props.formData.liveCommission || '-'}`,
