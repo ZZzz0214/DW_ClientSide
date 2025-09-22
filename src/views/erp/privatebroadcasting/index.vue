@@ -193,7 +193,13 @@
       @selection-change="handleSelectionChange"
     >
       <el-table-column width="30" label="选择" type="selection" />
-      <el-table-column label="编号" align="center" prop="no" />
+      <el-table-column label="编号" align="center" prop="no" min-width="150" :show-overflow-tooltip="false">
+        <template #default="scope">
+          <div style="white-space: normal; word-break: break-all; line-height: 1.4;">
+            {{ scope.row.no }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="产品图片" align="center" prop="productImage" :show-overflow-tooltip="false">
         <template #default="scope">
           <div v-if="getImageUrls(scope.row.productImage).length > 0" class="relative">
@@ -217,12 +223,20 @@
           </div>
         </template>
       </el-table-column>
-      <el-table-column label="品牌名称" align="center" prop="brandName">
+      <el-table-column label="品牌名称" align="center" prop="brandName" min-width="120" :show-overflow-tooltip="false">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
+          <div style="white-space: normal; word-break: break-all; line-height: 1.4;">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
+          </div>
         </template>
       </el-table-column>
-      <el-table-column label="产品名称" align="center" prop="productName" />
+      <el-table-column label="产品名称" align="center" prop="productName" min-width="250" :show-overflow-tooltip="false">
+        <template #default="scope">
+          <div style="white-space: normal; word-break: break-all; line-height: 1.4;">
+            {{ scope.row.productName }}
+          </div>
+        </template>
+      </el-table-column>
       <el-table-column label="产品规格" align="center" prop="productSpec" />
       <el-table-column label="货盘状态" align="center" prop="privateStatus">
         <template #default="scope">
