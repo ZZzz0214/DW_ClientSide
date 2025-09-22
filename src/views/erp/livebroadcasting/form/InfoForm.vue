@@ -150,12 +150,12 @@
         />
       </el-form-item>
 
-      <!-- 备注 -->
-      <el-form-item label="备注" prop="remark">
+      <!-- 备注信息 -->
+      <el-form-item label="备注信息" prop="remark">
         <el-input
           v-model="formData.remark"
           type="textarea"
-          placeholder="请输入备注"
+          placeholder="请输入备注信息"
           class="w-240px"
           :autosize="{ minRows: 2, maxRows: 4 }"
         />
