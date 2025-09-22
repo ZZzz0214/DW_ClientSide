@@ -43,7 +43,7 @@
       <el-input v-model="formData.productSku" placeholder="请输入产品SKU" :disabled="isDetail"  type="textarea" :autosize="{ minRows: 1, maxRows: 6}"/>
     </el-form-item>
     <el-form-item label="市场价格" prop="marketPrice">
-      <el-input v-model.number="formData.marketPrice" placeholder="请输入市场价格" :disabled="isDetail" />
+      <el-input v-model="formData.marketPrice" placeholder="请输入市场价格" :disabled="isDetail" />
     </el-form-item>
     <el-form-item label="保质日期" prop="shelfLife">
       <el-date-picker
@@ -112,7 +112,9 @@ const formData = reactive({
 const rules = {
   productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
  // productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
- // marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
+  marketPrice: [
+    { pattern: /^\d+(\.\d{1,2})?$/, message: '请输入有效的价格格式（最多两位小数）', trigger: 'blur' }
+  ],
   productSku: [{ required: true, message: '产品SKU不能为空', trigger: 'change' }],
   privateStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
 }
