@@ -6,21 +6,20 @@
       :rules="rules"
       label-width="120px"
     >
-      <!-- 供货价格 -->
-      <el-form-item label="供货价格" prop="supplyGroupPrice">
+      <!-- 开团价格 -->
+      <el-form-item label="开团价格" prop="groupPrice">
         <div style="display: flex; align-items: center;">
         <el-input-number
-          v-model="formData.supplyGroupPrice"
+          v-model="formData.groupPrice"
           :min="0"
           :precision="2"
-          placeholder="请输入供货价格"
+          placeholder="请输入开团价格"
           class="w-80"
           @change="calculateProfit"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
       </el-form-item>
-
 
       <!-- 帮卖佣金 -->
       <el-form-item label="帮卖佣金" prop="sellingCommission">
@@ -36,14 +35,14 @@
         </div>
       </el-form-item>
 
-      <!-- 开团价格 -->
-      <el-form-item label="开团价格" prop="groupPrice">
+      <!-- 供货价格 -->
+      <el-form-item label="供货价格" prop="supplyGroupPrice">
         <div style="display: flex; align-items: center;">
         <el-input-number
-          v-model="formData.groupPrice"
+          v-model="formData.supplyGroupPrice"
           :min="0"
           :precision="2"
-          placeholder="请输入开团价格"
+          placeholder="请输入供货价格"
           class="w-80"
           @change="calculateProfit"
         />
@@ -111,18 +110,18 @@
   const message = useMessage()
   const formRef = ref()
   const formData = reactive({
-    supplyGroupPrice: 0,
-    sellingCommission: 0,
     groupPrice: 0,
+    sellingCommission: 0,
+    supplyGroupPrice: 0,
     channelProfit: 0,
     groupMechanism: '',
     expressFee: 0
   })
 
   const rules = reactive({
-    supplyGroupPrice: [{ required: true, message: '供货价格不能为空', trigger: 'blur' }],
-    sellingCommission: [{ required: true, message: '帮卖佣金不能为空', trigger: 'blur' }],
     groupPrice: [{ required: true, message: '开团价格不能为空', trigger: 'blur' }],
+    sellingCommission: [{ required: true, message: '帮卖佣金不能为空', trigger: 'blur' }],
+    supplyGroupPrice: [{ required: true, message: '供货价格不能为空', trigger: 'blur' }],
     groupMechanism: [{ required: true, message: '开团机制不能为空', trigger: 'blur' }],
     expressFee: [{ required: true, message: '快递费用不能为空', trigger: 'blur' }]
   })
