@@ -15,7 +15,7 @@ export interface LiveBroadcastingVO {
   coreSellingPoint?: string // 核心卖点
   remark?: string // 备注信息
   liveStatus?: number // 直播货盘状态
-  livePrice?: number // 直播价格
+  livePrice?: string // 直播价格
   liveCommission?: number // 直播佣金
   publicCommission?: number // 公开佣金
   rebateCommission?: number // 返点佣金
@@ -40,7 +40,7 @@ export interface LiveBroadcastingSaveReqVO {
   coreSellingPoint?: string // 核心卖点
   remark?: string // 备注信息
   liveStatus?: number // 直播货盘状态
-  livePrice: number // 直播价格
+  livePrice: string // 直播价格
   liveCommission: number // 直播佣金
   publicCommission?: number // 公开佣金
   rebateCommission?: number // 返点佣金

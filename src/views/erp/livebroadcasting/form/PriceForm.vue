@@ -8,13 +8,18 @@
     >
       <!-- 直播价格 -->
       <el-form-item label="直播价格" prop="livePrice">
-        <el-input-number
-          v-model="formData.livePrice"
-          :min="0"
-          placeholder="请输入直播价格"
-          class="w-240px"
-        />
-        <span style="margin-left: 25px;">元</span>
+        <div class="price-input-container">
+          <el-input
+            v-model="formData.livePrice"
+            placeholder="请输入直播价格"
+            class="price-input"
+            :class="{ 'detail-mode': isDetail }"
+          >
+            <template #append>
+              <span class="unit-text">元</span>
+            </template>
+          </el-input>
+        </div>
       </el-form-item>
 
       <!-- 直播佣金 -->
@@ -71,7 +76,7 @@
   const message = useMessage()
   const formRef = ref()
   const formData = reactive<LiveBroadcastingVO>({
-    livePrice: 0,
+    livePrice: '',
     liveCommission: 0,
     publicCommission: 0,
     rebateCommission: 0
@@ -115,3 +120,33 @@
 
   defineExpose({ validate })
   </script>
+
+<style lang="scss" scoped>
+.price-input-container {
+  display: flex;
+  align-items: center;
+  
+  .price-input {
+    width: 180px;
+    
+    &.detail-mode {
+      :deep(.el-input__wrapper) {
+        background-color: #f5f7fa;
+        border-color: #e4e7ed;
+        box-shadow: 0 0 0 1px #e4e7ed inset;
+      }
+    }
+    
+    :deep(.el-input-group__append) {
+      background-color: #fafafa;
+      border-left: 0;
+      color: #606266;
+      font-weight: 500;
+      padding: 0 15px;
+      
+      .unit-text {
+        font-size: 14px;
+      }
+    }
+  }
+}</style>

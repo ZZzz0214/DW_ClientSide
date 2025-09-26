@@ -81,7 +81,7 @@
     coreSellingPoint: '',
     remark: '',
     liveStatus: undefined,
-    livePrice: 0,
+    livePrice: '',
     liveCommission: 0,
     publicCommission: 0,
     rebateCommission: 0,
