@@ -71,7 +71,7 @@
     livePlatform: '', // 直播平台
     liveCommission: '', // 直播佣金
     publicCommission: '', // 公开佣金
-    rebateCommission: '', // 返点佣金
+    rebateCommission: '', // 服务佣金
     sampleSendDate: undefined,
     liveStartDate: undefined,
     liveSales: 0,

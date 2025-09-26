@@ -44,12 +44,12 @@
         <span style="margin-left: 25px;">%</span>
       </el-form-item>
 
-      <!-- 返点佣金 -->
-      <el-form-item label="返点佣金" prop="rebateCommission">
+      <!-- 服务佣金 -->
+      <el-form-item label="服务佣金" prop="rebateCommission">
         <el-input-number
           v-model="formData.rebateCommission"
           :min="0"
-          placeholder="请输入返点佣金"
+          placeholder="请输入服务佣金"
           class="w-240px"
         />
         <span style="margin-left: 25px;">%</span>

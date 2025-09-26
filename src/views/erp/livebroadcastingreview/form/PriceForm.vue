@@ -73,13 +73,13 @@
         </div>
       </el-form-item>
 
-      <!-- 返点佣金 -->
-      <el-form-item label="返点佣金" prop="rebateCommission">
+      <!-- 服务佣金 -->
+      <el-form-item label="服务佣金" prop="rebateCommission">
         <div style="display: flex; align-items: center;">
           <el-input-number
             v-model="formData.rebateCommission"
             :min="0"
-            placeholder="请输入返点佣金"
+            placeholder="请输入服务佣金"
             class="w-80!"
           />
           <span style="margin-left: 25px;">%</span>
@@ -129,7 +129,7 @@
       { type: 'number', min: 0.01, message: '直播佣金必须大于0', trigger: 'blur' }],
     publicCommission: [{ required: true, message: '公开佣金不能为空', trigger: 'blur' },
       { type: 'number', min: 0.01, message: '公开佣金必须大于0', trigger: 'blur' }],
-    //rebateCommission: [{ required: true, message: '返点佣金不能为空', trigger: 'blur' }]
+    //rebateCommission: [{ required: true, message: '服务佣金不能为空', trigger: 'blur' }]
   })
 
   // 初始化字典选项
