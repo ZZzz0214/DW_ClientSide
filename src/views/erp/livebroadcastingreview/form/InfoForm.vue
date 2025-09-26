@@ -111,13 +111,14 @@
 
       <!-- 直播价格 -->
       <el-form-item label="直播价格" prop="livePrice">
-        <div class="price-input-container">
+        <div class="price-input-container" style="width: 50vw; min-width: 400px;">
           <el-input
             v-model="formData.livePrice"
             placeholder="请输入直播价格"
             class="price-input"
             :class="{ 'detail-mode': isDetail }"
             :disabled="isDetail"
+            style="width: 100% !important;"
           >
             <template #append>
               <span class="unit-text">元</span>
@@ -372,7 +373,8 @@
   align-items: center;
   
   .price-input {
-    width: 180px;
+    width: 50vw !important;
+    min-width: 400px;
     
     &.detail-mode {
       :deep(.el-input__wrapper) {
