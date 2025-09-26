@@ -84,8 +84,8 @@
       <el-form-item label="直播价格" prop="livePrice">
         <el-input
           v-model="formData.livePrice"
-          placeholder="自动填充"
-          readonly
+          placeholder="从私播货盘表获取，可修改"
+          :disabled="isDetail"
           class="w-80"
         >
           <template #suffix>
@@ -231,6 +231,22 @@
       }
     ],
     dropshipPrice: [
+      { 
+        validator: (rule, value, callback) => {
+          if (!value || value === '') {
+            callback()
+            return
+          }
+          if (!/^\d+(\.\d{1,2})?$/.test(value)) {
+            callback(new Error('请输入有效的价格格式（最多两位小数）'))
+            return
+          }
+          callback()
+        },
+        trigger: 'blur'
+      }
+    ],
+    livePrice: [
       { 
         validator: (rule, value, callback) => {
           if (!value || value === '') {
