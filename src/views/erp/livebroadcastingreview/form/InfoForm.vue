@@ -90,15 +90,6 @@
         </el-select>
       </el-form-item>
 
-      <!-- 直播价格 -->
-      <el-form-item label="直播价格" prop="livePrice">
-        <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-          <span v-if="formData.livePrice && formData.livePrice > 0">{{ formData.livePrice }}</span>
-          <span v-else style="color: #c0c4cc;">自动填充</span>
-        </div>
-        <span style="margin-left: 8px; color: #909399;">元</span>
-      </el-form-item>
-
       <!-- 直播平台 -->
       <el-form-item label="直播平台" prop="livePlatform">
         <el-select
@@ -116,6 +107,23 @@
             :value="dict.value"
           />
         </el-select>
+      </el-form-item>
+
+      <!-- 直播价格 -->
+      <el-form-item label="直播价格" prop="livePrice">
+        <div class="price-input-container">
+          <el-input
+            v-model="formData.livePrice"
+            placeholder="请输入直播价格"
+            class="price-input"
+            :class="{ 'detail-mode': isDetail }"
+            :disabled="isDetail"
+          >
+            <template #append>
+              <span class="unit-text">元</span>
+            </template>
+          </el-input>
+        </div>
       </el-form-item>
 
       <!-- 直播佣金 -->
@@ -204,7 +212,7 @@
     productSku: '',
     remark: '',
     customerName: '', // 客户名称
-    livePrice: 0,
+    livePrice: '',
     livePlatform: '', // 直播平台
     liveCommission: '', // 直播佣金
     publicCommission: '', // 公开佣金
@@ -346,8 +354,8 @@
     formData.productSpec = liveBroadcasting.productSpec || ''
     formData.productSku = liveBroadcasting.productSku || ''
     formData.liveStatus = liveBroadcasting.liveStatus // 使用liveStatus
-    // 自动填充直播价格（不可变更）
-    formData.livePrice = liveBroadcasting.livePrice || 0
+    // 自动填充直播价格（可修改）
+    formData.livePrice = liveBroadcasting.livePrice || ''
     // 自动填充佣金信息（可以更改）
     formData.liveCommission = liveBroadcasting.liveCommission || ''
     formData.publicCommission = liveBroadcasting.publicCommission || ''
@@ -357,3 +365,33 @@
 
   defineExpose({ validate })
   </script>
+
+<style lang="scss" scoped>
+.price-input-container {
+  display: flex;
+  align-items: center;
+  
+  .price-input {
+    width: 180px;
+    
+    &.detail-mode {
+      :deep(.el-input__wrapper) {
+        background-color: #f5f7fa;
+        border-color: #e4e7ed;
+        box-shadow: 0 0 0 1px #e4e7ed inset;
+      }
+    }
+    
+    :deep(.el-input-group__append) {
+      background-color: #fafafa;
+      border-left: 0;
+      color: #606266;
+      font-weight: 500;
+      padding: 0 15px;
+      
+      .unit-text {
+        font-size: 14px;
+      }
+    }
+  }
+}</style>

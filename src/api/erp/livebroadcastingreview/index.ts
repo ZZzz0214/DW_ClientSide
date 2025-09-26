@@ -24,7 +24,7 @@ export interface LiveBroadcastingReviewVO {
   productName?: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
-  livePrice?: number // 直播价格
+  livePrice?: string // 直播价格
   liveStatus?: number // 货盘状态
 }
 
@@ -44,6 +44,7 @@ export interface LiveBroadcastingReviewSaveReqVO {
   liveSales?: number // 开播销量
   repeatLiveDate?: Date // 复播日期
   repeatLiveSales?: number // 复播销量
+  livePrice?: string // 直播价格
 }
 
 // ERP 直播复盘分页 Request VO

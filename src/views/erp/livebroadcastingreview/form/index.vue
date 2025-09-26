@@ -66,7 +66,7 @@
     productSku: '',
     remark: '',
     customerName: '', // 客户名称（用于显示）
-    livePrice: 0,
+    livePrice: '',
     liveStatus: undefined, // 货盘状态
     livePlatform: '', // 直播平台
     liveCommission: '', // 直播佣金
