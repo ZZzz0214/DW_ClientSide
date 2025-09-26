@@ -29,12 +29,12 @@
           <span class="field-value">{{ getCustomerNameText(formData.customerName) || '-' }}</span>
         </div>
         <div class="data-item">
-          <span class="field-name">直播价格：</span>
-          <span class="field-value">{{ formData.livePrice || '-' }}</span>
-        </div>
-        <div class="data-item">
           <span class="field-name">直播平台：</span>
           <span class="field-value">{{ getPlatformText(formData.livePlatform) || '-' }}</span>
+        </div>
+        <div class="data-item">
+          <span class="field-name">直播价格：</span>
+          <span class="field-value">{{ formData.livePrice || '-' }}</span>
         </div>
         <div class="data-item">
           <span class="field-name">直播佣金：</span>
@@ -126,8 +126,8 @@ const generateCopyText = () => {
     `产品规格：${props.formData.productSpec || '-'}`,
     `产品SKU：${props.formData.productSku || '-'}`,
     `客户名称：${getCustomerNameText(props.formData.customerName) || '-'}`,
-    `直播价格：${props.formData.livePrice || '-'}`,
     `直播平台：${getPlatformText(props.formData.livePlatform) || '-'}`,
+    `直播价格：${props.formData.livePrice || '-'}`,
     `直播佣金：${props.formData.liveCommission || '-'}`,
     `公开佣金：${props.formData.publicCommission || '-'}`,
     `货盘状态：${getStatusText(props.formData.liveStatus) || '-'}`
