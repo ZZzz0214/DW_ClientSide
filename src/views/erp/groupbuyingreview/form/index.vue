@@ -78,6 +78,7 @@
     customerName: '', // 客户名称（用于显示）
     supplyGroupPrice: 0,
     expressFee: 0,
+    groupPrice: 0, // 开团价格
     groupMechanism: '',
     status: undefined, // 货盘状态
     sampleSendDate: undefined,
@@ -135,6 +136,9 @@
             groupBuyingNo: parsedData.groupBuyingNo, // 保留团购货盘编号
             customerId: parsedData.customerId, // 保留客户ID
             customerName: parsedData.customerName, // 保留客户名称
+            supplyGroupPrice: parsedData.supplyGroupPrice, // 保留供货价格
+            expressFee: parsedData.expressFee, // 保留快递费用
+            groupPrice: parsedData.groupPrice, // 保留开团价格
             // 保留进展相关字段，并格式化日期
             sampleSendDate: formatDate(parsedData.sampleSendDate), // 格式化寄样日期
             groupStartDate: formatDate(parsedData.groupStartDate), // 格式化开团日期

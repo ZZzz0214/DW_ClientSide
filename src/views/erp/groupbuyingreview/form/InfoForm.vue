@@ -110,6 +110,19 @@
         />
       </el-form-item>
 
+      <el-form-item label="开团价格" prop="groupPrice">
+        <div style="display: flex; align-items: center;">
+        <el-input-number
+          v-model="formData.groupPrice"
+          :min="0"
+          :precision="2"
+          placeholder="请输入开团价格"
+          class="w-80!"
+        />
+        <span style="margin-left: 25px;">元</span>
+        </div>
+      </el-form-item>
+
       <el-form-item label="供货价格" prop="supplyGroupPrice">
         <div style="display: flex; align-items: center;">
         <el-input-number
@@ -135,13 +148,6 @@
           <span style="margin-left: 25px;">元</span>
         </div>
       </el-form-item>
-    <!-- 货盘状态 -->
-    <el-form-item label="货盘状态" prop="status">
-      <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-        <dict-tag v-if="formData.status" :type="DICT_TYPE.ERP_STATUS" :value="formData.status" />
-        <span v-else style="color: #c0c4cc;">自动填充</span>
-      </div>
-    </el-form-item>
 
     <!-- 开团机制 -->
     <el-form-item label="开团机制" prop="groupMechanism">
@@ -153,6 +159,14 @@
         type="textarea"
         :autosize="{ minRows: 2, maxRows: 4 }"
       />
+    </el-form-item>
+
+    <!-- 货盘状态 -->
+    <el-form-item label="货盘状态" prop="status">
+      <div class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+        <dict-tag v-if="formData.status" :type="DICT_TYPE.ERP_STATUS" :value="formData.status" />
+        <span v-else style="color: #c0c4cc;">自动填充</span>
+      </div>
     </el-form-item>
 
 
@@ -209,7 +223,8 @@
     remark: '',
     customerName: '', // 客户名称（用于显示）
     supplyGroupPrice: 0,
-    expressFee: 0
+    expressFee: 0,
+    groupPrice: 0 // 开团价格
   })
 
   const rules = reactive({
@@ -270,6 +285,10 @@ const handleGroupBuyingSelected = (groupBuying: any) => {
   // 如果货盘有快递费用，也可以自动填充
   if (groupBuying.expressFee) {
     formData.expressFee = groupBuying.expressFee;
+  }
+  // 如果货盘有开团价格，也自动填充（可修改）
+  if (groupBuying.groupPrice) {
+    formData.groupPrice = groupBuying.groupPrice;
   }
 };
   // 客户搜索弹窗相关

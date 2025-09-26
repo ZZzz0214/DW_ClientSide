@@ -17,6 +17,7 @@ export interface GroupBuyingReviewVO {
   groupMechanism?: string // 开团机制
   expressFee?: number // 快递费用
   supplyGroupPrice?: number // 供团价格
+  groupPrice?: number // 开团价格
   status?: number // 货盘状态
   sampleSendDate?: Date // 寄样日期
   groupStartDate?: Date // 开团日期
@@ -34,6 +35,7 @@ export interface GroupBuyingReviewSaveReqVO {
   customerId: number // 客户编号
   groupBuyingId: number // 团购货盘表ID
   supplyGroupPrice?: number // 供团价格
+  groupPrice?: number // 开团价格
   status?: number // 货盘状态
   sampleSendDate?: Date // 寄样日期
   groupStartDate?: Date // 开团日期
@@ -53,6 +55,7 @@ export interface GroupBuyingReviewPageReqVO {
   customerName?: string // 客户名称
   supplyGroupPrice?: string // 供团价格
   expressFee?: string // 快递费用
+  groupPrice?: string // 开团价格
   sampleSendDate?: Date[] // 寄样日期
   groupStartDate?: Date[] // 开团日期
   status?: string // 货盘状态

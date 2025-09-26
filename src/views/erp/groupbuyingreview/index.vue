@@ -98,6 +98,15 @@
             class="!w-240px"
           />
         </el-form-item>
+        <el-form-item label="开团价格" prop="groupPrice">
+          <el-input
+            v-model="queryParams.groupPrice"
+            placeholder="请输入开团价格"
+            clearable
+            @keyup.enter="handleQuery"
+            class="!w-240px"
+          />
+        </el-form-item>
         <el-form-item label="寄样日期" prop="sampleSendDate">
           <el-date-picker
             v-model="queryParams.sampleSendDate"
@@ -226,6 +235,7 @@
         <el-table-column label="产品规格" align="center" prop="productSpec" :show-overflow-tooltip="false"/>
 
         <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
+        <el-table-column label="开团价格" align="center" prop="groupPrice" :show-overflow-tooltip="false"/>
         <el-table-column label="供货价格" align="center" prop="supplyGroupPrice" :show-overflow-tooltip="false"/>
         <el-table-column label="快递费用" align="center" prop="expressFee" :show-overflow-tooltip="false"/>
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" width="150px"/>
@@ -320,6 +330,7 @@
     customerName: undefined,
     supplyGroupPrice: undefined,
     expressFee: undefined,
+    groupPrice: undefined,
     sampleSendDate: undefined,
     groupStartDate: undefined,
     status: undefined,
