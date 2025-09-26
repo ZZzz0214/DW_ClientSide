@@ -249,9 +249,9 @@
           </template>
         </el-table-column>
         <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" width="180px" :show-overflow-tooltip="false"/>
+        <el-table-column label="开团价格" align="center" prop="groupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="供货价格" align="center" prop="supplyGroupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="帮卖佣金" align="center" prop="sellingCommission"  :show-overflow-tooltip="false"/>
-        <el-table-column label="开团价格" align="center" prop="groupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
         <el-table-column label="操作" align="center" width="320">
