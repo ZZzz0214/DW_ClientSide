@@ -268,7 +268,7 @@
             <dict-tag :type="DICT_TYPE.ERP_LIVE_PLATFORM" :value="scope.row.livePlatform" />
           </template>
         </el-table-column>
-        <el-table-column label="直播价格" align="center" prop="livePrice" />
+        <el-table-column label="直播价格" align="center" prop="livePrice" min-width="350" />
         <el-table-column label="直播佣金" align="center" prop="liveCommission" />
         <el-table-column label="公开佣金" align="center" prop="publicCommission" />
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" min-width="100"/>
