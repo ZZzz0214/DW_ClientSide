@@ -160,6 +160,23 @@
             />
           </el-select>
         </el-form-item>
+        <el-form-item label="复盘状态" prop="reviewStatus">
+          <el-select
+            v-model="queryParams.reviewStatus"
+            placeholder="请选择复盘状态"
+            clearable
+            class="!w-240px"
+            filterable
+            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS)"
+          >
+            <el-option
+              v-for="dict in filteredReviewStatusOptions"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="创建人员" prop="creator">
           <el-input
             v-model="queryParams.creator"
@@ -271,6 +288,11 @@
         <el-table-column label="直播价格" align="center" prop="livePrice" min-width="350" />
         <el-table-column label="直播佣金" align="center" prop="liveCommission" />
         <el-table-column label="公开佣金" align="center" prop="publicCommission" />
+        <el-table-column label="复盘状态" align="center" prop="reviewStatus" width="120px">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS" :value="scope.row.reviewStatus" />
+          </template>
+        </el-table-column>
         <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" min-width="100"/>
         <el-table-column label="开播日期" align="center" prop="liveStartDate" :formatter="dateFormatter2" min-width="100"/>
         <el-table-column label="复播日期" align="center" prop="repeatLiveDate" :formatter="dateFormatter2" min-width="100"/>
@@ -356,6 +378,7 @@
     sampleSendDate: undefined,
     liveStartDate: undefined,
     liveStatus: undefined,
+    reviewStatus: undefined,
     creator: undefined,
     createTime: undefined
   })
@@ -367,10 +390,12 @@
   const liveStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_STATUS))
   const customerNameOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME))
   const platformOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_PLATFORM))
+  const reviewStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS))
   const filteredBrandOptions = ref(brandOptions.value)
   const filteredLiveStatusOptions = ref(liveStatusOptions.value)
   const filteredCustomerNameOptions = ref(customerNameOptions.value)
   const filteredPlatformOptions = ref(platformOptions.value)
+  const filteredReviewStatusOptions = ref(reviewStatusOptions.value)
 
   // 字典过滤方法
   const filterDictOptions = (value: string, dictType: string) => {
@@ -383,6 +408,8 @@
         filteredCustomerNameOptions.value = customerNameOptions.value
       } else if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
         filteredPlatformOptions.value = platformOptions.value
+      } else if (dictType === DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS) {
+        filteredReviewStatusOptions.value = reviewStatusOptions.value
       }
       return
     }
@@ -401,6 +428,8 @@
       filteredCustomerNameOptions.value = filterOptions(customerNameOptions.value)
     } else if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
       filteredPlatformOptions.value = filterOptions(platformOptions.value)
+    } else if (dictType === DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS) {
+      filteredReviewStatusOptions.value = filterOptions(reviewStatusOptions.value)
     }
   }
 

@@ -143,6 +143,24 @@
           <span v-else style="color: #c0c4cc;">自动填充</span>
         </div>
       </el-form-item>
+
+      <!-- 复盘状态 -->
+      <el-form-item label="复盘状态" prop="reviewStatus">
+        <el-select
+          v-model="formData.reviewStatus"
+          placeholder="请选择复盘状态"
+          clearable
+          class="w-80"
+          :disabled="isDetail"
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.ERP_PRIVATE_BROADCASTING_REVIEW_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
     </el-form>
 
     <!-- 私播货盘表选择弹窗 -->

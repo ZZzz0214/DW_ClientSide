@@ -284,4 +284,9 @@ export const DICT_TYPE = {
   ERP_LIVE_CUSTOMER_DISTRICT: 'erp_live_customer_district', // 直播客户区县
   ERP_LIVE_CUSTOMER_NAME: 'erp_live_customer_name', // 直播客户名称
   ERP_DROPSHIP_STATUS: 'erp_dropship_status', // 直播客户区县
+  
+  // ========== ERP - 复盘状态字典 ==========
+  ERP_GROUP_BUYING_REVIEW_STATUS: 'erp_group_buying_review_status', // 团购复盘状态
+  ERP_LIVE_BROADCASTING_REVIEW_STATUS: 'live_broadcasting_review_status', // 直播复盘状态
+  ERP_PRIVATE_BROADCASTING_REVIEW_STATUS: 'erp_private_broadcasting_review_status', // 私播复盘状态
 } as const

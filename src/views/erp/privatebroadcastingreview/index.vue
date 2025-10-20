@@ -134,6 +134,23 @@
           />
         </el-select>
       </el-form-item>
+      <el-form-item label="复盘状态" prop="reviewStatus">
+        <el-select
+          v-model="queryParams.reviewStatus"
+          placeholder="请选择复盘状态"
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_BROADCASTING_REVIEW_STATUS)"
+        >
+          <el-option
+            v-for="dict in filteredReviewStatusOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="创建人员" prop="creator">
         <el-input
           v-model="queryParams.creator"
@@ -227,6 +244,11 @@
       <el-table-column label="产品裸价" align="center" prop="productNakedPrice" />
       <el-table-column label="快递费用" align="center" prop="expressFee" />
       <el-table-column label="代发价格" align="center" prop="dropshipPrice" />
+      <el-table-column label="复盘状态" align="center" prop="reviewStatus" width="120px">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRIVATE_BROADCASTING_REVIEW_STATUS" :value="scope.row.reviewStatus" />
+        </template>
+      </el-table-column>
       <el-table-column label="寄样日期" align="center" prop="sampleSendDate" :formatter="dateFormatter2" min-width="100"/>
       <el-table-column label="开团日期" align="center" prop="groupStartDate" :formatter="dateFormatter2" min-width="100"/>
       <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" min-width="100"/>
@@ -311,16 +333,18 @@ const queryParams = reactive({
   dropshippingPrice: undefined,
   sampleSendDate: undefined,
   groupStartDate: undefined,
-  status: undefined,
-  creator: undefined,
-  createTime: undefined
-})
+    status: undefined,
+    reviewStatus: undefined,
+    creator: undefined,
+    createTime: undefined
+  })
 const queryFormRef = ref() // 搜索的表单
 const exportLoading = ref(false) // 导出的加载中
 
-// 字典选项
-const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
-const filteredPrivateStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_STATUS))
+  // 字典选项
+  const filteredBrandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
+  const filteredPrivateStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_STATUS))
+  const filteredReviewStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRIVATE_BROADCASTING_REVIEW_STATUS))
 
 // 字典过滤方法
 const filterDictOptions = (value, dictType) => {
@@ -330,6 +354,8 @@ const filterDictOptions = (value, dictType) => {
       filteredBrandOptions.value = allOptions
     } else if (dictType === DICT_TYPE.ERP_PRIVATE_STATUS) {
       filteredPrivateStatusOptions.value = allOptions
+    } else if (dictType === DICT_TYPE.ERP_PRIVATE_BROADCASTING_REVIEW_STATUS) {
+      filteredReviewStatusOptions.value = allOptions
     }
     return
   }
@@ -340,6 +366,8 @@ const filterDictOptions = (value, dictType) => {
     filteredBrandOptions.value = filtered
   } else if (dictType === DICT_TYPE.ERP_PRIVATE_STATUS) {
     filteredPrivateStatusOptions.value = filtered
+  } else if (dictType === DICT_TYPE.ERP_PRIVATE_BROADCASTING_REVIEW_STATUS) {
+    filteredReviewStatusOptions.value = filtered
   }
 }
 

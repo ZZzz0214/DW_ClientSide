@@ -174,6 +174,24 @@
         </div>
       </el-form-item>
 
+      <!-- 复盘状态 -->
+      <el-form-item label="复盘状态" prop="reviewStatus">
+        <el-select
+          v-model="formData.reviewStatus"
+          placeholder="请选择复盘状态"
+          clearable
+          class="w-80"
+          :disabled="isDetail"
+        >
+          <el-option
+            v-for="dict in getStrDictOptions(DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
     </el-form>
 
     <!-- 直播货盘搜索弹窗 -->

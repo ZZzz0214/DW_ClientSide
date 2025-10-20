@@ -144,7 +144,7 @@
             groupStartDate: formatDate(parsedData.groupStartDate), // 格式化开团日期
             groupSales: parsedData.groupSales, // 保留开团销量
             repeatGroupDate: formatDate(parsedData.repeatGroupDate), // 格式化复团日期
-            repeatGroupSales: parsedData.repeatGroupSales, // 保留复团销量
+            reviewStatus: parsedData.reviewStatus, // 保留复盘状态
             createTime: undefined,
             updateTime: undefined,
             creator: undefined,

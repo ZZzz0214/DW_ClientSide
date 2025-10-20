@@ -49,14 +49,21 @@
         />
       </el-form-item>
 
-      <!-- 复团销量 -->
-      <el-form-item label="复团销量" prop="repeatGroupSales">
-        <el-input-number
-          v-model="formData.repeatGroupSales"
-          :min="0"
-          placeholder="请输入复团销量"
+      <!-- 复盘状态 -->
+      <el-form-item label="复盘状态" prop="reviewStatus">
+        <el-select
+          v-model="formData.reviewStatus"
+          placeholder="请选择复盘状态"
+          clearable
           class="w-80"
-        />
+        >
+          <el-option
+            v-for="dict in getDictOptions(DICT_TYPE.ERP_PRIVATE_BROADCASTING_REVIEW_STATUS)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
       </el-form-item>
     </el-form>
   </template>
@@ -65,6 +72,7 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
+  import { DICT_TYPE, getDictOptions } from '@/utils/dict'
 
   defineOptions({ name: 'ErpPrivateBroadcastingReviewProgressForm' })
 
@@ -83,7 +91,7 @@
     groupStartDate: '',
     groupSales: 0,
     repeatGroupDate: '',
-    repeatGroupSales: 0
+    reviewStatus: undefined
   })
 
   const rules = reactive({

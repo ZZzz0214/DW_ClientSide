@@ -169,6 +169,24 @@
       </div>
     </el-form-item>
 
+    <!-- 复盘状态 -->
+    <el-form-item label="复盘状态" prop="reviewStatus">
+      <el-select
+        v-model="formData.reviewStatus"
+        placeholder="请选择复盘状态"
+        clearable
+        class="w-80"
+        :disabled="isDetail"
+      >
+        <el-option
+          v-for="dict in getStrDictOptions(DICT_TYPE.ERP_GROUP_BUYING_REVIEW_STATUS)"
+          :key="dict.value"
+          :label="dict.label"
+          :value="dict.value"
+        />
+      </el-select>
+    </el-form-item>
+
 
 
 
@@ -192,7 +210,7 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
-  import { DICT_TYPE } from '@/utils/dict'
+  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
   import type { GroupBuyingReviewVO } from '@/api/erp/groupbuyingreview'
   import type { CustomerVO } from '@/api/erp/sale/customer'
   import CustomerSearchDialog from "@/views/erp/sale/saleprice/components/CustomerSearchDialog.vue";
