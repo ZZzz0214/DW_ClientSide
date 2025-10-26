@@ -49,22 +49,6 @@
         />
       </el-form-item>
 
-      <!-- 复盘状态 -->
-      <el-form-item label="复盘状态" prop="reviewStatus">
-        <el-select
-          v-model="formData.reviewStatus"
-          placeholder="请选择复盘状态"
-          clearable
-          class="w-240px"
-        >
-          <el-option
-            v-for="dict in getDictOptions(DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
     </el-form>
   </template>
 
@@ -72,7 +56,6 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
-  import { DICT_TYPE, getDictOptions } from '@/utils/dict'
   import type { LiveBroadcastingReviewVO } from '@/api/erp/livebroadcastingreview'
 
   defineOptions({ name: 'ErpLiveBroadcastingReviewProgressForm' })
@@ -91,8 +74,7 @@
     sampleSendDate: '',
     liveStartDate: '',
     liveSales: 0,
-    repeatLiveDate: '',
-    reviewStatus: undefined
+    repeatLiveDate: ''
   })
 
   const rules = reactive({

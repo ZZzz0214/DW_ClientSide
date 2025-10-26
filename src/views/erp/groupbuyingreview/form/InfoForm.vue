@@ -238,6 +238,7 @@
     productSku: '',
     groupMechanism: '',
     status: undefined, // 货盘状态
+    reviewStatus: undefined, // 复盘状态
     remark: '',
     customerName: '', // 客户名称（用于显示）
     supplyGroupPrice: 0,

@@ -23,7 +23,7 @@ export interface GroupBuyingReviewVO {
   groupStartDate?: Date // 开团日期
   groupSales?: number // 开团销量
   repeatGroupDate?: Date // 复团日期
-  repeatGroupSales?: number // 复团销量
+  reviewStatus?: string // 复盘状态
   createTime?: Date // 创建时间
 }
 
@@ -41,7 +41,7 @@ export interface GroupBuyingReviewSaveReqVO {
   groupStartDate?: Date // 开团日期
   groupSales?: number // 开团销量
   repeatGroupDate?: Date // 复团日期
-  repeatGroupSales?: number // 复团销量
+  reviewStatus?: string // 复盘状态
 }
 
 // ERP 团购复盘分页 Request VO
@@ -59,6 +59,7 @@ export interface GroupBuyingReviewPageReqVO {
   sampleSendDate?: Date[] // 寄样日期
   groupStartDate?: Date[] // 开团日期
   status?: string // 货盘状态
+  reviewStatus?: string // 复盘状态
   creator?: string // 创建人员
   customerId?: number // 客户编号
   groupBuyingId?: number // 团购货盘表ID

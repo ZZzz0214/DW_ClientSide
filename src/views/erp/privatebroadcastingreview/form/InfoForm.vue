@@ -210,7 +210,8 @@
     productNakedPrice: '',
     expressFee: '',
     dropshipPrice: '',
-    privateStatus: ''
+    privateStatus: '',
+    reviewStatus: undefined // 复盘状态
   })
 
   const rules = reactive({

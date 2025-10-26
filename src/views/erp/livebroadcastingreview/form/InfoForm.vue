@@ -236,7 +236,8 @@
     liveCommission: '', // 直播佣金
     publicCommission: '', // 公开佣金
     rebateCommission: '', // 服务佣金
-    liveStatus: undefined // 货盘状态（使用liveStatus）
+    liveStatus: undefined, // 货盘状态（使用liveStatus）
+    reviewStatus: undefined // 复盘状态
   })
 
 

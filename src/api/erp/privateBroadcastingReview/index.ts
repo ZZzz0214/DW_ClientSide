@@ -23,7 +23,7 @@ export interface ErpPrivateBroadcastingReviewRespVO {
   groupStartDate?: string // 开团日期
   groupSales?: number // 开团销量
   repeatGroupDate?: string // 复团日期
-  repeatGroupSales?: number // 复团销量
+  reviewStatus?: string // 复盘状态
   remark?: string // 备注信息
   createTime?: Date // 创建时间
 }
@@ -51,7 +51,7 @@ export interface ErpPrivateBroadcastingReviewSaveReqVO {
   groupStartDate?: string // 开团日期
   groupSales?: number // 开团销量
   repeatGroupDate?: string // 复团日期
-  repeatGroupSales?: number // 复团销量
+  reviewStatus?: string // 复盘状态
   remark?: string // 备注信息
 }
 
@@ -69,6 +69,7 @@ export interface ErpPrivateBroadcastingReviewPageReqVO {
   sampleSendDate?: Date[] // 寄样日期
   groupStartDate?: Date[] // 开团日期
   status?: string // 货盘状态
+  reviewStatus?: string // 复盘状态
   creator?: string // 创建人员
   privateBroadcastingId?: number // 私播货盘表ID
   createTime?: Date[] // 创建时间范围

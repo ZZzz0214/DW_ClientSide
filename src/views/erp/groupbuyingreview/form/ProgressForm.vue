@@ -41,21 +41,6 @@
           value-format="YYYY-MM-DD"
         />
       </el-form-item>
-      <el-form-item label="复盘状态" prop="reviewStatus">
-        <el-select
-          v-model="formData.reviewStatus"
-          placeholder="请选择复盘状态"
-          clearable
-          class="w-80!"
-        >
-          <el-option
-            v-for="dict in getDictOptions(DICT_TYPE.ERP_GROUP_BUYING_REVIEW_STATUS)"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
-      </el-form-item>
     </el-form>
   </template>
 
@@ -63,7 +48,6 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
-  import { DICT_TYPE, getDictOptions } from '@/utils/dict'
   import type { GroupBuyingReviewVO } from '@/api/erp/groupbuyingreview'
 
   defineOptions({ name: 'ErpGroupBuyingReviewProgressForm' })
@@ -82,8 +66,7 @@
     sampleSendDate: undefined,
     groupStartDate: undefined,
     groupSales: 0,
-    repeatGroupDate: undefined,
-    reviewStatus: undefined
+    repeatGroupDate: undefined
   })
 
   const rules = reactive({

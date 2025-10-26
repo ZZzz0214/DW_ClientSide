@@ -21,20 +21,6 @@
         </div>
       </el-form-item>
 
-      <!-- 帮卖佣金 -->
-      <el-form-item label="帮卖佣金" prop="sellingCommission">
-        <div style="display: flex; align-items: center;">
-        <el-input-number
-          v-model="formData.sellingCommission"
-          :min="0"
-          :precision="2"
-          placeholder="请输入帮卖佣金"
-          class="w-80"
-        />
-          <span style="margin-left: 25px;">元</span>
-        </div>
-      </el-form-item>
-
       <!-- 供货价格 -->
       <el-form-item label="供货价格" prop="supplyGroupPrice">
         <div style="display: flex; align-items: center;">
@@ -45,6 +31,20 @@
           placeholder="请输入供货价格"
           class="w-80"
           @change="calculateProfit"
+        />
+          <span style="margin-left: 25px;">元</span>
+        </div>
+      </el-form-item>
+
+      <!-- 帮卖佣金 -->
+      <el-form-item label="帮卖佣金" prop="sellingCommission">
+        <div style="display: flex; align-items: center;">
+        <el-input-number
+          v-model="formData.sellingCommission"
+          :min="0"
+          :precision="2"
+          placeholder="请输入帮卖佣金"
+          class="w-80"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -111,8 +111,8 @@
   const formRef = ref()
   const formData = reactive({
     groupPrice: 0,
-    sellingCommission: 0,
     supplyGroupPrice: 0,
+    sellingCommission: 0,
     channelProfit: 0,
     groupMechanism: '',
     expressFee: 0

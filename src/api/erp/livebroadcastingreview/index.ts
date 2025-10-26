@@ -16,7 +16,7 @@ export interface LiveBroadcastingReviewVO {
   liveStartDate?: Date // 开播日期
   liveSales?: number // 开播销量
   repeatLiveDate?: Date // 复播日期
-  repeatLiveSales?: number // 复播销量
+  reviewStatus?: string // 复盘状态
   createTime?: Date // 创建时间
   productImage?: string // 产品图片
   brandId?: number // 品牌ID
@@ -43,7 +43,7 @@ export interface LiveBroadcastingReviewSaveReqVO {
   liveStartDate?: Date // 开播日期
   liveSales?: number // 开播销量
   repeatLiveDate?: Date // 复播日期
-  repeatLiveSales?: number // 复播销量
+  reviewStatus?: string // 复盘状态
   livePrice?: string // 直播价格
 }
 
@@ -62,6 +62,7 @@ export interface LiveBroadcastingReviewPageReqVO {
   sampleSendDate?: Date[] // 寄样日期
   liveStartDate?: Date[] // 开播日期
   liveStatus?: string // 货盘状态
+  reviewStatus?: string // 复盘状态
   creator?: string // 创建人员
   liveBroadcastingId?: number // 直播货盘表ID
   customerId?: number // 客户ID
