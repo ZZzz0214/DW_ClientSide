@@ -179,7 +179,6 @@
         <el-select
           v-model="formData.reviewStatus"
           placeholder="请选择复盘状态"
-          clearable
           class="w-80"
           :disabled="isDetail"
         >
@@ -246,6 +245,7 @@
     liveBroadcastingNo: [{ required: true, message: '请选择直播货盘', trigger: 'blur' }],
     customerName: [{ required: true, message: '客户名称不能为空', trigger: 'change' }],
     livePlatform: [{ required: true, message: '直播平台不能为空', trigger: 'blur' }],
+    reviewStatus: [{ required: true, message: '复盘状态不能为空', trigger: 'change' }],
     liveCommission: [
       { 
         validator: (rule, value, callback) => {

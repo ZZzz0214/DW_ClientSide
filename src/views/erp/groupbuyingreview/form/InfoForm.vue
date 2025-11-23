@@ -174,7 +174,6 @@
       <el-select
         v-model="formData.reviewStatus"
         placeholder="请选择复盘状态"
-        clearable
         class="w-80"
         :disabled="isDetail"
       >
@@ -251,7 +250,8 @@
     groupBuyingNo: [{ required: true, message: '请选择团购货盘', trigger: 'blur' }],
     customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
     supplyGroupPrice: [{ required: true, message: '供货价格不能为空', trigger: 'blur' }],
-    groupMechanism: [{ required: true, message: '开团机制不能为空', trigger: 'blur' }]
+    groupMechanism: [{ required: true, message: '开团机制不能为空', trigger: 'blur' }],
+    reviewStatus: [{ required: true, message: '复盘状态不能为空', trigger: 'change' }]
   })
 
   /** 将传进来的值赋值给 formData */

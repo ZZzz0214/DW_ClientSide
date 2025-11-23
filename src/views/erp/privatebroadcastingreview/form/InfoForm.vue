@@ -149,7 +149,6 @@
         <el-select
           v-model="formData.reviewStatus"
           placeholder="请选择复盘状态"
-          clearable
           class="w-80"
           :disabled="isDetail"
         >
@@ -217,6 +216,7 @@
   const rules = reactive({
     privateBroadcastingNo: [{ required: true, message: '私播货盘表编号不能为空', trigger: 'blur' }],
     customerName: [{ required: true, message: '客户名称不能为空', trigger: 'blur' }],
+    reviewStatus: [{ required: true, message: '复盘状态不能为空', trigger: 'change' }],
     productNakedPrice: [
       { 
         validator: (rule, value, callback) => {
