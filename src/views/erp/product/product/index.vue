@@ -633,7 +633,6 @@ const getNormalizedImageUrls = (images: string | undefined): string[] => {
     .split(',')
     .map(img => img.trim())
     .filter(img => img)
-    .map(url => url.replace(/192\.168\.1\.85:48080/g, 'localhost:48080'))
 }
 
 /** 字典选项过滤方法 */
