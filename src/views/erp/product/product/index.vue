@@ -216,22 +216,25 @@
       <el-table-column label="产品编号" align="center" prop="no" min-width="140" :show-overflow-tooltip="false"/>
       <el-table-column label="产品图片" align="center" prop="image" width="100" :show-overflow-tooltip="false">
         <template #default="scope">
-          <div v-if="getImageUrls(scope.row.image).length > 0" class="relative">
-            <el-image
-              :src="getImageUrls(scope.row.image)[0]"
-              :preview-src-list="getImageUrls(scope.row.image)"
-              class="w-12 h-12 rounded"
-              fit="cover"
-              :preview-teleported="true"
-            />
-            <div
-              v-if="getImageUrls(scope.row.image).length > 1"
-              class="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-green-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-white z-10"
-              style="font-size: 10px; font-weight: bold;"
-            >
-              {{ getImageUrls(scope.row.image).length }}
+          <template v-if="getNormalizedImageUrls(scope.row.image).length > 0">
+            <div class="relative">
+              <el-image
+                :src="getNormalizedImageUrls(scope.row.image)[0]"
+                :preview-src-list="getNormalizedImageUrls(scope.row.image)"
+                class="w-12 h-12 rounded"
+                fit="cover"
+                lazy
+                :preview-teleported="true"
+              />
+              <div
+                v-if="getNormalizedImageUrls(scope.row.image).length > 1"
+                class="absolute top-1/2 -right-2 transform -translate-y-1/2 bg-green-400 text-white text-xs rounded-full w-5 h-5 flex items-center justify-center shadow-lg border-2 border-white z-10"
+                style="font-size: 10px; font-weight: bold;"
+              >
+                {{ getNormalizedImageUrls(scope.row.image).length }}
+              </div>
             </div>
-          </div>
+          </template>
           <div v-else class="w-12 h-12 bg-gray-100 rounded flex items-center justify-center">
             <Icon icon="ep:picture" class="text-gray-400" />
           </div>
@@ -623,10 +626,14 @@ onUpdated(async () => {
   }
 });
 
-/** 获取图片URLs */
-const getImageUrls = (images: string | undefined): string[] => {
+/** 获取并规范化图片URLs（合并两个函数，减少调用次数） */
+const getNormalizedImageUrls = (images: string | undefined): string[] => {
   if (!images) return []
-  return images.split(',').map(img => img.trim()).filter(img => img)
+  return images
+    .split(',')
+    .map(img => img.trim())
+    .filter(img => img)
+    .map(url => url.replace(/192\.168\.1\.85:48080/g, 'localhost:48080'))
 }
 
 /** 字典选项过滤方法 */
