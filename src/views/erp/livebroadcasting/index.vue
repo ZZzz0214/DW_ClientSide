@@ -18,14 +18,16 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="品牌名称" prop="brandName">
+        <el-form-item label="品牌名称" prop="brandNames">
           <el-select
-            v-model="queryParams.brandName"
-            placeholder="请选择品牌名称"
+            v-model="queryParams.brandNames"
+            placeholder="请选择品牌名称（可多选）"
+            multiple
             clearable
             class="!w-240px"
             filterable
             :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+            @change="handleBrandNameChange"
           >
             <el-option
               v-for="dict in filteredBrandOptions"
@@ -33,6 +35,7 @@
               :label="dict.label"
               :value="dict.value"
             />
+            <el-option label="为空" value="__EMPTY__" />
           </el-select>
         </el-form-item>
         <el-form-item label="产品名称" prop="productName">
@@ -90,14 +93,16 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="货盘状态" prop="liveStatus">
+        <el-form-item label="货盘状态" prop="liveStatuses">
           <el-select
-            v-model="queryParams.liveStatus"
-            placeholder="请选择货盘状态"
+            v-model="queryParams.liveStatuses"
+            placeholder="请选择货盘状态（可多选）"
+            multiple
             clearable
             class="!w-240px"
             filterable
             :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_STATUS)"
+            @change="handleLiveStatusChange"
           >
             <el-option
               v-for="dict in filteredLiveStatusOptions"
@@ -105,6 +110,7 @@
               :label="dict.label"
               :value="dict.value"
             />
+            <el-option label="为空" value="__EMPTY__" />
           </el-select>
         </el-form-item>
         <el-form-item label="创建人员" prop="creator">
@@ -299,6 +305,8 @@
     pageSize: 10,
     no: undefined,
     brandName: undefined,
+    brandNames: [] as string[],
+    brandNameEmpty: false,
     productName: undefined,
     productSpec: undefined,
     shelfLife: undefined,
@@ -306,6 +314,8 @@
     liveCommission: undefined,
     publicCommission: undefined,
     liveStatus: undefined,
+    liveStatuses: [] as string[],
+    liveStatusEmpty: false,
     creator: undefined,
     createTime: undefined
   })
@@ -343,10 +353,48 @@
   }
 
   /** 查询列表 */
+  /** 品牌名称变化处理 */
+  const handleBrandNameChange = (value: string[]) => {
+    // 保留__EMPTY__在数组中以便显示，只在查询时过滤
+    queryParams.brandNames = value || []
+    queryParams.brandNameEmpty = value && value.includes('__EMPTY__')
+  }
+
+  /** 货盘状态变化处理 */
+  const handleLiveStatusChange = (value: string[]) => {
+    // 保留__EMPTY__在数组中以便显示，只在查询时过滤
+    queryParams.liveStatuses = value || []
+    queryParams.liveStatusEmpty = value && value.includes('__EMPTY__')
+  }
+
   const getList = async () => {
     loading.value = true
     try {
-      const data = await LiveBroadcastingApi.getLiveBroadcastingPage(queryParams)
+      // 处理查询参数：过滤掉__EMPTY__标记，设置Empty字段
+      const params: any = { ...queryParams }
+      // 处理品牌名称：过滤__EMPTY__，设置brandNameEmpty
+      if (params.brandNames && params.brandNames.length > 0) {
+        const hasEmpty = params.brandNames.includes('__EMPTY__')
+        params.brandNames = params.brandNames.filter(v => v !== '__EMPTY__')
+        params.brandNameEmpty = hasEmpty
+        if (params.brandNames.length === 0 && !hasEmpty) {
+          params.brandNames = undefined
+        }
+      } else if (!params.brandNameEmpty) {
+        params.brandNames = undefined
+      }
+      // 处理货盘状态：过滤__EMPTY__，设置liveStatusEmpty
+      if (params.liveStatuses && params.liveStatuses.length > 0) {
+        const hasEmpty = params.liveStatuses.includes('__EMPTY__')
+        params.liveStatuses = params.liveStatuses.filter(v => v !== '__EMPTY__')
+        params.liveStatusEmpty = hasEmpty
+        if (params.liveStatuses.length === 0 && !hasEmpty) {
+          params.liveStatuses = undefined
+        }
+      } else if (!params.liveStatusEmpty) {
+        params.liveStatuses = undefined
+      }
+      const data = await LiveBroadcastingApi.getLiveBroadcastingPage(params)
       list.value = data.list
       total.value = data.total
     } finally {

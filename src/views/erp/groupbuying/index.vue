@@ -18,14 +18,16 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="品牌名称" prop="brandName">
+        <el-form-item label="品牌名称" prop="brandNames">
           <el-select
-            v-model="queryParams.brandName"
-            placeholder="请选择品牌名称"
+            v-model="queryParams.brandNames"
+            placeholder="请选择品牌名称（可多选）"
+            multiple
             clearable
             class="!w-240px"
             filterable
             :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+            @change="handleBrandNameChange"
           >
             <el-option
               v-for="dict in filteredBrandOptions"
@@ -33,6 +35,7 @@
               :label="dict.label"
               :value="dict.value"
             />
+            <el-option label="为空" value="__EMPTY__" />
           </el-select>
         </el-form-item>
         <el-form-item label="产品名称" prop="productName">
@@ -90,14 +93,16 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="货盘状态" prop="status">
+        <el-form-item label="货盘状态" prop="statuses">
           <el-select
-            v-model="queryParams.status"
-            placeholder="请选择货盘状态"
+            v-model="queryParams.statuses"
+            placeholder="请选择货盘状态（可多选）"
+            multiple
             clearable
             class="!w-240px"
             filterable
             :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_STATUS)"
+            @change="handleStatusChange"
           >
             <el-option
               v-for="dict in filteredStatusOptions"
@@ -105,6 +110,7 @@
               :label="dict.label"
               :value="dict.value"
             />
+            <el-option label="为空" value="__EMPTY__" />
           </el-select>
         </el-form-item>
         <el-form-item label="创建人员" prop="creator">
@@ -328,12 +334,16 @@
     no: undefined,
     productName: undefined,
     brandName: undefined,
+    brandNames: [] as string[],
+    brandNameEmpty: false,
     productSpec: undefined,
     shelfLife: undefined,
     supplyGroupPrice: undefined,
     sellingCommission: undefined,
     groupPrice: undefined,
     status: undefined,
+    statuses: [] as string[],
+    statusEmpty: false,
     creator: undefined,
     createTime: undefined
   })
@@ -366,11 +376,49 @@
     }
   }
 
+  /** 品牌名称变化处理 */
+  const handleBrandNameChange = (value: string[]) => {
+    // 保留__EMPTY__在数组中以便显示，只在查询时过滤
+    queryParams.brandNames = value || []
+    queryParams.brandNameEmpty = value && value.includes('__EMPTY__')
+  }
+
+  /** 货盘状态变化处理 */
+  const handleStatusChange = (value: string[]) => {
+    // 保留__EMPTY__在数组中以便显示，只在查询时过滤
+    queryParams.statuses = value || []
+    queryParams.statusEmpty = value && value.includes('__EMPTY__')
+  }
+
   /** 查询列表 */
   const getList = async () => {
     loading.value = true
     try {
-      const data = await GroupBuyingApi.getGroupBuyingPage(queryParams)
+      // 处理查询参数：过滤掉__EMPTY__标记，设置Empty字段
+      const params: any = { ...queryParams }
+      // 处理品牌名称：过滤__EMPTY__，设置brandNameEmpty
+      if (params.brandNames && params.brandNames.length > 0) {
+        const hasEmpty = params.brandNames.includes('__EMPTY__')
+        params.brandNames = params.brandNames.filter(v => v !== '__EMPTY__')
+        params.brandNameEmpty = hasEmpty
+        if (params.brandNames.length === 0 && !hasEmpty) {
+          params.brandNames = undefined
+        }
+      } else if (!params.brandNameEmpty) {
+        params.brandNames = undefined
+      }
+      // 处理货盘状态：过滤__EMPTY__，设置statusEmpty
+      if (params.statuses && params.statuses.length > 0) {
+        const hasEmpty = params.statuses.includes('__EMPTY__')
+        params.statuses = params.statuses.filter(v => v !== '__EMPTY__')
+        params.statusEmpty = hasEmpty
+        if (params.statuses.length === 0 && !hasEmpty) {
+          params.statuses = undefined
+        }
+      } else if (!params.statusEmpty) {
+        params.statuses = undefined
+      }
+      const data = await GroupBuyingApi.getGroupBuyingPage(params)
       list.value = data.list
       total.value = data.total
     } finally {
