@@ -30,23 +30,41 @@
       </el-form-item>
 
       <el-form-item label="物流公司" prop="logisticsCompany">
-        <el-input
-          v-model="queryParams.logisticsCompany"
-          placeholder="请输入物流公司"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+        <div class="flex items-center gap-2">
+          <el-input
+            v-model="queryParams.logisticsCompany"
+            placeholder="请输入物流公司"
+            clearable
+            @keyup.enter="handleQuery"
+            :disabled="queryParams.logisticsCompanyEmpty"
+            class="!w-240px"
+          />
+          <el-checkbox
+            v-model="queryParams.logisticsCompanyEmpty"
+            @change="handleLogisticsCompanyEmptyChange"
+          >
+            为空
+          </el-checkbox>
+        </div>
       </el-form-item>
 
       <el-form-item label="物流单号" prop="trackingNumber">
-        <el-input
-          v-model="queryParams.trackingNumber"
-          placeholder="请输入物流单号"
-          clearable
-          @keyup.enter="handleQuery"
-          class="!w-240px"
-        />
+        <div class="flex items-center gap-2">
+          <el-input
+            v-model="queryParams.trackingNumber"
+            placeholder="请输入物流单号"
+            clearable
+            @keyup.enter="handleQuery"
+            :disabled="queryParams.trackingNumberEmpty"
+            class="!w-240px"
+          />
+          <el-checkbox
+            v-model="queryParams.trackingNumberEmpty"
+            @change="handleTrackingNumberEmptyChange"
+          >
+            为空
+          </el-checkbox>
+        </div>
       </el-form-item>
 
       <el-form-item label="收件姓名" prop="receiverName">
@@ -540,7 +558,9 @@ const queryParams = reactive({
   no: undefined,
   orderNumber: undefined,
   logisticsCompany: undefined,
+  logisticsCompanyEmpty: false,
   trackingNumber: undefined,
+  trackingNumberEmpty: false,
   receiverName: undefined,
   receiverPhone: undefined,
   receiverAddress: undefined,
@@ -593,6 +613,22 @@ const handleQuery = () => {
 const resetQuery = () => {
   queryFormRef.value.resetFields()
   handleQuery()
+}
+
+/** 物流公司为空筛选变化处理 */
+const handleLogisticsCompanyEmptyChange = (value: boolean) => {
+  if (value) {
+    // 勾选"为空"时，清空输入框
+    queryParams.logisticsCompany = undefined
+  }
+}
+
+/** 物流单号为空筛选变化处理 */
+const handleTrackingNumberEmptyChange = (value: boolean) => {
+  if (value) {
+    // 勾选"为空"时，清空输入框
+    queryParams.trackingNumber = undefined
+  }
 }
 
 /** 添加/修改操作 */
