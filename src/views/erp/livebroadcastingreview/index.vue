@@ -27,14 +27,16 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="品牌名称" prop="brandName">
+        <el-form-item label="品牌名称" prop="brandNames">
           <el-select
-            v-model="queryParams.brandName"
-            placeholder="请选择品牌名称"
+            v-model="queryParams.brandNames"
+            placeholder="请选择品牌名称（可多选）"
+            multiple
             clearable
             class="!w-240px"
             filterable
             :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+            @change="handleBrandNameChange"
           >
             <el-option
               v-for="dict in filteredBrandOptions"
@@ -42,6 +44,7 @@
               :label="dict.label"
               :value="dict.value"
             />
+            <el-option label="为空" value="__EMPTY__" />
           </el-select>
         </el-form-item>
         <el-form-item label="产品名称" prop="productName">
@@ -143,14 +146,16 @@
             end-placeholder="结束日期"
           />
         </el-form-item>
-        <el-form-item label="货盘状态" prop="liveStatus">
+        <el-form-item label="货盘状态" prop="liveStatuses">
           <el-select
-            v-model="queryParams.liveStatus"
-            placeholder="请选择货盘状态"
+            v-model="queryParams.liveStatuses"
+            placeholder="请选择货盘状态（可多选）"
+            multiple
             clearable
             class="!w-240px"
             filterable
             :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_STATUS)"
+            @change="handleLiveStatusChange"
           >
             <el-option
               v-for="dict in filteredLiveStatusOptions"
@@ -158,16 +163,19 @@
               :label="dict.label"
               :value="dict.value"
             />
+            <el-option label="为空" value="__EMPTY__" />
           </el-select>
         </el-form-item>
-        <el-form-item label="复盘状态" prop="reviewStatus">
+        <el-form-item label="复盘状态" prop="reviewStatuses">
           <el-select
-            v-model="queryParams.reviewStatus"
-            placeholder="请选择复盘状态"
+            v-model="queryParams.reviewStatuses"
+            placeholder="请选择复盘状态（可多选）"
+            multiple
             clearable
             class="!w-240px"
             filterable
             :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS)"
+            @change="handleReviewStatusChange"
           >
             <el-option
               v-for="dict in filteredReviewStatusOptions"
@@ -175,6 +183,7 @@
               :label="dict.label"
               :value="dict.value"
             />
+            <el-option label="为空" value="__EMPTY__" />
           </el-select>
         </el-form-item>
         <el-form-item label="创建人员" prop="creator">
@@ -368,6 +377,8 @@
     no: undefined,
     liveBroadcastingNo: undefined,
     brandName: undefined,
+    brandNames: [] as string[],
+    brandNameEmpty: false,
     productName: undefined,
     productSpec: undefined,
     customerName: undefined,
@@ -378,7 +389,11 @@
     sampleSendDate: undefined,
     liveStartDate: undefined,
     liveStatus: undefined,
+    liveStatuses: [] as string[],
+    liveStatusEmpty: false,
     reviewStatus: undefined,
+    reviewStatuses: [] as string[],
+    reviewStatusEmpty: false,
     creator: undefined,
     createTime: undefined
   })
@@ -433,11 +448,67 @@
     }
   }
 
+  /** 品牌名称变化处理 */
+  const handleBrandNameChange = (value: string[]) => {
+    // 保留__EMPTY__在数组中以便显示，只在查询时过滤
+    queryParams.brandNames = value || []
+    queryParams.brandNameEmpty = value && value.includes('__EMPTY__')
+  }
+
+  /** 货盘状态变化处理 */
+  const handleLiveStatusChange = (value: string[]) => {
+    // 保留__EMPTY__在数组中以便显示，只在查询时过滤
+    queryParams.liveStatuses = value || []
+    queryParams.liveStatusEmpty = value && value.includes('__EMPTY__')
+  }
+
+  /** 复盘状态变化处理 */
+  const handleReviewStatusChange = (value: string[]) => {
+    // 保留__EMPTY__在数组中以便显示，只在查询时过滤
+    queryParams.reviewStatuses = value || []
+    queryParams.reviewStatusEmpty = value && value.includes('__EMPTY__')
+  }
+
   /** 查询列表 */
   const getList = async () => {
     loading.value = true
     try {
-      const data = await LiveBroadcastingReviewApi.getLiveBroadcastingReviewPage(queryParams)
+      // 处理查询参数：过滤掉__EMPTY__标记，设置Empty字段
+      const params: any = { ...queryParams }
+      // 处理品牌名称：过滤__EMPTY__，设置brandNameEmpty
+      if (params.brandNames && params.brandNames.length > 0) {
+        const hasEmpty = params.brandNames.includes('__EMPTY__')
+        params.brandNames = params.brandNames.filter(v => v !== '__EMPTY__')
+        params.brandNameEmpty = hasEmpty
+        if (params.brandNames.length === 0 && !hasEmpty) {
+          params.brandNames = undefined
+        }
+      } else if (!params.brandNameEmpty) {
+        params.brandNames = undefined
+      }
+      // 处理货盘状态：过滤__EMPTY__，设置liveStatusEmpty
+      if (params.liveStatuses && params.liveStatuses.length > 0) {
+        const hasEmpty = params.liveStatuses.includes('__EMPTY__')
+        params.liveStatuses = params.liveStatuses.filter(v => v !== '__EMPTY__')
+        params.liveStatusEmpty = hasEmpty
+        if (params.liveStatuses.length === 0 && !hasEmpty) {
+          params.liveStatuses = undefined
+        }
+      } else if (!params.liveStatusEmpty) {
+        params.liveStatuses = undefined
+      }
+      // 处理复盘状态：过滤__EMPTY__，设置reviewStatusEmpty
+      if (params.reviewStatuses && params.reviewStatuses.length > 0) {
+        const hasEmpty = params.reviewStatuses.includes('__EMPTY__')
+        params.reviewStatuses = params.reviewStatuses.filter(v => v !== '__EMPTY__')
+        params.reviewStatusEmpty = hasEmpty
+        if (params.reviewStatuses.length === 0 && !hasEmpty) {
+          params.reviewStatuses = undefined
+        }
+      } else if (!params.reviewStatusEmpty) {
+        params.reviewStatuses = undefined
+      }
+      const data = await LiveBroadcastingReviewApi.getLiveBroadcastingReviewPage(params)
       list.value = data.list
       total.value = data.total
     } finally {
