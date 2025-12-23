@@ -242,6 +242,7 @@
       </el-table-column>
       <el-table-column label="产品名称" align="center" prop="name" :show-overflow-tooltip="false" min-width="350"/>
       <el-table-column label="产品简称" align="center" prop="productShortName"  :show-overflow-tooltip="false"/>
+      <el-table-column label="发货编码" align="center" prop="shippingCode" :show-overflow-tooltip="false" min-width="120"/>
       <el-table-column label="产品规格" align="center" prop="standard" :show-overflow-tooltip="false"/>
       <el-table-column label="产品日期" align="center" prop="productionDate" :show-overflow-tooltip="false" :formatter="dateFormatter2" min-width="140"/>
       <el-table-column
