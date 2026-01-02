@@ -37,9 +37,117 @@
           @update:formData="handleShippingFormUpdate"
         />
       </el-tab-pane>
-      <el-tab-pane label="资料信息" name="material">
-        <MaterialForm
-          ref="materialRef"
+      <el-tab-pane label="主图" name="mainImage">
+        <MainImageForm
+          ref="mainImageRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="详情" name="detailInfo">
+        <DetailInfoForm
+          ref="detailInfoRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="SKU图" name="skuImage">
+        <SkuImageForm
+          ref="skuImageRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="基础笔记" name="basicNotes">
+        <BasicNotesForm
+          ref="basicNotesRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="升级笔记" name="upgradeNotes">
+        <UpgradeNotesForm
+          ref="upgradeNotesRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="社群推广" name="communityPromotion">
+        <CommunityPromotionForm
+          ref="communityPromotionRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="详细信息" name="detailedInfo">
+        <DetailedInfoForm
+          ref="detailedInfoRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="资质" name="qualification">
+        <QualificationForm
+          ref="qualificationRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="卖点成分" name="sellingPointsIngredients">
+        <SellingPointsIngredientsForm
+          ref="sellingPointsIngredientsRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="背书" name="endorsement">
+        <EndorsementForm
+          ref="endorsementRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="实拍" name="actualPhotos">
+        <ActualPhotosForm
+          ref="actualPhotosRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="六面图" name="sixSideImages">
+        <SixSideImagesForm
+          ref="sixSideImagesRef"
+          v-model:activeName="activeName"
+          :is-detail="isDetail"
+          :propFormData="formData"
+          @update:formData="handleMaterialFormUpdate"
+        />
+      </el-tab-pane>
+      <el-tab-pane label="打包图" name="packagingImages">
+        <PackagingImagesForm
+          ref="packagingImagesRef"
           v-model:activeName="activeName"
           :is-detail="isDetail"
           :propFormData="formData"
@@ -70,8 +178,21 @@ import InfoForm from './InfoForm.vue'
 import PriceForm from './PriceForm.vue'
 import DataForm from './DataForm.vue'
 import ShippingForm from './ShippingForm.vue'
-import MaterialForm from './MaterialForm.vue'
 import CopyDataForm from './components/CopyDataForm.vue'
+// 资料信息独立组件
+import MainImageForm from './material/MainImageForm.vue'
+import DetailInfoForm from './material/DetailInfoForm.vue'
+import SkuImageForm from './material/SkuImageForm.vue'
+import BasicNotesForm from './material/BasicNotesForm.vue'
+import UpgradeNotesForm from './material/UpgradeNotesForm.vue'
+import CommunityPromotionForm from './material/CommunityPromotionForm.vue'
+import DetailedInfoForm from './material/DetailedInfoForm.vue'
+import QualificationForm from './material/QualificationForm.vue'
+import SellingPointsIngredientsForm from './material/SellingPointsIngredientsForm.vue'
+import EndorsementForm from './material/EndorsementForm.vue'
+import ActualPhotosForm from './material/ActualPhotosForm.vue'
+import SixSideImagesForm from './material/SixSideImagesForm.vue'
+import PackagingImagesForm from './material/PackagingImagesForm.vue'
 
 defineOptions({ name: 'ErpPrivateBroadcastingAdd' })
 
@@ -88,7 +209,20 @@ const infoRef = ref() // 基础信息 Ref
 const priceRef = ref() // 价格机制 Ref
 const dataRef = ref() // 数据信息 Ref
 const shippingRef = ref() // 发货信息 Ref
-const materialRef = ref() // 资料信息 Ref
+// 资料信息独立Ref
+const mainImageRef = ref() // 主图 Ref
+const detailInfoRef = ref() // 详情 Ref
+const skuImageRef = ref() // SKU图 Ref
+const basicNotesRef = ref() // 基础笔记 Ref
+const upgradeNotesRef = ref() // 升级笔记 Ref
+const communityPromotionRef = ref() // 社群推广 Ref
+const detailedInfoRef = ref() // 详细信息 Ref
+const qualificationRef = ref() // 资质 Ref
+const sellingPointsIngredientsRef = ref() // 卖点成分 Ref
+const endorsementRef = ref() // 背书 Ref
+const actualPhotosRef = ref() // 实拍 Ref
+const sixSideImagesRef = ref() // 六面图 Ref
+const packagingImagesRef = ref() // 打包图 Ref
 
 // 表单数据
 const formData = ref<ErpPrivateBroadcastingApi.ErpPrivateBroadcastingRespVO>({
@@ -221,16 +355,24 @@ const submitForm = async () => {
   formLoading.value = true
   try {
     // 校验各表单
-    const infoValid = await unref(infoRef)?.validate()
-    const priceValid = await unref(priceRef)?.validate()
-    const dataValid = await unref(dataRef)?.validate()
-    const shippingValid = await unref(shippingRef)?.validate()
-    const materialValid = await unref(materialRef)?.validate()
-
-    if (!infoValid || !priceValid || !dataValid || !shippingValid || !materialValid) {
-      message.error(t('common.validationFailed')) // 提示校验失败
-      return
-    }
+    await unref(infoRef)?.validate()
+    await unref(priceRef)?.validate()
+    await unref(dataRef)?.validate()
+    await unref(shippingRef)?.validate()
+    // 资料信息独立组件校验
+    await unref(mainImageRef)?.validate()
+    await unref(detailInfoRef)?.validate()
+    await unref(skuImageRef)?.validate()
+    await unref(basicNotesRef)?.validate()
+    await unref(upgradeNotesRef)?.validate()
+    await unref(communityPromotionRef)?.validate()
+    await unref(detailedInfoRef)?.validate()
+    await unref(qualificationRef)?.validate()
+    await unref(sellingPointsIngredientsRef)?.validate()
+    await unref(endorsementRef)?.validate()
+    await unref(actualPhotosRef)?.validate()
+    await unref(sixSideImagesRef)?.validate()
+    await unref(packagingImagesRef)?.validate()
 
     // 提交数据
     const data = cloneDeep(unref(formData.value))

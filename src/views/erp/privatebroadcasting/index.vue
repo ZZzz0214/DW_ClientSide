@@ -37,10 +37,11 @@
           <el-option label="为空" value="__EMPTY__" />
         </el-select>
       </el-form-item>
-      <el-form-item label="产品分类" prop="categoryId">
+      <el-form-item label="产品分类" prop="categoryIds">
         <el-select
-          v-model="queryParams.categoryId"
-          placeholder="请选择产品分类"
+          v-model="queryParams.categoryIds"
+          placeholder="请选择产品分类（可多选）"
+          multiple
           clearable
           filterable
           class="!w-240px"
@@ -368,6 +369,7 @@ const queryParams = reactive({
   brandNames: [] as string[],
   brandNameEmpty: false,
   categoryId: undefined,
+  categoryIds: [] as number[], // 产品分类多选
   productName: undefined,
   productSpec: undefined,
   shelfLife: undefined,
