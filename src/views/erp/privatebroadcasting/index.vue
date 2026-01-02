@@ -37,6 +37,22 @@
           <el-option label="为空" value="__EMPTY__" />
         </el-select>
       </el-form-item>
+      <el-form-item label="产品分类" prop="categoryId">
+        <el-select
+          v-model="queryParams.categoryId"
+          placeholder="请选择产品分类"
+          clearable
+          filterable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
       <el-form-item label="产品名称" prop="productName">
         <el-input
           v-model="queryParams.productName"
@@ -236,6 +252,11 @@
           </div>
         </template>
       </el-table-column>
+      <el-table-column label="产品分类" align="center" prop="categoryId" width="120">
+        <template #default="scope">
+          <dict-tag :type="DICT_TYPE.ERP_PRODUCT_CATEGORY" :value="scope.row.categoryId" />
+        </template>
+      </el-table-column>
       <el-table-column label="产品名称" align="center" prop="productName" min-width="250" :show-overflow-tooltip="false">
         <template #default="scope">
           <div style="white-space: normal; word-break: break-all; line-height: 1.4;">
@@ -314,7 +335,7 @@
 <script setup lang="ts">
 import {dateFormatter, dateFormatter2} from '@/utils/formatTime'
 import download from '@/utils/download'
-import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
+import { DICT_TYPE, getStrDictOptions, getIntDictOptions } from '@/utils/dict'
 import { ErpPrivateBroadcastingApi, ErpPrivateBroadcastingRespVO } from '@/api/erp/privateBroadcasting'
 import PrivateBroadcastingImportForm from './form/PrivateBroadcastingImportForm.vue'
 
@@ -335,6 +356,7 @@ const queryParams = reactive({
   brandName: undefined,
   brandNames: [] as string[],
   brandNameEmpty: false,
+  categoryId: undefined,
   productName: undefined,
   productSpec: undefined,
   shelfLife: undefined,

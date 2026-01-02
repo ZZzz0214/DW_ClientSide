@@ -48,6 +48,24 @@
       </el-select>
     </el-form-item>
 
+      <!-- 产品分类 -->
+      <el-form-item label="产品分类" prop="categoryId">
+        <el-select
+          v-model="formData.categoryId"
+          placeholder="请选择产品分类"
+          clearable
+          filterable
+          class="w-80"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
       <!-- 产品名称 -->
       <el-form-item label="产品名称" prop="productName">
         <el-input
@@ -148,7 +166,7 @@
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { GroupBuyingVO } from '@/api/erp/groupbuying'
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import { getStrDictOptions, getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
   defineOptions({ name: 'ErpGroupBuyingInfoForm' })
 
@@ -166,6 +184,7 @@ import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
     no: '',
     productImage: [],
     brandName: '',
+    categoryId: undefined, // 产品分类编号
     productName: '',
     productSpec: '',
     productSku: '',

@@ -18,27 +18,43 @@
             class="!w-240px"
           />
         </el-form-item>
-        <el-form-item label="品牌名称" prop="brandNames">
-          <el-select
-            v-model="queryParams.brandNames"
-            placeholder="请选择品牌名称（可多选）"
-            multiple
-            clearable
-            class="!w-240px"
-            filterable
-            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
-            @change="handleBrandNameChange"
-          >
-            <el-option
-              v-for="dict in filteredBrandOptions"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-            <el-option label="为空" value="__EMPTY__" />
-          </el-select>
-        </el-form-item>
-        <el-form-item label="产品名称" prop="productName">
+      <el-form-item label="品牌名称" prop="brandNames">
+        <el-select
+          v-model="queryParams.brandNames"
+          placeholder="请选择品牌名称（可多选）"
+          multiple
+          clearable
+          class="!w-240px"
+          filterable
+          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRODUCT_BRAND)"
+          @change="handleBrandNameChange"
+        >
+          <el-option
+            v-for="dict in filteredBrandOptions"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+          <el-option label="为空" value="__EMPTY__" />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="产品分类" prop="categoryId">
+        <el-select
+          v-model="queryParams.categoryId"
+          placeholder="请选择产品分类"
+          clearable
+          filterable
+          class="!w-240px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+      <el-form-item label="产品名称" prop="productName">
           <el-input
             v-model="queryParams.productName"
             placeholder="请输入产品名称"
@@ -228,6 +244,16 @@
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
+        <el-table-column
+          label="产品分类"
+          align="center"
+          prop="categoryId"
+          width="120"
+        >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_CATEGORY" :value="scope.row.categoryId" />
+          </template>
+        </el-table-column>
         <el-table-column label="产品名称" align="center" prop="productName" min-width="350"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" />
         <el-table-column label="货盘状态" align="center" prop="liveStatus">
@@ -288,7 +314,7 @@
   import download from '@/utils/download'
   import { LiveBroadcastingApi, LiveBroadcastingVO } from '@/api/erp/livebroadcasting'
   import LiveBroadcastingImportForm from './form/LiveBroadcastingImportForm.vue'
-  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
+  import { DICT_TYPE, getStrDictOptions, getIntDictOptions } from '@/utils/dict'
 
   /** ERP 直播货盘列表 */
   defineOptions({ name: 'ErpLiveBroadcasting' })
@@ -307,6 +333,7 @@
     brandName: undefined,
     brandNames: [] as string[],
     brandNameEmpty: false,
+    categoryId: undefined,
     productName: undefined,
     productSpec: undefined,
     shelfLife: undefined,

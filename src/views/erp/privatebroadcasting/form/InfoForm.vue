@@ -33,6 +33,23 @@
         />
       </el-select>
     </el-form-item>
+    <el-form-item label="产品分类" prop="categoryId">
+      <el-select
+        v-model="formData.categoryId"
+        placeholder="请选择产品分类"
+        clearable
+        filterable
+        class="!w-240px"
+        :disabled="isDetail"
+      >
+        <el-option
+          v-for="dict in getIntDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)"
+          :key="dict.value"
+          :label="dict.label"
+          :value="dict.value"
+        />
+      </el-select>
+    </el-form-item>
     <el-form-item label="产品名称" prop="productName">
       <el-input v-model="formData.productName" placeholder="请输入产品名称" :disabled="isDetail" />
     </el-form-item>
@@ -85,7 +102,7 @@
 <script lang="ts" setup>
 import { ElForm } from 'element-plus'
 import { reactive, watch, defineExpose, defineEmits } from 'vue'
-import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+import { getStrDictOptions, getIntDictOptions, DICT_TYPE } from '@/utils/dict'
 import { copyValueToTarget } from '@/utils'
 
 const props = defineProps({
@@ -99,6 +116,7 @@ const formData = reactive({
   no: '',
   productImage: [],
   brandName: '',
+  categoryId: undefined, // 产品分类编号
   productName: '',
   productSpec: '',
   productSku: '',

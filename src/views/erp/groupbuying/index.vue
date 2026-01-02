@@ -38,6 +38,22 @@
             <el-option label="为空" value="__EMPTY__" />
           </el-select>
         </el-form-item>
+        <el-form-item label="产品分类" prop="categoryId">
+          <el-select
+            v-model="queryParams.categoryId"
+            placeholder="请选择产品分类"
+            clearable
+            filterable
+            class="!w-240px"
+          >
+            <el-option
+              v-for="dict in getIntDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)"
+              :key="dict.value"
+              :label="dict.label"
+              :value="dict.value"
+            />
+          </el-select>
+        </el-form-item>
         <el-form-item label="产品名称" prop="productName">
           <el-input
             v-model="queryParams.productName"
@@ -224,6 +240,16 @@
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName"  />
           </template>
         </el-table-column>
+        <el-table-column
+          label="产品分类"
+          align="center"
+          prop="categoryId"
+          width="120"
+        >
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRODUCT_CATEGORY" :value="scope.row.categoryId" />
+          </template>
+        </el-table-column>
         <el-table-column label="产品图片" align="center" prop="productImage" :show-overflow-tooltip="false">
           <template #default="scope">
             <div v-if="getImageUrls(scope.row.productImage).length > 0" class="relative">
@@ -316,7 +342,7 @@
   import download from '@/utils/download'
   import { GroupBuyingApi, GroupBuyingVO } from '@/api/erp/groupbuying'
   import GroupBuyingImportForm from './form/GroupBuyingImportForm.vue'
-  import { DICT_TYPE, getStrDictOptions } from '@/utils/dict'
+  import { DICT_TYPE, getStrDictOptions, getIntDictOptions } from '@/utils/dict'
 
   /** ERP 团购货盘列表 */
   defineOptions({ name: 'ErpGroupBuying' })
@@ -336,6 +362,7 @@
     brandName: undefined,
     brandNames: [] as string[],
     brandNameEmpty: false,
+    categoryId: undefined,
     productSpec: undefined,
     shelfLife: undefined,
     supplyGroupPrice: undefined,

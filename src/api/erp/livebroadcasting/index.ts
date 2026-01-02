@@ -6,6 +6,7 @@ export interface LiveBroadcastingVO {
   no?: string // 编号
   productImage?: string // 产品图片
   brandName?: string // 品牌名称
+  categoryId?: number // 产品分类编号
   productName?: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
@@ -45,6 +46,7 @@ export interface LiveBroadcastingSaveReqVO {
   no: string // 编号
   productImage?: string // 产品图片
   brandName?: string // 品牌名称
+  categoryId?: number // 产品分类编号
   productName: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
@@ -81,6 +83,7 @@ export interface LiveBroadcastingSaveReqVO {
 export interface LiveBroadcastingPageReqVO {
   no?: string // 编号
   brandName?: string // 品牌名称
+  categoryId?: number // 产品分类编号
   productName?: string // 产品名称
   createTime?: Date[] // 创建时间
 }

@@ -6,6 +6,7 @@ export interface ErpPrivateBroadcastingRespVO {
   no?: string // 编号
   productImage?: string | string[] // 产品图片（多张，逗号分隔）
   brandName?: string // 品牌名称
+  categoryId?: number // 产品分类编号
   productName?: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
@@ -46,6 +47,7 @@ export interface ErpPrivateBroadcastingSaveReqVO {
   no: string // 编号
   productImage?: string // 产品图片（多张，逗号分隔）
   brandName?: string // 品牌名称
+  categoryId?: number // 产品分类编号
   productName: string // 产品名称
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU

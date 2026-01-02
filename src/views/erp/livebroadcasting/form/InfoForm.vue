@@ -55,6 +55,29 @@
         </el-select>
       </el-form-item>
 
+      <!-- 产品分类 -->
+      <el-form-item label="产品分类" prop="categoryId">
+        <div v-if="isDetail" class="w-240px" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
+          <dict-tag v-if="formData.categoryId" :type="DICT_TYPE.ERP_PRODUCT_CATEGORY" :value="formData.categoryId" />
+          <span v-else style="color: #c0c4cc;">未设置</span>
+        </div>
+        <el-select
+          v-else
+          v-model="formData.categoryId"
+          placeholder="请选择产品分类"
+          clearable
+          filterable
+          class="w-240px"
+        >
+          <el-option
+            v-for="dict in getIntDictOptions(DICT_TYPE.ERP_PRODUCT_CATEGORY)"
+            :key="dict.value"
+            :label="dict.label"
+            :value="dict.value"
+          />
+        </el-select>
+      </el-form-item>
+
       <!-- 产品名称 -->
       <el-form-item label="产品名称" prop="productName">
         <el-input
@@ -167,7 +190,7 @@
   import { PropType } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
-  import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
+  import { getStrDictOptions, getIntDictOptions, DICT_TYPE } from '@/utils/dict'
   import type { LiveBroadcastingVO } from '@/api/erp/livebroadcasting'
 
   defineOptions({ name: 'ErpLiveBroadcastingInfoForm' })
@@ -186,6 +209,7 @@
     no: '',
     productImage: '',
     brandName: '',
+    categoryId: undefined, // 产品分类编号
     productName: '',
     productSpec: '',
     productSku: '',
