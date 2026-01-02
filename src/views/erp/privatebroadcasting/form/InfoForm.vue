@@ -81,10 +81,11 @@
     <!-- 货盘状态 -->
     <el-form-item label="货盘状态" prop="privateStatus">
       <el-select
-        v-model="formData.privateStatus"
-        placeholder="请选择货盘状态"
+        v-model="formData.privateStatusList"
+        placeholder="请选择货盘状态（可多选）"
         class="!w-240px"
         :disabled="isDetail"
+        multiple
         filterable
         :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_PRIVATE_STATUS)"
       >
@@ -124,7 +125,8 @@ const formData = reactive({
   shelfLife: '',
   productStock: undefined,
   remark: '',
-  privateStatus: ''
+  privateStatus: '', // 货盘状态（逗号分隔字符串）
+  privateStatusList: [] // 货盘状态数组（用于多选组件）
 })
 
 const rules = {
@@ -162,9 +164,16 @@ watch(
       formData.productImage = []
     }
 
-    // 确保货盘状态正确赋值
-    if (data.privateStatus !== undefined) {
+    // 处理货盘状态：将逗号分隔的字符串转换为数组
+    if (data.privateStatus && typeof data.privateStatus === 'string') {
+      formData.privateStatusList = data.privateStatus.split(',').filter(s => s.trim())
       formData.privateStatus = data.privateStatus
+    } else if (Array.isArray(data.privateStatus)) {
+      formData.privateStatusList = [...data.privateStatus]
+      formData.privateStatus = data.privateStatus.join(',')
+    } else {
+      formData.privateStatusList = []
+      formData.privateStatus = ''
     }
 
     nextTick(() => {
@@ -215,7 +224,18 @@ defineExpose({
     const valid = await formRef.value?.validate()
     if (valid) {
       // 确保数据正确传递
-      emit('update:formData', { ...formData })
+      const updatedData = { ...formData }
+      
+      // 将状态数组转换为逗号分隔的字符串
+      if (Array.isArray(formData.privateStatusList) && formData.privateStatusList.length > 0) {
+        updatedData.privateStatus = formData.privateStatusList.join(',')
+        updatedData.privateStatusList = formData.privateStatusList
+      } else {
+        updatedData.privateStatus = ''
+        updatedData.privateStatusList = []
+      }
+      
+      emit('update:formData', updatedData)
     }
     return valid
   }

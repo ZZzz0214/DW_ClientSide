@@ -256,9 +256,20 @@
         </el-table-column>
         <el-table-column label="产品名称" align="center" prop="productName" min-width="350"/>
         <el-table-column label="产品规格" align="center" prop="productSpec" />
-        <el-table-column label="货盘状态" align="center" prop="liveStatus">
+        <el-table-column label="货盘状态" align="center" prop="liveStatus" :show-overflow-tooltip="false" min-width="160">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;">
+              <template v-if="scope.row.liveStatus">
+                <dict-tag
+                  v-for="(statusItem, index) in scope.row.liveStatus.split(',').filter(s => s.trim())"
+                  :key="index"
+                  :type="DICT_TYPE.ERP_LIVE_STATUS"
+                  :value="statusItem.trim()"
+                  style="margin: 2px 0;"
+                />
+              </template>
+              <span v-else style="color: #c0c4cc;">未设置</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="保质日期" align="center" prop="shelfLife" :formatter="dateFormatter2" />

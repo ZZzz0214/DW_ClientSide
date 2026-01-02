@@ -265,9 +265,20 @@
         </template>
       </el-table-column>
       <el-table-column label="产品规格" align="center" prop="productSpec" />
-      <el-table-column label="货盘状态" align="center" prop="privateStatus">
+      <el-table-column label="货盘状态" align="center" prop="privateStatus" :show-overflow-tooltip="false" min-width="160">
         <template #default="scope">
-          <dict-tag :type="DICT_TYPE.ERP_PRIVATE_STATUS" :value="scope.row.privateStatus" />
+          <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;">
+            <template v-if="scope.row.privateStatus">
+              <dict-tag
+                v-for="(statusItem, index) in scope.row.privateStatus.split(',').filter(s => s.trim())"
+                :key="index"
+                :type="DICT_TYPE.ERP_PRIVATE_STATUS"
+                :value="statusItem.trim()"
+                style="margin: 2px 0;"
+              />
+            </template>
+            <span v-else style="color: #c0c4cc;">未设置</span>
+          </div>
         </template>
       </el-table-column>
       <el-table-column

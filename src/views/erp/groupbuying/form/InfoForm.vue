@@ -144,9 +144,10 @@
       <!-- 货盘状态 -->
       <el-form-item label="货盘状态" prop="status">
         <el-select
-          v-model="formData.status"
-          placeholder="请选择货盘状态"
+          v-model="formData.statusList"
+          placeholder="请选择货盘状态（可多选）"
           class="w-80"
+          multiple
           filterable
           :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_STATUS)"
         >
@@ -193,7 +194,8 @@ import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
     productStock: 0,
     remark: '',
     brand: '', // 品牌名称
-    status: undefined, // 货盘状态
+    status: undefined, // 货盘状态（逗号分隔字符串）
+    statusList: [], // 货盘状态数组（用于多选组件）
   })
 
   const rules = reactive({
@@ -222,6 +224,18 @@ import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
       } else {
         formData.productImage = []
       }
+
+      // 处理货盘状态：将逗号分隔的字符串转换为数组
+      if (data.status && typeof data.status === 'string') {
+        formData.statusList = data.status.split(',').filter(s => s.trim())
+        formData.status = data.status
+      } else if (Array.isArray(data.status)) {
+        formData.statusList = [...data.status]
+        formData.status = data.status.join(',')
+      } else {
+        formData.statusList = []
+        formData.status = undefined
+      }
     },
     { immediate: true }
   )
@@ -239,6 +253,15 @@ import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
       // 确保productImage是数组格式
       if (Array.isArray(formData.productImage)) {
         updatedData.productImage = [...formData.productImage]
+      }
+
+      // 将状态数组转换为逗号分隔的字符串
+      if (Array.isArray(formData.statusList) && formData.statusList.length > 0) {
+        updatedData.status = formData.statusList.join(',')
+        updatedData.statusList = formData.statusList // 保留数组用于前端显示
+      } else {
+        updatedData.status = null
+        updatedData.statusList = []
       }
 
       // 通过emit将数据传递给父组件

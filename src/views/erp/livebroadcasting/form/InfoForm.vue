@@ -142,14 +142,23 @@
       <!-- 货盘状态 -->
       <el-form-item label="货盘状态" prop="liveStatus">
         <div v-if="isDetail" class="w-240px" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-          <dict-tag v-if="formData.liveStatus !== undefined && formData.liveStatus !== null" :type="DICT_TYPE.ERP_LIVE_STATUS" :value="formData.liveStatus" />
+          <template v-if="formData.liveStatusList && formData.liveStatusList.length > 0">
+            <dict-tag
+              v-for="status in formData.liveStatusList"
+              :key="status"
+              :type="DICT_TYPE.ERP_LIVE_STATUS"
+              :value="status"
+              style="margin-right: 4px;"
+            />
+          </template>
           <span v-else style="color: #c0c4cc;">未设置</span>
         </div>
         <el-select
           v-else
-          v-model="formData.liveStatus"
-          placeholder="请选择货盘状态"
+          v-model="formData.liveStatusList"
+          placeholder="请选择货盘状态（可多选）"
           class="w-240px"
+          multiple
           filterable
           :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_STATUS)"
         >
@@ -157,7 +166,7 @@
             v-for="dict in filteredLiveStatusOptions"
             :key="dict.value"
             :label="dict.label"
-            :value="Number(dict.value)"
+            :value="dict.value"
           />
         </el-select>
       </el-form-item>
@@ -216,7 +225,8 @@
     marketPrice: 0,
     shelfLife: '',
     productStock: 0,
-    liveStatus: undefined,
+    liveStatus: undefined, // 货盘状态（逗号分隔字符串）
+    liveStatusList: [], // 货盘状态数组（用于多选组件）
     coreSellingPoint: '',
     remark: ''
   })
@@ -275,15 +285,22 @@
         formData.productImage = [...data.productImage]
       }
 
+      // 处理货盘状态：将逗号分隔的字符串转换为数组
+      if (data.liveStatus && typeof data.liveStatus === 'string') {
+        formData.liveStatusList = data.liveStatus.split(',').filter(s => s.trim())
+        formData.liveStatus = data.liveStatus
+      } else if (Array.isArray(data.liveStatus)) {
+        formData.liveStatusList = [...data.liveStatus]
+        formData.liveStatus = data.liveStatus.join(',')
+      } else {
+        formData.liveStatusList = []
+        formData.liveStatus = undefined
+      }
+
       // 如果是复制操作，清除不应该复制的字段
       if (data.id === undefined && data.no === '') {
         formData.id = undefined
         formData.no = ''
-      }
-
-      // 确保数值类型字段正确转换
-      if (data.liveStatus !== undefined && data.liveStatus !== null) {
-        formData.liveStatus = Number(data.liveStatus)
       }
     },
     { immediate: true }
@@ -302,6 +319,15 @@
       // 确保productImage是数组格式
       if (Array.isArray(formData.productImage)) {
         updatedData.productImage = [...formData.productImage]
+      }
+
+      // 将状态数组转换为逗号分隔的字符串
+      if (Array.isArray(formData.liveStatusList) && formData.liveStatusList.length > 0) {
+        updatedData.liveStatus = formData.liveStatusList.join(',')
+        updatedData.liveStatusList = formData.liveStatusList
+      } else {
+        updatedData.liveStatus = undefined
+        updatedData.liveStatusList = []
       }
 
       // 通过emit将数据传递给父组件
