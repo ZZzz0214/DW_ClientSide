@@ -28,6 +28,15 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
+        <el-tab-pane label="资料信息" name="material">
+          <MaterialForm
+            ref="materialRef"
+            v-model:activeName="activeName"
+            :is-detail="isDetail"
+            :propFormData="formData"
+            @update:formData="handleMaterialFormUpdate"
+          />
+        </el-tab-pane>
         <el-tab-pane label="复制数据" name="copy" v-if="isDetail">
           <CopyDataForm :formData="formData" />
         </el-tab-pane>
@@ -50,6 +59,7 @@
   import InfoForm from './InfoForm.vue'
   import PriceForm from './PriceForm.vue'
   import ShippingForm from './ShippingForm.vue'
+  import MaterialForm from './MaterialForm.vue'
   import CopyDataForm from './components/CopyDataForm.vue'
 
   defineOptions({ name: 'ErpLiveBroadcastingAdd' })
@@ -66,6 +76,7 @@
   const infoRef = ref() // 基础信息 Ref
   const priceRef = ref() // 价格机制 Ref
   const shippingRef = ref() // 发货信息 Ref
+  const materialRef = ref() // 资料信息 Ref
 
   // 表单数据
   const formData = ref<LiveBroadcastingApi.LiveBroadcastingVO>({
@@ -87,7 +98,21 @@
     rebateCommission: 0,
     expressCompany: '',
     shippingTime: '',
-    shippingArea: ''
+    shippingArea: '',
+    // 新增字段：资料信息
+    mainImage: '',
+    detailInfo: '',
+    skuImage: '',
+    basicNotes: '',
+    upgradeNotes: '',
+    communityPromotion: '',
+    detailedInfo: '',
+    qualification: '',
+    sellingPointsIngredients: '',
+    endorsement: '',
+    actualPhotos: '',
+    sixSideImages: '',
+    packagingImages: ''
   })
 
   /** 获得详情 */
@@ -142,6 +167,11 @@
     Object.assign(formData.value, updatedData)
   }
 
+  /** 处理资料信息表单数据更新 */
+  const handleMaterialFormUpdate = (updatedData) => {
+    Object.assign(formData.value, updatedData)
+  }
+
   /** 提交按钮 */
   const submitForm = async () => {
     formLoading.value = true
@@ -150,6 +180,7 @@
       await unref(infoRef)?.validate()
       await unref(priceRef)?.validate()
       await unref(shippingRef)?.validate()
+      await unref(materialRef)?.validate()
 
       // 提交数据
       const data = cloneDeep(unref(formData.value))

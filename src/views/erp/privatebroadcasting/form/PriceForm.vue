@@ -26,7 +26,13 @@ const props = defineProps({
 
 const emit = defineEmits(['update:formData'])
 
-const formData = ref(props.propFormData)
+const formData = ref({
+  livePrice: props.propFormData?.livePrice,
+  productNakedPrice: props.propFormData?.productNakedPrice,
+  expressFee: props.propFormData?.expressFee,
+  dropshipPrice: props.propFormData?.dropshipPrice
+})
+
 const rules = {
   livePrice: [
     { required: true, message: '直播价格不能为空', trigger: 'blur' },
@@ -49,8 +55,15 @@ const rules = {
 const formRef = ref<InstanceType<typeof ElForm>>()
 
 watch(() => props.propFormData, (newValue) => {
-  formData.value = newValue
-}, { deep: true })
+  if (newValue) {
+    formData.value = {
+      livePrice: newValue.livePrice,
+      productNakedPrice: newValue.productNakedPrice,
+      expressFee: newValue.expressFee,
+      dropshipPrice: newValue.dropshipPrice
+    }
+  }
+}, { deep: true, immediate: true })
 
 const handleUpdate = () => {
   emit('update:formData', {

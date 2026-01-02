@@ -20,13 +20,21 @@ const props = defineProps({
 
 const emit = defineEmits(['update:formData'])
 
-const formData = ref(props.propFormData)
+const formData = ref({
+  publicLink: props.propFormData?.publicLink,
+  coreSellingPoint: props.propFormData?.coreSellingPoint
+})
 
 const formRef = ref<InstanceType<typeof ElForm>>()
 
 watch(() => props.propFormData, (newValue) => {
-  formData.value = newValue
-}, { deep: true })
+  if (newValue) {
+    formData.value = {
+      publicLink: newValue.publicLink,
+      coreSellingPoint: newValue.coreSellingPoint
+    }
+  }
+}, { deep: true, immediate: true })
 
 const handleUpdate = () => {
   emit('update:formData', {

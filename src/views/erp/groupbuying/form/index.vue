@@ -46,6 +46,15 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
+        <el-tab-pane label="资料信息" name="material">
+          <MaterialForm
+            ref="materialRef"
+            v-model:activeName="activeName"
+            :is-detail="isDetail"
+            :propFormData="formData"
+            @update:formData="handleInfoFormUpdate"
+          />
+        </el-tab-pane>
         <el-tab-pane label="复制数据" name="copy" v-if="isDetail">
           <CopyDataForm :formData="formData" />
         </el-tab-pane>
@@ -70,6 +79,7 @@
   import BasicForm from './BasicForm.vue'
   import DataForm from './DataForm.vue'
   import ShippingForm from './ShippingForm.vue'
+  import MaterialForm from './MaterialForm.vue'
   import CopyDataForm from './components/CopyDataForm.vue'
   
   defineOptions({ name: 'ErpGroupBuyingAdd' })
@@ -88,6 +98,7 @@
   const basicRef = ref() // 基础机制 Ref
   const dataRef = ref() // 数据信息 Ref
   const shippingRef = ref() // 发货信息 Ref
+  const materialRef = ref() // 资料信息 Ref
   
   // 表单数据
   const formData = ref<GroupBuyingApi.GroupBuyingVO>({
@@ -117,7 +128,21 @@
     competitiveAnalysis: '',
     expressCompany: '',
     shippingTime: '',
-    shippingArea: ''
+    shippingArea: '',
+    // 新增字段：资料信息
+    mainImage: '',
+    detailInfo: '',
+    skuImage: '',
+    basicNotes: '',
+    upgradeNotes: '',
+    communityPromotion: '',
+    detailedInfo: '',
+    qualification: '',
+    sellingPointsIngredients: '',
+    endorsement: '',
+    actualPhotos: '',
+    sixSideImages: '',
+    packagingImages: ''
   })
   
   /** 获得详情 */
@@ -197,6 +222,7 @@
       await unref(basicRef)?.validate()
       await unref(dataRef)?.validate()
       await unref(shippingRef)?.validate()
+      await unref(materialRef)?.validate()
   
       // 提交数据
       const data = cloneDeep(unref(formData.value))
@@ -205,6 +231,23 @@
       if (Array.isArray(data.productImage)) {
         data.productImage = data.productImage.join(',')
       }
+      
+      // 调试：检查资料信息字段
+      console.log('==================== 前端提交数据 - 资料信息字段 ====================')
+      console.log('mainImage:', data.mainImage)
+      console.log('detailInfo:', data.detailInfo)
+      console.log('skuImage:', data.skuImage)
+      console.log('basicNotes:', data.basicNotes)
+      console.log('upgradeNotes:', data.upgradeNotes)
+      console.log('communityPromotion:', data.communityPromotion)
+      console.log('detailedInfo:', data.detailedInfo)
+      console.log('qualification:', data.qualification)
+      console.log('sellingPointsIngredients:', data.sellingPointsIngredients)
+      console.log('endorsement:', data.endorsement)
+      console.log('actualPhotos:', data.actualPhotos)
+      console.log('sixSideImages:', data.sixSideImages)
+      console.log('packagingImages:', data.packagingImages)
+      console.log('====================================================================')
       
       const id = params.id as unknown as number
   

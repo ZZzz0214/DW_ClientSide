@@ -76,7 +76,7 @@ import { UploadFile } from 'element-plus/es/components/upload/src/upload'
 defineOptions({ name: 'UploadFile' })
 
 const message = useMessage() // 消息弹窗
-const emit = defineEmits(['update:modelValue'])
+const emit = defineEmits(['update:modelValue', 'file-uploaded'])
 
 const props = defineProps({
   modelValue: propTypes.oneOfType<string | string[]>([String, Array<String>]).isRequired,
@@ -128,8 +128,15 @@ const beforeUpload: UploadProps['beforeUpload'] = (file: UploadRawFile) => {
 //   uploadRef.value.data.path = uploadFile.name
 // }
 // 文件上传成功
-const handleFileSuccess: UploadProps['onSuccess'] = (res: any): void => {
+const handleFileSuccess: UploadProps['onSuccess'] = (res: any, uploadFile: UploadFile): void => {
   message.success('上传成功')
+  
+  // 发出文件上传事件，包含原始文件名
+  emit('file-uploaded', {
+    url: res.data,
+    originalName: uploadFile.name
+  })
+  
   // 删除自身
   const index = fileList.value.findIndex((item) => item.response?.data === res.data)
   fileList.value.splice(index, 1)

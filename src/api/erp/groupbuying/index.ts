@@ -31,6 +31,20 @@ export interface GroupBuyingVO {
   shippingTime?: string // 发货时效
   shippingArea?: string // 发货地区
   createTime?: Date // 创建时间
+  // 新增字段：资料信息（富文本+文件，JSON格式）
+  mainImage?: string // 主图
+  detailInfo?: string // 详情
+  skuImage?: string // SKU图
+  basicNotes?: string // 基础笔记
+  upgradeNotes?: string // 升级笔记
+  communityPromotion?: string // 社群推广
+  detailedInfo?: string // 详细信息
+  qualification?: string // 资质
+  sellingPointsIngredients?: string // 卖点成分
+  endorsement?: string // 背书
+  actualPhotos?: string // 实拍
+  sixSideImages?: string // 六面图
+  packagingImages?: string // 打包图
 }
 
 // ERP 团购货盘保存 Request VO
@@ -63,6 +77,20 @@ export interface GroupBuyingSaveReqVO {
   expressCompany?: string // 快递公司
   shippingTime?: string // 发货时效
   shippingArea?: string // 发货地区
+  // 新增字段：资料信息（富文本+文件，JSON格式）
+  mainImage?: string // 主图
+  detailInfo?: string // 详情
+  skuImage?: string // SKU图
+  basicNotes?: string // 基础笔记
+  upgradeNotes?: string // 升级笔记
+  communityPromotion?: string // 社群推广
+  detailedInfo?: string // 详细信息
+  qualification?: string // 资质
+  sellingPointsIngredients?: string // 卖点成分
+  endorsement?: string // 背书
+  actualPhotos?: string // 实拍
+  sixSideImages?: string // 六面图
+  packagingImages?: string // 打包图
 }
 
 // ERP 团购货盘分页 Request VO
