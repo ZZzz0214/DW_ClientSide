@@ -9,7 +9,7 @@
       <RichTextWithUpload
         v-model="formData.sellingPointsIngredients"
         :disabled="isDetail"
-        editor-height="500px"
+        editor-height="800px"
       />
     </el-form-item>
   </el-form>

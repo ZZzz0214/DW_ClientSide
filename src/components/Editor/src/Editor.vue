@@ -90,10 +90,10 @@ const editorConfig = computed((): IEditorConfig => {
       MENU_CONF: {
         ['uploadImage']: {
           server: getUploadUrl(),
-          // 单个文件的最大体积限制，默认为 2M
-          maxFileSize: 5 * 1024 * 1024,
+          // 单个文件的最大体积限制，修改为 50M
+          maxFileSize: 50 * 1024 * 1024,
           // 最多可上传几个文件，默认为 100
-          maxNumberOfFiles: 10,
+          maxNumberOfFiles: 50,
           // 选择文件时的类型限制，默认为 ['image/*'] 。如不想限制，则设置为 []
           allowedFileTypes: ['image/*'],
 
@@ -138,10 +138,10 @@ const editorConfig = computed((): IEditorConfig => {
         },
         ['uploadVideo']: {
           server: getUploadUrl(),
-          // 单个文件的最大体积限制，默认为 10M
-          maxFileSize: 10 * 1024 * 1024,
+          // 单个文件的最大体积限制，修改为 500M
+          maxFileSize: 500 * 1024 * 1024,
           // 最多可上传几个文件，默认为 100
-          maxNumberOfFiles: 10,
+          maxNumberOfFiles: 20,
           // 选择文件时的类型限制，默认为 ['video/*'] 。如不想限制，则设置为 []
           allowedFileTypes: ['video/*'],
 
@@ -152,8 +152,8 @@ const editorConfig = computed((): IEditorConfig => {
             'tenant-id': getTenantId()
           },
 
-          // 超时时间，默认为 30 秒
-          timeout: 15 * 1000, // 15 秒
+          // 超时时间，视频较大需要更长时间
+          timeout: 300 * 1000, // 300 秒（5分钟）
 
           // form-data fieldName，后端接口参数名称，默认值wangeditor-uploaded-image
           fieldName: 'file',
@@ -241,3 +241,41 @@ defineExpose({
 </template>
 
 <style src="@wangeditor/editor/dist/css/style.css"></style>
+
+<style scoped>
+/* 富文本编辑器中的图片换行显示样式 */
+:deep(.w-e-text-container) {
+  /* 图片自动换行 */
+  img {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 10px 0 !important;
+  }
+  
+  /* 图片容器换行 */
+  p img,
+  div img {
+    display: block !important;
+    margin: 10px auto !important;
+  }
+  
+  /* 多个图片自动换行 */
+  p,
+  div {
+    img + img {
+      margin-top: 10px !important;
+    }
+  }
+}
+
+/* 只读模式下的图片样式 */
+:deep(.w-e-scroll) {
+  img {
+    display: block !important;
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 10px 0 !important;
+  }
+}
+</style>

@@ -5,7 +5,7 @@
       v-model:file-list="fileList"
       :action="uploadUrl"
       :auto-upload="autoUpload"
-      :before-upload="beforeUpload"
+      :before-upload="beforeUploadInternal"
       :disabled="disabled"
       :drag="drag"
       :http-request="httpRequest"
@@ -86,7 +86,8 @@ const props = defineProps({
   autoUpload: propTypes.bool.def(true), // 自动上传
   drag: propTypes.bool.def(false), // 拖拽上传
   isShowTip: propTypes.bool.def(true), // 是否显示提示
-  disabled: propTypes.bool.def(false) // 是否禁用上传组件 ==> 非必传（默认为 false）
+  disabled: propTypes.bool.def(false), // 是否禁用上传组件 ==> 非必传（默认为 false）
+  beforeUpload: propTypes.func.def(null) // 自定义上传前的验证函数
 })
 
 // ========== 上传相关 ==========
@@ -98,7 +99,15 @@ const uploadNumber = ref<number>(0)
 const { uploadUrl, httpRequest } = useUpload()
 
 // 文件上传之前判断
-const beforeUpload: UploadProps['beforeUpload'] = (file: UploadRawFile) => {
+const beforeUploadInternal: UploadProps['beforeUpload'] = (file: UploadRawFile) => {
+  // 首先执行外部传入的验证函数
+  if (props.beforeUpload && typeof props.beforeUpload === 'function') {
+    const customResult = props.beforeUpload(file)
+    if (customResult === false) {
+      return false
+    }
+  }
+  
   if (fileList.value.length >= props.limit) {
     message.error(`上传文件数量不能超过${props.limit}个!`)
     return false

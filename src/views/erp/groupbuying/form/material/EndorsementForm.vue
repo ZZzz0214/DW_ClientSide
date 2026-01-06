@@ -1,4 +1,4 @@
-<template>
+﻿<template>
   <el-form
     ref="formRef"
     :disabled="isDetail"
@@ -9,7 +9,7 @@
       <RichTextWithUpload
         v-model="formData.endorsement"
         :disabled="isDetail"
-        editor-height="500px"
+        editor-height="800px"
       />
     </el-form-item>
   </el-form>

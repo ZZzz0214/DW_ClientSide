@@ -7,15 +7,30 @@
 
     <!-- 文件上传 -->
     <div v-if="!disabled" class="upload-container">
-      <el-divider content-position="left">附件上传</el-divider>
+      <el-divider content-position="left">附件上传（图片50M、视频500M、文档&压缩包5G）</el-divider>
       <UploadFile
         v-model="fileUrlsValue"
         :file-type="fileType"
         :file-size="fileSize"
         :limit="limit"
         :disabled="disabled"
+        :before-upload="handleBeforeUpload"
         @file-uploaded="handleFileUploaded"
       />
+      <div class="upload-tips">
+        <div class="tip-item">
+          <Icon icon="ep:picture" class="tip-icon" />
+          图片格式：jpg/jpeg/png/gif/bmp/webp/svg，单个文件最大50MB
+        </div>
+        <div class="tip-item">
+          <Icon icon="ep:video-camera" class="tip-icon" />
+          视频格式：mp4/avi/mov/wmv/flv/mkv/webm，单个文件最大500MB
+        </div>
+        <div class="tip-item">
+          <Icon icon="ep:folder" class="tip-icon" />
+          文档&压缩包：doc/xls/pdf/zip/rar/7z等，单个文件最大5GB
+        </div>
+      </div>
     </div>
 
     <!-- 已上传文件列表（编辑状态时显示） -->
@@ -47,6 +62,7 @@ import { computed, watch, ref } from 'vue'
 import { Editor } from '@/components/Editor'
 import { UploadFile } from '@/components/UploadFile'
 import { propTypes } from '@/utils/propTypes'
+import { ElMessage } from 'element-plus'
 
 defineOptions({ name: 'RichTextWithUpload' })
 
@@ -64,19 +80,41 @@ interface RichTextWithUploadData {
 
 const props = defineProps({
   modelValue: propTypes.string.def(''), // JSON 字符串
-  editorHeight: propTypes.oneOfType([Number, String]).def('300px'),
+  editorHeight: propTypes.oneOfType([Number, String]).def('800px'), // 默认高度改为800px
   fileType: propTypes.array.def([
+    // 图片类型
+    'jpg',
+    'jpeg',
+    'png',
+    'gif',
+    'bmp',
+    'webp',
+    'svg',
+    // 视频类型
+    'mp4',
+    'avi',
+    'mov',
+    'wmv',
+    'flv',
+    'mkv',
+    'webm',
+    // Office文档
     'doc',
-    'docx', // Word
+    'docx',
     'xls',
-    'xlsx', // Excel
-    'pdf', // PDF
+    'xlsx',
+    'ppt',
+    'pptx',
+    'pdf',
+    // 压缩包
     'zip',
     'rar',
-    '7z' // 压缩包
+    '7z',
+    'tar',
+    'gz'
   ]),
-  fileSize: propTypes.number.def(50), // 50MB
-  limit: propTypes.number.def(10), // 最多上传10个文件
+  fileSize: propTypes.number.def(5120), // 默认5GB（5120MB），会根据文件类型动态调整
+  limit: propTypes.number.def(50), // 最多上传50个文件
   disabled: propTypes.bool.def(false) // 是否禁用
 })
 
@@ -183,6 +221,54 @@ const fileUrlsValue = computed({
   }
 })
 
+// 获取文件扩展名
+const getFileExtension = (fileName: string): string => {
+  const lastDotIndex = fileName.lastIndexOf('.')
+  if (lastDotIndex === -1) return ''
+  return fileName.substring(lastDotIndex + 1).toLowerCase()
+}
+
+// 判断文件类型
+const getFileCategory = (fileName: string): 'image' | 'video' | 'document' => {
+  const ext = getFileExtension(fileName)
+  const imageExts = ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg']
+  const videoExts = ['mp4', 'avi', 'mov', 'wmv', 'flv', 'mkv', 'webm']
+  
+  if (imageExts.includes(ext)) return 'image'
+  if (videoExts.includes(ext)) return 'video'
+  return 'document'
+}
+
+// 获取文件大小限制（MB）
+const getFileSizeLimit = (fileName: string): number => {
+  const category = getFileCategory(fileName)
+  switch (category) {
+    case 'image':
+      return 50 // 50MB
+    case 'video':
+      return 500 // 500MB
+    case 'document':
+      return 5120 // 5GB = 5120MB
+    default:
+      return 5120 // 默认5GB
+  }
+}
+
+// 文件上传前的验证
+const handleBeforeUpload = (file: File): boolean => {
+  const sizeLimit = getFileSizeLimit(file.name)
+  const sizeMB = file.size / 1024 / 1024
+  
+  if (sizeMB > sizeLimit) {
+    const category = getFileCategory(file.name)
+    const categoryName = category === 'image' ? '图片' : category === 'video' ? '视频' : '文档/压缩包'
+    ElMessage.error(`${categoryName}文件大小不能超过 ${sizeLimit >= 1024 ? (sizeLimit / 1024).toFixed(1) + 'GB' : sizeLimit + 'MB'}！当前文件：${sizeMB.toFixed(2)}MB`)
+    return false
+  }
+  
+  return true
+}
+
 // 处理文件上传成功事件
 const handleFileUploaded = (fileInfo: { url: string; originalName: string }) => {
   // 保存文件元数据到临时映射
@@ -237,6 +323,45 @@ watch(
 
   .upload-container {
     margin-top: 16px;
+    
+    .upload-tips {
+      margin-top: 12px;
+      padding: 12px;
+      background-color: #f0f9ff;
+      border: 1px solid #bae6fd;
+      border-radius: 6px;
+      
+      .tip-item {
+        display: flex;
+        align-items: center;
+        margin-bottom: 8px;
+        font-size: 13px;
+        color: #0369a1;
+        
+        &:last-child {
+          margin-bottom: 0;
+        }
+        
+        .tip-icon {
+          margin-right: 8px;
+          font-size: 16px;
+          color: #0ea5e9;
+        }
+      }
+    }
+  }
+
+  .file-list-display {
+    margin-top: 16px;
+    
+    .file-item {
+      padding: 8px 0;
+      border-bottom: 1px dashed var(--el-border-color-lighter);
+
+      &:last-child {
+        border-bottom: none;
+      }
+    }
   }
 
   .disabled-file-list {
@@ -257,4 +382,5 @@ watch(
   }
 }
 </style>
+
 
