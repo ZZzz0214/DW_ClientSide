@@ -37,6 +37,10 @@ const editorRef = shallowRef<IDomEditor>()
 
 const valueHtml = ref('')
 
+// 保存滚动位置
+const savedScrollTop = ref(0)
+const isInsertingImage = ref(false)
+
 watch(
   () => props.modelValue,
   (val: string) => {
@@ -58,6 +62,36 @@ watch(
 
 const handleCreated = (editor: IDomEditor) => {
   editorRef.value = editor
+  
+  // 保存滚动位置（用于图片/视频上传）
+  let lastScrollTop = 0
+  const container = editor.getEditableContainer()
+  
+  if (container) {
+    // 监听滚动事件，保存滚动位置
+    container.addEventListener('scroll', () => {
+      lastScrollTop = container.scrollTop
+    }, { passive: true })
+    
+    // 恢复滚动位置（仅在插入图片/视频时）
+    const restoreScrollPosition = () => {
+      if (isInsertingImage.value && lastScrollTop > 0) {
+        container.scrollTop = lastScrollTop
+      }
+    }
+    
+    // 监听内容变化（处理图片/视频上传）
+    const observer = new MutationObserver(() => {
+      if (isInsertingImage.value) {
+        restoreScrollPosition()
+      }
+    })
+    
+    observer.observe(container, {
+      childList: true,
+      subtree: true
+    })
+  }
 }
 
 // 编辑器配置
@@ -86,7 +120,7 @@ const editorConfig = computed((): IEditorConfig => {
         }
       },
       autoFocus: false,
-      scroll: false, // 禁用自动滚动，防止按ENTER时滚回顶部
+      // 移除 scroll: false，改为通过事件监听控制滚动行为
       MENU_CONF: {
         ['uploadImage']: {
           server: getUploadUrl(),
@@ -133,7 +167,34 @@ const editorConfig = computed((): IEditorConfig => {
           },
           // 自定义插入图片
           customInsert(res: any, insertFn: InsertFnType) {
+            // 标记正在插入图片
+            isInsertingImage.value = true
+            
+            // 获取编辑器容器
+            const editor = unref(editorRef)
+            const container = editor?.getEditableContainer()
+            
+            // 保存当前滚动位置
+            if (container) {
+              savedScrollTop.value = container.scrollTop
+            }
+            
+            // 插入图片
             insertFn(res.data, 'image', res.data)
+            
+            // 在下一帧恢复滚动位置
+            nextTick(() => {
+              setTimeout(() => {
+                if (container && isInsertingImage.value) {
+                  // 恢复滚动位置到图片插入位置附近
+                  container.scrollTop = savedScrollTop.value
+                  
+                  // 聚焦编辑器，确保光标在正确位置
+                  editor?.focus()
+                }
+                isInsertingImage.value = false
+              }, 100)
+            })
           }
         },
         ['uploadVideo']: {
@@ -179,9 +240,36 @@ const editorConfig = computed((): IEditorConfig => {
             alert(err.message)
             console.error('onError', file, err, res)
           },
-          // 自定义插入图片
+          // 自定义插入视频
           customInsert(res: any, insertFn: InsertFnType) {
+            // 标记正在插入视频
+            isInsertingImage.value = true
+            
+            // 获取编辑器容器
+            const editor = unref(editorRef)
+            const container = editor?.getEditableContainer()
+            
+            // 保存当前滚动位置
+            if (container) {
+              savedScrollTop.value = container.scrollTop
+            }
+            
+            // 插入视频
             insertFn(res.data, 'mp4', res.data)
+            
+            // 在下一帧恢复滚动位置
+            nextTick(() => {
+              setTimeout(() => {
+                if (container && isInsertingImage.value) {
+                  // 恢复滚动位置到视频插入位置附近
+                  container.scrollTop = savedScrollTop.value
+                  
+                  // 聚焦编辑器，确保光标在正确位置
+                  editor?.focus()
+                }
+                isInsertingImage.value = false
+              }, 100)
+            })
           }
         }
       },
