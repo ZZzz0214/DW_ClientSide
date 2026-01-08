@@ -86,7 +86,7 @@ const editorConfig = computed((): IEditorConfig => {
         }
       },
       autoFocus: false,
-      scroll: true,
+      scroll: false, // 禁用自动滚动，防止按ENTER时滚回顶部
       MENU_CONF: {
         ['uploadImage']: {
           server: getUploadUrl(),
