@@ -142,7 +142,7 @@
       </el-form-item>
 
       <!-- 货盘状态 -->
-      <el-form-item label="货盘状态" prop="status">
+      <el-form-item label="货盘状态" prop="statusList">
         <el-select
           v-model="formData.statusList"
           placeholder="请选择货盘状态（可多选）"
@@ -203,7 +203,7 @@ import UploadImgs from '@/components/UploadFile/src/UploadImgs.vue'
     productSku: [{ required: true, message: '产品sku不能为空', trigger: 'blur' }],
      productName: [{ required: true, message: '产品名称不能为空', trigger: 'blur' }],
     //shelfLife: [{ required: true, message: '保质日期不能为空', trigger: 'blur' }],
-    status: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }],
+    statusList: [{ required: true, message: '货盘状态不能为空', trigger: 'change', type: 'array' }],
     // productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }]
   })
 

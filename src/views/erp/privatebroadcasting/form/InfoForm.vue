@@ -79,7 +79,7 @@
     </el-form-item>
 
     <!-- 货盘状态 -->
-    <el-form-item label="货盘状态" prop="privateStatus">
+    <el-form-item label="货盘状态" prop="privateStatusList">
       <el-select
         v-model="formData.privateStatusList"
         placeholder="请选择货盘状态（可多选）"
@@ -136,7 +136,7 @@ const rules = {
     { pattern: /^\d+(\.\d{1,2})?$/, message: '请输入有效的价格格式（最多两位小数）', trigger: 'blur' }
   ],
   productSku: [{ required: true, message: '产品SKU不能为空', trigger: 'change' }],
-  privateStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
+  privateStatusList: [{ required: true, message: '货盘状态不能为空', trigger: 'change', type: 'array' }]
 }
 
 const formRef = ref<InstanceType<typeof ElForm>>()

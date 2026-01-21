@@ -78,20 +78,20 @@
   const formRef = ref()
   const formData = reactive<LiveBroadcastingVO>({
     livePrice: '',
-    liveCommission: 0,
-    publicCommission: 0,
-    rebateCommission: 0
+    liveCommission: undefined,
+    publicCommission: undefined,
+    rebateCommission: undefined
   })
 
   const rules = reactive({
     livePrice: [{ required: true, message: '直播价格不能为空', trigger: 'blur' }],
     liveCommission: [
       { required: true, message: '直播佣金不能为空', trigger: 'blur' },
-      { type: 'number', min: 0.01, message: '直播佣金必须大于0', trigger: 'blur' }
+      { type: 'number', message: '直播佣金必须是数字', trigger: 'blur' }
     ],
     publicCommission: [
       { required: true, message: '公开佣金不能为空', trigger: 'blur' },
-      { type: 'number', min: 0.01, message: '公开佣金必须大于0', trigger: 'blur' }
+      { type: 'number', message: '公开佣金必须是数字', trigger: 'blur' }
     ]
   })
 

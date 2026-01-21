@@ -140,7 +140,7 @@
       </el-form-item>
 
       <!-- 货盘状态 -->
-      <el-form-item label="货盘状态" prop="liveStatus">
+      <el-form-item label="货盘状态" prop="liveStatusList">
         <div v-if="isDetail" class="w-240px" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
           <template v-if="formData.liveStatusList && formData.liveStatusList.length > 0">
             <dict-tag
@@ -241,7 +241,7 @@
     productSku: [{ required: true, message: '产品SKU不能为空', trigger: 'change' }],
     //marketPrice: [{ required: true, message: '市场价格不能为空', trigger: 'blur' }],
     //productStock: [{ required: true, message: '产品库存不能为空', trigger: 'blur' }],
-    liveStatus: [{ required: true, message: '货盘状态不能为空', trigger: 'change' }]
+    liveStatusList: [{ required: true, message: '货盘状态不能为空', trigger: 'change', type: 'array' }]
   })
 
   // 初始化字典选项

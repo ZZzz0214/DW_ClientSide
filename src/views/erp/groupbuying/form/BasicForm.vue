@@ -110,20 +110,32 @@
   const message = useMessage()
   const formRef = ref()
   const formData = reactive({
-    groupPrice: 0,
-    supplyGroupPrice: 0,
-    sellingCommission: 0,
+    groupPrice: undefined,
+    supplyGroupPrice: undefined,
+    sellingCommission: undefined,
     channelProfit: 0,
     groupMechanism: '',
-    expressFee: 0
+    expressFee: undefined
   })
 
   const rules = reactive({
-    groupPrice: [{ required: true, message: '开团价格不能为空', trigger: 'blur' }],
-    sellingCommission: [{ required: true, message: '帮卖佣金不能为空', trigger: 'blur' }],
-    supplyGroupPrice: [{ required: true, message: '供货价格不能为空', trigger: 'blur' }],
+    groupPrice: [
+      { required: true, message: '开团价格不能为空', trigger: 'blur' },
+      { type: 'number', message: '开团价格必须是数字', trigger: 'blur' }
+    ],
+    sellingCommission: [
+      { required: true, message: '帮卖佣金不能为空', trigger: 'blur' },
+      { type: 'number', message: '帮卖佣金必须是数字', trigger: 'blur' }
+    ],
+    supplyGroupPrice: [
+      { required: true, message: '供货价格不能为空', trigger: 'blur' },
+      { type: 'number', message: '供货价格必须是数字', trigger: 'blur' }
+    ],
     groupMechanism: [{ required: true, message: '开团机制不能为空', trigger: 'blur' }],
-    expressFee: [{ required: true, message: '快递费用不能为空', trigger: 'blur' }]
+    expressFee: [
+      { required: true, message: '快递费用不能为空', trigger: 'blur' },
+      { type: 'number', message: '快递费用必须是数字', trigger: 'blur' }
+    ]
   })
 
   /** 将传进来的值赋值给 formData */
@@ -154,8 +166,11 @@
   }
 
 const calculateProfit = () => {
-  if (formData.groupPrice > 0 && formData.supplyGroupPrice > 0) {
-    formData.channelProfit = parseFloat((100 * ((formData.groupPrice - formData.supplyGroupPrice) / formData.groupPrice)).toFixed(2))
+  const groupPrice = formData.groupPrice ?? 0
+  const supplyPrice = formData.supplyGroupPrice ?? 0
+  
+  if (groupPrice > 0 && supplyPrice > 0) {
+    formData.channelProfit = parseFloat((100 * ((groupPrice - supplyPrice) / groupPrice)).toFixed(2))
   } else {
     formData.channelProfit = 0
   }
