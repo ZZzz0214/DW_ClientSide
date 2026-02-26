@@ -81,7 +81,7 @@
              <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
            </template>
          </el-table-column>
-         <el-table-column label="产品名称" prop="productName" min-width="200">
+         <el-table-column label="产品名称" prop="productName" min-width="350">
            <template #default="scope">
              <el-input
                v-model="scope.row.productName"
@@ -124,6 +124,11 @@
              <span v-if="scope.row.supplyGroupPrice">{{ scope.row.supplyGroupPrice }}元</span>
            </template>
          </el-table-column>
+         <el-table-column label="快递费用" prop="expressFee" width="100">
+           <template #default="scope">
+             <span v-if="scope.row.expressFee != null">{{ scope.row.expressFee }}元</span>
+           </template>
+         </el-table-column>
          <el-table-column label="开团机制" prop="groupMechanism" min-width="200">
            <template #default="scope">
              <el-input
@@ -144,6 +149,16 @@
                readonly
                style="border: none; background: transparent; resize: none;"
              />
+           </template>
+         </el-table-column>
+         <el-table-column label="分销价格" prop="distributionPrice" width="100">
+           <template #default="scope">
+             <span v-if="scope.row.distributionPrice != null">{{ scope.row.distributionPrice }}元</span>
+           </template>
+         </el-table-column>
+         <el-table-column label="核心价格" prop="corePrice" width="100">
+           <template #default="scope">
+             <span v-if="scope.row.corePrice != null">{{ scope.row.corePrice }}元</span>
            </template>
          </el-table-column>
        </el-table>

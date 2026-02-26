@@ -244,6 +244,8 @@
       <el-table-column label="产品简称" align="center" prop="productShortName"  :show-overflow-tooltip="false"/>
       <el-table-column label="发货编码" align="center" prop="shippingCode" :show-overflow-tooltip="false" min-width="120"/>
       <el-table-column label="产品规格" align="center" prop="standard" :show-overflow-tooltip="false"/>
+      <el-table-column label="箱规数量" align="center" prop="productCartonSpec" :show-overflow-tooltip="false"/>
+      <el-table-column label="箱长规格" align="center" prop="cartonLength" :show-overflow-tooltip="false"/>
       <el-table-column label="产品日期" align="center" prop="productionDate" :show-overflow-tooltip="false" :formatter="dateFormatter2" min-width="140"/>
       <el-table-column
         label="品牌名称"

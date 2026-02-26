@@ -38,10 +38,10 @@
           <el-option label="为空" value="__EMPTY__" />
         </el-select>
       </el-form-item>
-      <el-form-item label="产品分类" prop="categoryIds">
+      <el-form-item label="产品品类" prop="categoryIds">
         <el-select
           v-model="queryParams.categoryIds"
-          placeholder="请选择产品分类（可多选）"
+          placeholder="请选择产品品类（可多选）"
           multiple
           clearable
           filterable
@@ -246,7 +246,7 @@
           </template>
         </el-table-column>
         <el-table-column
-          label="产品分类"
+          label="产品品类"
           align="center"
           prop="categoryId"
           width="120"
@@ -346,7 +346,7 @@
     brandNames: [] as string[],
     brandNameEmpty: false,
     categoryId: undefined,
-    categoryIds: [] as number[], // 产品分类多选
+    categoryIds: [] as number[], // 产品品类多选
     productName: undefined,
     productSpec: undefined,
     shelfLife: undefined,

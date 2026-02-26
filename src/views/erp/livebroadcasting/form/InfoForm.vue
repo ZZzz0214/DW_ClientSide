@@ -55,8 +55,8 @@
         </el-select>
       </el-form-item>
 
-      <!-- 产品分类 -->
-      <el-form-item label="产品分类" prop="categoryId">
+      <!-- 产品品类 -->
+      <el-form-item label="产品品类" prop="categoryId">
         <div v-if="isDetail" class="w-240px" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
           <dict-tag v-if="formData.categoryId" :type="DICT_TYPE.ERP_PRODUCT_CATEGORY" :value="formData.categoryId" />
           <span v-else style="color: #c0c4cc;">未设置</span>
@@ -64,7 +64,7 @@
         <el-select
           v-else
           v-model="formData.categoryId"
-          placeholder="请选择产品分类"
+          placeholder="请选择产品品类"
           clearable
           filterable
           class="w-240px"
@@ -218,7 +218,7 @@
     no: '',
     productImage: '',
     brandName: '',
-    categoryId: undefined, // 产品分类编号
+    categoryId: undefined, // 产品品类编号
     productName: '',
     productSpec: '',
     productSku: '',

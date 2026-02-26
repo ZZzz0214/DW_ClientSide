@@ -33,10 +33,10 @@
         />
       </el-select>
     </el-form-item>
-    <el-form-item label="产品分类" prop="categoryId">
+    <el-form-item label="产品品类" prop="categoryId">
       <el-select
         v-model="formData.categoryId"
-        placeholder="请选择产品分类"
+        placeholder="请选择产品品类"
         clearable
         filterable
         class="!w-240px"
@@ -117,7 +117,7 @@ const formData = reactive({
   no: '',
   productImage: [],
   brandName: '',
-  categoryId: undefined, // 产品分类编号
+  categoryId: undefined, // 产品品类编号
   productName: '',
   productSpec: '',
   productSku: '',

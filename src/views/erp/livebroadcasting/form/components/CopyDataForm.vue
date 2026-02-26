@@ -64,9 +64,13 @@ const copyLoading = ref(false)
 
 // 获取状态文本
 const getStatusText = (status: string) => {
+  if (status == null || status === '') return ''
+  const str = String(status)
   const statusOptions = getStrDictOptions(DICT_TYPE.ERP_LIVE_STATUS)
-  const statusOption = statusOptions.find(option => option.value === status)
-  return statusOption ? statusOption.label : status
+  return str.split(',').filter(s => s.trim()).map(s => {
+    const option = statusOptions.find(opt => String(opt.value) === s.trim())
+    return option ? option.label : s.trim()
+  }).join(' / ')
 }
 
 // 复制全部数据
