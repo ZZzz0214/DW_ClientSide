@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080"
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1400"
           top="5vh"
           style="max-height: 90vh;">
     <div style="max-height: calc(90vh - 150px); overflow-y: auto;">
@@ -77,7 +77,7 @@
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" prop="productName" min-width="200">
+        <el-table-column label="产品名称" prop="productName" min-width="350">
           <template #default="scope">
             <el-input
               v-model="scope.row.productName"
@@ -110,14 +110,29 @@
             />
           </template>
         </el-table-column>
+        <el-table-column label="货盘状态" prop="privateStatus" min-width="150">
+          <template #default="scope">
+            <dict-tag :type="DICT_TYPE.ERP_PRIVATE_STATUS" :value="scope.row.privateStatus" />
+          </template>
+        </el-table-column>
         <el-table-column label="直播价格" prop="livePrice" width="100">
           <template #default="scope">
             <span v-if="scope.row.livePrice">{{ scope.row.livePrice }}元</span>
           </template>
         </el-table-column>
-        <el-table-column label="货盘状态" prop="privateStatus" width="100">
+        <el-table-column label="产品裸价" prop="productNakedPrice" width="100">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_PRIVATE_STATUS" :value="scope.row.privateStatus" />
+            <span v-if="scope.row.productNakedPrice != null">{{ scope.row.productNakedPrice }}元</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="快递费用" prop="expressFee" width="100">
+          <template #default="scope">
+            <span v-if="scope.row.expressFee != null">{{ scope.row.expressFee }}元</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="代发价格" prop="dropshipPrice" width="100">
+          <template #default="scope">
+            <span v-if="scope.row.dropshipPrice != null">{{ scope.row.dropshipPrice }}元</span>
           </template>
         </el-table-column>
       </el-table>

@@ -66,21 +66,12 @@
           />
         </el-form-item>
         <el-form-item label="客户名称" prop="customerName">
-          <el-select
+          <el-input
             v-model="queryParams.customerName"
-            placeholder="请选择客户名称"
+            placeholder="请输入客户名称"
             clearable
             class="!w-240px"
-            filterable
-            :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)"
-          >
-            <el-option
-              v-for="dict in filteredCustomerNameOptions"
-              :key="dict.value"
-              :label="dict.label"
-              :value="dict.value"
-            />
-          </el-select>
+          />
         </el-form-item>
         <el-form-item label="直播平台" prop="livePlatform">
           <el-select
@@ -279,16 +270,23 @@
 
         <el-table-column label="产品名称" align="center" prop="productName" min-width="350" />
         <el-table-column label="产品规格" align="center" prop="productSpec" />
-        <el-table-column label="货盘状态" align="center" prop="liveStatus">
+        <el-table-column label="货盘状态" align="center" prop="liveStatus" :show-overflow-tooltip="false" min-width="160">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;">
+              <template v-if="scope.row.liveStatus">
+                <dict-tag
+                  v-for="(statusItem, index) in scope.row.liveStatus.split(',').filter(s => s.trim())"
+                  :key="index + '-' + statusItem.trim()"
+                  :type="DICT_TYPE.ERP_LIVE_STATUS"
+                  :value="statusItem.trim()"
+                  style="margin: 2px 0;"
+                />
+              </template>
+              <span v-else style="color: #c0c4cc;">未设置</span>
+            </div>
           </template>
         </el-table-column>
-        <el-table-column label="客户名称" align="center" prop="customerName">
-          <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="scope.row.customerName" />
-          </template>
-        </el-table-column>
+        <el-table-column label="客户名称" align="center" prop="customerName" />
         <el-table-column label="直播平台" align="center" prop="livePlatform">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_LIVE_PLATFORM" :value="scope.row.livePlatform" />
@@ -307,9 +305,20 @@
         <el-table-column label="复播日期" align="center" prop="repeatLiveDate" :formatter="dateFormatter2" min-width="100"/>
         <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
-        <el-table-column label="货盘状态" align="center" prop="liveStatus">
+        <el-table-column label="货盘状态" align="center" prop="liveStatus" :show-overflow-tooltip="false" min-width="160">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;">
+              <template v-if="scope.row.liveStatus">
+                <dict-tag
+                  v-for="(statusItem, index) in scope.row.liveStatus.split(',').filter(s => s.trim())"
+                  :key="index + '-' + statusItem.trim()"
+                  :type="DICT_TYPE.ERP_LIVE_STATUS"
+                  :value="statusItem.trim()"
+                  style="margin: 2px 0;"
+                />
+              </template>
+              <span v-else style="color: #c0c4cc;">未设置</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column label="操作" align="center" width="260">
@@ -403,12 +412,10 @@
   // 字典选项
   const brandOptions = ref(getStrDictOptions(DICT_TYPE.ERP_PRODUCT_BRAND))
   const liveStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_STATUS))
-  const customerNameOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME))
   const platformOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_PLATFORM))
   const reviewStatusOptions = ref(getStrDictOptions(DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS))
   const filteredBrandOptions = ref(brandOptions.value)
   const filteredLiveStatusOptions = ref(liveStatusOptions.value)
-  const filteredCustomerNameOptions = ref(customerNameOptions.value)
   const filteredPlatformOptions = ref(platformOptions.value)
   const filteredReviewStatusOptions = ref(reviewStatusOptions.value)
 
@@ -419,8 +426,6 @@
         filteredBrandOptions.value = brandOptions.value
       } else if (dictType === DICT_TYPE.ERP_LIVE_STATUS) {
         filteredLiveStatusOptions.value = liveStatusOptions.value
-      } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
-        filteredCustomerNameOptions.value = customerNameOptions.value
       } else if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
         filteredPlatformOptions.value = platformOptions.value
       } else if (dictType === DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS) {
@@ -439,8 +444,6 @@
       filteredBrandOptions.value = filterOptions(brandOptions.value)
     } else if (dictType === DICT_TYPE.ERP_LIVE_STATUS) {
       filteredLiveStatusOptions.value = filterOptions(liveStatusOptions.value)
-    } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
-      filteredCustomerNameOptions.value = filterOptions(customerNameOptions.value)
     } else if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
       filteredPlatformOptions.value = filterOptions(platformOptions.value)
     } else if (dictType === DICT_TYPE.ERP_LIVE_BROADCASTING_REVIEW_STATUS) {

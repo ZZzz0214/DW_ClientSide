@@ -274,7 +274,18 @@
         <el-table-column label="复团日期" align="center" prop="repeatGroupDate" :formatter="dateFormatter2" min-width="100"/>
         <el-table-column label="货盘状态" align="center" prop="status" :show-overflow-tooltip="false" min-width="160">
           <template #default="scope">
-            <dict-tag :type="DICT_TYPE.ERP_STATUS" :value="scope.row.status" />
+            <div style="display: flex; flex-wrap: wrap; gap: 4px; justify-content: center;">
+              <template v-if="scope.row.status">
+                <dict-tag
+                  v-for="(statusItem, index) in scope.row.status.split(',').filter(s => s.trim())"
+                  :key="index + '-' + statusItem.trim()"
+                  :type="DICT_TYPE.ERP_STATUS"
+                  :value="statusItem.trim()"
+                  style="margin: 2px 0;"
+                />
+              </template>
+              <span v-else style="color: #c0c4cc;">未设置</span>
+            </div>
           </template>
         </el-table-column>
         <el-table-column

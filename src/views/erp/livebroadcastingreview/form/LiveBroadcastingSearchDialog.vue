@@ -1,5 +1,5 @@
 <template>
-  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1080"
+  <Dialog :title="dialogTitle" v-model="dialogVisible" width="1400"
           top="5vh"
           style="max-height: 90vh;">
     <div style="max-height: calc(90vh - 150px); overflow-y: auto;">
@@ -75,7 +75,7 @@
             <dict-tag :type="DICT_TYPE.ERP_PRODUCT_BRAND" :value="scope.row.brandName" />
           </template>
         </el-table-column>
-        <el-table-column label="产品名称" prop="productName" min-width="200">
+        <el-table-column label="产品名称" prop="productName" min-width="350">
           <template #default="scope">
             <el-input
               v-model="scope.row.productName"
@@ -108,7 +108,7 @@
             />
           </template>
         </el-table-column>
-        <el-table-column label="货盘状态" prop="liveStatus" width="100">
+        <el-table-column label="货盘状态" prop="liveStatus" min-width="150">
           <template #default="scope">
             <dict-tag :type="DICT_TYPE.ERP_LIVE_STATUS" :value="scope.row.liveStatus" />
           </template>
@@ -116,6 +116,21 @@
         <el-table-column label="直播价格" prop="livePrice" width="100">
           <template #default="scope">
             <span v-if="scope.row.livePrice">{{ scope.row.livePrice }}元</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="直播佣金" prop="liveCommission" width="100">
+          <template #default="scope">
+            <span v-if="scope.row.liveCommission != null">{{ scope.row.liveCommission }}%</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="公开佣金" prop="publicCommission" width="100">
+          <template #default="scope">
+            <span v-if="scope.row.publicCommission != null">{{ scope.row.publicCommission }}%</span>
+          </template>
+        </el-table-column>
+        <el-table-column label="服务佣金" prop="rebateCommission" width="100">
+          <template #default="scope">
+            <span v-if="scope.row.rebateCommission != null">{{ scope.row.rebateCommission }}%</span>
           </template>
         </el-table-column>
       </el-table>

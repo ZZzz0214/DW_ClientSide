@@ -69,25 +69,14 @@
 
       <!-- 客户名称 -->
       <el-form-item label="客户名称" prop="customerName">
-        <div v-if="isDetail" class="w-80" style="padding: 8px 12px; border: 1px solid #dcdfe6; border-radius: 4px; background-color: #f5f7fa;">
-          <dict-tag v-if="formData.customerName" :type="DICT_TYPE.ERP_LIVE_CUSTOMER_NAME" :value="formData.customerName" />
-          <span v-else style="color: #c0c4cc;">未设置</span>
-        </div>
-        <el-select
-          v-else
+        <el-input
           v-model="formData.customerName"
-          placeholder="请选择客户名称"
+          placeholder="请选择客户"
           class="w-80"
-          filterable
-          :filter-method="(value) => filterDictOptions(value, DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)"
-        >
-          <el-option
-            v-for="dict in filteredCustomerNameOptions"
-            :key="dict.value"
-            :label="dict.label"
-            :value="dict.value"
-          />
-        </el-select>
+          readonly
+          :disabled="isDetail"
+          @click="openCustomerSearch"
+        />
       </el-form-item>
 
       <!-- 直播平台 -->
@@ -199,6 +188,12 @@
       @livebroadcasting-selected="handleLiveBroadcastingSelected"
       ref="liveBroadcastingSearchDialog"
     />
+
+    <!-- 客户搜索弹窗 -->
+    <CustomerSearchDialog
+      v-model:visible="customerSearchDialogVisible"
+      @customer-selected="handleCustomerSelected"
+    />
   </template>
 
   <script lang="ts" setup>
@@ -208,6 +203,7 @@
   import { getStrDictOptions, DICT_TYPE } from '@/utils/dict'
   import type { LiveBroadcastingReviewVO } from '@/api/erp/livebroadcastingreview'
   import LiveBroadcastingSearchDialog from "./LiveBroadcastingSearchDialog.vue"
+  import CustomerSearchDialog from "@/views/erp/sale/saleprice/components/CustomerSearchDialog.vue"
 
   defineOptions({ name: 'ErpLiveBroadcastingReviewInfoForm' })
   const message = useMessage()
@@ -302,33 +298,22 @@
 
   // 字典选项
   const filteredPlatformOptions = ref<any[]>([])
-  const filteredCustomerNameOptions = ref<any[]>([])
 
   // 初始化字典选项
   onMounted(() => {
     filteredPlatformOptions.value = getStrDictOptions(DICT_TYPE.ERP_LIVE_PLATFORM)
-    filteredCustomerNameOptions.value = getStrDictOptions(DICT_TYPE.ERP_LIVE_CUSTOMER_NAME)
   })
 
   // 字典选项过滤方法
   const filterDictOptions = (value, dictType) => {
     const allOptions = getStrDictOptions(dictType)
     if (!value) {
-      if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
-        filteredPlatformOptions.value = allOptions
-      } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
-        filteredCustomerNameOptions.value = allOptions
-      }
+      filteredPlatformOptions.value = allOptions
       return
     }
-    const filtered = allOptions.filter(item =>
+    filteredPlatformOptions.value = allOptions.filter(item =>
       item.label.toLowerCase().includes(value.toLowerCase())
     )
-    if (dictType === DICT_TYPE.ERP_LIVE_PLATFORM) {
-      filteredPlatformOptions.value = filtered
-    } else if (dictType === DICT_TYPE.ERP_LIVE_CUSTOMER_NAME) {
-      filteredCustomerNameOptions.value = filtered
-    }
   }
 
   /** 将传进来的值赋值给 formData */
@@ -352,6 +337,15 @@
       emit('update:activeName', 'info')
       throw e
     }
+  }
+
+  // 客户搜索弹窗相关
+  const customerSearchDialogVisible = ref(false)
+  const openCustomerSearch = () => {
+    if (!props.isDetail) customerSearchDialogVisible.value = true
+  }
+  const handleCustomerSelected = (customer: any) => {
+    formData.customerName = customer.name
   }
 
   // 直播货盘搜索弹窗相关
