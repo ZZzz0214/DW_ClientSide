@@ -447,6 +447,9 @@
         :formatter="dateFormatter"
         width="180px"
       />
+      <el-table-column label="原表商品" align="center" prop="originalProductName" min-width="350" :show-overflow-tooltip="false"/>
+      <el-table-column label="原表规格" align="center" prop="originalStandard" min-width="150" :show-overflow-tooltip="false"/>
+      <el-table-column label="原表数量" align="center" prop="originalQuantity" :show-overflow-tooltip="false"/>
 
       <el-table-column label="审核状态" align="center" fixed="right" width="120" prop="status">
         <template #default="scope">
