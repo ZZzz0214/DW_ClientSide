@@ -46,7 +46,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="主图" name="mainImage">
+        <el-tab-pane label="主图" name="mainImage" lazy>
           <MainImageForm
             ref="mainImageRef"
             v-model:activeName="activeName"
@@ -55,7 +55,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="详情" name="detailInfo">
+        <el-tab-pane label="详情" name="detailInfo" lazy>
           <DetailInfoForm
             ref="detailInfoRef"
             v-model:activeName="activeName"
@@ -64,7 +64,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="SKU图" name="skuImage">
+        <el-tab-pane label="SKU图" name="skuImage" lazy>
           <SkuImageForm
             ref="skuImageRef"
             v-model:activeName="activeName"
@@ -73,7 +73,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="基础笔记" name="basicNotes">
+        <el-tab-pane label="基础笔记" name="basicNotes" lazy>
           <BasicNotesForm
             ref="basicNotesRef"
             v-model:activeName="activeName"
@@ -82,7 +82,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="升级笔记" name="upgradeNotes">
+        <el-tab-pane label="升级笔记" name="upgradeNotes" lazy>
           <UpgradeNotesForm
             ref="upgradeNotesRef"
             v-model:activeName="activeName"
@@ -91,7 +91,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="社群推广" name="communityPromotion">
+        <el-tab-pane label="社群推广" name="communityPromotion" lazy>
           <CommunityPromotionForm
             ref="communityPromotionRef"
             v-model:activeName="activeName"
@@ -100,7 +100,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="详细信息" name="detailedInfo">
+        <el-tab-pane label="详细信息" name="detailedInfo" lazy>
           <DetailedInfoForm
             ref="detailedInfoRef"
             v-model:activeName="activeName"
@@ -109,7 +109,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="资质" name="qualification">
+        <el-tab-pane label="资质" name="qualification" lazy>
           <QualificationForm
             ref="qualificationRef"
             v-model:activeName="activeName"
@@ -118,7 +118,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="卖点成分" name="sellingPointsIngredients">
+        <el-tab-pane label="卖点成分" name="sellingPointsIngredients" lazy>
           <SellingPointsIngredientsForm
             ref="sellingPointsIngredientsRef"
             v-model:activeName="activeName"
@@ -127,7 +127,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="背书" name="endorsement">
+        <el-tab-pane label="背书" name="endorsement" lazy>
           <EndorsementForm
             ref="endorsementRef"
             v-model:activeName="activeName"
@@ -136,7 +136,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="实拍" name="actualPhotos">
+        <el-tab-pane label="实拍" name="actualPhotos" lazy>
           <ActualPhotosForm
             ref="actualPhotosRef"
             v-model:activeName="activeName"
@@ -145,7 +145,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="六面图" name="sixSideImages">
+        <el-tab-pane label="六面图" name="sixSideImages" lazy>
           <SixSideImagesForm
             ref="sixSideImagesRef"
             v-model:activeName="activeName"
@@ -154,7 +154,7 @@
             @update:formData="handleInfoFormUpdate"
           />
         </el-tab-pane>
-        <el-tab-pane label="打包图" name="packagingImages">
+        <el-tab-pane label="打包图" name="packagingImages" lazy>
           <PackagingImagesForm
             ref="packagingImagesRef"
             v-model:activeName="activeName"
@@ -254,7 +254,9 @@
     groupPrice: 0,
     channelProfit: 0,
     groupMechanism: '',
+    barePrice: '',
     expressFee: 0,
+    liveMechanism: '',
     tmallJd: '',
     publicData: '',
     privateData: '',
@@ -263,7 +265,7 @@
     expressCompany: '',
     shippingTime: '',
     shippingArea: '',
-    // 新增字段：资料信息
+    // 资料信息字段
     mainImage: '',
     detailInfo: '',
     skuImage: '',
@@ -289,6 +291,7 @@
     // 检查是否是复制模式
     const { query } = useRoute()
     const isCopyMode = query.copy === 'true'
+    const copyId = query.copyId as unknown as number
     
     if (id && !isCopyMode) {
       formLoading.value = true
@@ -304,38 +307,34 @@
       } finally {
         formLoading.value = false
       }
-    } else if (isCopyMode) {
-      // 复制模式：从localStorage获取复制的数据
-      const copyData = localStorage.getItem('copyGroupBuyingData')
-      if (copyData) {
-        try {
-          const parsedData = JSON.parse(copyData)
-          
-          // 处理产品图片
-          if (parsedData.productImage && typeof parsedData.productImage === 'string') {
-            parsedData.productImage = parsedData.productImage.split(',').filter(img => img.trim())
-          }
-          
-          // 复制数据并重置某些字段
-          formData.value = {
-            ...parsedData,
-            id: undefined, // 清空ID
-            no: '', // 清空编号，系统自动生成
-            productName: parsedData.productName ? `${parsedData.productName} - 复制` : '', // 产品名称加复制标识
-            status: 1, // 重置状态为默认值
-            // shelfLife: undefined, // 保留原保质日期，不重置
-            createTime: undefined,
-            updateTime: undefined,
-            creator: undefined,
-            updater: undefined
-          }
-          
-          // 清除localStorage中的复制数据
-          localStorage.removeItem('copyGroupBuyingData')
-        } catch (e) {
-          console.error('解析复制数据失败:', e)
-          message.error('复制数据格式错误')
+    } else if (isCopyMode && copyId) {
+      // 复制模式：从API获取完整详情（包含所有资料字段）
+      formLoading.value = true
+      try {
+        const res = await GroupBuyingApi.GroupBuyingApi.getGroupBuying(copyId)
+        
+        // 处理产品图片
+        if (res.productImage && typeof res.productImage === 'string') {
+          res.productImage = res.productImage.split(',').filter(img => img.trim())
         }
+        
+        // 复制数据并重置某些字段
+        formData.value = {
+          ...res,
+          id: undefined,
+          no: '',
+          productName: res.productName ? `${res.productName} - 复制` : '',
+          status: 1,
+          createTime: undefined,
+          updateTime: undefined,
+          creator: undefined,
+          updater: undefined
+        }
+      } catch (e) {
+        console.error('获取复制数据失败:', e)
+        message.error('获取复制数据失败')
+      } finally {
+        formLoading.value = false
       }
     }
   }

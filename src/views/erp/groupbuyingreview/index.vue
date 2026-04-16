@@ -263,6 +263,7 @@
         <el-table-column label="客户名称" align="center" prop="customerName" :show-overflow-tooltip="false"/>
         <el-table-column label="开团价格" align="center" prop="groupPrice" :show-overflow-tooltip="false"/>
         <el-table-column label="供货价格" align="center" prop="supplyGroupPrice" :show-overflow-tooltip="false"/>
+        <el-table-column label="产品裸价" align="center" prop="barePrice" :show-overflow-tooltip="false" min-width="100"/>
         <el-table-column label="快递费用" align="center" prop="expressFee" :show-overflow-tooltip="false"/>
         <el-table-column label="复盘状态" align="center" prop="reviewStatus" width="120px">
           <template #default="scope">
@@ -301,7 +302,7 @@
           :formatter="dateFormatter"
           width="180px"
         />
-        <el-table-column label="操作" align="center" width="240">
+        <el-table-column label="操作" align="center" width="240" fixed="right">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
             <el-button
@@ -561,59 +562,12 @@
       return
     }
     const selectedRow = selectionList.value[0]
-
-    // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
-    const formatDate = (timestamp: any) => {
-      if (!timestamp) return undefined
-      if (typeof timestamp === 'string' && timestamp.includes('-')) {
-        return timestamp // 已经是YYYY-MM-DD格式
-      }
-      if (typeof timestamp === 'number') {
-        const date = new Date(timestamp)
-        return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
-      }
-      return undefined
-    }
-
-    // 创建复制数据，格式化日期字段
-    const copyData = {
-      ...selectedRow,
-      sampleSendDate: formatDate(selectedRow.sampleSendDate),
-      groupStartDate: formatDate(selectedRow.groupStartDate),
-      repeatGroupDate: formatDate(selectedRow.repeatGroupDate)
-    }
-
-    // 存储复制的数据到localStorage，供表单页面使用
-    localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(copyData))
-    push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true' } })
+    push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true', copyId: selectedRow.id } })
   }
 
   /** 复制新增操作 - 单条记录 */
   const handleCopyCreateSingle = (row: GroupBuyingReviewVO) => {
-    // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
-    const formatDate = (timestamp: any) => {
-      if (!timestamp) return undefined
-      if (typeof timestamp === 'string' && timestamp.includes('-')) {
-        return timestamp // 已经是YYYY-MM-DD格式
-      }
-      if (typeof timestamp === 'number') {
-        const date = new Date(timestamp)
-        return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
-      }
-      return undefined
-    }
-
-    // 创建复制数据，格式化日期字段
-    const copyData = {
-      ...row,
-      sampleSendDate: formatDate(row.sampleSendDate),
-      groupStartDate: formatDate(row.groupStartDate),
-      repeatGroupDate: formatDate(row.repeatGroupDate)
-    }
-
-    // 存储复制的数据到localStorage，供表单页面使用
-    localStorage.setItem('copyGroupBuyingReviewData', JSON.stringify(copyData))
-    push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true' } })
+    push({ name: 'ErpGroupBuyingReviewAdd', query: { copy: 'true', copyId: row.id } })
   }
 
   /** 初始化 **/

@@ -15,6 +15,7 @@
           :precision="2"
           placeholder="请输入核心价格"
           class="w-80!"
+          :disabled="isDetail || !hasMechanismEditPermi"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -29,6 +30,7 @@
           :precision="2"
           placeholder="请输入分发价格"
           class="w-80!"
+          :disabled="isDetail || !hasMechanismEditPermi"
         />
         <span style="margin-left: 25px;">元</span>
         </div>
@@ -37,10 +39,11 @@
   </template>
 
   <script lang="ts" setup>
-  import { PropType } from 'vue'
+  import { PropType, computed } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { GroupBuyingVO } from '@/api/erp/groupbuying'
+  import { hasPermission } from '@/directives/permission/hasPermi'
 
   defineOptions({ name: 'ErpGroupBuyingCoreForm' })
 
@@ -58,6 +61,9 @@
     corePrice: 0,
     distributionPrice: 0
   })
+
+  // 权限控制：是否有编辑核心机制的权限（不隐藏字段，仅控制是否可编辑）
+  const hasMechanismEditPermi = computed(() => hasPermission(['erp:groupbuying:editMechanism']))
 
   const rules = reactive({
     //corePrice: [{ required: true, message: '核心价格不能为空', trigger: 'blur' }],
@@ -81,7 +87,6 @@
     try {
       await unref(formRef)?.validate()
 
-      // 通过emit事件将数据传递给父组件，而不是直接修改props
       const updatedData = { ...formData }
       emit('update:formData', updatedData)
     } catch (e) {

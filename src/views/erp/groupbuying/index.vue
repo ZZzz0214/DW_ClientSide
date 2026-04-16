@@ -296,9 +296,18 @@
         <el-table-column label="开团价格" align="center" prop="groupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="供货价格" align="center" prop="supplyGroupPrice"  :show-overflow-tooltip="false"/>
         <el-table-column label="帮卖佣金" align="center" prop="sellingCommission"  :show-overflow-tooltip="false"/>
+        <el-table-column label="渠道毛利" align="center" prop="channelProfit" :show-overflow-tooltip="false">
+          <template #default="scope">
+            {{ scope.row.channelProfit != null ? Number(scope.row.channelProfit).toFixed(2) + '%' : '-' }}
+          </template>
+        </el-table-column>
+        <el-table-column label="开团机制" align="center" prop="groupMechanism" :show-overflow-tooltip="false" min-width="120"/>
+        <el-table-column label="产品裸价" align="center" prop="barePrice" :show-overflow-tooltip="false" min-width="100"/>
+        <el-table-column label="快递费用" align="center" prop="expressFee" :show-overflow-tooltip="false"/>
+        <el-table-column label="直播机制" align="center" prop="liveMechanism" :show-overflow-tooltip="false" min-width="120"/>
         <el-table-column label="创建人员" align="center" prop="creator"  :show-overflow-tooltip="false"/>
         <el-table-column label="创建时间" align="center" prop="createTime" :formatter="dateFormatter" width="180px" />
-        <el-table-column label="操作" align="center" width="320">
+        <el-table-column label="操作" align="center" width="320" fixed="right">
           <template #default="scope">
             <el-button link type="primary" @click="openDetail(scope.row.id)"> 详情 </el-button>
             <el-button
@@ -540,16 +549,12 @@
       return
     }
     const selectedRow = selectionList.value[0]
-    // 存储复制的数据到localStorage，供表单页面使用
-    localStorage.setItem('copyGroupBuyingData', JSON.stringify(selectedRow))
-    push({ name: 'ErpGroupBuyingAdd', query: { copy: 'true' } })
+    push({ name: 'ErpGroupBuyingAdd', query: { copy: 'true', copyId: selectedRow.id } })
   }
 
   /** 复制新增操作 - 单条记录 */
   const handleCopyCreateSingle = (row: GroupBuyingVO) => {
-    // 存储复制的数据到localStorage，供表单页面使用
-    localStorage.setItem('copyGroupBuyingData', JSON.stringify(row))
-    push({ name: 'ErpGroupBuyingAdd', query: { copy: 'true' } })
+    push({ name: 'ErpGroupBuyingAdd', query: { copy: 'true', copyId: row.id } })
   }
 
   /** 获取图片URLs */

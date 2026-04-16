@@ -15,8 +15,10 @@ export interface GroupBuyingReviewVO {
   productSpec?: string // 产品规格
   productSku?: string // 产品SKU
   groupMechanism?: string // 开团机制
+  liveMechanism?: string // 直播机制（来自货盘表，不可编辑）
   expressFee?: number // 快递费用
   supplyGroupPrice?: number // 供团价格
+  barePrice?: string // 产品裸价（可编辑）
   groupPrice?: number // 开团价格
   status?: number // 货盘状态
   sampleSendDate?: Date // 寄样日期

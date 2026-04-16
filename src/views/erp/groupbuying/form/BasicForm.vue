@@ -16,6 +16,7 @@
           placeholder="请输入开团价格"
           class="w-80"
           @change="calculateProfit"
+          :disabled="isDetail || !hasMechanismEditPermi"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -31,6 +32,7 @@
           placeholder="请输入供货价格"
           class="w-80"
           @change="calculateProfit"
+          :disabled="isDetail || !hasMechanismEditPermi"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -45,6 +47,7 @@
           :precision="2"
           placeholder="请输入帮卖佣金"
           class="w-80"
+          :disabled="isDetail || !hasMechanismEditPermi"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -72,6 +75,19 @@
           placeholder="请输入开团机制"
           class="w-80"
           :autosize="{ minRows: 2, maxRows: 4 }"
+          :disabled="isDetail || !hasMechanismEditPermi"
+        />
+      </el-form-item>
+
+      <!-- 产品裸价 -->
+      <el-form-item label="产品裸价" prop="barePrice">
+        <el-input
+          v-model="formData.barePrice"
+          type="textarea"
+          placeholder="请输入产品裸价"
+          class="w-80"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          :disabled="isDetail || !hasMechanismEditPermi"
         />
       </el-form-item>
 
@@ -84,18 +100,32 @@
           :precision="2"
           placeholder="请输入快递费用"
           class="w-80"
+          :disabled="isDetail || !hasMechanismEditPermi"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
+      </el-form-item>
+
+      <!-- 直播机制 -->
+      <el-form-item label="直播机制" prop="liveMechanism">
+        <el-input
+          v-model="formData.liveMechanism"
+          type="textarea"
+          placeholder="请输入直播机制"
+          class="w-80"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          :disabled="isDetail || !hasMechanismEditPermi"
+        />
       </el-form-item>
     </el-form>
   </template>
 
   <script lang="ts" setup>
-  import { PropType } from 'vue'
+  import { PropType, computed } from 'vue'
   import { copyValueToTarget } from '@/utils'
   import { propTypes } from '@/utils/propTypes'
   import type { GroupBuyingVO } from '@/api/erp/groupbuying'
+  import { hasPermission } from '@/directives/permission/hasPermi'
 
   defineOptions({ name: 'ErpGroupBuyingBasicForm' })
 
@@ -115,8 +145,13 @@
     sellingCommission: undefined,
     channelProfit: 0,
     groupMechanism: '',
-    expressFee: undefined
+    barePrice: '',
+    expressFee: undefined,
+    liveMechanism: ''
   })
+
+  // 权限控制：是否有编辑基础机制的权限（不隐藏字段，仅控制是否可编辑）
+  const hasMechanismEditPermi = computed(() => hasPermission(['erp:groupbuying:editMechanism']))
 
   const rules = reactive({
     groupPrice: [
@@ -155,7 +190,6 @@
     try {
       await unref(formRef)?.validate()
       
-      // 通过emit事件将数据传递给父组件，而不是直接修改props
       const updatedData = { ...formData }
       emit('update:formData', updatedData)
     } catch (e) {

@@ -22,7 +22,9 @@ export interface GroupBuyingVO {
   groupPrice?: number // 开团价格
   channelProfit?: number // 渠道毛利
   groupMechanism?: string // 开团机制
+  barePrice?: string // 产品裸价
   expressFee?: number // 快递费用
+  liveMechanism?: string // 直播机制
   tmallJd?: string // 天猫京东
   publicData?: string // 公域数据
   privateData?: string // 私域数据
@@ -70,7 +72,9 @@ export interface GroupBuyingSaveReqVO {
   groupPrice?: number // 开团价格
   channelProfit?: number // 渠道毛利
   groupMechanism?: string // 开团机制
+  barePrice?: string // 产品裸价
   expressFee?: number // 快递费用
+  liveMechanism?: string // 直播机制
   tmallJd?: string // 天猫京东
   publicData?: string // 公域数据
   privateData?: string // 私域数据

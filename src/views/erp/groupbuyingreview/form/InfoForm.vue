@@ -136,6 +136,18 @@
         </div>
       </el-form-item>
 
+      <!-- 产品裸价：自动从货盘表获取，可编辑，非必填 -->
+      <el-form-item label="产品裸价" prop="barePrice">
+        <el-input
+          v-model="formData.barePrice"
+          type="textarea"
+          placeholder="自动填充，可编辑"
+          class="w-80"
+          :autosize="{ minRows: 2, maxRows: 4 }"
+          :disabled="isDetail"
+        />
+      </el-form-item>
+
       <el-form-item label="快递费用" prop="expressFee">
         <div style="display: flex; align-items: center;">
           <el-input-number
@@ -157,6 +169,18 @@
         readonly
         class="w-80"
         type="textarea"
+        :autosize="{ minRows: 2, maxRows: 4 }"
+      />
+    </el-form-item>
+
+    <!-- 直播机制：自动从货盘表获取，不可编辑，非必填 -->
+    <el-form-item label="直播机制" prop="liveMechanism">
+      <el-input
+        v-model="formData.liveMechanism"
+        type="textarea"
+        placeholder="自动填充"
+        readonly
+        class="w-80"
         :autosize="{ minRows: 2, maxRows: 4 }"
       />
     </el-form-item>
@@ -236,11 +260,13 @@
     productSpec: '',
     productSku: '',
     groupMechanism: '',
+    liveMechanism: '', // 直播机制（来自货盘表，不可编辑）
     status: undefined, // 货盘状态
     reviewStatus: undefined, // 复盘状态
     remark: '',
     customerName: '', // 客户名称（用于显示）
     supplyGroupPrice: 0,
+    barePrice: '', // 产品裸价（来自货盘表，可编辑）
     expressFee: 0,
     groupPrice: 0 // 开团价格
   })
@@ -296,8 +322,10 @@ const handleGroupBuyingSelected = (groupBuying: any) => {
   formData.productSpec = groupBuying.productSpec || '';
   formData.productSku = groupBuying.productSku || '';
   formData.groupMechanism = groupBuying.groupMechanism || '';
+  formData.liveMechanism = groupBuying.liveMechanism || ''; // 直播机制（不可编辑）
+  formData.barePrice = groupBuying.barePrice || ''; // 产品裸价（可编辑）
   formData.status = groupBuying.status; // 填充货盘状态
-          // 如果货盘有供货价格，也可以自动填充
+  // 如果货盘有供货价格，也可以自动填充
   if (groupBuying.supplyGroupPrice) {
     formData.supplyGroupPrice = groupBuying.supplyGroupPrice;
   }

@@ -77,9 +77,11 @@
     remark: '',
     customerName: '', // 客户名称（用于显示）
     supplyGroupPrice: 0,
+    barePrice: '', // 产品裸价（来自货盘表，可编辑）
     expressFee: 0,
     groupPrice: 0, // 开团价格
     groupMechanism: '',
+    liveMechanism: '', // 直播机制（来自货盘表，不可编辑）
     status: undefined, // 货盘状态
     sampleSendDate: undefined,
     groupStartDate: undefined,
@@ -98,7 +100,8 @@
     // 检查是否是复制模式
     const { query } = useRoute()
     const isCopyMode = query.copy === 'true'
-    
+    const copyId = query.copyId as unknown as number
+
     if (id && !isCopyMode) {
       formLoading.value = true
       try {
@@ -107,56 +110,39 @@
       } finally {
         formLoading.value = false
       }
-    } else if (isCopyMode) {
-      // 复制模式：从localStorage获取复制的数据
-      const copyData = localStorage.getItem('copyGroupBuyingReviewData')
-      if (copyData) {
-        try {
-          const parsedData = JSON.parse(copyData)
-          
-          // 处理日期字段：将时间戳转换为YYYY-MM-DD格式
-          const formatDate = (timestamp: any) => {
-            if (!timestamp) return undefined
-            if (typeof timestamp === 'string' && timestamp.includes('-')) {
-              return timestamp // 已经是YYYY-MM-DD格式
-            }
-            if (typeof timestamp === 'number') {
-              const date = new Date(timestamp)
-              return date.toISOString().split('T')[0] // 转换为YYYY-MM-DD格式
-            }
-            return undefined
+    } else if (isCopyMode && copyId) {
+      // 复制模式：从API获取完整详情
+      formLoading.value = true
+      try {
+        const res = await GroupBuyingReviewApi.GroupBuyingReviewApi.getGroupBuyingReview(copyId)
+
+        // 格式化日期字段
+        const formatDate = (timestamp: any) => {
+          if (!timestamp) return undefined
+          if (typeof timestamp === 'string' && timestamp.includes('-')) return timestamp
+          if (typeof timestamp === 'number') {
+            return new Date(timestamp).toISOString().split('T')[0]
           }
-          
-          // 复制数据并重置某些字段
-          formData.value = {
-            ...parsedData,
-            id: undefined, // 清空ID
-            no: '', // 清空编号，系统自动生成
-            groupBuyingId: parsedData.groupBuyingId, // 保留团购货盘ID
-            groupBuyingNo: parsedData.groupBuyingNo, // 保留团购货盘编号
-            customerId: parsedData.customerId, // 保留客户ID
-            customerName: parsedData.customerName, // 保留客户名称
-            supplyGroupPrice: parsedData.supplyGroupPrice, // 保留供货价格
-            expressFee: parsedData.expressFee, // 保留快递费用
-            groupPrice: parsedData.groupPrice, // 保留开团价格
-            // 保留进展相关字段，并格式化日期
-            sampleSendDate: formatDate(parsedData.sampleSendDate), // 格式化寄样日期
-            groupStartDate: formatDate(parsedData.groupStartDate), // 格式化开团日期
-            groupSales: parsedData.groupSales, // 保留开团销量
-            repeatGroupDate: formatDate(parsedData.repeatGroupDate), // 格式化复团日期
-            reviewStatus: parsedData.reviewStatus, // 保留复盘状态
-            createTime: undefined,
-            updateTime: undefined,
-            creator: undefined,
-            updater: undefined
-          }
-          
-          // 清除localStorage中的复制数据
-          localStorage.removeItem('copyGroupBuyingReviewData')
-        } catch (e) {
-          console.error('解析复制数据失败:', e)
-          message.error('复制数据格式错误')
+          return undefined
         }
+
+        formData.value = {
+          ...res,
+          id: undefined,
+          no: '',
+          sampleSendDate: formatDate(res.sampleSendDate),
+          groupStartDate: formatDate(res.groupStartDate),
+          repeatGroupDate: formatDate(res.repeatGroupDate),
+          createTime: undefined,
+          updateTime: undefined,
+          creator: undefined,
+          updater: undefined
+        }
+      } catch (e) {
+        console.error('获取复制数据失败:', e)
+        message.error('获取复制数据失败')
+      } finally {
+        formLoading.value = false
       }
     }
   }
