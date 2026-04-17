@@ -33,16 +33,16 @@
           <span class="field-value">{{ formData.supplyGroupPrice || '-' }}</span>
         </div>
         <div class="data-item">
+          <span class="field-name">开团机制：</span>
+          <span class="field-value">{{ formData.groupMechanism || '-' }}</span>
+        </div>
+        <div class="data-item">
           <span class="field-name">产品裸价：</span>
           <span class="field-value">{{ formData.barePrice || '-' }}</span>
         </div>
         <div class="data-item">
           <span class="field-name">快递费用：</span>
           <span class="field-value">{{ formData.expressFee != null ? formData.expressFee : '-' }}</span>
-        </div>
-        <div class="data-item">
-          <span class="field-name">开团机制：</span>
-          <span class="field-value">{{ formData.groupMechanism || '-' }}</span>
         </div>
         <div class="data-item">
           <span class="field-name">直播机制：</span>
@@ -121,9 +121,9 @@ const generateCopyText = () => {
     `产品SKU：${props.formData.productSku || '-'}\n`,
     `客户名称：${props.formData.customerName || '-'}`,
     `供货价格：${props.formData.supplyGroupPrice || '-'}`,
+    `开团机制：${props.formData.groupMechanism || '-'}`,
     `产品裸价：${props.formData.barePrice || '-'}`,
     `快递费用：${props.formData.expressFee != null ? props.formData.expressFee : '-'}`,
-    `开团机制：${props.formData.groupMechanism || '-'}`,
     `直播机制：${props.formData.liveMechanism || '-'}`,
     `货盘状态：${getStatusText(props.formData.status) || '-'}`
   ]

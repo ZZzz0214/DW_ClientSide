@@ -15,6 +15,7 @@
             ref="coreRef"
             v-model:activeName="activeName"
             :is-detail="isDetail"
+            :is-edit="isEdit"
             :propFormData="formData"
             @update:formData="handleInfoFormUpdate"
           />
@@ -24,6 +25,7 @@
             ref="basicRef"
             v-model:activeName="activeName"
             :is-detail="isDetail"
+            :is-edit="isEdit"
             :propFormData="formData"
             @update:formData="handleInfoFormUpdate"
           />
@@ -214,6 +216,14 @@
   const formLoading = ref(false) // 表单的加载中
   const activeName = ref('info') // Tab 激活的窗口
   const isDetail = ref(false) // 是否查看详情
+
+  // 是否是编辑模式（有ID且非复制）：新增/复制新增时不需要机制编辑权限
+  const { query } = useRoute()
+  const isEdit = computed(() => {
+    const id = params.id as unknown as number
+    const isCopyMode = query.copy === 'true'
+    return !!id && !isCopyMode
+  })
   const infoRef = ref() // 基础信息 Ref
   const coreRef = ref() // 核心机制 Ref
   const basicRef = ref() // 基础机制 Ref

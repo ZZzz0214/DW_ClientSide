@@ -15,7 +15,7 @@
           :precision="2"
           placeholder="请输入核心价格"
           class="w-80!"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -30,7 +30,7 @@
           :precision="2"
           placeholder="请输入分发价格"
           class="w-80!"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
         <span style="margin-left: 25px;">元</span>
         </div>
@@ -52,7 +52,8 @@
       type: Object as PropType<GroupBuyingVO>,
       default: () => {}
     },
-    isDetail: propTypes.bool.def(false)
+    isDetail: propTypes.bool.def(false),
+    isEdit: propTypes.bool.def(false)
   })
 
   const message = useMessage()

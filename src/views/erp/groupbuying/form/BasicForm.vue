@@ -16,7 +16,7 @@
           placeholder="请输入开团价格"
           class="w-80"
           @change="calculateProfit"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -32,7 +32,7 @@
           placeholder="请输入供货价格"
           class="w-80"
           @change="calculateProfit"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -47,7 +47,7 @@
           :precision="2"
           placeholder="请输入帮卖佣金"
           class="w-80"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -75,7 +75,7 @@
           placeholder="请输入开团机制"
           class="w-80"
           :autosize="{ minRows: 2, maxRows: 4 }"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
       </el-form-item>
 
@@ -87,7 +87,7 @@
           placeholder="请输入产品裸价"
           class="w-80"
           :autosize="{ minRows: 2, maxRows: 4 }"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
       </el-form-item>
 
@@ -100,7 +100,7 @@
           :precision="2"
           placeholder="请输入快递费用"
           class="w-80"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
           <span style="margin-left: 25px;">元</span>
         </div>
@@ -114,7 +114,7 @@
           placeholder="请输入直播机制"
           class="w-80"
           :autosize="{ minRows: 2, maxRows: 4 }"
-          :disabled="isDetail || !hasMechanismEditPermi"
+          :disabled="isDetail || (isEdit && !hasMechanismEditPermi)"
         />
       </el-form-item>
     </el-form>
@@ -134,7 +134,8 @@
       type: Object as PropType<GroupBuyingVO>,
       default: () => {}
     },
-    isDetail: propTypes.bool.def(false)
+    isDetail: propTypes.bool.def(false),
+    isEdit: propTypes.bool.def(false)
   })
 
   const message = useMessage()
